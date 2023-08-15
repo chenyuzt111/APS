@@ -1,7 +1,7 @@
 package com.benewake.system.annotation;
 
-import com.benewake.system.enums.BusinessType;
-import com.benewake.system.enums.OperatorType;
+import com.benewake.system.entity.enums.BusinessType;
+import com.benewake.system.entity.enums.OperatorType;
 
 import java.lang.annotation.*;
 

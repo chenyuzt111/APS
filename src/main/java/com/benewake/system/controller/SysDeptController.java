@@ -3,7 +3,7 @@ package com.benewake.system.controller;
 import com.benewake.system.annotation.Log;
 import com.benewake.system.entity.Result;
 import com.benewake.system.entity.system.SysDept;
-import com.benewake.system.enums.BusinessType;
+import com.benewake.system.entity.enums.BusinessType;
 import com.benewake.system.service.SysDeptService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -63,7 +63,7 @@ public class SysDeptController {
     }
 
     @PreAuthorize("hasAnyAuthority('bnt.sysDept.list')")
-    @ApiOperation("部门管理信息")
+    @ApiOperation("条件查询部门信息")
     @PostMapping("list")
     public Result deptsList(@RequestBody SysDept sysDept){
         List<SysDept> list = sysDeptService.selectDeptList(sysDept);

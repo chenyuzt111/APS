@@ -2,6 +2,7 @@ package com.benewake.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.benewake.system.entity.system.ApsCol;
 import com.benewake.system.entity.system.SysRole;
 import com.benewake.system.entity.system.SysUserRole;
 import com.benewake.system.entity.vo.AssginRoleVo;
@@ -85,4 +86,5 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     public List<SysRole> getUserRoles(String id) {
         return sysUserRoleMapper.getUserRoles(id);
     }
+
 }

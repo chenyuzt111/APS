@@ -31,6 +31,11 @@ public class IndexController {
 
     @Autowired
     private SysUserService sysUserService;
+
+    @GetMapping("/")
+    public Result tIndex(){
+        return Result.ok().message("index！！");
+    }
     @ApiOperation("用户登录接口")
     @PostMapping("login")
     public Result login(@RequestBody LoginVo loginVo) {

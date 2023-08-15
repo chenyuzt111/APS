@@ -19,9 +19,10 @@ import java.util.List;
 public interface SysDeptMapper extends BaseMapper<SysDept> {
 
     @Select("<script>" +
-            "select d.id ,d.name ,d.parent_id ,d.sort_value ,d.leader ," +
-            "d.phone ,d.status ,d.create_time ,d.update_time  from sys_dept d " +
-            "where is_deleted = 0 " +
+            "select " +
+            "${dept.param.colScope} " +
+            "from sys_dept d " +
+            "where d.is_deleted = 0 " +
             "<if test='dept.name!=null'>" +
             " and d.name like CONCAT('%',#{dept.name},'%') " +
             "</if>" +
@@ -33,9 +34,6 @@ public interface SysDeptMapper extends BaseMapper<SysDept> {
             "</if>" +
             "<if test='dept.parentId!=null'>" +
             " and d.parent_id = #{dept.parentId} " +
-            "</if>" +
-            "<if test='dept.status!=null'>" +
-            " and d.status = #{dept.status} " +
             "</if>" +
             " ${dept.param.dataScope} " +
             "order by d.id" +

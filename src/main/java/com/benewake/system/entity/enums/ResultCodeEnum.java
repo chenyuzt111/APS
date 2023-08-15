@@ -1,4 +1,4 @@
-package com.benewake.system.enums;
+package com.benewake.system.entity.enums;
 
 import lombok.Getter;
 

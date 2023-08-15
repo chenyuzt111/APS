@@ -1,7 +1,7 @@
-package com.benewake.system.exception;
+package com.benewake.system.controller.advice;
 
 import com.benewake.system.entity.Result;
-import com.benewake.system.enums.ResultCodeEnum;
+import com.benewake.system.entity.enums.ResultCodeEnum;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * 描 述： TODO
  */
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionAdvice {
 
     /**
      * 全局异常处理

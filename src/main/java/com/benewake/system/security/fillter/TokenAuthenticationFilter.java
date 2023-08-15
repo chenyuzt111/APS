@@ -1,8 +1,8 @@
-package com.benewake.system.fillter;
+package com.benewake.system.security.fillter;
 
 import com.alibaba.fastjson.JSON;
 import com.benewake.system.entity.Result;
-import com.benewake.system.enums.ResultCodeEnum;
+import com.benewake.system.entity.enums.ResultCodeEnum;
 import com.benewake.system.utils.JwtHelper;
 import com.benewake.system.utils.ResponseUtil;
 import org.springframework.data.redis.core.RedisTemplate;

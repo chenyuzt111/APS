@@ -21,10 +21,11 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 条件查询用户
+     *
      * @param sysUser
      * @return
      */
-    List<SysUser> selectUser(SysUser sysUser);
+    List<Map<String,Object>> selectUser(SysUser sysUser);
 
     /**
      * 修改用户状态
@@ -75,5 +76,5 @@ public interface SysUserService extends IService<SysUser> {
      * @param sysRole
      * @return
      */
-    List<SysUser> getUsersByRoleId(SysRole sysRole);
+    List<Map<String,Object>> getUsersByRoleId(SysRole sysRole);
 }

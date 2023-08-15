@@ -1,6 +1,7 @@
 package com.benewake.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.benewake.system.entity.system.ApsCol;
 import com.benewake.system.entity.system.SysRole;
 import com.benewake.system.entity.system.SysUserRole;
 import org.apache.ibatis.annotations.Insert;
@@ -46,4 +47,5 @@ public interface SysUserRoleMapper extends BaseMapper<SysUserRole> {
             ") and is_deleted = 0 " +
             "</script>")
     List<SysRole> getUserRoles(@Param("id") String id);
+
 }

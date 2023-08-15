@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -17,9 +18,10 @@ import java.util.List;
  * @since 2023-08-01 06:36:31
  */
 public interface SysUserMapper extends BaseMapper<SysUser> {
-
     @Select("<script>" +
-            "select u.id,u.dept_id,u.username,u.status,u.create_time,u.update_time " +
+            "select " +
+            /*  数据列权限范围  */
+            "${vo.param.colScope} " +
             "from sys_user u " +
             "left join sys_dept d on u.dept_id = d.id " +
             "where u.is_deleted = 0 and d.is_deleted = 0" +
@@ -29,14 +31,16 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
             "<if test='vo.deptId != null and vo.deptId != &apos;&apos; '>" +
             "and u.dept_id = #{vo.deptId} " +
             "</if>" +
-            /*  数据权限范围  */
+            /*  数据行权限范围  */
             "${vo.param.dataScope} " +
             "order by u.id desc " +
             "</script>")
-    List<SysUser> selectUser(@Param("vo") SysUser sysUser);
+    List<Map<String,Object>> selectUser(@Param("vo") SysUser sysUser);
 
     @Select("<script>" +
-            "select u.id,u.dept_id,u.username,u.status,u.create_time,u.update_time " +
+            "select " +
+            /*  数据列权限范围  */
+            "${sysRole.param.colScope} " +
             "from sys_user u " +
             "left join sys_dept d on u.dept_id = d.id " +
             "left join sys_user_role ur on ur.user_id = u.id " +
@@ -45,5 +49,5 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
             "${sysRole.param.dataScope} " +
             "order by u.id " +
             "</script>")
-    List<SysUser> getUsersByRoleId(@Param("sysRole") SysRole sysRole);
+    List<Map<String,Object>> getUsersByRoleId(@Param("sysRole") SysRole sysRole);
 }

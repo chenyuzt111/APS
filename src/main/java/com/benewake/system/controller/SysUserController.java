@@ -5,7 +5,7 @@ import com.benewake.system.entity.Result;
 import com.benewake.system.entity.system.SysRole;
 import com.benewake.system.entity.system.SysUser;
 import com.benewake.system.entity.vo.UpdatePwdVo;
-import com.benewake.system.enums.BusinessType;
+import com.benewake.system.entity.enums.BusinessType;
 import com.benewake.system.service.SysRoleService;
 import com.benewake.system.service.SysUserService;
 import io.swagger.annotations.Api;
@@ -42,8 +42,7 @@ public class SysUserController {
         if(StringUtils.isEmpty(sysRole.getId())){
             return Result.fail().message("请选择用户！");
         }
-        List<SysUser> users = sysUserService.getUsersByRoleId(sysRole);
-        return Result.ok(users);
+        return Result.ok(sysUserService.getUsersByRoleId(sysRole));
     }
 
     @Log(title = "用户管理",businessType = BusinessType.UPDATE)
@@ -62,7 +61,7 @@ public class SysUserController {
     @ApiOperation("条件查询用户接口")
     @PostMapping
     public Result selectUser(@RequestBody SysUser sysUser){
-        List<SysUser> userList = sysUserService.selectUser(sysUser);
+        List<Map<String,Object>> userList = sysUserService.selectUser(sysUser);
         return Result.ok(userList);
     }
 

@@ -1,4 +1,4 @@
-package com.benewake.system.custom;
+package com.benewake.system.security.custom;
 
 import com.benewake.system.entity.system.SysUser;
 import org.springframework.security.core.GrantedAuthority;

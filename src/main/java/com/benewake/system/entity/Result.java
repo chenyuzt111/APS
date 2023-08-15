@@ -1,6 +1,6 @@
 package com.benewake.system.entity;
 
-import com.benewake.system.enums.ResultCodeEnum;
+import com.benewake.system.entity.enums.ResultCodeEnum;
 import lombok.Data;
 
 /**

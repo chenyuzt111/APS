@@ -67,7 +67,6 @@ public class DataScopeAspect
     {
         // 获取当前的用户
         SysUser currentUser = hostHolder.getUser();
-        System.out.println(currentUser.toString());
         // 如果是超级管理员，则不过滤数据
         if (currentUser != null && !"1".equals(currentUser.getId()))
         {
@@ -86,7 +85,7 @@ public class DataScopeAspect
      * @param deptAlias 部门别名
      * @param userAlias 用户别名
      */
-    public static void dataScopeFilter(JoinPoint joinPoint, SysUser user, String deptAlias, String userAlias)
+    protected void dataScopeFilter(JoinPoint joinPoint, SysUser user, String deptAlias, String userAlias)
     {
         StringBuilder sqlString = new StringBuilder();
         for (SysRole role : user.getRoleList())

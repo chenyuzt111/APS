@@ -3,6 +3,7 @@ package com.benewake.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.benewake.system.annotation.ColScope;
 import com.benewake.system.annotation.DataScope;
 import com.benewake.system.entity.system.SysRole;
 import com.benewake.system.entity.system.SysUser;
@@ -41,7 +42,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     @DataScope(deptAlias = "d", userAlias = "u")
-    public List<SysUser> selectUser(SysUser sysUser) {
+    @ColScope(menuAlias = "3")
+    public List<Map<String, Object>> selectUser(SysUser sysUser) {
         return baseMapper.selectUser(sysUser);
     }
 
@@ -153,7 +155,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public SysUser getUserInfoByUsername(String username) {
         LambdaQueryWrapper<SysUser> lqw = new LambdaQueryWrapper<>();
         lqw.eq(SysUser::getUsername,username).eq(SysUser::getIsDeleted,0);
-        return baseMapper.selectOne(lqw);
+        SysUser user = baseMapper.selectOne(lqw);
+        return user;
     }
 
     @Override
@@ -174,7 +177,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     @DataScope(deptAlias = "d",userAlias = "u")
-    public List<SysUser> getUsersByRoleId(SysRole sysRole) {
+    @ColScope(menuAlias = "3")
+    public List<Map<String,Object>> getUsersByRoleId(SysRole sysRole) {
         return baseMapper.getUsersByRoleId(sysRole);
     }
 }

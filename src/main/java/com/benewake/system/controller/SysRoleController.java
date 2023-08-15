@@ -5,7 +5,7 @@ import com.benewake.system.entity.Result;
 import com.benewake.system.entity.system.SysRole;
 import com.benewake.system.entity.vo.AssginRoleVo;
 import com.benewake.system.entity.vo.SysRoleQueryVo;
-import com.benewake.system.enums.BusinessType;
+import com.benewake.system.entity.enums.BusinessType;
 import com.benewake.system.service.SysRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

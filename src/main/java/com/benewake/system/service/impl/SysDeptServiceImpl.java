@@ -3,6 +3,7 @@ package com.benewake.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.benewake.system.annotation.ColScope;
 import com.benewake.system.annotation.DataScope;
 import com.benewake.system.entity.system.SysDept;
 import com.benewake.system.mapper.SysDeptMapper;
@@ -71,6 +72,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
 
     @Override
     @DataScope(deptAlias = "d")
+    @ColScope(menuAlias = "20")
     public List<SysDept> selectDeptList(SysDept sysDept) {
         return baseMapper.selectDeptList(sysDept);
     }

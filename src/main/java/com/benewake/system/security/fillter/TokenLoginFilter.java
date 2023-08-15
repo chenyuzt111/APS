@@ -1,10 +1,10 @@
-package com.benewake.system.fillter;
+package com.benewake.system.security.fillter;
 
 import com.alibaba.fastjson2.JSON;
-import com.benewake.system.custom.CustomUser;
+import com.benewake.system.security.custom.CustomUser;
 import com.benewake.system.entity.Result;
 import com.benewake.system.entity.vo.LoginVo;
-import com.benewake.system.enums.ResultCodeEnum;
+import com.benewake.system.entity.enums.ResultCodeEnum;
 import com.benewake.system.service.LoginLogService;
 import com.benewake.system.utils.IpUtil;
 import com.benewake.system.utils.JwtHelper;
