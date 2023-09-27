@@ -2,6 +2,7 @@ package com.benewake.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.benewake.system.entity.system.SysMenu;
+import com.benewake.system.entity.system.SysRole;
 import com.benewake.system.entity.vo.AssginMenuVo;
 
 import java.util.List;
@@ -33,10 +34,11 @@ public interface SysMenuService extends IService<SysMenu> {
 
     /**
      * 根据角色id获取菜单信息
-     * @param roleId
+     *
+     * @param sysRole
      * @return
      */
-    List<SysMenu> findMenuByRoleId(String roleId);
+    List<SysMenu> findMenuByRoleId(SysRole sysRole);
 
     /**
      * 给角色分配菜单权限

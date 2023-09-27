@@ -5,6 +5,7 @@ import com.benewake.system.entity.system.SysRole;
 import com.benewake.system.entity.system.SysUser;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,26 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
             "</script>")
     List<Map<String,Object>> selectUser(@Param("vo") SysUser sysUser);
 
+
+    @Select("<script>" +
+            "SELECT " +
+            /*  数据列权限范围  */
+            "${vo.param.colScope}, " +
+            "u.password, " +
+            "u.status, " +
+            "u.create_time, " +
+            "u.update_time, " +
+            "u.is_deleted " +
+            "FROM sys_user u " +
+            "LEFT JOIN sys_dept d ON u.dept_id = d.id " +
+            "WHERE u.is_deleted = 0 AND d.is_deleted = 0 " +
+            /*  数据行权限范围  */
+            "${vo.param.dataScope} " +
+            "ORDER BY u.id DESC " +
+            "</script>")
+    List<Map<String, Object>> selectAllUsersWithScope(@Param("vo") SysUser sysUser);
+
+
     @Select("<script>" +
             "select " +
             /*  数据列权限范围  */
@@ -50,4 +71,16 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
             "order by u.id " +
             "</script>")
     List<Map<String,Object>> getUsersByRoleId(@Param("sysRole") SysRole sysRole);
+    @Select("<script>" +
+            "select " +
+            /*  数据列权限范围  */
+            "${sysUser.param.colScope} " +
+            "from sys_user u " +
+            "left join sys_dept d on u.dept_id = d.id " +
+            "where u.is_deleted = 0 and d.is_deleted = 0 and u.id = #{sysUser.id} " +
+            /*  数据权限范围  */
+            "${sysUser.param.dataScope} " +
+            "</script>")
+    Map<String, Object> getUserById(@Param("sysUser") SysUser sysUser);
+
 }

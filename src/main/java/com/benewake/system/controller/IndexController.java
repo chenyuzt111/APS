@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.access.prepost.PreFilter;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,10 +37,13 @@ public class IndexController {
     public Result tIndex(){
         return Result.ok().message("index！！");
     }
+
+
+
     @ApiOperation("用户登录接口")
     @PostMapping("login")
     public Result login(@RequestBody LoginVo loginVo) {
-
+        // 此登录部分代码可以无视，已使用springsecurity进行认证操作
         Map<String,Object> map =sysUserService.login(loginVo);
         if(map.containsKey("error")){
             return Result.fail().message((String) map.get("error"));
@@ -48,6 +52,8 @@ public class IndexController {
             return Result.ok(map);
         }
     }
+
+
 
     @ApiOperation("获取登录用户的用户信息接口")
     @GetMapping("info")

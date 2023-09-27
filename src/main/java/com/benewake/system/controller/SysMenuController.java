@@ -3,6 +3,7 @@ package com.benewake.system.controller;
 import com.benewake.system.annotation.Log;
 import com.benewake.system.entity.Result;
 import com.benewake.system.entity.system.SysMenu;
+import com.benewake.system.entity.system.SysRole;
 import com.benewake.system.entity.vo.AssginMenuVo;
 import com.benewake.system.entity.enums.BusinessType;
 import com.benewake.system.service.SysMenuService;
@@ -46,9 +47,9 @@ public class SysMenuController {
 
     @PreAuthorize("hasAnyAuthority('bnt.sysMenu.list')")
     @ApiOperation("根据角色获取菜单")
-    @GetMapping("toAssign/{roleId}")
-    public Result toAssign(@PathVariable String roleId){
-        List<SysMenu> list = sysMenuService.findMenuByRoleId(roleId);
+    @PostMapping("toAssign")
+    public Result toAssign(@RequestBody SysRole sysRole){
+        List<SysMenu> list = sysMenuService.findMenuByRoleId(sysRole);
         return Result.ok(list);
     }
     @Log(title = "菜单管理",businessType = BusinessType.INSERT)
@@ -99,9 +100,9 @@ public class SysMenuController {
 
     @PreAuthorize("hasAnyAuthority('bnt.sysMenu.list')")
     @ApiOperation("根据id查询")
-    @GetMapping("findNode/{id}")
-    public Result findNode(@PathVariable String id){
-        SysMenu sysMenu = sysMenuService.getById(id);
+    @PostMapping("findNode")
+    public Result findNode(@RequestBody SysMenu sysMenu){
+        sysMenu = sysMenuService.getById(sysMenu.getId());
         return Result.ok(sysMenu);
     }
     @Log(title = "菜单管理",businessType = BusinessType.DELETE)

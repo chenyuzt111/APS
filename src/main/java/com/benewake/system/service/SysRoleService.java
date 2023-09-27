@@ -3,6 +3,7 @@ package com.benewake.system.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.benewake.system.entity.system.ApsCol;
 import com.benewake.system.entity.system.SysRole;
+import com.benewake.system.entity.system.SysUser;
 import com.benewake.system.entity.vo.AssginRoleVo;
 import com.benewake.system.entity.vo.SysRoleQueryVo;
 
@@ -34,10 +35,10 @@ public interface SysRoleService extends IService<SysRole> {
      * 根据用户id获取对应的角色列表
      * 包括全部角色和当前用户拥有角色
      *
-     * @param userId
+     * @param sysUser
      * @return
      */
-    Map<String,Object> getRolesByUserId(String userId);
+    Map<String,Object> getRolesByUserId(SysUser sysUser);
 
     /**
      * 给用户分配角色

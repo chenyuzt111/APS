@@ -80,16 +80,16 @@ public class SysDeptController {
 
     @PreAuthorize("hasAnyAuthority('bnt.sysDept.list')")
     @ApiOperation("根据id查询")
-    @GetMapping("findDept/{id}")
-    public Result findDept(@PathVariable String id){
-        return Result.ok(sysDeptService.getById(id));
+    @PostMapping("findDept")
+    public Result findDept(@RequestBody SysDept sysDept){
+        return Result.ok(sysDeptService.getById(sysDept.getId()));
     }
     @Log(title = "部门管理",businessType = BusinessType.DELETE)
     @PreAuthorize("hasAnyAuthority('bnt.sysDept.remove')")
     @ApiOperation("删除部门")
-    @DeleteMapping("delete/{id}")
-    public Result removeDept(@PathVariable String id){
-        return sysDeptService.removeDeptById(id)?Result.ok() : Result.fail();
+    @PostMapping("delete")
+    public Result removeDept(@RequestBody SysDept sysDept){
+        return sysDeptService.removeDeptById(sysDept.getId())?Result.ok() : Result.fail().message("存在子部门，无法删除");
     }
 
 }

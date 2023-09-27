@@ -3,10 +3,12 @@ package com.benewake.system.controller;
 import com.benewake.system.annotation.Log;
 import com.benewake.system.entity.Result;
 import com.benewake.system.entity.system.SysRole;
+import com.benewake.system.entity.system.SysUser;
 import com.benewake.system.entity.vo.AssginRoleVo;
 import com.benewake.system.entity.vo.SysRoleQueryVo;
 import com.benewake.system.entity.enums.BusinessType;
 import com.benewake.system.service.SysRoleService;
+import com.benewake.system.service.SysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.val;
@@ -30,6 +32,8 @@ import java.util.Map;
 public class SysRoleController {
     @Autowired
     private SysRoleService sysRoleService;
+    @Autowired
+    private SysUserService sysUserService;
 
     @Log(title = "角色管理",businessType = BusinessType.ASSGIN)
     @PreAuthorize("hasAuthority('bnt.sysUser.assignRole')")
@@ -37,22 +41,28 @@ public class SysRoleController {
     @PostMapping("doAssign")
     @Transactional(rollbackFor = Exception.class)
     public Result doAssign(@RequestBody AssginRoleVo assginRoleVo){
+        if(StringUtils.isEmpty(assginRoleVo.getUserId()) || sysUserService.getById(assginRoleVo.getUserId())==null){
+            return Result.fail().message("用户不存在！");
+        }
         sysRoleService.doAssign(assginRoleVo);
         return Result.ok();
     }
 
     @PreAuthorize("hasAnyAuthority('bnt.sysRole.list')")
     @ApiOperation("获取用户角色数据")
-    @GetMapping("toAssign/{userId}")
-    public Result  toAssign(@PathVariable String userId){
-        Map<String,Object> lists = sysRoleService.getRolesByUserId(userId);
+    @PostMapping("toAssign")
+    public Result  toAssign(@RequestBody SysUser sysUser){
+        if(sysUser.getId()==null || sysUserService.getById(sysUser.getId())==null){
+            return Result.fail().message("用户不存在！！");
+        }
+        Map<String,Object> lists = sysRoleService.getRolesByUserId(sysUser);
         return Result.ok(lists);
     }
 
     @Log(title = "角色管理",businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('bnt.sysRole.remove')")
     @ApiOperation("批量删除")
-    @DeleteMapping("batchRemove")
+    @PostMapping("batchRemove")
     public Result batchRemove(@RequestBody List<Long> ids){
         sysRoleService.removeBatchByIds(ids);
         return Result.ok();
@@ -65,6 +75,9 @@ public class SysRoleController {
     public Result updateRole(@RequestBody SysRole sysRole){
         if(sysRole.getId() == null){
             return Result.fail().message("修改的角色id不能为空！");
+        }
+        if("1".equals(sysRole.getId())){
+            return Result.fail().message("不允许修改超级管理员");
         }
         if(StringUtils.isEmpty(sysRole.getRoleName())){
             return Result.fail().message("角色名不能为空！");
@@ -111,9 +124,9 @@ public class SysRoleController {
     @Log(title = "角色管理",businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('bnt.sysRole.remove')")
     @ApiOperation("逻辑删除接口")
-    @DeleteMapping("remove/{id}")
-    public Result removeRole(@PathVariable("id")String id){
-        val isSuccess = sysRoleService.removeById(id);
+    @PostMapping("remove")
+    public Result removeRole(@RequestBody SysRole sysRole){
+        val isSuccess = sysRoleService.removeById(sysRole.getId());
         if(isSuccess){
             return Result.ok();
         }

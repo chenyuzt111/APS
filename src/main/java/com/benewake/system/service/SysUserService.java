@@ -27,6 +27,9 @@ public interface SysUserService extends IService<SysUser> {
      */
     List<Map<String,Object>> selectUser(SysUser sysUser);
 
+
+    List<Map<String, Object>> selectAllUsersWithScope(SysUser sysUser);
+
     /**
      * 修改用户状态
      * @param id
@@ -77,4 +80,26 @@ public interface SysUserService extends IService<SysUser> {
      * @return
      */
     List<Map<String,Object>> getUsersByRoleId(SysRole sysRole);
+
+    /**
+     * 根据id获取用户信息
+     * @param id
+     * @return
+     */
+    Map<String,Object> getUserById(SysUser sysUser);
+
+    /**
+     * 修改用户信息
+     *
+     * @param sysUser
+     * @return
+     */
+    Map<String,Object> updateUserById(SysUser sysUser);
+
+    /**
+     * 判断用户名是否存在
+     * @param username
+     * @return
+     */
+    boolean isExistUsername(String username);
 }

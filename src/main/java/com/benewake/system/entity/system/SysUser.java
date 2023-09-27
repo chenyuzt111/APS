@@ -29,7 +29,7 @@ public class SysUser extends BaseEntity {
 
 	@ApiModelProperty(value = "部门id")
 	@TableField("dept_id")
-	private Long deptId;
+	private String deptId;
 
 	@ApiModelProperty(value = "状态（1：正常 0：停用）")
 	@TableField("status")

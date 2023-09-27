@@ -32,8 +32,11 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             dept.setParentId(0L);
         }
         SysDept info = baseMapper.selectById(dept.getParentId());
-
-        dept.setAncestors(info.getAncestors());
+        if(info==null){
+            dept.setAncestors("");
+        }else {
+            dept.setAncestors(info.getAncestors());
+        }
         baseMapper.insert(dept);
         // 更新祖级列表
         dept.setAncestors(dept.getAncestors()+","+dept.getId());
@@ -50,7 +53,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         Long count = baseMapper.selectCount(queryWrapper);
         if(count == 0){
             // 不存在子部门 逻辑删除
-            baseMapper.deleteById(queryWrapper);
+            baseMapper.deleteById(id);
             return true;
         }else{
             // 存在子部门 无法删除
@@ -75,5 +78,12 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     @ColScope(menuAlias = "20")
     public List<SysDept> selectDeptList(SysDept sysDept) {
         return baseMapper.selectDeptList(sysDept);
+    }
+
+    @Override
+    public boolean isExistDeptId(String deptId) {
+        LambdaQueryWrapper<SysDept> lqw = new LambdaQueryWrapper<>();
+        lqw.select(SysDept::getId).eq(SysDept::getId,deptId);
+        return baseMapper.selectOne(lqw) != null;
     }
 }

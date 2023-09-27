@@ -41,4 +41,11 @@ public interface SysDeptService extends IService<SysDept> {
      * @return
      */
     List<SysDept> selectDeptList(SysDept sysDept);
+
+    /**
+     * 判断部门id是否存在
+     * @param deptId
+     * @return
+     */
+    boolean isExistDeptId(String deptId);
 }

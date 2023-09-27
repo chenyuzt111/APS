@@ -3,6 +3,7 @@ package com.benewake.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.system.SysMenu;
+import com.benewake.system.entity.system.SysRole;
 import com.benewake.system.entity.system.SysRoleMenu;
 import com.benewake.system.entity.vo.AssginMenuVo;
 import com.benewake.system.entity.vo.RouterVo;
@@ -34,7 +35,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     public List<SysMenu> findNodes(SysMenu sysMenu) {
         List<SysMenu> list = new ArrayList<>();
         LambdaQueryWrapper<SysMenu> lqw = new LambdaQueryWrapper<>();
-        lqw.like(StringUtils.isNotBlank(sysMenu.getName()),SysMenu::getName,sysMenu.getName());
+        // lqw.like(StringUtils.isNotBlank(sysMenu.getName()),SysMenu::getName,sysMenu.getName());
         list = baseMapper.selectList(lqw);
         // 格式转换
         return TreeHelper.bulidMenuTree(list);
@@ -55,12 +56,12 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public List<SysMenu> findMenuByRoleId(String roleId) {
+    public List<SysMenu> findMenuByRoleId(SysRole sysRole) {
         // 获取所有菜单 state = 1
         val menuList = baseMapper.selectList(null);
         // 根据角色id查询角色分配过的菜单信息
         LambdaQueryWrapper<SysRoleMenu> lqwSRM = new LambdaQueryWrapper<>();
-        lqwSRM.eq(SysRoleMenu::getRoleId,roleId);
+        lqwSRM.eq(SysRoleMenu::getRoleId, sysRole.getId());
         val sysRoleMenus = sysRoleMenuMapper.selectList(lqwSRM);
         // 设置isSelect
         Set<String> set = new HashSet<>();
@@ -90,6 +91,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             sysRoleMenu.setRoleId(assginMenuVo.getRoleId());
             sysRoleMenus.add(sysRoleMenu);
         });
+        if(sysRoleMenus.size()==0){
+            return;
+        }
         sysRoleMenuMapper.insertRoleMenus(sysRoleMenus);
 
     }

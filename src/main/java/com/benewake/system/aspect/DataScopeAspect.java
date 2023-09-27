@@ -85,15 +85,19 @@ public class DataScopeAspect
      * @param deptAlias 部门别名
      * @param userAlias 用户别名
      */
+    //joinPoint切点对象包含方法和方法参数，user当前用户对象，deptAlias部门别名，userAlias用户别名
     protected void dataScopeFilter(JoinPoint joinPoint, SysUser user, String deptAlias, String userAlias)
     {
+        //StringBuilder对象用于存储生成的sql片段
         StringBuilder sqlString = new StringBuilder();
+        //遍历当前用户拥有的角色列表
         for (SysRole role : user.getRoleList())
         {
+            //dataScope表示数据权限的类型
             String dataScope = role.getDataScope();
             if (DATA_SCOPE_ALL.equals(dataScope))
             {
-                // 全部权限
+                // 如果获取到dataScope是1，说明可以获得全部权限，清除sqlString
                 sqlString = new StringBuilder();
                 break;
             }
@@ -131,12 +135,16 @@ public class DataScopeAspect
             }
         }
 
+        //如果sqlString不为空的话说明有数据权限需要配置添加到sql查询中
         if (StringUtils.isNotBlank(sqlString.toString()))
         {
+
             Object params = joinPoint.getArgs()[0];
             if (StringUtils.isNotNull(params) && params instanceof BaseEntity)
             {
+                //切点对象转化为baseEntity对象
                 BaseEntity baseEntity = (BaseEntity) params;
+                //将这些sql片段加入到DATA_SCOPE对象的参数中键名为DATA_SCOPE
                 baseEntity.getParam().put(DATA_SCOPE, " AND (" + sqlString.substring(4) + ")");
             }
         }

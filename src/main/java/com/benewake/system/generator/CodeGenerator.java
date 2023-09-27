@@ -25,9 +25,9 @@ public class CodeGenerator {
                         "root", "123456")
                 // 全局配置
                 .globalConfig(builder -> {
-                    builder.author("lcs") // 设置作者
+                    builder.author("zt") // 设置作者
                             .commentDate("yyyy-MM-dd hh:mm:ss")   //注释日期
-                            .outputDir(System.getProperty("user.dir") + "/service-system/src/main/java/") // 指定输出目录
+                            .outputDir(System.getProperty("user.dir") + "/src/main/java/") // 指定输出目录
                             .disableOpenDir() //禁止打开输出目录，默认打开
                     ;
                 })
@@ -38,11 +38,11 @@ public class CodeGenerator {
                             .controller("controller")
                             .service("service")
                             .mapper("mapper")
-                            .pathInfo(Collections.singletonMap(OutputFile.xml, System.getProperty("user.dir") + "/service-system/src/main/resources/mapper")); // 设置mapperXml生成路径
+                            .pathInfo(Collections.singletonMap(OutputFile.xml, System.getProperty("user.dir") + "/src/main/resources/mapper")); // 设置mapperXml生成路径
                 })
                 // 策略配置
                 .strategyConfig(builder -> {
-                    builder.addInclude("sys_dept") // 设置需要生成的表名
+                    builder.addInclude("sys_zt") // 设置需要生成的表名
                             //.addTablePrefix("sys_") // 设置过滤表前缀
                             // Entity 策略配置
                             .entityBuilder()

@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.annotation.ColScope;
 import com.benewake.system.annotation.DataScope;
+import com.benewake.system.entity.Result;
 import com.benewake.system.entity.system.SysRole;
 import com.benewake.system.entity.system.SysUser;
 import com.benewake.system.entity.vo.LoginVo;
 import com.benewake.system.entity.vo.UpdatePwdVo;
 import com.benewake.system.mapper.SysUserMapper;
+import com.benewake.system.service.SysDeptService;
 import com.benewake.system.service.SysMenuService;
 import com.benewake.system.service.SysRoleService;
 import com.benewake.system.service.SysUserService;
@@ -39,6 +41,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private SysMenuService sysMenuService;
     @Autowired
     private SysRoleService sysRoleService;
+    @Autowired
+    private SysDeptService sysDeptService;
 
     @Override
     @DataScope(deptAlias = "d", userAlias = "u")
@@ -46,6 +50,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public List<Map<String, Object>> selectUser(SysUser sysUser) {
         return baseMapper.selectUser(sysUser);
     }
+
+    @Override
+    @DataScope(deptAlias = "d", userAlias = "u")
+    @ColScope(menuAlias = "3")
+    public List<Map<String, Object>> selectAllUsersWithScope(SysUser sysUser) {
+        return baseMapper.selectAllUsersWithScope(sysUser);
+    }
+
+
 
     @Override
     public boolean updateStatus(String id, Integer status) {
@@ -93,6 +106,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             map.put("error","请选择用户！");
             return map;
         }
+        if(getById(id)==null){
+            map.put("error","用户id不存在");
+            return map;
+        }
         if("1".equals(id)){
             map.put("error","不允许修改超级管理员！！");
             return map;
@@ -113,7 +130,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         user.setPassword(CommonUtils.md5(updatePwdVo.getNewPassword()));
         baseMapper.updateById(user);
-        return null;
+        return map;
     }
 
     @Override
@@ -180,5 +197,46 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @ColScope(menuAlias = "3")
     public List<Map<String,Object>> getUsersByRoleId(SysRole sysRole) {
         return baseMapper.getUsersByRoleId(sysRole);
+    }
+
+    @Override
+    @DataScope(deptAlias = "d",userAlias = "u")
+    @ColScope(menuAlias = "3")
+    public Map<String, Object> getUserById(SysUser sysUser) {
+        return baseMapper.getUserById(sysUser);
+    }
+
+    @Override
+    public Map<String, Object> updateUserById(SysUser sysUser) {
+        Map<String,Object> map = new HashMap<>();
+        if(StringUtils.isEmpty(sysUser.getId())){
+            map.put("error","请选择用户！");
+            return map;
+        }
+        if("1".equals(sysUser.getId())){
+            map.put("error","不允许修改超级管理员！");
+            return map;
+        }
+        if((sysUser.getUsername()!=null && sysUser.getUsername().length() == 0) || isExistUsername(sysUser.getUsername())){
+            map.put("error","用户名为空或已存在！");
+            return map;
+        }
+        if(sysUser.getDeptId()!=null && !sysDeptService.isExistDeptId(sysUser.getDeptId())){
+            map.put("error", "部门不存在！");
+            return map;
+        }
+        LambdaUpdateWrapper<SysUser> luw = new LambdaUpdateWrapper<>();
+        luw.eq(SysUser::getId,sysUser.getId())
+                .set(StringUtils.isNotBlank(sysUser.getUsername()),SysUser::getUsername,sysUser.getUsername())
+                .set(StringUtils.isNotBlank(sysUser.getDeptId()),SysUser::getDeptId,sysUser.getDeptId());
+        baseMapper.update(null,luw);
+        return map;
+    }
+
+    @Override
+    public boolean isExistUsername(String username) {
+        LambdaQueryWrapper<SysUser> lqw = new LambdaQueryWrapper<>();
+        lqw.select(SysUser::getUsername).eq(SysUser::getUsername,username);
+        return baseMapper.selectOne(lqw) != null;
     }
 }

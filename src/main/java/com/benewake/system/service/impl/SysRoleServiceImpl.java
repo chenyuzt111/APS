@@ -2,8 +2,8 @@ package com.benewake.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.benewake.system.entity.system.ApsCol;
 import com.benewake.system.entity.system.SysRole;
+import com.benewake.system.entity.system.SysUser;
 import com.benewake.system.entity.system.SysUserRole;
 import com.benewake.system.entity.vo.AssginRoleVo;
 import com.benewake.system.entity.vo.SysRoleQueryVo;
@@ -50,7 +50,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     @Override
-    public Map<String, Object> getRolesByUserId(String userId) {
+    public Map<String, Object> getRolesByUserId(SysUser sysUser) {
         Map<String,Object> map = new HashMap<>();
         // 获取所有角色
         // 可以使用redis缓存所有角色（后期）
@@ -58,7 +58,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         // 获取用户已分配的角色
         LambdaQueryWrapper<SysUserRole> lqw = new LambdaQueryWrapper<>();
         lqw.select(SysUserRole::getRoleId)
-                .eq(SysUserRole::getUserId,userId);
+                .eq(SysUserRole::getUserId, sysUser.getId());
         List<SysUserRole> userRoleIds = sysUserRoleMapper.selectList(lqw);
         map.put("allRoles",roles);
         map.put("userRoleIds",userRoleIds);

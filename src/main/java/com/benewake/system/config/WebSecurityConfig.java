@@ -35,18 +35,22 @@ import java.util.Map;
 @EnableGlobalMethodSecurity(prePostEnabled = true)//开启注解功能，默认禁用注解
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    //获取用户得详细信息的服务
     @Autowired
     private UserDetailsService userDetailsService;
 
+    //自定义的密码加速器
     @Autowired
     private CustomMd5Password customMd5PasswordEncoder;
 
+    //用于操作Redis缓存的模板
     @Autowired
     private RedisTemplate redisTemplate;
 
     @Autowired
     private LoginLogService loginLogService;
 
+    //配置认证管理器定义为Bean
     @Bean
     @Override
     protected AuthenticationManager authenticationManager() throws Exception {
@@ -61,10 +65,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 // 开启跨域以便前端调用接口
                 .cors().and()
+
                 .authorizeRequests()
                 // 指定某些接口不需要通过验证即可访问。登陆接口肯定是不需要认证的
-                //.antMatchers("/admin/system/index/login").permitAll()
-                // 这里意思是其它所有接口需要认证才能访问
+                .antMatchers("/admin/system/index/login").permitAll()
+                // 任何的接口都需要认证，也就是需要登陆才能访问
                 .anyRequest().authenticated()
                 .and()
                 //TokenAuthenticationFilter放到UsernamePasswordAuthenticationFilter的前面，
