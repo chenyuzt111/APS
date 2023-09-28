@@ -2,6 +2,7 @@ package com.benewake.system.controller.advice;
 
 import com.benewake.system.entity.Result;
 import com.benewake.system.entity.enums.ResultCodeEnum;
+import com.benewake.system.exception.BeneWakeException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -44,5 +45,11 @@ public class GlobalExceptionAdvice {
     @ResponseBody
     public Result error(AccessDeniedException e) throws AccessDeniedException{
         return Result.fail().code(ResultCodeEnum.PERMISSION.getCode()).message("没有当前功能权限");
+    }
+
+    @ExceptionHandler(BeneWakeException.class)
+    @ResponseBody
+    public Result error(BeneWakeException e) throws AccessDeniedException{
+        return Result.fail().code(ResultCodeEnum.FAIL.getCode()).message(e.getMessage());
     }
 }

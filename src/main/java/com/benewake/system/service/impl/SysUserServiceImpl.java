@@ -16,10 +16,12 @@ import com.benewake.system.service.SysMenuService;
 import com.benewake.system.service.SysRoleService;
 import com.benewake.system.service.SysUserService;
 import com.benewake.system.utils.CommonUtils;
+import com.benewake.system.utils.JWTBlacklistManager;
 import com.benewake.system.utils.JwtHelper;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -39,10 +41,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Autowired
     private SysMenuService sysMenuService;
+
     @Autowired
     private SysRoleService sysRoleService;
+
     @Autowired
     private SysDeptService sysDeptService;
+
+    @Autowired
+    private JWTBlacklistManager jwtBlacklistManager;
 
     @Override
     @DataScope(deptAlias = "d", userAlias = "u")
@@ -238,5 +245,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         LambdaQueryWrapper<SysUser> lqw = new LambdaQueryWrapper<>();
         lqw.select(SysUser::getUsername).eq(SysUser::getUsername,username);
         return baseMapper.selectOne(lqw) != null;
+    }
+
+    @Override
+    public boolean loglogoutin(String token) {
+        jwtBlacklistManager.addToBlacklist(token);
+        return true;
     }
 }

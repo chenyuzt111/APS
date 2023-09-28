@@ -3,8 +3,12 @@ package com.benewake.system.security.fillter;
 import com.alibaba.fastjson.JSON;
 import com.benewake.system.entity.Result;
 import com.benewake.system.entity.enums.ResultCodeEnum;
+import com.benewake.system.exception.BeneWakeException;
+import com.benewake.system.utils.HostHolder;
+import com.benewake.system.utils.JWTBlacklistManager;
 import com.benewake.system.utils.JwtHelper;
 import com.benewake.system.utils.ResponseUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,31 +35,40 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     //定义了一个名为RedisTemplate的成员变量，用于和redis进行交互
     private RedisTemplate redisTemplate;
 
+
+    private JWTBlacklistManager jwtBlacklistManager;
+
     //构造函数接收一个redisTemplate作为参数分配给成员变量
-    public TokenAuthenticationFilter(RedisTemplate redisTemplate) {
+    public TokenAuthenticationFilter(RedisTemplate redisTemplate, JWTBlacklistManager jwtBlacklistManager) {
         this.redisTemplate = redisTemplate;
+        this.jwtBlacklistManager = jwtBlacklistManager;
     }
 
     //对doFilterInternal方法的覆盖
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        logger.info("uri:"+request.getRequestURI());
+        logger.info("uri:" + request.getRequestURI());
         //这里检查请求的URI是否与"/system/index/login"相匹配，如果匹配，就直接放行请求，不进行后续的身份验证处理。
-        if("/system/index/login".equals(request.getRequestURI())) {
+        if ("/system/index/login".equals(request.getRequestURI())) {
             chain.doFilter(request, response);
             return;
         }
+//        //如果是退出应该不验证直接放行
+//        if("/system/index/exit".equals(request.getRequestURI())) {
+//            chain.doFilter(request, response);
+//            return;
+//        }
 
         //这里检查请求的URI是否与"/prod-api/admin/system/index/login"相匹配，如果匹配，也直接放行请求，不进行后续的身份验证处理。
-        if("/prod-api/admin/system/index/login".equals(request.getRequestURI())) {
+        if ("/prod-api/admin/system/index/login".equals(request.getRequestURI())) {
             chain.doFilter(request, response);
             return;
         }
 
         //调用getAuthentication方法来获取身份验证令牌
         UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
-        if(null != authentication) {
+        if (null != authentication) {
             //不为空的时候说明成功获取到了身份验证令牌
             //将令牌设置到安全上下文中
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -70,23 +83,28 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         // token置于header里
         String token = request.getHeader("token");
-        logger.info("token:"+token);
-
+        logger.info("token:" + token);
+        if (jwtBlacklistManager.isBlacklisted(token)) {
+            throw new BeneWakeException(ResultCodeEnum.LOGIN_EXPIRATION.getMessage());
+        }
         //如果获取到的token存在的话，从令牌中解析出用户名
         if (!StringUtils.isEmpty(token)) {
             String useruame = JwtHelper.getUsername(token);
-            logger.info("useruame:"+useruame);
+            logger.info("useruame:" + useruame);
             if (!StringUtils.isEmpty(useruame)) {
                 //如果存在用户名的话，使用redisTemplate从redis中获取存储到redis中的用户权限信息，这些权限通常以字符串的形式存储在redis中，在这里获取
                 String authoritiesString =
                         (String) redisTemplate.opsForValue().get(useruame);
+                if (StringUtils.isEmpty(authoritiesString)) {
+                    throw new BeneWakeException(ResultCodeEnum.LOGIN_EXPIRATION.getMessage());
+                }
                 //使用json工具将从redis取出的权限信息，将其转换为List<Map>对象
                 List<Map> mapList = JSON.parseArray(authoritiesString, Map.class);
                 //遍历取出的权限信息将其转化为SimpleGrantedAuthority类型的对象，并添加到authorities列表中
                 //SimpleGrantedAuthority类通常用于表示用户的角色或权限
                 List<SimpleGrantedAuthority> authorities = new ArrayList<>();
                 for (Map map : mapList) {
-                    authorities.add(new SimpleGrantedAuthority((String)map.get("authority")));
+                    authorities.add(new SimpleGrantedAuthority((String) map.get("authority")));
                 }
                 //最后将解析出的用户名和权限列表创建一个UsernamePasswordAuthenticationToken对象表示身份验证成功，并将其返回
                 return new UsernamePasswordAuthenticationToken(useruame, null, authorities);

@@ -102,4 +102,11 @@ public interface SysUserService extends IService<SysUser> {
      * @return
      */
     boolean isExistUsername(String username);
+
+    /**
+     * 将退出的token加入黑名单
+     * @param token
+     * @return
+     */
+    boolean loglogoutin(String token);
 }

@@ -5,6 +5,7 @@ import com.benewake.system.security.custom.CustomMd5Password;
 import com.benewake.system.security.fillter.TokenAuthenticationFilter;
 import com.benewake.system.security.fillter.TokenLoginFilter;
 import com.benewake.system.service.LoginLogService;
+import com.benewake.system.utils.JWTBlacklistManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -50,6 +51,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private LoginLogService loginLogService;
 
+    @Autowired
+    private JWTBlacklistManager jwtBlacklistManager;
+
     //配置认证管理器定义为Bean
     @Bean
     @Override
@@ -74,7 +78,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 //TokenAuthenticationFilter放到UsernamePasswordAuthenticationFilter的前面，
                 //这样做就是为了除了登录的时候去查询数据库外，其他时候都用token进行认证。
-                .addFilterBefore(new TokenAuthenticationFilter(redisTemplate), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new TokenAuthenticationFilter(redisTemplate ,jwtBlacklistManager), UsernamePasswordAuthenticationFilter.class)
                 .addFilter(new TokenLoginFilter(authenticationManager(), redisTemplate,loginLogService));
                 /**
                  * lcs:
