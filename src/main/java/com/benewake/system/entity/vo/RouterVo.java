@@ -49,7 +49,7 @@ public class RouterVo
     /**
      * 英文名称
      */
-    private String enName;
+    private String name;
 
 
 }
