@@ -8,11 +8,13 @@ import com.benewake.system.utils.HostHolder;
 import com.benewake.system.utils.JWTBlacklistManager;
 import com.benewake.system.utils.JwtHelper;
 import com.benewake.system.utils.ResponseUtil;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -30,6 +32,7 @@ import java.util.Map;
  * @since 2023年08月04 11:18
  * 描 述： TODO
  */
+@Component
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     //定义了一个名为RedisTemplate的成员变量，用于和redis进行交互
@@ -39,15 +42,14 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     private JWTBlacklistManager jwtBlacklistManager;
 
     //构造函数接收一个redisTemplate作为参数分配给成员变量
-    public TokenAuthenticationFilter(RedisTemplate redisTemplate, JWTBlacklistManager jwtBlacklistManager) {
+    public TokenAuthenticationFilter(RedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
-        this.jwtBlacklistManager = jwtBlacklistManager;
     }
 
     //对doFilterInternal方法的覆盖
+    @SneakyThrows
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         logger.info("uri:" + request.getRequestURI());
         //这里检查请求的URI是否与"/system/index/login"相匹配，如果匹配，就直接放行请求，不进行后续的身份验证处理。
         if ("/system/index/login".equals(request.getRequestURI())) {
@@ -80,13 +82,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     }
 
     //定义的私有方法主要作用是获取身份验证令牌
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
+    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) throws Exception {
         // token置于header里
         String token = request.getHeader("token");
         logger.info("token:" + token);
-        if (jwtBlacklistManager.isBlacklisted(token)) {
-            throw new BeneWakeException(ResultCodeEnum.LOGIN_EXPIRATION.getMessage());
-        }
         //如果获取到的token存在的话，从令牌中解析出用户名
         if (!StringUtils.isEmpty(token)) {
             String useruame = JwtHelper.getUsername(token);
@@ -95,9 +94,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 //如果存在用户名的话，使用redisTemplate从redis中获取存储到redis中的用户权限信息，这些权限通常以字符串的形式存储在redis中，在这里获取
                 String authoritiesString =
                         (String) redisTemplate.opsForValue().get(useruame);
-                if (StringUtils.isEmpty(authoritiesString)) {
-                    throw new BeneWakeException(ResultCodeEnum.LOGIN_EXPIRATION.getMessage());
-                }
                 //使用json工具将从redis取出的权限信息，将其转换为List<Map>对象
                 List<Map> mapList = JSON.parseArray(authoritiesString, Map.class);
                 //遍历取出的权限信息将其转化为SimpleGrantedAuthority类型的对象，并添加到authorities列表中

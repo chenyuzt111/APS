@@ -3,6 +3,7 @@ package com.benewake.system.controller.advice;
 import com.benewake.system.entity.Result;
 import com.benewake.system.entity.enums.ResultCodeEnum;
 import com.benewake.system.exception.BeneWakeException;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,18 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @ControllerAdvice
 public class GlobalExceptionAdvice {
-
-    /**
-     * 全局异常处理
-     * @param e
-     * @return
-     */
-    @ExceptionHandler(Exception.class)
-    @ResponseBody
-    public Result error(Exception e){
-        e.printStackTrace();
-        return Result.fail().message(e.getMessage());
-    }
 
     /**
      * 特点异常
@@ -49,7 +38,22 @@ public class GlobalExceptionAdvice {
 
     @ExceptionHandler(BeneWakeException.class)
     @ResponseBody
-    public Result error(BeneWakeException e) throws AccessDeniedException{
+    @Order(1)
+    public Result error(BeneWakeException e){
         return Result.fail().code(ResultCodeEnum.FAIL.getCode()).message(e.getMessage());
     }
+
+    /**
+     * 全局异常处理
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(Exception.class)
+    @ResponseBody
+    public Result error(Exception e){
+        e.printStackTrace();
+        return Result.fail().message(e.getMessage());
+    }
+
+
 }

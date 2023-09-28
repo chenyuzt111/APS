@@ -33,11 +33,16 @@ public class LoginStatusInterceptor implements HandlerInterceptor {
     @Autowired
     private HostHolder hostHolder;
 
+    @Autowired
+    private JWTBlacklistManager jwtBlacklistManager;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //从cookie中获取凭证
         String token = request.getHeader("token");
+        if (jwtBlacklistManager.isBlacklisted(token)) {
+            throw  new BeneWakeException(ResultCodeEnum.LOGIN_EXPIRATION.getMessage());
+        }
         if(token != null){
             String username = JwtHelper.getUsername(token);
             // 检查凭证是否有效
