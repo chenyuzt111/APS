@@ -46,5 +46,10 @@ public class RouterVo
      */
     private List<RouterVo> children;
 
+    /**
+     * 英文名称
+     */
+    private String enName;
+
 
 }

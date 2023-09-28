@@ -31,6 +31,7 @@ public class RouterHelper {
             router.setPath(getRouterPath(menu));
             router.setComponent(menu.getComponent());
             router.setMeta(new MetaVo(menu.getName(), menu.getIcon()));
+            router.setEnName(menu.getEnName());
             List<SysMenu> children = menu.getChildren();
             //如果当前是菜单，需将按钮对应的路由加载出来，如：“角色授权”按钮对应的路由在“系统管理”下面
             if(menu.getType().intValue() == 1) {
@@ -64,7 +65,8 @@ public class RouterHelper {
      * @return 路由地址
      */
     public static String getRouterPath(SysMenu menu) {
-        String routerPath = "/" + menu.getPath();
+        String routerPath =  menu.getPath();
+        //TODO
         if(menu.getParentId().intValue() != 0) {
             routerPath = menu.getPath();
         }

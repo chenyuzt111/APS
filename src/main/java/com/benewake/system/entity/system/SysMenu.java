@@ -24,6 +24,10 @@ public class SysMenu extends BaseEntity {
 	@TableField("name")
 	private String name;
 
+	@ApiModelProperty(value = "英文名称")
+	@TableField("name")
+	private String enName;
+
 	@ApiModelProperty(value = "类型(1:菜单,2:按钮)")
 	@TableField("type")
 	private Integer type;

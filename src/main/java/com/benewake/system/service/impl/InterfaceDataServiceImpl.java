@@ -23,10 +23,10 @@ import java.util.stream.Collectors;
 public class InterfaceDataServiceImpl implements InterfaceDataService {
 
 
-    @Autowired
+//    @Autowired
     Map<String, KingdeeService> kingdeeService;
 
-    @Autowired
+//    @Autowired
     RedisTemplate<String, Object> redisTemplate;
 
     final String INTERFACEDATA_KEY = "interfaceData:";
