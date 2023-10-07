@@ -7,20 +7,16 @@ import lombok.Data;
 @AllArgsConstructor
 public enum InterfaceDataType {
 
-    IMMEDIATELY_INVENTORY(1, "即时库存" ,"apsImmediatelyInventoryServiceImpl" , "ImmediatelyInventoryMapper"),
-    OUTSOURCED_MATERIALS(2, "委外用料清单列表" , "OUTSOURCED_MATERIALSService" ,"OUTSOURCED_MATERIALSMapper");
+    IMMEDIATELY_INVENTORY(1, "即时库存" ,"apsImmediatelyInventoryServiceImpl"),
+    OUTSOURCED_MATERIALS(2, "委外用料清单列表" , "apsOutsourcedMaterialServiceImpl" );
     //TODO 多个表类型 这里就只先写俩个
     private int code;
     private String type;
     private String seviceName;
-    private String mapperName;
+
 
     public String getSeviceName() {
         return seviceName;
-    }
-
-    public String getMapperName() {
-        return mapperName;
     }
 
     public int getCode() {
@@ -53,20 +49,6 @@ public enum InterfaceDataType {
         for (InterfaceDataType interfaceDataType : InterfaceDataType.values()) {
             if (interfaceDataType.getCode() == code) {
                 return interfaceDataType.getSeviceName();
-            }
-        }
-
-        return null;
-    }
-
-    public static String mapperNameOfCode(Integer code) {
-        if (code == null) {
-            return null;
-        }
-
-        for (InterfaceDataType interfaceDataType : InterfaceDataType.values()) {
-            if (interfaceDataType.getCode() == code) {
-                return interfaceDataType.getMapperName();
             }
         }
 

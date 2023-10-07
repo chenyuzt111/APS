@@ -11,7 +11,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface ApsTableVersionMapper extends BaseMapper<ApsTableVersion> {
 
-    void incrVersions(Integer code);
+    void incrVersions();
 }
 
 

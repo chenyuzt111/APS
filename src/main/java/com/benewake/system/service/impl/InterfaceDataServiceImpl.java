@@ -26,6 +26,7 @@ public class InterfaceDataServiceImpl implements InterfaceDataService {
 
     @Override
     public Boolean updateData(List<Integer> ids) throws Exception {
+        apsTableVersionService.incrVersions();
         for (Integer code : ids) {
             String serviceName = InterfaceDataType.serviceNameOfCode(code);
             if (StringUtils.isBlank(serviceName)) {
@@ -36,7 +37,6 @@ public class InterfaceDataServiceImpl implements InterfaceDataService {
             if (service == null) {
                 throw new BeneWakeException(serviceName + "未找到");// 如果未找到对应的服务，跳过当前循环
             }
-            apsTableVersionService.incrVersions(code);
             Boolean res = service.updateDataVersions();
             if (!res) {
                 throw new BeneWakeException(serviceName + "数据库更新异常");

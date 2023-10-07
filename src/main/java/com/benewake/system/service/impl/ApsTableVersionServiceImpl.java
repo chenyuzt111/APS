@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsTableVersion;
 import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.mapper.ApsTableVersionMapper;
-import com.sun.jmx.snmp.Timestamp;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,8 +31,8 @@ public class ApsTableVersionServiceImpl extends ServiceImpl<ApsTableVersionMappe
     }
 
     @Override
-    public void incrVersions(Integer code) {
-        this.baseMapper.incrVersions(code);
+    public void incrVersions() {
+        this.baseMapper.incrVersions();
     }
 }
 

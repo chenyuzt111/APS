@@ -1,12 +1,10 @@
 package com.benewake.system.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.benewake.system.Transfer.KingdeeToApsImmediatelyInventory;
+import com.benewake.system.transfer.KingdeeToApsImmediatelyInventory;
 import com.benewake.system.entity.ApsImmediatelyInventory;
-import com.benewake.system.entity.ApsTableVersion;
-import com.benewake.system.entity.KingdeeImmediatelyInventory;
-import com.benewake.system.entity.MaterialIdToName;
+import com.benewake.system.entity.kingdee.KingdeeImmediatelyInventory;
+import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
 import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.service.ApsImmediatelyInventoryService;
 import com.benewake.system.mapper.ApsImmediatelyInventoryMapper;
@@ -64,7 +62,7 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
                 kingdeeImmediatelyInventory.setFMaterialId(materialNumber); // 更新物料ID为物料编号
             }
 
-            ApsImmediatelyInventory apsImmediatelyInventory = kingdeeToApsImmediatelyInventory.convert(kingdeeImmediatelyInventory, maxVersion + 1);
+            ApsImmediatelyInventory apsImmediatelyInventory = kingdeeToApsImmediatelyInventory.convert(kingdeeImmediatelyInventory, maxVersion);
             immediatelyInventories.add(apsImmediatelyInventory);
         }
     }

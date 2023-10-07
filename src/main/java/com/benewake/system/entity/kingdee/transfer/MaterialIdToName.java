@@ -1,4 +1,4 @@
-package com.benewake.system.entity;
+package com.benewake.system.entity.kingdee.transfer;
 
 import lombok.Data;
 

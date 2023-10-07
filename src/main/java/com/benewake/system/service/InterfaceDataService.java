@@ -1,7 +1,6 @@
 package com.benewake.system.service;
 
 
-import com.benewake.system.entity.vo.GetCacheByTypeVo;
 
 import java.util.List;
 

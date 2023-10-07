@@ -1,7 +1,7 @@
-package com.benewake.system.Transfer;
+package com.benewake.system.transfer;
 
 import com.benewake.system.entity.ApsImmediatelyInventory;
-import com.benewake.system.entity.KingdeeImmediatelyInventory;
+import com.benewake.system.entity.kingdee.KingdeeImmediatelyInventory;
 import org.springframework.stereotype.Component;
 
 @Component

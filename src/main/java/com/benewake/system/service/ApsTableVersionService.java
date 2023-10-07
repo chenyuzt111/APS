@@ -2,7 +2,6 @@ package com.benewake.system.service;
 
 import com.benewake.system.entity.ApsTableVersion;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.sun.jmx.snmp.Timestamp;
 
 /**
 * @author ASUS
@@ -13,5 +12,5 @@ public interface ApsTableVersionService extends IService<ApsTableVersion> {
 
     Integer getMaxVersion(int code);
 
-    void incrVersions(Integer code);
+    void incrVersions();
 }
