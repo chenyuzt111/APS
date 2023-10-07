@@ -1,8 +1,6 @@
 package com.benewake.system.controller;
 
 import com.benewake.system.entity.Result;
-import com.benewake.system.entity.vo.GetCacheByTypeVo;
-import com.benewake.system.entity.vo.UpdateInterfaceDataVo;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.InterfaceDataService;
 import io.swagger.annotations.Api;
