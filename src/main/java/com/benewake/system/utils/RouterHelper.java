@@ -30,7 +30,7 @@ public class RouterHelper {
             router.setAlwaysShow(false);
             router.setPath(getRouterPath(menu));
             router.setComponent(menu.getComponent());
-            router.setMeta(new MetaVo(menu.getName(), menu.getIcon()));
+            router.setMeta(new MetaVo(menu.getChName(), menu.getIcon()));
             router.setName(menu.getName());
             List<SysMenu> children = menu.getChildren();
             //如果当前是菜单，需将按钮对应的路由加载出来，如：“角色授权”按钮对应的路由在“系统管理”下面
@@ -42,7 +42,7 @@ public class RouterHelper {
                     hiddenRouter.setAlwaysShow(false);
                     hiddenRouter.setPath(getRouterPath(hiddenMenu));
                     hiddenRouter.setComponent(hiddenMenu.getComponent());
-                    hiddenRouter.setMeta(new MetaVo(hiddenMenu.getName(), hiddenMenu.getIcon()));
+                    hiddenRouter.setMeta(new MetaVo(hiddenMenu.getChName(), hiddenMenu.getIcon()));
                     routers.add(hiddenRouter);
                 }
             } else {

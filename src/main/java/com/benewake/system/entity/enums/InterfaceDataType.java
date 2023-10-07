@@ -7,7 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public enum InterfaceDataType {
 
-    REALTIME_INVENTORY(1, "即时库存" ,"realtimeInventorySevice" , "realtimeInventoryMapper"),
+    IMMEDIATELY_INVENTORY(1, "即时库存" ,"apsImmediatelyInventoryServiceImpl" , "ImmediatelyInventoryMapper"),
     OUTSOURCED_MATERIALS(2, "委外用料清单列表" , "OUTSOURCED_MATERIALSService" ,"OUTSOURCED_MATERIALSMapper");
     //TODO 多个表类型 这里就只先写俩个
     private int code;

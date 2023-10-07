@@ -1,6 +1,7 @@
 package com.benewake.system.controller;
 
 import com.benewake.system.entity.Result;
+import com.benewake.system.entity.vo.GetCacheByTypeVo;
 import com.benewake.system.entity.vo.UpdateInterfaceDataVo;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.InterfaceDataService;
@@ -32,23 +33,14 @@ public class InterfaceDataController {
 
     @ApiOperation("刷新接口数据")
     @PostMapping("update")
-    public Result update(@RequestBody List<Integer> ids) {
+    public Result update(@RequestBody List<Integer> ids) throws Exception {
         if (CollectionUtils.isEmpty(ids)) {
             throw new BeneWakeException("ids不能为空");
         }
-
         Boolean UpdateResult = interfaceDataService.updateData(ids);
-
-        if(Boolean.TRUE.equals(UpdateResult))
+        if (Boolean.TRUE.equals(UpdateResult))
             return Result.ok();
         else
             return Result.fail();
-}
-
-//    @ApiOperation("查询接口数据缓存数据")
-//    @PostMapping("getCaCheByType")
-//    public Result getCacheByType(@RequestBody GetCacheByType ) {
-//        interfaceDataService.getCacheByid();
-//    }
-
+    }
 }
