@@ -2,8 +2,7 @@ package com.benewake.system.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsOutsourcedMaterial;
-import com.benewake.system.entity.enums.InterfaceDataType;
-import com.benewake.system.entity.enums.PickStatus;
+import com.benewake.system.entity.enums.FMaterialStatus;
 import com.benewake.system.entity.kingdee.KingdeeOutsourcedMaterial;
 import com.benewake.system.entity.kingdee.YourResultClassForSubQuery;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
@@ -54,7 +53,7 @@ public class ApsOutsourcedMaterialServiceImpl extends ServiceImpl<ApsOutsourcedM
 
     private ArrayList<ApsOutsourcedMaterial> transferKingdeeToApsOutsourcedMaterial(List<KingdeeOutsourcedMaterial> kingdeeOutsourcedMaterials, Map<String, String> materialIdToNameMap) {
         //获取最大版本
-        Integer maxVersion = apsTableVersionService.getMaxVersion(InterfaceDataType.IMMEDIATELY_INVENTORY.getCode());
+        Integer maxVersion = apsTableVersionService.getMaxVersion();
         ArrayList<ApsOutsourcedMaterial> apsOutsourcedMaterials = new ArrayList<>();
         for (KingdeeOutsourcedMaterial kingdeeOutsourcedMaterial : kingdeeOutsourcedMaterials) {
             String materialIdName = materialIdToNameMap.get(kingdeeOutsourcedMaterial.getFMaterialID());
@@ -62,7 +61,7 @@ public class ApsOutsourcedMaterialServiceImpl extends ServiceImpl<ApsOutsourcedM
             kingdeeOutsourcedMaterial.setFMaterialID(materialIdName);
             kingdeeOutsourcedMaterial.setFMaterialID2(materialId2Name);
             String fMaterialType = kingdeeOutsourcedMaterial.getFMaterialType();
-            String fMaterialTypeDescription = PickStatus.getByCode(fMaterialType).getDescription();
+            String fMaterialTypeDescription = FMaterialStatus.getByCode(fMaterialType).getDescription();
             kingdeeOutsourcedMaterial.setFMaterialType(fMaterialTypeDescription);
 
             ApsOutsourcedMaterial apsOutsourcedMaterial = kingdeeToApsOutsourcedMaterial.convert(kingdeeOutsourcedMaterial, maxVersion);

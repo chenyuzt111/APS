@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface ApsTableVersionService extends IService<ApsTableVersion> {
 
-    Integer getMaxVersion(int code);
+    Integer getMaxVersion();
 
     void incrVersions();
 }

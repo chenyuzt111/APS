@@ -18,7 +18,7 @@ public class ApsTableVersionServiceImpl extends ServiceImpl<ApsTableVersionMappe
 
 
     @Override
-    public Integer getMaxVersion(int code) {
+    public Integer getMaxVersion() {
         LambdaQueryWrapper<ApsTableVersion> apsTableVersionLambdaQueryWrapper = new LambdaQueryWrapper<>();
         apsTableVersionLambdaQueryWrapper.orderByDesc(ApsTableVersion::getVersionNumber)
                 .last("limit 1");

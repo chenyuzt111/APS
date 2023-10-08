@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benewake.system.mapper.ApsProductionMaterialMapper">
+
+    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsProductionMaterial">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="fMaterialId" column="f_material_id" jdbcType="VARCHAR"/>
+            <result property="fMoBillNo" column="f_mo_bill_no" jdbcType="VARCHAR"/>
+            <result property="fMaterialId2" column="f_material_id2" jdbcType="VARCHAR"/>
+            <result property="fMaterialType" column="f_material_type" jdbcType="VARCHAR"/>
+            <result property="fMustQty" column="f_must_qty" jdbcType="VARCHAR"/>
+            <result property="fPickedQty" column="f_picked_qty" jdbcType="VARCHAR"/>
+            <result property="fGoodReturnQty" column="f_good_return_qty" jdbcType="VARCHAR"/>
+            <result property="fProcessDefectReturnQty" column="f_process_defect_return_qty" jdbcType="VARCHAR"/>
+            <result property="version" column="version" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,f_material_id,f_mo_bill_no,
+        f_material_id2,f_material_type,f_must_qty,
+        f_picked_qty,f_good_return_qty,f_process_defect_return_qty,
+        version
+    </sql>
+</mapper>

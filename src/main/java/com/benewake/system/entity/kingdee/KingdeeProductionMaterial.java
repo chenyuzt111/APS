@@ -3,7 +3,7 @@ package com.benewake.system.entity.kingdee;
 import lombok.Data;
 
 @Data
-public class ProUse {
+public class KingdeeProductionMaterial {
 
 
 

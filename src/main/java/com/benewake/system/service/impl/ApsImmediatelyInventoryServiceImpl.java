@@ -5,7 +5,6 @@ import com.benewake.system.transfer.KingdeeToApsImmediatelyInventory;
 import com.benewake.system.entity.ApsImmediatelyInventory;
 import com.benewake.system.entity.kingdee.KingdeeImmediatelyInventory;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
-import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.service.ApsImmediatelyInventoryService;
 import com.benewake.system.mapper.ApsImmediatelyInventoryMapper;
 import com.benewake.system.service.ApsTableVersionService;
@@ -54,7 +53,7 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
 
     private void transferKingdeeToApsImmediatelyInventory(List<KingdeeImmediatelyInventory> result, Map<String, String> materialIdToNameMap, ArrayList<ApsImmediatelyInventory> immediatelyInventories) {
         //获取最大版本
-        Integer maxVersion = apsTableVersionService.getMaxVersion(InterfaceDataType.IMMEDIATELY_INVENTORY.getCode());
+        Integer maxVersion = apsTableVersionService.getMaxVersion();
         for (KingdeeImmediatelyInventory kingdeeImmediatelyInventory : result) {
             String materialId = kingdeeImmediatelyInventory.getFMaterialId(); // 获取物料ID
             if (materialIdToNameMap.containsKey(materialId)) {
