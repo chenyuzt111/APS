@@ -33,25 +33,22 @@ public class ApsProductionMaterialServiceImpl extends ServiceImpl<ApsProductionM
     private K3CloudApi api;
 
     @Autowired
-    private ApsTableVersionService apsTableVersionService;
-    
-    @Autowired
     private KingdeeToApsProductionMaterial kingdeeToApsProductionMaterial;
 
     @Override
     public Boolean updateDataVersions() throws Exception {
         List<YourResultClassForSubQuery> subMoQueryResult = getYourResultClassForSubQueries();
-        Integer maxVersion = apsTableVersionService.getMaxVersion();
+
         // 从子查询结果中提取 FBillNo 列，存储在列表中
         List<KingdeeProductionMaterial> result = getProUses(subMoQueryResult);
         // 物料映射表
         Map<String, String> mtn = getMaterialIdToNameMap();
         //转换
-        ArrayList<ApsProductionMaterial> apsProductionMaterials = getApsProductionMaterials(maxVersion, result, mtn);
+        ArrayList<ApsProductionMaterial> apsProductionMaterials = getApsProductionMaterials( result, mtn);
         return saveBatch(apsProductionMaterials);
     }
 
-    private ArrayList<ApsProductionMaterial> getApsProductionMaterials(Integer maxVersion, List<KingdeeProductionMaterial> result, Map<String, String> mtn) {
+    private ArrayList<ApsProductionMaterial> getApsProductionMaterials( List<KingdeeProductionMaterial> result, Map<String, String> mtn) {
         ArrayList<ApsProductionMaterial> apsProductionMaterials = new ArrayList<>();
         for (KingdeeProductionMaterial kingdeeProductionMaterial : result) {
             String materialIdName = mtn.get(kingdeeProductionMaterial.getFMaterialID());
@@ -63,7 +60,7 @@ public class ApsProductionMaterialServiceImpl extends ServiceImpl<ApsProductionM
             String fMaterialType = kingdeeProductionMaterial.getFMaterialType();
             String fMaterialTypeDescription = FMaterialStatus.getByCode(fMaterialType).getDescription();
             kingdeeProductionMaterial.setFMaterialType(fMaterialTypeDescription);
-            ApsProductionMaterial apsProductionMaterial = kingdeeToApsProductionMaterial.convert(kingdeeProductionMaterial, maxVersion);
+            ApsProductionMaterial apsProductionMaterial = kingdeeToApsProductionMaterial.convert(kingdeeProductionMaterial, InterfaceDataServiceImpl.maxVersion);
             apsProductionMaterials.add(apsProductionMaterial);
         }
         return apsProductionMaterials;

@@ -30,30 +30,38 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
     @Autowired
     private KingdeeToApsImmediatelyInventory kingdeeToApsImmediatelyInventory;
 
-    @Autowired
-    private ApsTableVersionService apsTableVersionService;
+    StringBuffer time = new StringBuffer();
 
     @Override
     public Boolean updateDataVersions() throws Exception {
         //获取转换后的数据
         ArrayList<ApsImmediatelyInventory> immediatelyInventories = getApsImmediatelyInventoriesByKingdee();
-        return saveBatch(immediatelyInventories);
+        long start = System.currentTimeMillis();
+        boolean saveBatch = saveBatch(immediatelyInventories);
+        long end = System.currentTimeMillis();
+        time.append("saveBatch------" + (end - start));
+        System.err.println(time);
+        return saveBatch;
     }
 
     private ArrayList<ApsImmediatelyInventory> getApsImmediatelyInventoriesByKingdee() throws Exception {
+        long start = System.currentTimeMillis();
         //获取金蝶原数据
         List<KingdeeImmediatelyInventory> result = getKingdeeImmediatelyInventories();
         //获取物料映射表
         Map<String, String> materialIdToNameMap = getMaterialIdToNameMap();
-
+        long end = System.currentTimeMillis();
+        time.append("KINGDEE------" + (end - start) + "\n");
         ArrayList<ApsImmediatelyInventory> immediatelyInventories = new ArrayList<>();
+        start = System.currentTimeMillis();
         transferKingdeeToApsImmediatelyInventory(result, materialIdToNameMap, immediatelyInventories);
+        end = System.currentTimeMillis();
+        time.append("transfer------" + (end - start) + '\n');
+
         return immediatelyInventories;
     }
 
     private void transferKingdeeToApsImmediatelyInventory(List<KingdeeImmediatelyInventory> result, Map<String, String> materialIdToNameMap, ArrayList<ApsImmediatelyInventory> immediatelyInventories) {
-        //获取最大版本
-        Integer maxVersion = apsTableVersionService.getMaxVersion();
         for (KingdeeImmediatelyInventory kingdeeImmediatelyInventory : result) {
             String materialId = kingdeeImmediatelyInventory.getFMaterialId(); // 获取物料ID
             if (materialIdToNameMap.containsKey(materialId)) {
@@ -61,7 +69,7 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
                 kingdeeImmediatelyInventory.setFMaterialId(materialNumber); // 更新物料ID为物料编号
             }
 
-            ApsImmediatelyInventory apsImmediatelyInventory = kingdeeToApsImmediatelyInventory.convert(kingdeeImmediatelyInventory, maxVersion);
+            ApsImmediatelyInventory apsImmediatelyInventory = kingdeeToApsImmediatelyInventory.convert(kingdeeImmediatelyInventory, InterfaceDataServiceImpl.maxVersion);
             immediatelyInventories.add(apsImmediatelyInventory);
         }
     }

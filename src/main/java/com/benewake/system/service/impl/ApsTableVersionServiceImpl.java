@@ -34,6 +34,15 @@ public class ApsTableVersionServiceImpl extends ServiceImpl<ApsTableVersionMappe
     public void incrVersions() {
         this.baseMapper.incrVersions();
     }
+
+    @Override
+    public Integer getMaxVersionState() {
+        LambdaQueryWrapper<ApsTableVersion> apsTableVersionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        apsTableVersionLambdaQueryWrapper.orderByDesc(ApsTableVersion::getVersionNumber)
+                .last("limit 1");
+        ApsTableVersion apsTableVersion = getOne(apsTableVersionLambdaQueryWrapper);
+        return apsTableVersion!= null? apsTableVersion.getState() : null;
+    }
 }
 
 

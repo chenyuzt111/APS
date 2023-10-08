@@ -13,4 +13,6 @@ public interface ApsTableVersionService extends IService<ApsTableVersion> {
     Integer getMaxVersion();
 
     void incrVersions();
+
+    Integer getMaxVersionState();
 }

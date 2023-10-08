@@ -35,9 +35,6 @@ public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrde
     private K3CloudApi api;
 
     @Autowired
-    private ApsTableVersionService apsTableVersionService;
-
-    @Autowired
     private KingdeeToApsProductionOrder kingdeeToApsProductionOrder;
 
     @Override
@@ -51,16 +48,16 @@ public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrde
         //BOM版本号映射表
         Map<String, String> btn = getFIDToNumberMap();
 
-        Integer maxVersion = apsTableVersionService.getMaxVersion();
+//        Integer maxVersion = apsTableVersionService.getMaxVersion();
         ArrayList<ApsProductionOrder> apsProductionOrders = new ArrayList<>();
         for (KingdeeProductionOrder kingdeeProductionOrder : result) {
-            getApsProductionOrderList(mtn, ftn, btn, maxVersion, apsProductionOrders, kingdeeProductionOrder);
+            getApsProductionOrderList(mtn, ftn, btn, apsProductionOrders, kingdeeProductionOrder);
         }
 
         return saveBatch(apsProductionOrders);
     }
 
-    private void getApsProductionOrderList(Map<String, String> mtn, Map<String, String> ftn, Map<String, String> btn, Integer maxVersion, ArrayList<ApsProductionOrder> apsProductionOrders, KingdeeProductionOrder kingdeeProductionOrder) {
+    private void getApsProductionOrderList(Map<String, String> mtn, Map<String, String> ftn, Map<String, String> btn, ArrayList<ApsProductionOrder> apsProductionOrders, KingdeeProductionOrder kingdeeProductionOrder) {
         // 获取 FStatus 的 id
         String statusId = kingdeeProductionOrder.getFStatus();
         // 使用映射 HashMap 获取状态文字
@@ -81,7 +78,7 @@ public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrde
         String originalFBillType = kingdeeProductionOrder.getFBillType();
         kingdeeProductionOrder.setFBillType(ftn.get(originalFBillType));
         kingdeeProductionOrder.setFBomId(btn.get(kingdeeProductionOrder.getFBomId()));
-        ApsProductionOrder apsProductionOrder = kingdeeToApsProductionOrder.convert(kingdeeProductionOrder, maxVersion);
+        ApsProductionOrder apsProductionOrder = kingdeeToApsProductionOrder.convert(kingdeeProductionOrder, InterfaceDataServiceImpl.maxVersion);
         apsProductionOrders.add(apsProductionOrder);
     }
 

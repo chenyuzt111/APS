@@ -63,4 +63,14 @@ public class RedisConfig {
         return template;
     }
 
+    @Bean
+    public RedissonClient redissonClient(){
+        Config config = new Config();
+        config.useSingleServer()
+                .setAddress("redis://localhost:6379");
+        RedissonClient redissonClient = Redisson.create(config);
+        return redissonClient;
+    }
+
+
 }

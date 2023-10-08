@@ -32,8 +32,6 @@ public class ApsPurchaseRequestServiceImpl extends ServiceImpl<ApsPurchaseReques
     @Autowired
     private K3CloudApi api;
 
-    @Autowired
-    private ApsTableVersionService apsTableVersionService;
 
     @Autowired
     private KingdeeToApsPurchaseRequest kingdeeToApsPurchaseRequest;
@@ -55,11 +53,11 @@ public class ApsPurchaseRequestServiceImpl extends ServiceImpl<ApsPurchaseReques
     }
 
     private ArrayList<ApsPurchaseRequest> getApsPurchaseRequestArrayList(List<KingdeePurchaseRequest> kingdeePurchaseRequestList, Map<String, String> materialIdToNumberMap) {
-        Integer maxVersion = apsTableVersionService.getMaxVersion();
+//        Integer maxVersion = apsTableVersionService.getMaxVersion();
         ArrayList<ApsPurchaseRequest> apsPurchaseRequestList = new ArrayList<>();
         for (KingdeePurchaseRequest kingdeePurchaseRequest : kingdeePurchaseRequestList) {
             kingdeePurchaseRequest.setFMaterialId(materialIdToNumberMap.get(kingdeePurchaseRequest.getFMaterialId()));
-            ApsPurchaseRequest apsPurchaseRequest = kingdeeToApsPurchaseRequest.convert(kingdeePurchaseRequest, maxVersion);
+            ApsPurchaseRequest apsPurchaseRequest = kingdeeToApsPurchaseRequest.convert(kingdeePurchaseRequest, InterfaceDataServiceImpl.maxVersion);
             apsPurchaseRequestList.add(apsPurchaseRequest);
         }
         return apsPurchaseRequestList;

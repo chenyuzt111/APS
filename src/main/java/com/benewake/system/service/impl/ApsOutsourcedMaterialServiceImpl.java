@@ -32,8 +32,6 @@ public class ApsOutsourcedMaterialServiceImpl extends ServiceImpl<ApsOutsourcedM
     @Autowired
     private K3CloudApi api;
 
-    @Autowired
-    private ApsTableVersionService apsTableVersionService;
 
     @Autowired
     private KingdeeToApsOutsourcedMaterial kingdeeToApsOutsourcedMaterial;
@@ -53,7 +51,7 @@ public class ApsOutsourcedMaterialServiceImpl extends ServiceImpl<ApsOutsourcedM
 
     private ArrayList<ApsOutsourcedMaterial> transferKingdeeToApsOutsourcedMaterial(List<KingdeeOutsourcedMaterial> kingdeeOutsourcedMaterials, Map<String, String> materialIdToNameMap) {
         //获取最大版本
-        Integer maxVersion = apsTableVersionService.getMaxVersion();
+//        Integer maxVersion = apsTableVersionService.getMaxVersion();
         ArrayList<ApsOutsourcedMaterial> apsOutsourcedMaterials = new ArrayList<>();
         for (KingdeeOutsourcedMaterial kingdeeOutsourcedMaterial : kingdeeOutsourcedMaterials) {
             String materialIdName = materialIdToNameMap.get(kingdeeOutsourcedMaterial.getFMaterialID());
@@ -64,7 +62,7 @@ public class ApsOutsourcedMaterialServiceImpl extends ServiceImpl<ApsOutsourcedM
             String fMaterialTypeDescription = FMaterialStatus.getByCode(fMaterialType).getDescription();
             kingdeeOutsourcedMaterial.setFMaterialType(fMaterialTypeDescription);
 
-            ApsOutsourcedMaterial apsOutsourcedMaterial = kingdeeToApsOutsourcedMaterial.convert(kingdeeOutsourcedMaterial, maxVersion);
+            ApsOutsourcedMaterial apsOutsourcedMaterial = kingdeeToApsOutsourcedMaterial.convert(kingdeeOutsourcedMaterial, InterfaceDataServiceImpl.maxVersion);
             apsOutsourcedMaterials.add(apsOutsourcedMaterial);
         }
         return apsOutsourcedMaterials;

@@ -32,8 +32,6 @@ public class ApsReceiveNoticeServiceImpl extends ServiceImpl<ApsReceiveNoticeMap
     @Autowired
     private K3CloudApi api;
 
-    @Autowired
-    private ApsTableVersionService apsTableVersionService;
 
     @Autowired
     private KingdeeToApsReceiveNotice kingdeeToApsReceiveNotice;
@@ -43,7 +41,6 @@ public class ApsReceiveNoticeServiceImpl extends ServiceImpl<ApsReceiveNoticeMap
     public Boolean updateDataVersions() throws Exception {
         // 创建人和审核人映射表
         Map<String, String> fNameToFUserIdMap = getStringStringMap();
-        QueryParam queryParam;
 
         List<KingdeeReceiveNotice> result = getKingdeeReceiveNotices(fNameToFUserIdMap);
         // 物料映射表
@@ -54,12 +51,12 @@ public class ApsReceiveNoticeServiceImpl extends ServiceImpl<ApsReceiveNoticeMap
     }
 
     private ArrayList<ApsReceiveNotice> getApsReceiveNoticeList(List<KingdeeReceiveNotice> result, Map<String, String> materialIdToNameMap) {
-        Integer maxVersion = apsTableVersionService.getMaxVersion();
+//        Integer maxVersion = apsTableVersionService.getMaxVersion();
         ArrayList<ApsReceiveNotice> apsReceiveNoticeList = new ArrayList<>();
         for (KingdeeReceiveNotice kingdeeReceiveNotice : result) {
             // 信息替换
             kingdeeReceiveNotice.setFMaterialId(materialIdToNameMap.get(kingdeeReceiveNotice.getFMaterialId()));
-            ApsReceiveNotice apsReceiveNotice = kingdeeToApsReceiveNotice.convert(kingdeeReceiveNotice, maxVersion);
+            ApsReceiveNotice apsReceiveNotice = kingdeeToApsReceiveNotice.convert(kingdeeReceiveNotice, InterfaceDataServiceImpl.maxVersion);
             apsReceiveNoticeList.add(apsReceiveNotice);
         }
         return apsReceiveNoticeList;

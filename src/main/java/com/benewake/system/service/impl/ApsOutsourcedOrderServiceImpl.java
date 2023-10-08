@@ -35,14 +35,10 @@ public class ApsOutsourcedOrderServiceImpl extends ServiceImpl<ApsOutsourcedOrde
     private K3CloudApi api;
 
     @Autowired
-    private ApsTableVersionService apsTableVersionService;
-
-    @Autowired
     private kingdeeToApsOutsourcedOrder kingdeeToApsOutsourcedOrder;
 
     @Override
     public Boolean updateDataVersions() throws Exception {
-        Integer maxVersion = apsTableVersionService.getMaxVersion();
         List<KingdeeOutsourcedOrder> result = getKingdeeOutsourcedOrders();
         // 物料映射表
         Map<String, String> mtn = getMaterialIdToNameMap();
@@ -51,11 +47,11 @@ public class ApsOutsourcedOrderServiceImpl extends ServiceImpl<ApsOutsourcedOrde
         //BOM版本号映射表
         Map<String, String> btn = getFIDToNumberMap();
         //转换
-        ArrayList<ApsOutsourcedOrder> apsOutsourcedOrders = getApsOutsourcedOrders(maxVersion, result, mtn, ftn, btn);
+        ArrayList<ApsOutsourcedOrder> apsOutsourcedOrders = getApsOutsourcedOrders(result, mtn, ftn, btn);
         return saveBatch(apsOutsourcedOrders);
     }
 
-    private ArrayList<ApsOutsourcedOrder> getApsOutsourcedOrders(Integer maxVersion, List<KingdeeOutsourcedOrder> result, Map<String, String> mtn, Map<String, String> ftn, Map<String, String> btn) {
+    private ArrayList<ApsOutsourcedOrder> getApsOutsourcedOrders(List<KingdeeOutsourcedOrder> result, Map<String, String> mtn, Map<String, String> ftn, Map<String, String> btn) {
         ArrayList<ApsOutsourcedOrder> apsOutsourcedOrders = new ArrayList<>();
         for (KingdeeOutsourcedOrder kingdeeOutsourcedOrder : result) {
             // 获取 FStatus 的 id
@@ -80,7 +76,7 @@ public class ApsOutsourcedOrderServiceImpl extends ServiceImpl<ApsOutsourcedOrde
             kingdeeOutsourcedOrder.setFBomId(btn.get(kingdeeOutsourcedOrder.getFBomId()));
             String originalFBillType = kingdeeOutsourcedOrder.getFBillType();
             kingdeeOutsourcedOrder.setFBillType(ftn.get(originalFBillType));
-            ApsOutsourcedOrder apsOutsourcedOrder = kingdeeToApsOutsourcedOrder.convert(kingdeeOutsourcedOrder , maxVersion);
+            ApsOutsourcedOrder apsOutsourcedOrder = kingdeeToApsOutsourcedOrder.convert(kingdeeOutsourcedOrder , InterfaceDataServiceImpl.maxVersion);
             apsOutsourcedOrders.add(apsOutsourcedOrder);
         }
         return apsOutsourcedOrders;

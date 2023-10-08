@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.io.File;
 import java.util.*;
 
 /**
@@ -28,11 +27,14 @@ public class DemoTest {
 
     @Autowired
     private K3CloudApi api;
+
+
+
     /*2.6采购申请单列表*/
     @Test
     public void shoprequestData() throws Exception {
 
-        QueryParam queryParam = new QueryParam();
+        QueryParam queryParam;
         // 创建人和审核人映射表
         queryParam = new QueryParam();
         queryParam.setFormId("SEC_User");
@@ -42,7 +44,6 @@ public class DemoTest {
         crtidToName.forEach(c->{
             critn.put(c.getFName(),c.getFUserID());
         });
-        crtidToName = null;
 
         //单据映射表
         queryParam = new QueryParam();
@@ -54,7 +55,7 @@ public class DemoTest {
             ftn.put(c.getFName(),c.getFBILLTYPEID());//将物料的id作为键，物料编号作为值，将键值对添加到映射表中
         });
 
-
+        queryParam = new QueryParam();
         queryParam.setFormId("PUR_Requisition");
         queryParam.setFieldKeys("FMaterialId,FBaseUnitQty,FArrivalDate");
 
@@ -74,7 +75,7 @@ public class DemoTest {
 
         queryParam.setFilterString(String.join(" and ", queryFilters));
 
-        List<shoprequestDD> result = api.executeBillQuery(queryParam, shoprequestDD.class);
+        List<KingdeePurchaseRequest> result = api.executeBillQuery(queryParam, KingdeePurchaseRequest.class);
         System.out.println("查询到的数据数量: " + result.size());
 
         // 物料映射表
@@ -88,10 +89,10 @@ public class DemoTest {
         });
 
 
-        for (shoprequestDD m : result) {
+        for (KingdeePurchaseRequest m : result) {
 
             m.setFMaterialId(mtn.get(m.getFMaterialId()));
-            System.out.println(m.toString());
+            System.out.println(m);
 
         }
 
@@ -266,6 +267,169 @@ public class DemoTest {
             m.setFBillType(ftn.get(originalFBillType));
             System.out.println(m);
         }
+    }
+        //2.7采购订单列表
+    @Test
+    public void testData() throws Exception {
+
+        QueryParam queryParam;
+
+        // 创建人和审核人映射表
+        queryParam = new QueryParam();
+        queryParam.setFormId("SEC_User");
+        queryParam.setFieldKeys("FUserID,FName");
+        List<CreateIdToName> crtidToName = api.executeBillQuery(queryParam, CreateIdToName.class);
+        Map<String, String> critn = new HashMap<>();
+        crtidToName.forEach(c -> {
+            critn.put(c.getFName(), c.getFUserID());
+        });
+
+        queryParam.setFormId("PUR_PurchaseOrder");
+        queryParam.setFieldKeys("FBillNo,FMaterialId,FRemainReceiveQty,FDeliveryDate");
+
+
+        List<String> excludedCreators = Arrays.asList("刘赛", "宋雨朦", "张月");
+        // 条件筛选
+        List<String> queryFilters = new ArrayList<>();
+        //创建一个空的字符串列表，用于存储查询过滤条件
+        queryFilters.add("FPurchaseOrgId= 1"); // 采购组织=北醒(北京)光子科技有限公司
+        queryFilters.add("FMRPTerminateStatus = 'A'"); // 业务终止=正常
+        queryFilters.add("FMRPCloseStatus = 'A'");     // 业务关闭=正常
+        queryFilters.add("FMRPFreezeStatus = 'A'");    // 业务冻结=正常
+        queryFilters.add("FCloseStatus = 'A'");        // 关闭状态=未关闭
+        queryFilters.add("FSupplierId != 336724");      // 供应商≠北京北醒智能设备有限公司
+        queryFilters.add("FCancelStatus = 'A'");       // 作废状态=未作废
+        queryFilters.add("FDate > dateAdd(day, -365, getdate())");
+        queryFilters.add("FCreatorId != '" + critn.get("刘赛") + "'");
+        queryFilters.add("FCreatorId != '" + critn.get("宋雨朦") + "'");
+        queryFilters.add("FCreatorId != '" + critn.get("张月") + "'");
+
+
+        for (String filter : queryFilters) {
+            System.out.println("Filter: " + filter);
+        }
+
+
+        queryParam.setFilterString(String.join(" and ", queryFilters));
+//    queryParam.setLimit(100);
+        List<DD> result = api.executeBillQuery(queryParam, DD.class);
+        System.out.println("查询到的数据数量: " + result.size());
+
+
+        // 物料映射表
+        queryParam = new QueryParam();
+        queryParam.setFormId("BD_MATERIAL");
+        queryParam.setFieldKeys("FMaterialId,FNumber");
+        List<MaterialIdToName> midToName = api.executeBillQuery(queryParam, MaterialIdToName.class);
+        Map<String, String> mtn = new HashMap<>();
+        midToName.forEach(c -> {
+            mtn.put(c.getFMaterialId(), c.getFNumber());
+        });
+
+
+        for (DD m : result) {
+
+            // 信息替换
+            m.setFMaterialId(mtn.get(m.getFMaterialId()));
+
+            System.out.println(m.toString());
+        }
+
+
+    }
+    /*2.9库存锁库列表*/
+    @Test
+    public void LockData() throws Exception {
+        QueryParam queryParam = new QueryParam();
+        queryParam.setFormId("STK_LockStock");
+        queryParam.setFieldKeys("FMaterialId,FEXPIRYDATE,FLockQty");
+
+        List<String> queryFilters = new ArrayList<>();
+        queryFilters.add("FStockOrgId = 1");
+
+        for (String filter : queryFilters) {
+            System.out.println("Filter: " + filter);
+        }
+
+        queryParam.setFilterString(String.join(" and ", queryFilters));
+
+        List<KingdeeInventoryLock> result = api.executeBillQuery(queryParam, KingdeeInventoryLock.class);
+        System.out.println("查询到的数据数量: " + result.size());
+
+        // 物料映射表
+        queryParam = new QueryParam();
+        queryParam.setFormId("BD_MATERIAL");
+        queryParam.setFieldKeys("FMaterialId,FNumber");
+        List<MaterialIdToName> midToName = api.executeBillQuery(queryParam, MaterialIdToName.class);
+        Map<String, String> mtn = new HashMap<>();
+        midToName.forEach(c -> {
+            mtn.put(c.getFMaterialId(), c.getFNumber());
+        });
+
+        for (KingdeeInventoryLock m : result) {
+            // 获取 FDocumentStatus 的 id
+            m.setFMaterialId(mtn.get(m.getFMaterialId()));
+            System.out.println(m);
+        }
+
+    }
+    @Test
+    public void getmessagetData() throws Exception {
+
+        QueryParam queryParam = new QueryParam();
+        // 创建人和审核人映射表
+        queryParam = new QueryParam();
+        queryParam.setFormId("SEC_User");
+        queryParam.setFieldKeys("FUserID,FName");
+        List<CreateIdToName> crtidToName = api.executeBillQuery(queryParam, CreateIdToName.class);
+        Map<String, String> critn = new HashMap<>();
+        crtidToName.forEach(c -> {
+            critn.put(c.getFName(), c.getFUserID());
+        });
+
+        queryParam.setFormId("PUR_ReceiveBill");
+        queryParam.setFieldKeys("FBillNo,FMaterialId,FMustQty,FCheckQty,FReceiveQty,FCsnReceiveBaseQty,FInStockQty");
+
+        List<String> queryFilters = new ArrayList<>();
+        queryFilters.add("FDocumentStatus = 'C'");    // 单据状态=已审核
+        queryFilters.add("FENTRYSTATUS = 'A'");          // 行状态=正常
+        queryFilters.add("FCancelStatus = 'A'");      // 作废状态=未作废
+        queryFilters.add("FPurOrgId   = 1");
+        queryFilters.add("FCreatorId != '" + critn.get("刘赛") + "'");
+        queryFilters.add("FCreatorId != '" + critn.get("张月") + "'");
+        queryFilters.add("FCreatorId != '" + critn.get("杨阳") + "'");
+        queryFilters.add("FCreatorId != '" + critn.get("郑杰") + "'");
+        queryFilters.add("FCreatorId != '" + critn.get("宋雨朦") + "'");
+
+        for (String filter : queryFilters) {
+            System.out.println("Filter: " + filter);
+        }
+
+
+        queryParam.setFilterString(String.join(" and ", queryFilters));
+
+        List<KingdeeReceiveNotice> result = api.executeBillQuery(queryParam, KingdeeReceiveNotice.class);
+        System.out.println("查询到的数据数量: " + result.size());
+
+        // 物料映射表
+        queryParam = new QueryParam();
+        queryParam.setFormId("BD_MATERIAL");
+        queryParam.setFieldKeys("FMaterialId,FNumber");
+        List<MaterialIdToName> midToName = api.executeBillQuery(queryParam, MaterialIdToName.class);
+        Map<String, String> mtn = new HashMap<>();
+        midToName.forEach(c -> {
+            mtn.put(c.getFMaterialId(), c.getFNumber());
+        });
+
+
+        for (KingdeeReceiveNotice kingdeeReceiveNotice : result) {
+
+            // 信息替换
+            kingdeeReceiveNotice.setFMaterialId(mtn.get(kingdeeReceiveNotice.getFMaterialId()));
+
+            System.out.println(kingdeeReceiveNotice);
+        }
+
     }
 
     @Test

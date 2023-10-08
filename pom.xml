@@ -17,7 +17,14 @@
         <spring-boot.version>2.3.7.RELEASE</spring-boot.version>
     </properties>
 
+
     <dependencies>
+
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20210307</version> <!-- 使用最新版本 -->
+        </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>

@@ -30,8 +30,6 @@ public class ApsInventoryLockServiceImpl extends ServiceImpl<ApsInventoryLockMap
     @Autowired
     private K3CloudApi api;
 
-    @Autowired
-    private ApsTableVersionService apsTableVersionService;
 
     @Autowired
     private KingdeeToApsInventoryLock kingdeeToApsInventoryLock;
@@ -47,11 +45,11 @@ public class ApsInventoryLockServiceImpl extends ServiceImpl<ApsInventoryLockMap
 
     private ArrayList<ApsInventoryLock> getApsInventoryLockList(List<KingdeeInventoryLock> result, Map<String, String> materialIdToNameMap) {
         ArrayList<ApsInventoryLock> apsInventoryLockList = new ArrayList<>();
-        Integer maxVersion = apsTableVersionService.getMaxVersion();
+//        Integer maxVersion = apsTableVersionService.getMaxVersion();
         for (KingdeeInventoryLock kingdeeInventoryLock : result) {
             // 获取 FDocumentStatus 的 id
             kingdeeInventoryLock.setFMaterialId(materialIdToNameMap.get(kingdeeInventoryLock.getFMaterialId()));
-            ApsInventoryLock apsInventoryLock = kingdeeToApsInventoryLock.convert(kingdeeInventoryLock ,maxVersion);
+            ApsInventoryLock apsInventoryLock = kingdeeToApsInventoryLock.convert(kingdeeInventoryLock ,InterfaceDataServiceImpl.maxVersion);
             apsInventoryLockList.add(apsInventoryLock);
         }
         return apsInventoryLockList;
