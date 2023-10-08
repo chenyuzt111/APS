@@ -14,7 +14,8 @@ public enum InterfaceDataType {
     PRODUCTION_ORDER(5, "生产订单列表" , "apsProductionOrderServiceImpl"),
     PURCHASE_REQUEST(6, "采购申请单列表" , "apsPurchaseRequestServiceImpl"),
 
-    RECEIVE_NOTICE(8, "收料通知单列表" , "apsReceiveNoticeServiceImpl");
+    RECEIVE_NOTICE(8, "收料通知单列表" , "apsReceiveNoticeServiceImpl"),
+    INVENTORY_LOCK(9, "库存锁库列表" , "apsInventoryLockServiceImpl");
     //TODO 多个表类型 这里就只先写俩个
     private int code;
     private String type;
