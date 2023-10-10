@@ -23,4 +23,10 @@ redis:
   port: 6379
   password:
   maxIdle: 300
-
+myPython:
+  home:
+  directory: E:\\桌面\\APS_For_Benwake_process_kaolv
+  integrityCheckerDirectory: E:\\桌面
+  startClass:
+    scheduling: test.py
+    integrityChecker: my_script.py
