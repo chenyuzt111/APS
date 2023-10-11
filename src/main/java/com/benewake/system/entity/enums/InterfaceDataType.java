@@ -1,7 +1,11 @@
 package com.benewake.system.entity.enums;
 
+import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @AllArgsConstructor
@@ -21,6 +25,13 @@ public enum InterfaceDataType {
     private String type;
     private String seviceName;
 
+    public static List<Integer> getAllIds() {
+        ArrayList<Integer> ids = new ArrayList<>();
+        for (InterfaceDataType value : InterfaceDataType.values()) {
+            ids.add(value.getCode());
+        }
+        return ids;
+    }
 
     public String getSeviceName() {
         return seviceName;

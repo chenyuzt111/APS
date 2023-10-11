@@ -12,6 +12,7 @@ public class IntegrityCheckerPythonService extends PythonBase {
 
     @Override
     void checkCode(String line) {
+        //成功需要修改状态 -》 完整性检查完成
        if ("0".equals(line)) {
             throw new BeneWakeException("完整性检查失败！");
         }

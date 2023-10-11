@@ -22,7 +22,7 @@ import redis.clients.jedis.JedisPoolConfig;
  */
 @Configuration
 public class RedisConfig {
-    private int database = 1;
+    private int database = 0;
     private int maxTotal = 20;
 
     @Value("${redis.maxIdle}")

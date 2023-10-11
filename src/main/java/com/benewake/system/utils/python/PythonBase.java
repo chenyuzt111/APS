@@ -1,6 +1,10 @@
 package com.benewake.system.utils.python;
 
+import com.benewake.system.entity.system.SysUser;
+import com.benewake.system.utils.HostHolder;
 import com.benewake.system.utils.threadpool.BenewakeExecutor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,11 +13,13 @@ import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-//@Component
+@Component
 public abstract class PythonBase {
 
     private final String MYPYTHON_PATH = "D:\\python\\python.exe";
 
+    @Autowired
+    private HostHolder hostHolder;
 
     private ProcessBuilder processBuilder;
 
@@ -60,8 +66,11 @@ public abstract class PythonBase {
     }
 
 
-    public void startAsync() {
-        BenewakeExecutor.execute(this::start);
+    public void startAsync(SysUser user) {
+        BenewakeExecutor.execute(() -> {
+            hostHolder.setUser(user);
+            start();
+        });
     }
 
     abstract void checkCode(String line);

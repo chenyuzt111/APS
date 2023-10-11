@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benewake.system.mapper.ApsAllPlanNumInProcessMapper">
+
+    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsAllPlanNumInProcess">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="taskId" column="task_id" jdbcType="INTEGER"/>
+            <result property="sourceId" column="source_id" jdbcType="VARCHAR"/>
+            <result property="materialCode" column="material_code" jdbcType="VARCHAR"/>
+            <result property="materialName" column="material_name" jdbcType="VARCHAR"/>
+            <result property="processName" column="process_name" jdbcType="VARCHAR"/>
+            <result property="quantity" column="quantity" jdbcType="INTEGER"/>
+            <result property="taskDate" column="task_date" jdbcType="DATE"/>
+            <result property="startTime" column="start_time" jdbcType="TIME"/>
+            <result property="endTime" column="end_time" jdbcType="TIME"/>
+            <result property="version" column="version" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,task_id,source_id,
+        material_code,material_name,process_name,
+        quantity,task_date,start_time,
+        end_time,version
+    </sql>
+</mapper>
