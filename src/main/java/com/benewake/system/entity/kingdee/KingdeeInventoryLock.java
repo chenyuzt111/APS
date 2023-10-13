@@ -12,6 +12,9 @@ public class KingdeeInventoryLock {
     private String FEXPIRYDATE  ;
 
     //("锁库数量")
-    private String FLockQty;
+    private Integer FLockQty;
+
+    //@ExcelProperty("批号")
+    private String FLot;
 
 }

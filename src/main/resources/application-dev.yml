@@ -25,7 +25,7 @@ redis:
   maxIdle: 300
 myPython:
   home:
-  directory: E:\\桌面\\APS_For_Benwake_process_kaolv
+  directory: \python\APS_For_Benwake_process_kaolv
   integrityCheckerDirectory: E:\\桌面
   startClass:
     scheduling: test.py

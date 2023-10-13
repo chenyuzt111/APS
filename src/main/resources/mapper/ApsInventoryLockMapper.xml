@@ -7,13 +7,14 @@
     <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsInventoryLock">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="fMaterialId" column="f_material_id" jdbcType="VARCHAR"/>
-            <result property="fExpiryDate" column="f_expiry_date" jdbcType="VARCHAR"/>
-            <result property="fLockQty" column="f_lock_qty" jdbcType="VARCHAR"/>
+            <result property="fExpiryDate" column="f_expiry_date" jdbcType="DATE"/>
+            <result property="fLockQty" column="f_lock_qty" jdbcType="INTEGER"/>
+            <result property="fLot" column="f_lot" jdbcType="VARCHAR"/>
             <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,f_material_id,f_expiry_date,
-        f_lock_qty,version
+        f_lock_qty,f_lot,version
     </sql>
 </mapper>

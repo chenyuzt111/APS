@@ -6,9 +6,17 @@ import lombok.Data;
 public class KingdeeImmediatelyInventory {
 
 
+    //("物料编码")
     private String FMaterialId;
+    //("仓库名称")
     private String FStockName;
-    private String FAVBQty;
+    //("库存量(基本单位)")
+    private int FBaseQty;
+
+    //("可用量(主单位)")
+    private int FAVBQty;
+    //("批号")
     private String FLot;
+    //("有效期至")
     private String FExpiryDate;
 }

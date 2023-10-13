@@ -8,7 +8,6 @@ import com.benewake.system.entity.kingdee.transfer.FBILLTYPEIDToName;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
 import com.benewake.system.service.ApsPurchaseRequestService;
 import com.benewake.system.mapper.ApsPurchaseRequestMapper;
-import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.transfer.KingdeeToApsPurchaseRequest;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
@@ -52,12 +51,12 @@ public class ApsPurchaseRequestServiceImpl extends ServiceImpl<ApsPurchaseReques
         return saveBatch(apsPurchaseRequestList);
     }
 
-    private ArrayList<ApsPurchaseRequest> getApsPurchaseRequestArrayList(List<KingdeePurchaseRequest> kingdeePurchaseRequestList, Map<String, String> materialIdToNumberMap) {
-//        Integer maxVersion = apsTableVersionService.getMaxVersion();
+    private ArrayList<ApsPurchaseRequest> getApsPurchaseRequestArrayList(List<KingdeePurchaseRequest> kingdeePurchaseRequestList, Map<String, String> materialIdToNumberMap) throws NoSuchFieldException, IllegalAccessException {
         ArrayList<ApsPurchaseRequest> apsPurchaseRequestList = new ArrayList<>();
+        Integer maxVersion = this.getMaxVersionIncr();
         for (KingdeePurchaseRequest kingdeePurchaseRequest : kingdeePurchaseRequestList) {
             kingdeePurchaseRequest.setFMaterialId(materialIdToNumberMap.get(kingdeePurchaseRequest.getFMaterialId()));
-            ApsPurchaseRequest apsPurchaseRequest = kingdeeToApsPurchaseRequest.convert(kingdeePurchaseRequest, InterfaceDataServiceImpl.maxVersion);
+            ApsPurchaseRequest apsPurchaseRequest = kingdeeToApsPurchaseRequest.convert(kingdeePurchaseRequest, maxVersion);
             apsPurchaseRequestList.add(apsPurchaseRequest);
         }
         return apsPurchaseRequestList;

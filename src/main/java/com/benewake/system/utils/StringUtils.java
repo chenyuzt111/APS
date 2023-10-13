@@ -233,6 +233,13 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
         return str.substring(start, end);
     }
 
+    public static String toLowerCaseFirstLetter(String className) {
+        if (className == null || className.isEmpty()) {
+            return className;
+        }
+        char firstChar = Character.toLowerCase(className.charAt(0));
+        return firstChar + className.substring(1);
+    }
     /**
      * 格式化文本, {} 表示占位符<br>
      * 此方法只是简单将占位符 {} 按照顺序替换为参数<br>

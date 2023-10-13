@@ -2,6 +2,7 @@ package com.benewake.system.controller;
 
 import com.benewake.system.annotation.Scheduling;
 import com.benewake.system.entity.Result;
+import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.entity.enums.TableVersionState;
 import com.benewake.system.entity.vo.ReturnTest;
 import com.benewake.system.exception.BeneWakeException;
@@ -43,42 +44,36 @@ public class SchedulingController {
 
     @ApiOperation("数据库更新")
     @PostMapping("/dataUpdate")
-    @Scheduling(tableExecuteState = TableVersionState.UPDATE_DATABASE_ING)
-    public Result dataUpdate() throws Exception {
-        interfaceDataService.updateData();
-        return Result.ok();
-    }
-
-    @ApiOperation("获取最新数据库版本状态")
-    @GetMapping("/getMaxTableVersionState")
-    public Result getTableVersionState(){
-        Integer state = apsTableVersionService.getMaxVersionState();
-        if (state != TableVersionState.EDITING.getCode()) {
-            return Result.ok();
+    public Result dataUpdate(@RequestBody List<Integer> ids) throws Exception {
+        long l = System.currentTimeMillis();
+        if (CollectionUtils.isEmpty(ids)) {
+            ids = InterfaceDataType.getAllIds();
         }
-        return Result.fail("当前存在证正在编辑的版本是否要更新");
+
+        interfaceDataService.updateData(ids);
+        long l1 = System.currentTimeMillis();
+        System.err.println(l1 -l);
+        return Result.ok();
     }
 
 
     @ApiOperation("开始排程")
     @PostMapping("/startScheduling")
-    @Scheduling(tableExecuteState = TableVersionState.SCHEDULING_ING)
-    public Result startScheduling(){
+    public Result startScheduling() throws NoSuchFieldException, IllegalAccessException {
         pythonService.startScheduling();
         return Result.ok();
     }
 
     @ApiOperation("完整性检查")
     @PostMapping("/integrityChecker")
-    @Scheduling(tableExecuteState = TableVersionState.INTEGRIT_CHECKER_ING)
-    public Result integrityChecker(){
+    public Result integrityChecker() {
         pythonService.integrityChecker();
         return Result.ok();
     }
 
     @ApiOperation(" ")
     @PostMapping("/getAllPlanNumInProcess")
-    public Result<ReturnTest> all_plan_num_in_process(){
+    public Result<ReturnTest> all_plan_num_in_process() {
         ReturnTest latestCompletion = apsAllPlanNumInProcessService.getLatestCompletion();
         return Result.ok(latestCompletion);
     }

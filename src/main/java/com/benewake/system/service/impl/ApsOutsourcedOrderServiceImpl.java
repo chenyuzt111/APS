@@ -10,7 +10,6 @@ import com.benewake.system.entity.kingdee.transfer.FIDToNumber;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
 import com.benewake.system.service.ApsOutsourcedOrderService;
 import com.benewake.system.mapper.ApsOutsourcedOrderMapper;
-import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.transfer.kingdeeToApsOutsourcedOrder;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
@@ -51,8 +50,9 @@ public class ApsOutsourcedOrderServiceImpl extends ServiceImpl<ApsOutsourcedOrde
         return saveBatch(apsOutsourcedOrders);
     }
 
-    private ArrayList<ApsOutsourcedOrder> getApsOutsourcedOrders(List<KingdeeOutsourcedOrder> result, Map<String, String> mtn, Map<String, String> ftn, Map<String, String> btn) {
+    private ArrayList<ApsOutsourcedOrder> getApsOutsourcedOrders(List<KingdeeOutsourcedOrder> result, Map<String, String> mtn, Map<String, String> ftn, Map<String, String> btn) throws NoSuchFieldException, IllegalAccessException {
         ArrayList<ApsOutsourcedOrder> apsOutsourcedOrders = new ArrayList<>();
+        Integer maxVersion = this.getMaxVersionIncr();
         for (KingdeeOutsourcedOrder kingdeeOutsourcedOrder : result) {
             // 获取 FStatus 的 id
             String statusId = kingdeeOutsourcedOrder.getFStatus();
@@ -76,7 +76,7 @@ public class ApsOutsourcedOrderServiceImpl extends ServiceImpl<ApsOutsourcedOrde
             kingdeeOutsourcedOrder.setFBomId(btn.get(kingdeeOutsourcedOrder.getFBomId()));
             String originalFBillType = kingdeeOutsourcedOrder.getFBillType();
             kingdeeOutsourcedOrder.setFBillType(ftn.get(originalFBillType));
-            ApsOutsourcedOrder apsOutsourcedOrder = kingdeeToApsOutsourcedOrder.convert(kingdeeOutsourcedOrder , InterfaceDataServiceImpl.maxVersion);
+            ApsOutsourcedOrder apsOutsourcedOrder = kingdeeToApsOutsourcedOrder.convert(kingdeeOutsourcedOrder , maxVersion);
             apsOutsourcedOrders.add(apsOutsourcedOrder);
         }
         return apsOutsourcedOrders;

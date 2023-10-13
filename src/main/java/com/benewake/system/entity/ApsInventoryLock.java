@@ -5,12 +5,11 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-
-import lombok.Builder;
+import java.util.Date;
 import lombok.Data;
 
 /**
- * 
+ * 用于存储库存锁定信息的表
  * @TableName aps_inventory_lock
  */
 @TableName(value ="aps_inventory_lock")
@@ -38,7 +37,13 @@ public class ApsInventoryLock implements Serializable {
      * 锁库数量
      */
     @TableField(value = "f_lock_qty")
-    private String fLockQty;
+    private Integer fLockQty;
+
+    /**
+     * 批号
+     */
+    @TableField(value = "f_lot")
+    private String fLot;
 
     /**
      * 版本号

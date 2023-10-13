@@ -6,20 +6,15 @@
 
     <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsTableVersion">
             <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="tableId" column="table_id" jdbcType="INTEGER"/>
+            <result property="tableVersion" column="table_version" jdbcType="INTEGER"/>
             <result property="versionNumber" column="version_number" jdbcType="INTEGER"/>
             <result property="versionTime" column="version_time" jdbcType="TIMESTAMP"/>
             <result property="state" column="state" jdbcType="INTEGER"/>
-
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,version_number,
-        version_time,state
+        id,table_id,table_version,
+        version_number,version_time,state
     </sql>
-    <insert id="incrVersions">
-        INSERT INTO aps_table_version (version_number, version_time, state)
-        SELECT COALESCE(MAX(version_number), 0) + 1, CURRENT_TIMESTAMP(), 2
-        FROM aps_table_version;
-    </insert>
-
 </mapper>

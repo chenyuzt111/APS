@@ -10,7 +10,6 @@ import com.benewake.system.entity.kingdee.transfer.FIDToNumber;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
 import com.benewake.system.service.ApsProductionOrderService;
 import com.benewake.system.mapper.ApsProductionOrderMapper;
-import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.transfer.KingdeeToApsProductionOrder;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
@@ -48,16 +47,16 @@ public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrde
         //BOM版本号映射表
         Map<String, String> btn = getFIDToNumberMap();
 
-//        Integer maxVersion = apsTableVersionService.getMaxVersion();
         ArrayList<ApsProductionOrder> apsProductionOrders = new ArrayList<>();
+        Integer maxVersion = this.getMaxVersionIncr();
         for (KingdeeProductionOrder kingdeeProductionOrder : result) {
-            getApsProductionOrderList(mtn, ftn, btn, apsProductionOrders, kingdeeProductionOrder);
+            getApsProductionOrderList(maxVersion ,mtn, ftn, btn, apsProductionOrders, kingdeeProductionOrder);
         }
 
         return saveBatch(apsProductionOrders);
     }
 
-    private void getApsProductionOrderList(Map<String, String> mtn, Map<String, String> ftn, Map<String, String> btn, ArrayList<ApsProductionOrder> apsProductionOrders, KingdeeProductionOrder kingdeeProductionOrder) {
+    private void getApsProductionOrderList(Integer maxVersion, Map<String, String> mtn, Map<String, String> ftn, Map<String, String> btn, ArrayList<ApsProductionOrder> apsProductionOrders, KingdeeProductionOrder kingdeeProductionOrder) {
         // 获取 FStatus 的 id
         String statusId = kingdeeProductionOrder.getFStatus();
         // 使用映射 HashMap 获取状态文字
@@ -78,7 +77,7 @@ public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrde
         String originalFBillType = kingdeeProductionOrder.getFBillType();
         kingdeeProductionOrder.setFBillType(ftn.get(originalFBillType));
         kingdeeProductionOrder.setFBomId(btn.get(kingdeeProductionOrder.getFBomId()));
-        ApsProductionOrder apsProductionOrder = kingdeeToApsProductionOrder.convert(kingdeeProductionOrder, InterfaceDataServiceImpl.maxVersion);
+        ApsProductionOrder apsProductionOrder = kingdeeToApsProductionOrder.convert(kingdeeProductionOrder, maxVersion);
         apsProductionOrders.add(apsProductionOrder);
     }
 

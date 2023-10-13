@@ -8,7 +8,6 @@ import com.benewake.system.entity.kingdee.YourResultClassForSubQuery;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
 import com.benewake.system.service.ApsOutsourcedMaterialService;
 import com.benewake.system.mapper.ApsOutsourcedMaterialMapper;
-import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.transfer.KingdeeToApsOutsourcedMaterial;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
@@ -49,10 +48,11 @@ public class ApsOutsourcedMaterialServiceImpl extends ServiceImpl<ApsOutsourcedM
         return saveBatch(apsOutsourcedMaterials);
     }
 
-    private ArrayList<ApsOutsourcedMaterial> transferKingdeeToApsOutsourcedMaterial(List<KingdeeOutsourcedMaterial> kingdeeOutsourcedMaterials, Map<String, String> materialIdToNameMap) {
+    private ArrayList<ApsOutsourcedMaterial> transferKingdeeToApsOutsourcedMaterial(List<KingdeeOutsourcedMaterial> kingdeeOutsourcedMaterials, Map<String, String> materialIdToNameMap) throws NoSuchFieldException, IllegalAccessException {
         //获取最大版本
 //        Integer maxVersion = apsTableVersionService.getMaxVersion();
         ArrayList<ApsOutsourcedMaterial> apsOutsourcedMaterials = new ArrayList<>();
+        Integer maxVersion = this.getMaxVersionIncr();
         for (KingdeeOutsourcedMaterial kingdeeOutsourcedMaterial : kingdeeOutsourcedMaterials) {
             String materialIdName = materialIdToNameMap.get(kingdeeOutsourcedMaterial.getFMaterialID());
             String materialId2Name = materialIdToNameMap.get(kingdeeOutsourcedMaterial.getFMaterialID2());
@@ -62,7 +62,7 @@ public class ApsOutsourcedMaterialServiceImpl extends ServiceImpl<ApsOutsourcedM
             String fMaterialTypeDescription = FMaterialStatus.getByCode(fMaterialType).getDescription();
             kingdeeOutsourcedMaterial.setFMaterialType(fMaterialTypeDescription);
 
-            ApsOutsourcedMaterial apsOutsourcedMaterial = kingdeeToApsOutsourcedMaterial.convert(kingdeeOutsourcedMaterial, InterfaceDataServiceImpl.maxVersion);
+            ApsOutsourcedMaterial apsOutsourcedMaterial = kingdeeToApsOutsourcedMaterial.convert(kingdeeOutsourcedMaterial, maxVersion);
             apsOutsourcedMaterials.add(apsOutsourcedMaterial);
         }
         return apsOutsourcedMaterials;

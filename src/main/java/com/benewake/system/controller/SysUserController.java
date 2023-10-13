@@ -6,6 +6,7 @@ import com.benewake.system.entity.enums.BusinessType;
 import com.benewake.system.entity.system.SysRole;
 import com.benewake.system.entity.system.SysUser;
 import com.benewake.system.entity.vo.UpdatePwdVo;
+import com.benewake.system.entity.vo.UpdatePwdVoByAdmin;
 import com.benewake.system.service.SysRoleService;
 import com.benewake.system.service.SysUserService;
 import io.swagger.annotations.Api;
@@ -117,12 +118,23 @@ public class SysUserController {
     }
 
     @ApiOperation("修改用户密码接口")
-    @PostMapping("updatePwd")
-    public Result updatePassword(@RequestBody UpdatePwdVo updatePwdVo){
-        Map<String,Object> res = sysUserService.updatePassword(updatePwdVo);
+    @PostMapping("updatePwdbByAdmin")
+    public Result updatePasswordByAdmin(@RequestBody UpdatePwdVoByAdmin updatePwdVoByAdmin){
+        Map<String,Object> res = sysUserService.updatePasswordByAdmin(updatePwdVoByAdmin);
         if(res.size() == 0){
             // 修改成功 清除token（前端清除已存储的token信息） 重新登录
+            return Result.ok().message("修改成功");
+        }else{
+            return Result.fail().message((String) res.get("error"));
+        }
+    }
 
+
+    @PostMapping("updatePwdByUser")
+    public Result updatePassword(@RequestBody UpdatePwdVo updatePwdVo){
+        Map<String,Object> res = sysUserService.updatePasswordByUser(updatePwdVo);
+        if(res.size() == 0){
+            // 修改成功 清除token（前端清除已存储的token信息） 重新登录
             return Result.ok().message("修改成功");
         }else{
             return Result.fail().message((String) res.get("error"));

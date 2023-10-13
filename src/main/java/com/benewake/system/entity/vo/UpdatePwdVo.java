@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Data
 public class UpdatePwdVo implements Serializable {
     private static final long serialVersionUID = 1L;
-    private String id;
+//    private String id;
     private String oldPassword;
     private String newPassword;
     private String reNewPassowrd;

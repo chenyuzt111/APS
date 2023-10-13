@@ -27,6 +27,10 @@ public abstract class PythonBase {
     }
 
     public PythonBase(String directory, String startClass) {
+        //获取当前路径
+        File f = new File(this.getClass().getResource("/").getPath());
+
+        directory = f + directory;
         Path pythonScript = Paths.get(directory, startClass);
         this.processBuilder = new ProcessBuilder(MYPYTHON_PATH, pythonScript.toString());
         this.processBuilder.directory(new File(directory));

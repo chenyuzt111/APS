@@ -6,7 +6,6 @@ import com.benewake.system.entity.kingdee.KingdeeInventoryLock;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
 import com.benewake.system.service.ApsInventoryLockService;
 import com.benewake.system.mapper.ApsInventoryLockMapper;
-import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.transfer.KingdeeToApsInventoryLock;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
@@ -20,12 +19,12 @@ import java.util.Map;
 
 /**
 * @author ASUS
-* @description 针对表【aps_inventory_lock】的数据库操作Service实现
-* @createDate 2023-10-08 11:06:53
+* @description 针对表【aps_inventory_lock(用于存储库存锁定信息的表)】的数据库操作Service实现
+* @createDate 2023-10-13 10:01:44
 */
 @Service
 public class ApsInventoryLockServiceImpl extends ServiceImpl<ApsInventoryLockMapper, ApsInventoryLock>
-    implements ApsInventoryLockService{
+        implements ApsInventoryLockService{
 
     @Autowired
     private K3CloudApi api;
@@ -43,13 +42,14 @@ public class ApsInventoryLockServiceImpl extends ServiceImpl<ApsInventoryLockMap
         return saveBatch(apsInventoryLockList);
     }
 
-    private ArrayList<ApsInventoryLock> getApsInventoryLockList(List<KingdeeInventoryLock> result, Map<String, String> materialIdToNameMap) {
+    private ArrayList<ApsInventoryLock> getApsInventoryLockList(List<KingdeeInventoryLock> result, Map<String, String> materialIdToNameMap) throws NoSuchFieldException, IllegalAccessException {
         ArrayList<ApsInventoryLock> apsInventoryLockList = new ArrayList<>();
-//        Integer maxVersion = apsTableVersionService.getMaxVersion();
+        Integer maxVersion = this.getMaxVersionIncr();
         for (KingdeeInventoryLock kingdeeInventoryLock : result) {
             // 获取 FDocumentStatus 的 id
             kingdeeInventoryLock.setFMaterialId(materialIdToNameMap.get(kingdeeInventoryLock.getFMaterialId()));
-            ApsInventoryLock apsInventoryLock = kingdeeToApsInventoryLock.convert(kingdeeInventoryLock ,InterfaceDataServiceImpl.maxVersion);
+
+            ApsInventoryLock apsInventoryLock = kingdeeToApsInventoryLock.convert(kingdeeInventoryLock ,maxVersion);
             apsInventoryLockList.add(apsInventoryLock);
         }
         return apsInventoryLockList;
@@ -71,7 +71,7 @@ public class ApsInventoryLockServiceImpl extends ServiceImpl<ApsInventoryLockMap
     private List<KingdeeInventoryLock> getKingdeeInventoryLockList() throws Exception {
         QueryParam queryParam = new QueryParam();
         queryParam.setFormId("STK_LockStock");
-        queryParam.setFieldKeys("FMaterialId,FEXPIRYDATE,FLockQty");
+        queryParam.setFieldKeys("FMaterialId,FEXPIRYDATE,FLockQty,FLot");
         List<String> queryFilters = new ArrayList<>();
         queryFilters.add("FStockOrgId = 1");
         queryParam.setFilterString(String.join(" and ", queryFilters));

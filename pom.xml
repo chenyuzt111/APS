@@ -131,6 +131,11 @@
             <version>4.4</version> <!-- 或者您需要的版本 -->
         </dependency>
 
+        <dependency>
+            <groupId>com.kingdee</groupId>
+            <artifactId>k3cloud-webapi-sdk</artifactId>
+            <version>8.0.5</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>

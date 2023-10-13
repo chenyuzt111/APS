@@ -7,7 +7,6 @@ import com.benewake.system.entity.kingdee.transfer.CreateIdToName;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
 import com.benewake.system.service.ApsReceiveNoticeService;
 import com.benewake.system.mapper.ApsReceiveNoticeMapper;
-import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.transfer.KingdeeToApsReceiveNotice;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
@@ -50,13 +49,13 @@ public class ApsReceiveNoticeServiceImpl extends ServiceImpl<ApsReceiveNoticeMap
         return saveBatch(apsReceiveNoticeList);
     }
 
-    private ArrayList<ApsReceiveNotice> getApsReceiveNoticeList(List<KingdeeReceiveNotice> result, Map<String, String> materialIdToNameMap) {
-//        Integer maxVersion = apsTableVersionService.getMaxVersion();
+    private ArrayList<ApsReceiveNotice> getApsReceiveNoticeList(List<KingdeeReceiveNotice> result, Map<String, String> materialIdToNameMap) throws NoSuchFieldException, IllegalAccessException {
         ArrayList<ApsReceiveNotice> apsReceiveNoticeList = new ArrayList<>();
+        Integer maxVersion = this.getMaxVersionIncr();
         for (KingdeeReceiveNotice kingdeeReceiveNotice : result) {
             // 信息替换
             kingdeeReceiveNotice.setFMaterialId(materialIdToNameMap.get(kingdeeReceiveNotice.getFMaterialId()));
-            ApsReceiveNotice apsReceiveNotice = kingdeeToApsReceiveNotice.convert(kingdeeReceiveNotice, InterfaceDataServiceImpl.maxVersion);
+            ApsReceiveNotice apsReceiveNotice = kingdeeToApsReceiveNotice.convert(kingdeeReceiveNotice, maxVersion);
             apsReceiveNoticeList.add(apsReceiveNotice);
         }
         return apsReceiveNoticeList;

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 /**
 * @author ASUS
 * @description 针对表【aps_table_version(用于跟踪表的版本历史记录的表格)】的数据库操作Service实现
-* @createDate 2023-10-07 14:28:31
+* @createDate 2023-10-12 15:46:31
 */
 @Service
 public class ApsTableVersionServiceImpl extends ServiceImpl<ApsTableVersionMapper, ApsTableVersion>
@@ -20,28 +20,9 @@ public class ApsTableVersionServiceImpl extends ServiceImpl<ApsTableVersionMappe
     @Override
     public Integer getMaxVersion() {
         LambdaQueryWrapper<ApsTableVersion> apsTableVersionLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        apsTableVersionLambdaQueryWrapper.orderByDesc(ApsTableVersion::getVersionNumber)
-                .last("limit 1");
-        ApsTableVersion apsTableVersion = getOne(apsTableVersionLambdaQueryWrapper);
-        Integer maxVersion = 0;
-        if (apsTableVersion != null) {
-            maxVersion = apsTableVersion.getVersionNumber();
-        }
-        return maxVersion;
-    }
-
-    @Override
-    public void incrVersions() {
-        this.baseMapper.incrVersions();
-    }
-
-    @Override
-    public Integer getMaxVersionState() {
-        LambdaQueryWrapper<ApsTableVersion> apsTableVersionLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        apsTableVersionLambdaQueryWrapper.orderByDesc(ApsTableVersion::getVersionNumber)
-                .last("limit 1");
-        ApsTableVersion apsTableVersion = getOne(apsTableVersionLambdaQueryWrapper);
-        return apsTableVersion!= null? apsTableVersion.getState() : null;
+        apsTableVersionLambdaQueryWrapper.orderByDesc(ApsTableVersion::getVersionNumber).last("limit 1");
+        ApsTableVersion maxVersionEntity = getOne(apsTableVersionLambdaQueryWrapper);
+        return maxVersionEntity != null ? maxVersionEntity.getVersionNumber() : 0;
     }
 }
 

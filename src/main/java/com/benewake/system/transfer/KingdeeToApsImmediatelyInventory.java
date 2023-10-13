@@ -13,6 +13,7 @@ public class KingdeeToApsImmediatelyInventory {
         }
         ApsImmediatelyInventory apsImmediatelyInventory = new ApsImmediatelyInventory();
         apsImmediatelyInventory.setFAvbQty(object.getFAVBQty());
+        apsImmediatelyInventory.setFBaseQty(object.getFBaseQty());
         apsImmediatelyInventory.setFLot(object.getFLot());
         apsImmediatelyInventory.setFExpiryDate(object.getFExpiryDate());
         apsImmediatelyInventory.setFMaterialId(object.getFMaterialId());

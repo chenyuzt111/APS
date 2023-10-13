@@ -40,11 +40,15 @@ public class SchedulingAspect {
 
         if (getUserLock()) {
             RLock interfaceDataLock = redisson.getLock(SCHEDULING_DATA_LOCK_KEY);
+            if (!distributedLock.acquireLock(SCHEDULING_ING_LOCK_KEY, hostHolder.getUser().getUsername())) {
+                throw new BeneWakeException("正在排程！");
+            }
+            distributedLock.releaseLock(SCHEDULING_ING_LOCK_KEY, hostHolder.getUser().getUsername());
             if (interfaceDataLock.tryLock()) {
                 try {
-                    redisTemplate.opsForValue().set(SCHEDULING_DATA_LOCK_KEY_STATE , String.valueOf(scheduling.tableExecuteState().getCode()));
+                    redisTemplate.opsForValue().set(SCHEDULING_DATA_LOCK_KEY_STATE, String.valueOf(scheduling.tableExecuteState().getCode()));
                     return point.proceed();
-                }finally {
+                } finally {
                     interfaceDataLock.unlock();
                 }
             } else {
@@ -57,7 +61,7 @@ public class SchedulingAspect {
         return null;
     }
 
-    private boolean getUserLock(){
+    private boolean getUserLock() {
         if (distributedLock.acquireLock(SCHEDULING_USER_LOCK_KEY, hostHolder.getUser().getUsername())) {
             return true;
         } else if (Objects.equals(redisTemplate.opsForValue().get(SCHEDULING_USER_LOCK_KEY), hostHolder.getUser().getUsername())) {

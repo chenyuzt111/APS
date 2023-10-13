@@ -27,8 +27,6 @@ import java.util.stream.Collectors;
 public class ApsAllPlanNumInProcessServiceImpl extends ServiceImpl<ApsAllPlanNumInProcessMapper, ApsAllPlanNumInProcess>
         implements ApsAllPlanNumInProcessService {
 
-    @Autowired
-    private ApsTableVersionMapper apsTableVersionMapper;
 
     @Override
     public ReturnTest getLatestCompletion() {
@@ -53,14 +51,6 @@ public class ApsAllPlanNumInProcessServiceImpl extends ServiceImpl<ApsAllPlanNum
         return returnTest;
     }
 
-    private Integer getVersionNumber() {
-        LambdaQueryWrapper<ApsTableVersion> apsTableVersionLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        apsTableVersionLambdaQueryWrapper.eq(ApsTableVersion::getState, TableVersionState.SCHEDULING.getCode())
-                .orderByDesc(ApsTableVersion::getVersionNumber)
-                .last("limit 1");
-        ApsTableVersion apsTableVersion = apsTableVersionMapper.selectOne(apsTableVersionLambdaQueryWrapper);
-        return apsTableVersion != null ? apsTableVersion.getVersionNumber() : 0;
-    }
 }
 
 

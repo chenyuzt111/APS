@@ -9,46 +9,59 @@ import lombok.Data;
 
 /**
  * 
- * @TableName immediately_inventory
+ * @TableName aps_immediately_inventory
  */
 @TableName(value ="aps_immediately_inventory")
 @Data
 public class ApsImmediatelyInventory implements Serializable {
     /**
-     * 
+     * 自增ID
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 
+     * 物料编码
      */
+    @TableField(value = "f_material_id")
     private String fMaterialId;
 
     /**
-     * 
+     * 仓库名称
      */
+    @TableField(value = "f_stock_name")
     private String fStockName;
 
     /**
-     * 
+     * 库存量(基本单位)
      */
-    private String fAvbQty;
+    @TableField(value = "f_base_qty")
+    private Integer fBaseQty;
 
     /**
-     * 
+     * 可用量(主单位)
      */
+    @TableField(value = "f_avb_qty")
+    private Integer fAvbQty;
+
+    /**
+     * 批号
+     */
+    @TableField(value = "f_lot")
     private String fLot;
 
     /**
-     * 
+     * 有效期至
      */
+    @TableField(value = "f_expiry_date")
     private String fExpiryDate;
 
     /**
-     *
+     * 版本号
      */
+    @TableField(value = "version")
     private Integer version;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

@@ -8,7 +8,6 @@ import com.benewake.system.entity.kingdee.YourResultClassForSubQuery;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
 import com.benewake.system.service.ApsProductionMaterialService;
 import com.benewake.system.mapper.ApsProductionMaterialMapper;
-import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.transfer.KingdeeToApsProductionMaterial;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
@@ -48,8 +47,9 @@ public class ApsProductionMaterialServiceImpl extends ServiceImpl<ApsProductionM
         return saveBatch(apsProductionMaterials);
     }
 
-    private ArrayList<ApsProductionMaterial> getApsProductionMaterials( List<KingdeeProductionMaterial> result, Map<String, String> mtn) {
+    private ArrayList<ApsProductionMaterial> getApsProductionMaterials( List<KingdeeProductionMaterial> result, Map<String, String> mtn) throws NoSuchFieldException, IllegalAccessException {
         ArrayList<ApsProductionMaterial> apsProductionMaterials = new ArrayList<>();
+        Integer maxVersion = this.getMaxVersionIncr();
         for (KingdeeProductionMaterial kingdeeProductionMaterial : result) {
             String materialIdName = mtn.get(kingdeeProductionMaterial.getFMaterialID());
             String materialId2Name = mtn.get(kingdeeProductionMaterial.getFMaterialID2());
@@ -60,7 +60,7 @@ public class ApsProductionMaterialServiceImpl extends ServiceImpl<ApsProductionM
             String fMaterialType = kingdeeProductionMaterial.getFMaterialType();
             String fMaterialTypeDescription = FMaterialStatus.getByCode(fMaterialType).getDescription();
             kingdeeProductionMaterial.setFMaterialType(fMaterialTypeDescription);
-            ApsProductionMaterial apsProductionMaterial = kingdeeToApsProductionMaterial.convert(kingdeeProductionMaterial, InterfaceDataServiceImpl.maxVersion);
+            ApsProductionMaterial apsProductionMaterial = kingdeeToApsProductionMaterial.convert(kingdeeProductionMaterial, maxVersion);
             apsProductionMaterials.add(apsProductionMaterial);
         }
         return apsProductionMaterials;

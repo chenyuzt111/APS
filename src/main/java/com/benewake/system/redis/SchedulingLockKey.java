@@ -9,4 +9,6 @@ public class SchedulingLockKey {
     public final static String SCHEDULING_DATA_LOCK_KEY = "Scheduling::Data";
 
     public final static String SCHEDULING_DATA_LOCK_KEY_STATE = "Scheduling::Data::State";
+
+    public final static String SCHEDULING_ING_LOCK_KEY = "Scheduling::ing";
 }

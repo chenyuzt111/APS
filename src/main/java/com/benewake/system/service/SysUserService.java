@@ -5,6 +5,7 @@ import com.benewake.system.entity.system.SysRole;
 import com.benewake.system.entity.system.SysUser;
 import com.benewake.system.entity.vo.LoginVo;
 import com.benewake.system.entity.vo.UpdatePwdVo;
+import com.benewake.system.entity.vo.UpdatePwdVoByAdmin;
 
 import java.util.List;
 import java.util.Map;
@@ -47,10 +48,10 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 修改用户密码
-     * @param updatePwdVo
+     * @param updatePwdVoByAdmin
      * @return
      */
-    Map<String, Object> updatePassword(UpdatePwdVo updatePwdVo);
+    Map<String, Object> updatePasswordByAdmin(UpdatePwdVoByAdmin updatePwdVoByAdmin);
 
     /**
      * 用户登录
@@ -109,4 +110,6 @@ public interface SysUserService extends IService<SysUser> {
      * @return
      */
     boolean loglogoutin(String token);
+
+    Map<String, Object> updatePasswordByUser(UpdatePwdVo updatePwdVo);
 }

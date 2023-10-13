@@ -1,7 +1,7 @@
 package com.benewake.system.service;
 
 public interface PythonService  {
-    public void startScheduling();
+    void startScheduling() throws NoSuchFieldException, IllegalAccessException;
 
-    public void integrityChecker();
+    void integrityChecker();
 }
