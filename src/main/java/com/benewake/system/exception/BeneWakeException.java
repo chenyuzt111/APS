@@ -9,4 +9,6 @@ public class BeneWakeException extends RuntimeException{
     public BeneWakeException(String message) {
         super(message);
     }
+
+
 }

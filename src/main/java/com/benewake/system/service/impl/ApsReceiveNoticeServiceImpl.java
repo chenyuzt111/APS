@@ -35,6 +35,9 @@ public class ApsReceiveNoticeServiceImpl extends ServiceImpl<ApsReceiveNoticeMap
     @Autowired
     private KingdeeToApsReceiveNotice kingdeeToApsReceiveNotice;
 
+    @Autowired
+    private ApsReceiveNoticeMapper apsReceiveNoticeMapper;
+
 
     @Override
     public Boolean updateDataVersions() throws Exception {
@@ -47,6 +50,11 @@ public class ApsReceiveNoticeServiceImpl extends ServiceImpl<ApsReceiveNoticeMap
         //获取转换后的List
         ArrayList<ApsReceiveNotice> apsReceiveNoticeList = getApsReceiveNoticeList(result, materialIdToNameMap);
         return saveBatch(apsReceiveNoticeList);
+    }
+
+    @Override
+    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
+        return (List<Object>) apsReceiveNoticeMapper.selectVersionPageList(pass, size, versionToChVersionArrayList);
     }
 
     private ArrayList<ApsReceiveNotice> getApsReceiveNoticeList(List<KingdeeReceiveNotice> result, Map<String, String> materialIdToNameMap) throws NoSuchFieldException, IllegalAccessException {

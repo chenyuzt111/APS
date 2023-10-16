@@ -59,7 +59,7 @@ public class SchedulingController {
 
     @ApiOperation("开始排程")
     @PostMapping("/startScheduling")
-    public Result startScheduling() throws NoSuchFieldException, IllegalAccessException {
+    public Result startScheduling(){
         pythonService.startScheduling();
         return Result.ok();
     }

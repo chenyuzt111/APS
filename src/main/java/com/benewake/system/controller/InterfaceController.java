@@ -1,12 +1,11 @@
 package com.benewake.system.controller;
 
-import com.benewake.system.entity.ApsImmediatelyInventory;
 import com.benewake.system.entity.Result;
 import com.benewake.system.service.ApsImmediatelyInventoryService;
+import com.benewake.system.service.InterfaceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,15 +18,17 @@ import java.util.List;
 @RequestMapping("/interface")
 public class InterfaceController {
 
+    
     @Autowired
-    private ApsImmediatelyInventoryService apsImmediatelyInventoryService;
+    private InterfaceService interfaceService;
 
 
     @ApiOperation("查询")
-    @PostMapping("/getApsImmediatelyInventory")
-    public Result getApsImmediatelyInventory(@PathParam("page") Integer page, @PathParam("size") Integer size) {
-        List<com.benewake.system.entity.Interface.ApsImmediatelyInventory> apsImmediatelyInventory = apsImmediatelyInventoryService.getApsImmediatelyInventory(page, size);
-        return Result.ok(apsImmediatelyInventory);
+    @PostMapping("/getMultipleVersionsData")
+    public Result getMultipleVersionsData(@PathParam("page") Integer page, @PathParam("size") Integer size, @PathParam("type") Integer type) {
+        List<Object> apsResult = interfaceService.getMultipleVersionsData(page, size, type);
+        return Result.ok(apsResult);
     }
+
 
 }

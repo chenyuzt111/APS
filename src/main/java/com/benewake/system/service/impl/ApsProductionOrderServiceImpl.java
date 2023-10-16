@@ -36,6 +36,8 @@ public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrde
     @Autowired
     private KingdeeToApsProductionOrder kingdeeToApsProductionOrder;
 
+    @Autowired
+    private ApsProductionOrderMapper apsProductionOrderMapper;
     @Override
     public Boolean updateDataVersions() throws Exception {
 
@@ -54,6 +56,11 @@ public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrde
         }
 
         return saveBatch(apsProductionOrders);
+    }
+
+    @Override
+    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
+        return (List<Object>) apsProductionOrderMapper.selectVersionPageList(pass, size, versionToChVersionArrayList);
     }
 
     private void getApsProductionOrderList(Integer maxVersion, Map<String, String> mtn, Map<String, String> ftn, Map<String, String> btn, ArrayList<ApsProductionOrder> apsProductionOrders, KingdeeProductionOrder kingdeeProductionOrder) {

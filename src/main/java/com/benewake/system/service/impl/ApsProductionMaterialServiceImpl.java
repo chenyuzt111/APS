@@ -2,6 +2,8 @@ package com.benewake.system.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsProductionMaterial;
+import com.benewake.system.entity.Interface.ApsOutsourcedOrderMultipleVersions;
+import com.benewake.system.entity.Interface.ApsProductionMaterialMultipleVersions;
 import com.benewake.system.entity.enums.FMaterialStatus;
 import com.benewake.system.entity.kingdee.KingdeeProductionMaterial;
 import com.benewake.system.entity.kingdee.YourResultClassForSubQuery;
@@ -34,6 +36,9 @@ public class ApsProductionMaterialServiceImpl extends ServiceImpl<ApsProductionM
     @Autowired
     private KingdeeToApsProductionMaterial kingdeeToApsProductionMaterial;
 
+    @Autowired
+    private ApsProductionMaterialMapper apsProductionMaterialMapper;
+
     @Override
     public Boolean updateDataVersions() throws Exception {
         List<YourResultClassForSubQuery> subMoQueryResult = getYourResultClassForSubQueries();
@@ -45,6 +50,11 @@ public class ApsProductionMaterialServiceImpl extends ServiceImpl<ApsProductionM
         //转换
         ArrayList<ApsProductionMaterial> apsProductionMaterials = getApsProductionMaterials( result, mtn);
         return saveBatch(apsProductionMaterials);
+    }
+
+    @Override
+    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
+        return (List<Object>) apsProductionMaterialMapper.selectVersionPageList(pass, size, versionToChVersionArrayList);
     }
 
     private ArrayList<ApsProductionMaterial> getApsProductionMaterials( List<KingdeeProductionMaterial> result, Map<String, String> mtn) throws NoSuchFieldException, IllegalAccessException {

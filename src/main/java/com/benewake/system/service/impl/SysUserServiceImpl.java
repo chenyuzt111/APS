@@ -17,7 +17,6 @@ import com.benewake.system.service.SysRoleService;
 import com.benewake.system.service.SysUserService;
 import com.benewake.system.utils.CommonUtils;
 import com.benewake.system.utils.HostHolder;
-import com.benewake.system.utils.JWTBlacklistManager;
 import com.benewake.system.utils.JwtHelper;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
@@ -48,8 +47,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Autowired
     private SysDeptService sysDeptService;
 
-    @Autowired
-    private JWTBlacklistManager jwtBlacklistManager;
 
     @Autowired
     private HostHolder hostHolder;
@@ -250,11 +247,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return baseMapper.selectOne(lqw) != null;
     }
 
-    @Override
-    public boolean loglogoutin(String token) {
-        jwtBlacklistManager.addToBlacklist(token);
-        return true;
-    }
 
     @Override
     public Map<String, Object> updatePasswordByUser(UpdatePwdVo updatePwdVo) {

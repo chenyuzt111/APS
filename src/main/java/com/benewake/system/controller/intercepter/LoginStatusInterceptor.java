@@ -1,13 +1,10 @@
 package com.benewake.system.controller.intercepter;
 
 
-import com.benewake.system.entity.enums.ResultCodeEnum;
 import com.benewake.system.entity.system.SysUser;
-import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.SysRoleService;
 import com.benewake.system.service.SysUserService;
 import com.benewake.system.utils.HostHolder;
-import com.benewake.system.utils.JWTBlacklistManager;
 import com.benewake.system.utils.JwtHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,16 +30,11 @@ public class LoginStatusInterceptor implements HandlerInterceptor {
     @Autowired
     private HostHolder hostHolder;
 
-    @Autowired
-    private JWTBlacklistManager jwtBlacklistManager;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //从cookie中获取凭证
         String token = request.getHeader("token");
-        if (jwtBlacklistManager.isBlacklisted(token)) {
-            throw  new BeneWakeException(ResultCodeEnum.LOGIN_EXPIRATION.getMessage());
-        }
         if(token != null){
             String username = JwtHelper.getUsername(token);
             // 检查凭证是否有效

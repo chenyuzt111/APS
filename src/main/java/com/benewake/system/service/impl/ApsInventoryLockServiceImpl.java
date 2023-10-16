@@ -2,6 +2,8 @@ package com.benewake.system.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsInventoryLock;
+import com.benewake.system.entity.Interface.ApsImmediatelyInventoryMultipleVersions;
+import com.benewake.system.entity.Interface.ApsInventoryLockMultipleVersions;
 import com.benewake.system.entity.kingdee.KingdeeInventoryLock;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
 import com.benewake.system.service.ApsInventoryLockService;
@@ -33,6 +35,9 @@ public class ApsInventoryLockServiceImpl extends ServiceImpl<ApsInventoryLockMap
     @Autowired
     private KingdeeToApsInventoryLock kingdeeToApsInventoryLock;
 
+    @Autowired
+    private ApsInventoryLockMapper apsInventoryLockMapper;
+
     @Override
     public Boolean updateDataVersions() throws Exception {
         List<KingdeeInventoryLock> result = getKingdeeInventoryLockList();
@@ -40,6 +45,11 @@ public class ApsInventoryLockServiceImpl extends ServiceImpl<ApsInventoryLockMap
         Map<String, String> materialIdToNameMap = getMaterialIdToNameMap();
         ArrayList<ApsInventoryLock> apsInventoryLockList = getApsInventoryLockList(result, materialIdToNameMap);
         return saveBatch(apsInventoryLockList);
+    }
+
+    @Override
+    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
+        return (List<Object>) apsInventoryLockMapper.selectVersionPageList(pass, size, versionToChVersionArrayList);
     }
 
     private ArrayList<ApsInventoryLock> getApsInventoryLockList(List<KingdeeInventoryLock> result, Map<String, String> materialIdToNameMap) throws NoSuchFieldException, IllegalAccessException {

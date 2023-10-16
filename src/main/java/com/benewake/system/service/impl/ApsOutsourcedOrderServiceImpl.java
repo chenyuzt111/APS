@@ -2,6 +2,8 @@ package com.benewake.system.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsOutsourcedOrder;
+import com.benewake.system.entity.Interface.ApsOutsourcedMaterialMultipleVersions;
+import com.benewake.system.entity.Interface.ApsOutsourcedOrderMultipleVersions;
 import com.benewake.system.entity.enums.FPickMtrlStatusEnum;
 import com.benewake.system.entity.enums.FStatusEnum;
 import com.benewake.system.entity.kingdee.KingdeeOutsourcedOrder;
@@ -36,6 +38,9 @@ public class ApsOutsourcedOrderServiceImpl extends ServiceImpl<ApsOutsourcedOrde
     @Autowired
     private kingdeeToApsOutsourcedOrder kingdeeToApsOutsourcedOrder;
 
+    @Autowired
+    private ApsOutsourcedOrderMapper apsOutsourcedOrderMapper;
+
     @Override
     public Boolean updateDataVersions() throws Exception {
         List<KingdeeOutsourcedOrder> result = getKingdeeOutsourcedOrders();
@@ -48,6 +53,11 @@ public class ApsOutsourcedOrderServiceImpl extends ServiceImpl<ApsOutsourcedOrde
         //转换
         ArrayList<ApsOutsourcedOrder> apsOutsourcedOrders = getApsOutsourcedOrders(result, mtn, ftn, btn);
         return saveBatch(apsOutsourcedOrders);
+    }
+
+    @Override
+    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
+        return (List<Object>) apsOutsourcedOrderMapper.selectVersionPageList(pass, size, versionToChVersionArrayList);
     }
 
     private ArrayList<ApsOutsourcedOrder> getApsOutsourcedOrders(List<KingdeeOutsourcedOrder> result, Map<String, String> mtn, Map<String, String> ftn, Map<String, String> btn) throws NoSuchFieldException, IllegalAccessException {

@@ -35,6 +35,9 @@ public class ApsPurchaseRequestServiceImpl extends ServiceImpl<ApsPurchaseReques
     @Autowired
     private KingdeeToApsPurchaseRequest kingdeeToApsPurchaseRequest;
 
+
+    @Autowired
+    private ApsPurchaseRequestMapper apsPurchaseRequestMapper;
     @Override
     public Boolean updateDataVersions() throws Exception {
         // 创建人和审核人映射表
@@ -49,6 +52,11 @@ public class ApsPurchaseRequestServiceImpl extends ServiceImpl<ApsPurchaseReques
         ArrayList<ApsPurchaseRequest> apsPurchaseRequestList = getApsPurchaseRequestArrayList(kingdeePurchaseRequestList, materialIdToNumberMap);
 
         return saveBatch(apsPurchaseRequestList);
+    }
+
+    @Override
+    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
+        return (List<Object>) apsPurchaseRequestMapper.selectVersionPageList(pass, size, versionToChVersionArrayList);
     }
 
     private ArrayList<ApsPurchaseRequest> getApsPurchaseRequestArrayList(List<KingdeePurchaseRequest> kingdeePurchaseRequestList, Map<String, String> materialIdToNumberMap) throws NoSuchFieldException, IllegalAccessException {

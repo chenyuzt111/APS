@@ -21,7 +21,7 @@
         f_expiry_date,version
     </sql>
 
-    <select id="selectVersionPageList" resultType="com.benewake.system.entity.Interface.ApsImmediatelyInventory">
+    <select id="selectVersionPageList" resultType="com.benewake.system.entity.Interface.ApsImmediatelyInventoryMultipleVersions">
         SELECT *
         from
         <foreach collection="versions" item="item" index="index" open="(" separator=" UNION ALL " close=")">

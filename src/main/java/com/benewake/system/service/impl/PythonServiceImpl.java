@@ -39,7 +39,7 @@ public class PythonServiceImpl implements PythonService {
     private List<KingdeeService> kingdeeService;
 
     @Override
-    public void startScheduling() throws NoSuchFieldException, IllegalAccessException {
+    public void startScheduling() {
 
         Integer schedulingMaxVersion = apsTableVersionService.getMaxVersion();
         ArrayList<ApsTableVersion> apsTableVersions = new ArrayList<>();

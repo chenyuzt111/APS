@@ -12,5 +12,5 @@ import java.util.List;
 */
 public interface ApsImmediatelyInventoryService extends IService<ApsImmediatelyInventory> ,KingdeeService{
 
-    List<com.benewake.system.entity.Interface.ApsImmediatelyInventory> getApsImmediatelyInventory(Integer page, Integer size);
+
 }

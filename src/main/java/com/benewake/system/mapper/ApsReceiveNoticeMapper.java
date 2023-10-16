@@ -2,6 +2,13 @@ package com.benewake.system.mapper;
 
 import com.benewake.system.entity.ApsReceiveNotice;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.benewake.system.entity.Interface.ApsPurchaseRequestMultipleVersions;
+import com.benewake.system.entity.Interface.ApsReceiveNoticeMultipleVersions;
+import com.benewake.system.entity.Interface.VersionToChVersion;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author ASUS
@@ -9,8 +16,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2023-10-08 10:45:23
 * @Entity com.benewake.system.entity.ApsReceiveNotice
 */
-public interface ApsReceiveNoticeMapper extends BaseMapper<ApsReceiveNotice> {
 
+@Mapper
+public interface ApsReceiveNoticeMapper extends BaseMapper<ApsReceiveNotice> {
+    List<ApsReceiveNoticeMultipleVersions> selectVersionPageList(@Param("pass") Integer pass, @Param("size") Integer size,
+                                                                 @Param("versions") List<VersionToChVersion> versions);
 }
 
 

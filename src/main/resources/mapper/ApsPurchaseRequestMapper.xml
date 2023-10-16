@@ -16,4 +16,15 @@
         id,f_material_id,f_base_unit_qty,
         f_arrival_date,version
     </sql>
+    <select id="selectVersionPageList" resultType="com.benewake.system.entity.Interface.ApsPurchaseRequestMultipleVersions">
+        SELECT *
+        from
+        <foreach collection="versions" item="item" index="index" open="(" separator=" UNION ALL " close=")">
+            SELECT * ,#{item.chVersionName} as ch_version_name FROM aps_purchase_request WHERE version =
+            #{item.version}
+        </foreach>
+        AS derived_table
+        ORDER BY f_lot, version DESC
+        limit #{pass},#{size};
+    </select>
 </mapper>

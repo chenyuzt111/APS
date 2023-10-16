@@ -12,9 +12,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
  * 描 述： TODO
  */
 @EnableAsync
-@SpringBootApplication
+@EnableAspectJAutoProxy
 @MapperScan(basePackages = "com.benewake.system.mapper")
-@ComponentScan(basePackages ={"com.benewake"})
+@SpringBootApplication
 public class ApsSystemApplication {
     public static void main(String[] args) {
         SpringApplication.run(ApsSystemApplication.class, args);

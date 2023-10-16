@@ -2,11 +2,11 @@ package com.benewake.system.mapper;
 
 import com.benewake.system.entity.ApsImmediatelyInventory;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.benewake.system.entity.Interface.versionToChVersion;
+import com.benewake.system.entity.Interface.ApsImmediatelyInventoryMultipleVersions;
+import com.benewake.system.entity.Interface.VersionToChVersion;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,8 +19,8 @@ import java.util.List;
 @Mapper
 public interface ApsImmediatelyInventoryMapper extends BaseMapper<ApsImmediatelyInventory> {
 
-    List<com.benewake.system.entity.Interface.ApsImmediatelyInventory> selectVersionPageList(@Param("pass") Integer pass, @Param("size") Integer size,
-                                                       @Param("versions") ArrayList<versionToChVersion> versions);
+    List<ApsImmediatelyInventoryMultipleVersions> selectVersionPageList(@Param("pass") Integer pass, @Param("size") Integer size,
+                                                                        @Param("versions") List<VersionToChVersion> versions);
 }
 
 

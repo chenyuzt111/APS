@@ -104,12 +104,6 @@ public interface SysUserService extends IService<SysUser> {
      */
     boolean isExistUsername(String username);
 
-    /**
-     * 将退出的token加入黑名单
-     * @param token
-     * @return
-     */
-    boolean loglogoutin(String token);
 
     Map<String, Object> updatePasswordByUser(UpdatePwdVo updatePwdVo);
 }

@@ -1,14 +1,8 @@
 package com.benewake.system.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.benewake.system.entity.ApsTableVersion;
-import com.benewake.system.entity.Interface.versionToChVersion;
-import com.benewake.system.entity.enums.InterfaceDataType;
-import com.benewake.system.entity.enums.TableVersionState;
+import com.benewake.system.entity.Interface.ApsImmediatelyInventoryMultipleVersions;
 import com.benewake.system.entity.kingdee.KingdeeInventoryLock;
-import com.benewake.system.exception.BeneWakeException;
-import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.transfer.KingdeeToApsImmediatelyInventory;
 import com.benewake.system.entity.ApsImmediatelyInventory;
 import com.benewake.system.entity.kingdee.KingdeeImmediatelyInventory;
@@ -17,12 +11,10 @@ import com.benewake.system.service.ApsImmediatelyInventoryService;
 import com.benewake.system.mapper.ApsImmediatelyInventoryMapper;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author ASUS
@@ -38,8 +30,6 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
     @Autowired
     private KingdeeToApsImmediatelyInventory kingdeeToApsImmediatelyInventory;
 
-    @Autowired
-    private ApsTableVersionService apsTableVersionService;
 
     @Autowired
     private ApsImmediatelyInventoryMapper apsImmediatelyInventoryMapper;
@@ -50,6 +40,12 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
         ArrayList<ApsImmediatelyInventory> immediatelyInventories = getApsImmediatelyInventoriesByKingdee();
         return saveBatch(immediatelyInventories);
     }
+
+    @Override
+    public List<Object> selectVersionPageList(Integer pass, Integer size, List arrayList) {
+        return (List<Object>) apsImmediatelyInventoryMapper.selectVersionPageList(pass, size, arrayList);
+    }
+
 
     private ArrayList<ApsImmediatelyInventory> getApsImmediatelyInventoriesByKingdee() throws Exception {
         //获取金蝶原数据
@@ -121,40 +117,6 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
         return mtn;
     }
 
-    @Override
-    public List<com.benewake.system.entity.Interface.ApsImmediatelyInventory> getApsImmediatelyInventory(Integer page, Integer size) {
-        //取出前5版本的version
-        LambdaQueryWrapper<ApsTableVersion> apsTableVersionLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        apsTableVersionLambdaQueryWrapper.eq(ApsTableVersion::getTableId, InterfaceDataType.IMMEDIATELY_INVENTORY.getCode())
-                .eq(ApsTableVersion::getState, TableVersionState.SUCCESS.getCode())
-                .orderByDesc(ApsTableVersion::getVersionNumber)
-                .last("limit 5");
 
-        List<ApsTableVersion> apsTableVersions = apsTableVersionService.getBaseMapper().selectList(apsTableVersionLambdaQueryWrapper);
-        ArrayList<versionToChVersion> versionToChVersionArrayList = new ArrayList<>();
-        int i = 1;
-        for (ApsTableVersion apsTableVersion : apsTableVersions) {
-            versionToChVersion versionToChVersion = new versionToChVersion();
-            versionToChVersion.setVersion(apsTableVersion.getTableVersion());
-            versionToChVersion.setChVersionName("版本" + i++);
-            versionToChVersionArrayList.add(versionToChVersion);
-        }
-        List<Integer> tableVersionList = apsTableVersions.stream().map(ApsTableVersion::getTableVersion).collect(Collectors.toList());
 
-        //取出当前最大版本 判断当前最大版本是否是已经排程的 如果没有那么就是即时版本
-        LambdaQueryWrapper<ApsImmediatelyInventory> apsImmediatelyInventoryLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        apsImmediatelyInventoryLambdaQueryWrapper.orderByDesc(ApsImmediatelyInventory::getVersion).last("limit 1");
-        ApsImmediatelyInventory apsImmediatelyInventoryMaxVersion = getOne(apsImmediatelyInventoryLambdaQueryWrapper);
-        if (apsImmediatelyInventoryMaxVersion != null && apsImmediatelyInventoryMaxVersion.getVersion() != null
-                && !tableVersionList.contains(apsImmediatelyInventoryMaxVersion.getVersion())) {
-            versionToChVersionArrayList.add(new versionToChVersion(apsImmediatelyInventoryMaxVersion.getVersion() ,"即时版本"));
-        }
-
-        Integer pass = (page - 1) * size;
-        if (CollectionUtils.isEmpty(versionToChVersionArrayList)) {
-            return null;
-        }
-
-        return apsImmediatelyInventoryMapper.selectVersionPageList(pass, size, versionToChVersionArrayList);
-    }
 }

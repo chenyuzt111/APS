@@ -24,4 +24,16 @@
         f_status,f_pick_mtrl_status,f_stock_in_qty,
         f_bom_id,version
     </sql>
+
+    <select id="selectVersionPageList" resultType="com.benewake.system.entity.Interface.ApsOutsourcedOrderMultipleVersions">
+        SELECT *
+        from
+        <foreach collection="versions" item="item" index="index" open="(" separator=" UNION ALL " close=")">
+            SELECT * ,#{item.chVersionName} as ch_version_name FROM aps_outsourced_order WHERE version =
+            #{item.version}
+        </foreach>
+        AS derived_table
+        ORDER BY f_lot, version DESC
+        limit #{pass},#{size};
+    </select>
 </mapper>

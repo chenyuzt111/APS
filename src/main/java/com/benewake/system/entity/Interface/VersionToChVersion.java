@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class versionToChVersion {
+public class VersionToChVersion {
     private Integer version;
     private String chVersionName;
 }

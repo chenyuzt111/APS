@@ -3,13 +3,9 @@ package com.benewake.system.security.fillter;
 import com.alibaba.fastjson.JSON;
 import com.benewake.system.entity.Result;
 import com.benewake.system.entity.enums.ResultCodeEnum;
-import com.benewake.system.exception.BeneWakeException;
-import com.benewake.system.utils.HostHolder;
-import com.benewake.system.utils.JWTBlacklistManager;
 import com.benewake.system.utils.JwtHelper;
 import com.benewake.system.utils.ResponseUtil;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -38,8 +34,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     //定义了一个名为RedisTemplate的成员变量，用于和redis进行交互
     private RedisTemplate redisTemplate;
 
-
-    private JWTBlacklistManager jwtBlacklistManager;
 
     //构造函数接收一个redisTemplate作为参数分配给成员变量
     public TokenAuthenticationFilter(RedisTemplate redisTemplate) {

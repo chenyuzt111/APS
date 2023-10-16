@@ -52,14 +52,6 @@ public class IndexController {
         }
     }
 
-    @ApiOperation("用户退出接口")
-    @PostMapping("exit")
-    public Result exit(HttpServletRequest request) {
-        // 获取请求头token字符串
-        String token = request.getHeader("token");
-        return sysUserService.loglogoutin(token) ? Result.ok() : Result.fail();
-    }
-
 
     @ApiOperation("获取登录用户的用户信息接口")
     @GetMapping("info")

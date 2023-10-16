@@ -2,6 +2,8 @@ package com.benewake.system.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsOutsourcedMaterial;
+import com.benewake.system.entity.Interface.ApsInventoryLockMultipleVersions;
+import com.benewake.system.entity.Interface.ApsOutsourcedMaterialMultipleVersions;
 import com.benewake.system.entity.enums.FMaterialStatus;
 import com.benewake.system.entity.kingdee.KingdeeOutsourcedMaterial;
 import com.benewake.system.entity.kingdee.YourResultClassForSubQuery;
@@ -35,6 +37,9 @@ public class ApsOutsourcedMaterialServiceImpl extends ServiceImpl<ApsOutsourcedM
     @Autowired
     private KingdeeToApsOutsourcedMaterial kingdeeToApsOutsourcedMaterial;
 
+    @Autowired
+    private ApsOutsourcedMaterialMapper apsOutsourcedMaterialMapper;
+
     @Override
     public Boolean updateDataVersions() throws Exception {
         //子查询中取出FBillNo 列
@@ -48,9 +53,12 @@ public class ApsOutsourcedMaterialServiceImpl extends ServiceImpl<ApsOutsourcedM
         return saveBatch(apsOutsourcedMaterials);
     }
 
+    @Override
+    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
+        return (List<Object>) apsOutsourcedMaterialMapper.selectVersionPageList(pass, size, versionToChVersionArrayList);
+    }
+
     private ArrayList<ApsOutsourcedMaterial> transferKingdeeToApsOutsourcedMaterial(List<KingdeeOutsourcedMaterial> kingdeeOutsourcedMaterials, Map<String, String> materialIdToNameMap) throws NoSuchFieldException, IllegalAccessException {
-        //获取最大版本
-//        Integer maxVersion = apsTableVersionService.getMaxVersion();
         ArrayList<ApsOutsourcedMaterial> apsOutsourcedMaterials = new ArrayList<>();
         Integer maxVersion = this.getMaxVersionIncr();
         for (KingdeeOutsourcedMaterial kingdeeOutsourcedMaterial : kingdeeOutsourcedMaterials) {
