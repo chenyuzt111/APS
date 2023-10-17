@@ -50,7 +50,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
-
         //这里检查请求的URI是否与"/prod-api/admin/system/index/login"相匹配，如果匹配，也直接放行请求，不进行后续的身份验证处理。
         if ("/prod-api/admin/system/index/login".equals(request.getRequestURI())) {
             chain.doFilter(request, response);

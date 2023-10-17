@@ -1,5 +1,9 @@
 package com.benewake.system.service.message;
 
+import com.benewake.system.utils.HostHolder;
+import com.benewake.system.utils.threadpool.BenewakeExecutor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -11,10 +15,26 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SseService {
     private final Map<String, SseEmitter> sseEmitterMap = new ConcurrentHashMap<>();
 
-    public SseEmitter connect(String userId) {
-        SseEmitter sseEmitter = new SseEmitter();
-        sseEmitterMap.put(userId, sseEmitter);
-        sseEmitter.onCompletion(() -> disconnect(userId)); // 添加断开连接时的处理
+    @Autowired
+    private HostHolder hostHolder;
+
+    public SseEmitter connect() {
+        SseEmitter sseEmitter = new SseEmitter(2000000L);
+        sseEmitterMap.put(hostHolder.getUser().getUsername(), sseEmitter);
+        sseEmitter.onCompletion(() -> disconnect(hostHolder.getUser().getUsername())); // 添加断开连接时的处理
+        BenewakeExecutor.execute(() -> {
+            try {
+                while (true) {
+                    sseEmitter.send("");
+                    Thread.sleep(15000); // 每45秒发送一次
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
         return sseEmitter;
     }
 

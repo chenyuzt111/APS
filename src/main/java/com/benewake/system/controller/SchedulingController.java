@@ -21,6 +21,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import static com.benewake.system.redis.SchedulingLockKey.SCHEDULING_USER_LOCK_KEY;
@@ -102,12 +103,16 @@ public class SchedulingController {
             return Result.ok();
         } else {
             String username = redisTemplate.opsForValue().get(SCHEDULING_USER_LOCK_KEY);
+            if(Objects.equals(username, hostHolder.getUser().getUsername())) {
+                distributedLock.startLockRenewalTask(SCHEDULING_USER_LOCK_KEY);
+                return Result.ok();
+            }
             return Result.fail(username + "正在使用");
         }
     }
 
     @ApiOperation("锁续期")
-    @PostMapping("/LockRenewal")
+    @PostMapping("/lockRenewal")
     public Result lockRenewal() {
         String username = hostHolder.getUser().getUsername();
         String redisUsername = redisTemplate.opsForValue().get(SCHEDULING_USER_LOCK_KEY);
@@ -124,7 +129,7 @@ public class SchedulingController {
         String username = hostHolder.getUser().getUsername();
         String redisUsername = redisTemplate.opsForValue().get(SCHEDULING_USER_LOCK_KEY);
         if (username.equals(redisUsername)) {
-            distributedLock.startLockRenewalTask(SCHEDULING_USER_LOCK_KEY);
+            distributedLock.releaseLock(SCHEDULING_USER_LOCK_KEY ,username);
             return Result.ok();
         }
         return Result.fail();

@@ -1,6 +1,7 @@
 package com.benewake.system.utils.python;
 
 import com.benewake.system.entity.system.SysUser;
+import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.utils.HostHolder;
 import com.benewake.system.utils.threadpool.BenewakeExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,8 +51,11 @@ public abstract class PythonBase {
                 callPythonException();
             }
         } catch (Exception e) {
-            callPythonException();
+            if (!(e instanceof BeneWakeException)) {
+                callPythonException();
+            }
             e.printStackTrace();
+            throw new BeneWakeException(e.getMessage());
         } finally {
             // 在finally块中关闭资源
             if (reader != null) {

@@ -5,6 +5,7 @@ import com.benewake.system.entity.enums.TableVersionState;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.redis.DistributedLock;
 import com.benewake.system.utils.HostHolder;
+import com.benewake.system.utils.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -51,6 +52,9 @@ public class SchedulingAspect {
                 }
             }
         } else {
+            if (StringUtils.isEmpty(username)) {
+                throw new BeneWakeException("当前无人使用 请关闭网页重新获取所有权");
+            }
             throw new BeneWakeException("当前" + username + "正在使用！");
         }
     }
