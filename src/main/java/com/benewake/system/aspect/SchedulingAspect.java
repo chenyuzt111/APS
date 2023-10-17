@@ -15,6 +15,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static com.benewake.system.redis.SchedulingLockKey.*;
 
@@ -23,51 +24,34 @@ import static com.benewake.system.redis.SchedulingLockKey.*;
 public class SchedulingAspect {
 
     @Autowired
-    private HostHolder hostHolder;
-
-    @Autowired
     private DistributedLock distributedLock;
 
     @Autowired
     private StringRedisTemplate redisTemplate;
 
     @Autowired
-    private RedissonClient redisson;
-
+    private HostHolder hostHolder;
 
     @Around("@annotation(scheduling)")
     public Object doBefore(ProceedingJoinPoint point, Scheduling scheduling) throws Throwable {
-
-        if (getUserLock()) {
-            RLock interfaceDataLock = redisson.getLock(SCHEDULING_DATA_LOCK_KEY);
-            if (!distributedLock.acquireLock(SCHEDULING_ING_LOCK_KEY, hostHolder.getUser().getUsername())) {
-                throw new BeneWakeException("正在排程！");
-            }
-            distributedLock.releaseLock(SCHEDULING_ING_LOCK_KEY, hostHolder.getUser().getUsername());
-            if (interfaceDataLock.tryLock()) {
-                try {
-                    redisTemplate.opsForValue().set(SCHEDULING_DATA_LOCK_KEY_STATE, String.valueOf(scheduling.tableExecuteState().getCode()));
+        //todo 校验用户级别的大锁
+        String username = redisTemplate.opsForValue().get(SCHEDULING_USER_LOCK_KEY);
+        if (Objects.equals(username, hostHolder.getUser().getUsername())) {
+            TableVersionState type = scheduling.type();
+            try {
+                if (distributedLock.acquireLock(SCHEDULING_DATA_LOCK_KEY, type.getDescription() ,20, TimeUnit.MINUTES)) {
                     return point.proceed();
-                } finally {
-                    interfaceDataLock.unlock();
+                } else {
+                    String ing = redisTemplate.opsForValue().get(SCHEDULING_DATA_LOCK_KEY);
+                    throw new BeneWakeException(ing + "请稍后");
                 }
-            } else {
-                String code = redisTemplate.opsForValue().get(SCHEDULING_DATA_LOCK_KEY_STATE);
-                assert code != null;
-                TableVersionState tableVersionState = TableVersionState.valueOf(Integer.parseInt(code));
-                throw new BeneWakeException(tableVersionState.getDescription() + "请稍后~~~");
+            } finally {
+                if (!type.equals(TableVersionState.SCHEDULING_ING)) {
+                    distributedLock.releaseLock(SCHEDULING_DATA_LOCK_KEY, type.getDescription());
+                }
             }
+        } else {
+            throw new BeneWakeException("当前" + username + "正在使用！");
         }
-        return null;
     }
-
-    private boolean getUserLock() {
-        if (distributedLock.acquireLock(SCHEDULING_USER_LOCK_KEY, hostHolder.getUser().getUsername())) {
-            return true;
-        } else if (Objects.equals(redisTemplate.opsForValue().get(SCHEDULING_USER_LOCK_KEY), hostHolder.getUser().getUsername())) {
-            return true;
-        }
-        throw new BeneWakeException(redisTemplate.opsForValue().get(SCHEDULING_USER_LOCK_KEY) + "正在使用了！");
-    }
-
 }

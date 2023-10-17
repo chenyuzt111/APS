@@ -10,7 +10,7 @@ spring:
     username: root
     password: EAZWSX#f0ae2f2fdE
     driver-class-name: com.mysql.cj.jdbc.Driver
-    type: com.zaxxer.hikari.HikariDataSource
+    type: com.alibaba.druid.pool.DruidDataSource
     hikari:
       maximum-pool-size: 15
       minimum-idle: 5
@@ -18,15 +18,18 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
-redis:
-  host: 127.0.0.1
-  port: 6379
-  password:
-  maxIdle: 300
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    database: 0
+    jedis:
+      pool:
+        max-idle: 30
 myPython:
   home:
-  directory: \python\APS_For_Benwake_process_kaolv
-  integrityCheckerDirectory: E:\\桌面
+  directory: E:\桌面\APS_For_Benwake_process_kaolv
+  integrityCheckerDirectory: E:\桌面\APS_For_Benwake_process_kaolv
   startClass:
     scheduling: test.py
-    integrityChecker: my_script.py
+    integrityChecker: data_check.py

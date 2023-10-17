@@ -11,15 +11,22 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class DistributedLock {
 
-    //    private static final String LOCK_KEY = "mylock"; // 锁的键名
-    private static final int LOCK_EXPIRE_TIME_SECONDS = 300000; // 锁的超时时间，单位秒
+    //排程用户锁 锁时间
+    private static final int LOCK_EXPIRE_TIME_MINUTES = 6; // 锁的超时时间，单位分钟
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
     public boolean acquireLock(String lockKey, String requestId) {
         // 使用SET命令尝试获取锁
-        Boolean success = redisTemplate.opsForValue().setIfAbsent(lockKey, requestId, LOCK_EXPIRE_TIME_SECONDS, TimeUnit.SECONDS);
+        Boolean success = redisTemplate.opsForValue().setIfAbsent(lockKey, requestId, LOCK_EXPIRE_TIME_MINUTES, TimeUnit.MINUTES);
+        return success != null && success;
+    }
+
+
+    public boolean acquireLock(String lockKey, String requestId ,Integer timeout ,TimeUnit unit) {
+        // 使用SET命令尝试获取锁
+        Boolean success = redisTemplate.opsForValue().setIfAbsent(lockKey, requestId, timeout, unit);
         return success != null && success;
     }
 
@@ -28,5 +35,10 @@ public class DistributedLock {
         String luaScript = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
         Object result = redisTemplate.execute(new DefaultRedisScript<>(luaScript, Long.class), Collections.singletonList(lockKey), requestId);
         return result != null && (long) result == 1;
+    }
+
+    public void startLockRenewalTask(String lockKey) {
+            // 续期锁的过期时间
+        redisTemplate.expire(lockKey, LOCK_EXPIRE_TIME_MINUTES, TimeUnit.MINUTES);
     }
 }

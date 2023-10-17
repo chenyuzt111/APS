@@ -52,7 +52,7 @@ public class GlobalExceptionAdvice {
     @ResponseBody
     public Result error(Exception e){
         e.printStackTrace();
-        return Result.fail().message(e.getMessage());
+        return Result.fail().code(500).message(e.getMessage());
     }
 
 

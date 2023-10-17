@@ -26,4 +26,9 @@ public class SsesController {
     public SseEmitter dataUpdate(@PathVariable("user") String username) throws Exception {
         return sseService.connect(username);
     }
+
+    @PostMapping("/send/{user}")
+    public void data(@PathVariable("user") String username) throws Exception {
+        sseService.sendMessage(username ,"111");
+    }
 }
