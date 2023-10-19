@@ -28,7 +28,14 @@ public enum InterfaceDataType {
     PCBA_VERSION(13, "PCBA分版1","apsPcbaVersionServiceImpl"),
     TFMINI_S_PCBA_VERSION(14, "TFmini-S-PCBA分版1","apsTfminiSPcbaVersionServiceImpl"),
     INSTALLATION_BOARD(15, "安装主板1","apsInstallationBoardServiceImpl"),
-    TFMINI_S_INSTALLATION_BOARD(16, "TFmini-s-安装主板1","apsTfminiSInstallationBoardServiceImpl");
+    TFMINI_S_INSTALLATION_BOARD(16, "TFmini-s-安装主板1","apsTfminiSInstallationBoardServiceImpl"),
+    SN_LABELING(17, "贴SN1","apsSnLabelingServiceImpl"),
+    TFMINI_S_SN_LABELING(18, "TFmini-s-贴SN","apsTfminiSSnLabelingServiceImpl"),
+    CALIBRATION_TESTS(19, "校验测试1","apsCalibrationTestsServiceImpl"),
+    TFMINI_S_CALIBRATION_TESTS(20, "TFmini-S-校验测试1","apsTfminiSCalibrationTestsServiceImpl"),
+    PACKAGING_TEST(21, "包装校验1","apsPackagingTestServiceImpl"),
+    TFMINI_S_PACKAGING_TEST(22, "包装校验1","apsTfminiSPackagingTestServiceImpl");
+
     private int code;
     private String cnTableName;
     private String seviceName;

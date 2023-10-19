@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benewake.system.mapper.ApsTfminiSCalibrationTestsMapper">
+
+    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsTfminiSCalibrationTests">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="productionordernumber" column="productionOrderNumber" jdbcType="VARCHAR"/>
+            <result property="materialcode" column="materialCode" jdbcType="VARCHAR"/>
+            <result property="materialname" column="materialName" jdbcType="VARCHAR"/>
+            <result property="burnincompletionquantity" column="burnInCompletionQuantity" jdbcType="VARCHAR"/>
+            <result property="burnqualifiedcount" column="BurnQualifiedCount" jdbcType="VARCHAR"/>
+            <result property="burnfixturenumber" column="BurnFixtureNumber" jdbcType="VARCHAR"/>
+            <result property="version" column="version" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,productionOrderNumber,materialCode,
+        materialName,burnInCompletionQuantity,BurnQualifiedCount,
+        BurnFixtureNumber,version
+    </sql>
+</mapper>
