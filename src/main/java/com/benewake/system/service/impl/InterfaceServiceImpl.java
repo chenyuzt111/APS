@@ -10,7 +10,7 @@ import com.benewake.system.entity.enums.TableVersionState;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.InterfaceService;
-import com.benewake.system.service.KingdeeService;
+import com.benewake.system.service.ApsIntfaceDataServiceBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ public class InterfaceServiceImpl implements InterfaceService {
     private ApsTableVersionService apsTableVersionService;
 
     @Autowired
-    private Map<String, KingdeeService> kingdeeServiceMap;
+    private Map<String, ApsIntfaceDataServiceBase> kingdeeServiceMap;
 
     @Override
     public List<Object> getMultipleVersionsData(Integer page, Integer size, Integer type) {
@@ -48,11 +48,11 @@ public class InterfaceServiceImpl implements InterfaceService {
             if (interfaceDataType == null) {
                 throw new BeneWakeException("type不正确");
             }
-            KingdeeService kingdeeService = kingdeeServiceMap.get(interfaceDataType.getSeviceName());
+            ApsIntfaceDataServiceBase apsIntfaceDataServiceBase = kingdeeServiceMap.get(interfaceDataType.getSeviceName());
             QueryWrapper queryWrapper = new QueryWrapper();
             queryWrapper.orderByDesc("version");
             queryWrapper.last("limit 1");
-            IService iService = (IService) kingdeeService;
+            IService iService = (IService) apsIntfaceDataServiceBase;
             Object one = iService.getOne(queryWrapper);
             if (one != null) {
                 Field version = one.getClass().getDeclaredField("version");
@@ -65,7 +65,7 @@ public class InterfaceServiceImpl implements InterfaceService {
             }
 
             Integer pass = (page -1) * size;
-            return (List<Object>) kingdeeService.selectVersionPageList(pass ,size ,versionToChVersionArrayList);
+            return (List<Object>) apsIntfaceDataServiceBase.selectVersionPageList(pass ,size ,versionToChVersionArrayList);
         } catch (Exception e) {
             e.printStackTrace();
             throw new BeneWakeException("系统内部错误联系管理员" + this.getClass());

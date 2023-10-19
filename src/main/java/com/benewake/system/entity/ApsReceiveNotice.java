@@ -33,6 +33,12 @@ public class ApsReceiveNotice implements Serializable {
     private String fMaterialId;
 
     /**
+     * 物料编码
+     */
+    @TableField(value = "f_material_name")
+    private String fMaterialName;
+
+    /**
      * 实收数量
      */
     @TableField(value = "f_must_qty")

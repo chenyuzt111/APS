@@ -45,6 +45,12 @@ public class ApsProductionOrder implements Serializable {
     private String fMaterialId;
 
     /**
+     * 物料名称
+     */
+    @TableField(value = "f_material_name")
+    private String fMaterialName;
+
+    /**
      * 数量
      */
     @TableField(value = "f_qty")

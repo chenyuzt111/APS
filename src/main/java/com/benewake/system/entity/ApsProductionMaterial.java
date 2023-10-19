@@ -25,6 +25,11 @@ public class ApsProductionMaterial implements Serializable {
      */
     @TableField(value = "f_material_id")
     private String fMaterialId;
+    /**
+     * 产品编码
+     */
+    @TableField(value = "f_material_name")
+    private String fMaterialName;
 
     /**
      * 生产订单编号
@@ -37,6 +42,11 @@ public class ApsProductionMaterial implements Serializable {
      */
     @TableField(value = "f_material_id2")
     private String fMaterialId2;
+    /**
+     * 子项物料编码
+     */
+    @TableField(value = "f_material_name2")
+    private String fMaterialName2;
 
     /**
      * 子项类型

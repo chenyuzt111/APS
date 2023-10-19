@@ -15,8 +15,10 @@ public class KingdeeToApsProductionMaterial {
         }
         ApsProductionMaterial apsProductionMaterial = new ApsProductionMaterial();
         apsProductionMaterial.setFMaterialId(kingdeeProductionMaterial.getFMaterialID());
+        apsProductionMaterial.setFMaterialName(kingdeeProductionMaterial.getFMaterialName());
         apsProductionMaterial.setFMoBillNo(kingdeeProductionMaterial.getFMOBillNO());
         apsProductionMaterial.setFMaterialId2(kingdeeProductionMaterial.getFMaterialID2());
+        apsProductionMaterial.setFMaterialName2(kingdeeProductionMaterial.getFMaterialName1());
         apsProductionMaterial.setFMaterialType(kingdeeProductionMaterial.getFMaterialType());
         apsProductionMaterial.setFMustQty(kingdeeProductionMaterial.getFMustQty());
         apsProductionMaterial.setFPickedQty(kingdeeProductionMaterial.getFPickedQty());

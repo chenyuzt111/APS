@@ -19,6 +19,7 @@ public class KingdeeToApsImmediatelyInventory {
         apsImmediatelyInventory.setFMaterialId(object.getFMaterialId());
         apsImmediatelyInventory.setFStockName(object.getFStockName());
         apsImmediatelyInventory.setVersion(version);
+        apsImmediatelyInventory.setFMaterialName(object.getFMaterialName());
 
         return apsImmediatelyInventory;
     }

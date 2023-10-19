@@ -7,6 +7,7 @@
     <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsImmediatelyInventory">
         <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="fMaterialId" column="f_material_id" jdbcType="VARCHAR"/>
+        <result property="fMaterialName" column="f_material_name" jdbcType="VARCHAR"/>
         <result property="fStockName" column="f_stock_name" jdbcType="VARCHAR"/>
         <result property="fBaseQty" column="f_base_qty" jdbcType="INTEGER"/>
         <result property="fAvbQty" column="f_avb_qty" jdbcType="INTEGER"/>

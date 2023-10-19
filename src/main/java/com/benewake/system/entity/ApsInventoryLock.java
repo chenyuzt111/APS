@@ -26,6 +26,11 @@ public class ApsInventoryLock implements Serializable {
      */
     @TableField(value = "f_material_id")
     private String fMaterialId;
+    /**
+     * 字段物料mingcheng
+     */
+    @TableField(value = "f_material_name")
+    private String FMaterialName;
 
     /**
      * 到期日

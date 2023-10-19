@@ -43,6 +43,11 @@ public class ApsOutsourcedOrder implements Serializable {
      */
     @TableField(value = "f_material_id")
     private String fMaterialId;
+    /**
+     * 物料编码
+     */
+    @TableField(value = "f_material_name")
+    private String fMaterialName;
 
     /**
      * 数量

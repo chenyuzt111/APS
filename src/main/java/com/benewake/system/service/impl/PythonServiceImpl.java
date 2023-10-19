@@ -5,7 +5,7 @@ import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.entity.enums.TableVersionState;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsTableVersionService;
-import com.benewake.system.service.KingdeeService;
+import com.benewake.system.service.ApsIntfaceDataServiceBase;
 import com.benewake.system.service.PythonService;
 import com.benewake.system.utils.HostHolder;
 import com.benewake.system.utils.StringUtils;
@@ -36,14 +36,14 @@ public class PythonServiceImpl implements PythonService {
     private ApsTableVersionService apsTableVersionService;
 
     @Autowired
-    private List<KingdeeService> kingdeeService;
+    private List<ApsIntfaceDataServiceBase> apsIntfaceDataServiceBase;
 
     @Override
     public void startScheduling() {
 
         Integer schedulingMaxVersion = apsTableVersionService.getMaxVersion();
         ArrayList<ApsTableVersion> apsTableVersions = new ArrayList<>();
-        for (KingdeeService service : kingdeeService) {
+        for (ApsIntfaceDataServiceBase service : apsIntfaceDataServiceBase) {
             Integer maxVersion = service.getMaxVersionIncr();
             if (maxVersion == 1) {throw new BeneWakeException("数据库数据不存在");}
             int codeByServiceName = getCodeByServiceName(service);
@@ -56,10 +56,13 @@ public class PythonServiceImpl implements PythonService {
             apsTableVersions.add(apsTableVersion);
         }
         apsTableVersionService.saveBatch(apsTableVersions);
-        schedulingPythonService.startAsync(hostHolder.getUser());
+        ArrayList<String> strings = new ArrayList<>();
+        strings.add("123");
+        strings.add("321");
+        schedulingPythonService.startAsync(hostHolder.getUser() , strings);
     }
 
-    private int getCodeByServiceName(KingdeeService service) {
+    private int getCodeByServiceName(ApsIntfaceDataServiceBase service) {
         Class<?> aClass = AopProxyUtils.ultimateTargetClass(service);
         String simpleName = aClass.getSimpleName();
         return InterfaceDataType.getCodeByServiceName(StringUtils.toLowerCaseFirstLetter(simpleName));
@@ -67,7 +70,7 @@ public class PythonServiceImpl implements PythonService {
 
     @Override
     public void integrityChecker() {
-        integrityCheckerPythonService.start();
+        integrityCheckerPythonService.start(null);
     }
 
 }

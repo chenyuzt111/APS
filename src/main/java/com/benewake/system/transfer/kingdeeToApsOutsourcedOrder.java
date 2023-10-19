@@ -1,9 +1,7 @@
 package com.benewake.system.transfer;
 
 import com.benewake.system.entity.ApsOutsourcedOrder;
-import com.benewake.system.entity.ApsProductionMaterial;
 import com.benewake.system.entity.kingdee.KingdeeOutsourcedOrder;
-import com.benewake.system.entity.kingdee.KingdeeProductionMaterial;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,6 +16,7 @@ public class kingdeeToApsOutsourcedOrder {
         apsOutsourcedOrder.setFBillType(kingdeeOutsourcedOrder.getFBillType());
         apsOutsourcedOrder.setFBillTypeId(kingdeeOutsourcedOrder.getFBILLTYPEID());
         apsOutsourcedOrder.setFMaterialId(kingdeeOutsourcedOrder.getFMaterialId());
+        apsOutsourcedOrder.setFMaterialName(kingdeeOutsourcedOrder.getFMaterialName());
         apsOutsourcedOrder.setFQty(kingdeeOutsourcedOrder.getFQty());
         apsOutsourcedOrder.setFStatus(kingdeeOutsourcedOrder.getFStatus());
         apsOutsourcedOrder.setFPickMtrlStatus(kingdeeOutsourcedOrder.getFPickMtrlStatus());

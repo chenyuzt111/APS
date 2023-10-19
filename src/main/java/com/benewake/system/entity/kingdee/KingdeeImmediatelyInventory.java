@@ -8,6 +8,8 @@ public class KingdeeImmediatelyInventory {
 
     //("物料编码")
     private String FMaterialId;
+    //("物料编码")
+    private String FMaterialName;
     //("仓库名称")
     private String FStockName;
     //("库存量(基本单位)")

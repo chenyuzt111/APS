@@ -3,15 +3,13 @@ package com.benewake.system.service.impl;
 import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.InterfaceDataService;
-import com.benewake.system.service.KingdeeService;
+import com.benewake.system.service.ApsIntfaceDataServiceBase;
 import com.benewake.system.utils.threadpool.BenewakeExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +23,7 @@ import java.util.stream.Collectors;
 public class InterfaceDataServiceImpl implements InterfaceDataService {
 
     @Autowired
-    private Map<String, KingdeeService> kingdeeServiceMap;
+    private Map<String, ApsIntfaceDataServiceBase> kingdeeServiceMap;
 
 
     @Override
@@ -40,7 +38,7 @@ public class InterfaceDataServiceImpl implements InterfaceDataService {
                     throw new BeneWakeException("id为：" + code + "未找到对应service"); // 如果 serviceName 为空，跳过当前循环
                 }
 
-                KingdeeService service = kingdeeServiceMap.get(serviceName);
+                ApsIntfaceDataServiceBase service = kingdeeServiceMap.get(serviceName);
                 if (service == null) {
                     throw new BeneWakeException(serviceName + "未找到");// 如果未找到对应的服务，跳过当前循环
                 }

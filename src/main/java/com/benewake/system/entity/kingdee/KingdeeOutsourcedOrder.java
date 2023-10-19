@@ -17,6 +17,8 @@ public class KingdeeOutsourcedOrder {
 
     //("物料编码")
     private String FMaterialId;
+    //("物料编码")
+    private String FMaterialName;
 
     //("数量")
     private String FQty;

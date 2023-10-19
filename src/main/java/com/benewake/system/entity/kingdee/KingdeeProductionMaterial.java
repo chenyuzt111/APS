@@ -9,12 +9,16 @@ public class KingdeeProductionMaterial {
 
     //("产品编码")
     private String FMaterialID;
+    //("产品编码")
+    private String FMaterialName;
 
     //("生产订单编号")
     private String FMOBillNO;
 
     //("子项物料编码")
     private String FMaterialID2;
+
+    private String FMaterialName1;
 
     //("子项类型")
     private String FMaterialType;

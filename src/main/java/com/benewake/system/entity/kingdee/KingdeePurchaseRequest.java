@@ -10,6 +10,11 @@ public class KingdeePurchaseRequest {
     @ExcelProperty("物料编码")
      */
     private String FMaterialId;
+    /**
+     *
+    @ExcelProperty("物料编码")
+     */
+    private String FMaterialName;
 
     /**
      *

@@ -7,6 +7,8 @@ public class KingdeeInventoryLock {
 
     //("字段物料编码")
     private String FMaterialId ;
+    //("字段物料编码")
+    private String FMaterialName ;
 
     //("到期日")
     private String FEXPIRYDATE  ;

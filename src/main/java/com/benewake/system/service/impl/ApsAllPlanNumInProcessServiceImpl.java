@@ -36,6 +36,8 @@ public class ApsAllPlanNumInProcessServiceImpl extends ServiceImpl<ApsAllPlanNum
         Set<String> materialSet = apsAllPlanNumInProcesses.stream().map(ApsAllPlanNumInProcess::getMaterialName).collect(Collectors.toSet());
         HashMap<String, ArrayList<ApsAllPlanNumInProcess>> stringArrayListHashMap = new HashMap<String, ArrayList<ApsAllPlanNumInProcess>>();
         for (ApsAllPlanNumInProcess apsAllPlanNumInProcess : apsAllPlanNumInProcesses) {
+            apsAllPlanNumInProcess.setStartTime(apsAllPlanNumInProcess.getStartTime().substring(0 ,5));
+            apsAllPlanNumInProcess.setEndTime(apsAllPlanNumInProcess.getEndTime().substring(0 ,5));
             String materialName = apsAllPlanNumInProcess.getMaterialName();
             if (stringArrayListHashMap.get(materialName) != null) {
                 stringArrayListHashMap.get(materialName).add(apsAllPlanNumInProcess);

@@ -1,7 +1,6 @@
 package com.benewake.system.controller;
 
 import com.benewake.system.entity.Result;
-import com.benewake.system.service.ApsImmediatelyInventoryService;
 import com.benewake.system.service.InterfaceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

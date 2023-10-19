@@ -9,6 +9,8 @@ public class KingdeeReceiveNotice {
     private String FBillNo;
     //("物料编码")
     private String FMaterialId;
+    //("物料编码")
+    private String FMaterialName;
 
     //("实收数量")
     private String FMustQty;

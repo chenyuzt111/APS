@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public abstract class PythonBase {
@@ -35,7 +37,7 @@ public abstract class PythonBase {
         this.processBuilder.directory(new File(directory));
     }
 
-    public void start() {
+    public void start(List<String> command) {
         Process process = null;
         BufferedReader reader = null;
         try {
@@ -72,10 +74,10 @@ public abstract class PythonBase {
     }
 
 
-    public void startAsync(SysUser user) {
+    public void startAsync(SysUser user ,List<String> com) {
         BenewakeExecutor.execute(() -> {
             hostHolder.setUser(user);
-            start();
+            start(com);
         });
     }
 

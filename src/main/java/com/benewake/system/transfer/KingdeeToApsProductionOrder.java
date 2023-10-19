@@ -22,6 +22,7 @@ public class KingdeeToApsProductionOrder {
         apsProductionOrder.setFStockInQuaAuxQty(kingdeeProductionOrder.getFStockInQuaAuxQty());
         apsProductionOrder.setFBomId(kingdeeProductionOrder.getFBomId());
         apsProductionOrder.setFWorkShopId(kingdeeProductionOrder.getFWorkShopID());
+        apsProductionOrder.setFMaterialName(kingdeeProductionOrder.getFMaterialName());
         apsProductionOrder.setVersion(version);
 
         return apsProductionOrder;

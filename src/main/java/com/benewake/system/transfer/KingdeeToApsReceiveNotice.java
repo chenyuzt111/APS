@@ -21,6 +21,7 @@ public class KingdeeToApsReceiveNotice {
         apsReceiveNotice.setFReceiveQty(kingdeeReceiveNotice.getFReceiveQty());
         apsReceiveNotice.setFCsnReceiveBaseQty(kingdeeReceiveNotice.getFCsnReceiveBaseQty());
         apsReceiveNotice.setFInStockQty(kingdeeReceiveNotice.getFInStockQty());
+        apsReceiveNotice.setFMaterialName(kingdeeReceiveNotice.getFMaterialName());
         apsReceiveNotice.setVersion(version);
         return apsReceiveNotice;
     }

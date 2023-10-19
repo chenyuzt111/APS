@@ -9,17 +9,26 @@ import java.util.List;
 @AllArgsConstructor
 public enum InterfaceDataType {
 
+    //APS
     IMMEDIATELY_INVENTORY(1, "即时库存", "apsImmediatelyInventoryServiceImpl"),
     OUTSOURCED_MATERIALS(2, "委外用料清单列表", "apsOutsourcedMaterialServiceImpl"),
     PRODUCTION_MATERIA(3, "生产用料清单列表", "apsProductionMaterialServiceImpl"),
     OUTSOURCED_ORDER(4, "委外订单列表", "apsOutsourcedOrderServiceImpl"),
     PRODUCTION_ORDER(5, "生产订单列表", "apsProductionOrderServiceImpl"),
     PURCHASE_REQUEST(6, "采购申请单列表", "apsPurchaseRequestServiceImpl"),
-    PURCHASE_ORDERS(7, "采购订单列表", "apsPurchaseRequestServiceImpl"),
+    PURCHASE_ORDERS(7, "采购订单列表", "apsPurchaseOrderServiceImpl"),
     //TODO 7 访问不通
     RECEIVE_NOTICE(8, "收料通知单列表", "apsReceiveNoticeServiceImpl"),
-    INVENTORY_LOCK(9, "库存锁库列表", "apsInventoryLockServiceImpl");
+    INVENTORY_LOCK(9," 库存锁库列表", "apsInventoryLockServiceImpl"),
+    MATERIAL_BOM(10," 物料清单列表", "apsMaterialBomServiceImpl"),
     //TODO 多个表类型
+    // MES向下
+    PCBA_BURN(11, "PCBA烧录1","apsPcbaBurnServiceImpl"),
+    TFMINI__S_PCBA_BURN(12, "TFmini-S-PCBA烧录1","apsTfminiSPcbaBurnServiceImpl"),
+    PCBA_VERSION(13, "PCBA分版1","apsPcbaVersionServiceImpl"),
+    TFMINI_S_PCBA_VERSION(14, "TFmini-S-PCBA分版1","apsTfminiSPcbaVersionServiceImpl"),
+    INSTALLATION_BOARD(15, "安装主板1","apsInstallationBoardServiceImpl"),
+    TFMINI_S_INSTALLATION_BOARD(16, "TFmini-s-安装主板1","apsTfminiSInstallationBoardServiceImpl");
     private int code;
     private String cnTableName;
     private String seviceName;

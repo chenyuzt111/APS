@@ -7,12 +7,16 @@ public class KingdeeOutsourcedMaterial {
 
     //("产品编码")
     private String FMaterialID;
+    //("产品编码")
+    private String FMaterialName;
 
     //("委外订单编号")
     private String FSubReqBillNO;
 
     //("子项物料编码")
     private String FMaterialID2;
+    //("子项物料编码")
+    private String FMaterialName2;
 
     //("子项类型")
     private String FMaterialType;
