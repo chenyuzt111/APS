@@ -1,7 +1,9 @@
 package com.benewake.system.service;
 
+import com.benewake.system.entity.vo.SchedulingParam;
+
 public interface PythonService  {
-    void startScheduling();
+    void startScheduling(SchedulingParam schedulingParam);
 
     void integrityChecker();
 }

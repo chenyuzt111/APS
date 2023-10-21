@@ -34,7 +34,7 @@ public enum InterfaceDataType {
     CALIBRATION_TESTS(19, "校验测试1","apsCalibrationTestsServiceImpl"),
     TFMINI_S_CALIBRATION_TESTS(20, "TFmini-S-校验测试1","apsTfminiSCalibrationTestsServiceImpl"),
     PACKAGING_TEST(21, "包装校验1","apsPackagingTestServiceImpl"),
-    TFMINI_S_PACKAGING_TEST(22, "包装校验1","apsTfminiSPackagingTestServiceImpl");
+    TFMINI_S_PACKAGING_TEST(22, "TFmini-S-包装校验1","apsTfminiSPackagingTestServiceImpl");
 
     private int code;
     private String cnTableName;

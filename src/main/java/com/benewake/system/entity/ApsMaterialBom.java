@@ -20,23 +20,17 @@ public class ApsMaterialBom implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    /**
-     * 物料编码
-     */
-    @TableField(value = "f_number")
-    private String fNumber;
-
-    /**
-     * 使用组织ID
-     */
-    @TableField(value = "f_use_org_id")
-    private String fUseOrgId;
 
     /**
      * 父项物料编码
      */
     @TableField(value = "f_material_id")
     private String fMaterialId;
+    /**
+     * 父项物料编码
+     */
+    @TableField(value = "f_material_name")
+    private String fMaterialName;
 
     /**
      * 数据状态
@@ -49,6 +43,12 @@ public class ApsMaterialBom implements Serializable {
      */
     @TableField(value = "f_material_id_child")
     private String fMaterialIdChild;
+
+    /**
+     * 子项物料编码
+     */
+    @TableField(value = "f_material_name_child")
+    private String fMaterialNameChild;
 
     /**
      * 用量:分子
@@ -87,16 +87,11 @@ public class ApsMaterialBom implements Serializable {
     private String fReplaceType;
 
     /**
-     * 禁用状态
+     * 项次
      */
-    @TableField(value = "f_forbid_status")
-    private String fForbidStatus;
+    @TableField(value = "f_replace_group_bop")
+    private String fReplaceGroupBop;
 
-    /**
-     * 到期日期
-     */
-    @TableField(value = "f_expire_date")
-    private String fExpireDate;
 
     /**
      * 版本号

@@ -80,11 +80,7 @@ public class ApsProductionOrder implements Serializable {
     @TableField(value = "f_bom_id")
     private String fBomId;
 
-    /**
-     * 生产车间ID
-     */
-    @TableField(value = "f_work_shop_id")
-    private String fWorkShopId;
+
 
     /**
      * 版本号

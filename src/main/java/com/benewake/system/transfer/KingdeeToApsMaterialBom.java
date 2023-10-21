@@ -15,19 +15,18 @@ public class KingdeeToApsMaterialBom {
         }
 
         ApsMaterialBom apsMaterialBom = new ApsMaterialBom();
-        apsMaterialBom.setFNumber(kingdeeMaterialBom.getFNumber());
-        apsMaterialBom.setFUseOrgId(kingdeeMaterialBom.getFUseOrgId());
         apsMaterialBom.setFMaterialId(kingdeeMaterialBom.getFMaterialID());
+        apsMaterialBom.setFMaterialName(kingdeeMaterialBom.getFITEMNAME());
         apsMaterialBom.setFDocumentStatus(kingdeeMaterialBom.getFDocumentStatus());
         apsMaterialBom.setFMaterialIdChild(kingdeeMaterialBom.getFMaterialIDChild());
+        apsMaterialBom.setFMaterialNameChild(kingdeeMaterialBom.getFCHILDITEMNAME());
         apsMaterialBom.setFNumerator(kingdeeMaterialBom.getFNumerator());
         apsMaterialBom.setFDenominator(kingdeeMaterialBom.getFDenominator());
         apsMaterialBom.setFFixScrapQtyLot(kingdeeMaterialBom.getFFixScrapQtyLot());
         apsMaterialBom.setFScrapRate(kingdeeMaterialBom.getFScrapRate());
-        apsMaterialBom.setFForbidStatus(kingdeeMaterialBom.getFForBidStatus());
-        apsMaterialBom.setFExpireDate(kingdeeMaterialBom.getFExpireDate());
         apsMaterialBom.setFMaterialType(kingdeeMaterialBom.getFMaterialType());
         apsMaterialBom.setFReplaceType(kingdeeMaterialBom.getFReplaceType());
+        apsMaterialBom.setFReplaceGroupBop(kingdeeMaterialBom.getFReplaceGroupBop());
         apsMaterialBom.setVersion(version);
 
         return apsMaterialBom;

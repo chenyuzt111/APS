@@ -32,11 +32,6 @@ public class ApsOutsourcedOrder implements Serializable {
     @TableField(value = "f_bill_type")
     private String fBillType;
 
-    /**
-     * 单据类型ID
-     */
-    @TableField(value = "f_bill_type_id")
-    private String fBillTypeId;
 
     /**
      * 物料编码

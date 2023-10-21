@@ -5,10 +5,9 @@ import com.benewake.system.entity.Result;
 import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.entity.enums.TableVersionState;
 import com.benewake.system.entity.vo.ReturnTest;
-import com.benewake.system.exception.BeneWakeException;
+import com.benewake.system.entity.vo.SchedulingParam;
 import com.benewake.system.redis.DistributedLock;
 import com.benewake.system.service.ApsAllPlanNumInProcessService;
-import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.InterfaceDataService;
 import com.benewake.system.service.PythonService;
 import com.benewake.system.utils.HostHolder;
@@ -16,13 +15,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 import static com.benewake.system.redis.SchedulingLockKey.SCHEDULING_USER_LOCK_KEY;
 
@@ -75,8 +72,9 @@ public class SchedulingController {
     @ApiOperation("开始排程")
     @Scheduling(type = TableVersionState.SCHEDULING_ING)
     @PostMapping("/startScheduling")
-    public Result startScheduling() {
-        pythonService.startScheduling();
+    public Result startScheduling(@RequestBody SchedulingParam schedulingParam) {
+        //todo 入参校验
+        pythonService.startScheduling(schedulingParam);
         return Result.ok();
     }
 

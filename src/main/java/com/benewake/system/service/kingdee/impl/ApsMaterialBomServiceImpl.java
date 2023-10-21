@@ -36,7 +36,7 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
         Integer maxVersionIncr = getMaxVersionIncr();
         QueryParam queryParam = new QueryParam();
         queryParam.setFormId("ENG_BOM");
-        queryParam.setFieldKeys("FNumber,FUseOrgId,FMaterialId,FDocumentStatus,FMaterialIDChild,FNumerator,FDenominator,FFixScrapQtyLot,FMaterialType,FReplaceType,FScrapRate,FForBidStatus,FExpireDate");
+        queryParam.setFieldKeys("FNumber,FUseOrgId,FMaterialId,FITEMNAME,FDocumentStatus,FMaterialIDChild,FCHILDITEMNAME,FNumerator,FDenominator,FFixScrapQtyLot,FMaterialType,FReplaceType,FReplaceGroupBop,FScrapRate,FForBidStatus,FExpireDate");
 
         List<String> queryFilters = new ArrayList<>();
         queryFilters.add("FUseOrgId = '1'");
@@ -49,7 +49,6 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
 
         queryParam.setFilterString(String.join(" and ", queryFilters));
         List<KingdeeMaterialBom> result = api.executeBillQuery(queryParam, KingdeeMaterialBom.class);
-        System.out.println("查询到的数据数量: " + result.size());
         // 物料映射表
         queryParam = new QueryParam();
         queryParam.setFormId("BD_MATERIAL");
@@ -67,8 +66,6 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
         docStatusMap.put("D", "重新审核");
         // 创建一个映射，用于存储每个FMATERIALID对应的最大FNumber
         Map<String, String> maxFNumberMap = new HashMap<>();
-        // 创建一个集合，用于去重
-        Set<String> processedMaterialIds = new HashSet<>();
         // 创建一个列表，用于存储最大FNumber
         List<String> maxFNumbersList = new ArrayList<>();
         // 遍历result，找到每个不同的FMATERIALID对应的最大FNumber

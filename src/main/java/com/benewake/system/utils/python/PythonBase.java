@@ -4,6 +4,7 @@ import com.benewake.system.entity.system.SysUser;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.utils.HostHolder;
 import com.benewake.system.utils.threadpool.BenewakeExecutor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,21 +28,30 @@ public abstract class PythonBase {
 
     private ProcessBuilder processBuilder;
 
+    private String pythonScriptPath;
+
     private PythonBase() {
     }
 
     public PythonBase(String directory, String startClass) {
+        processBuilder = new ProcessBuilder();
         //获取当前路径
         Path pythonScript = Paths.get(directory, startClass);
-        this.processBuilder = new ProcessBuilder(MYPYTHON_PATH, pythonScript.toString());
+        this.pythonScriptPath = pythonScript.toString();
         this.processBuilder.directory(new File(directory));
     }
 
-    public void start(List<String> command) {
+    public void start(List<String> arg) {
         Process process = null;
         BufferedReader reader = null;
+        ArrayList<String> command = new ArrayList<>();
+        command.add(MYPYTHON_PATH);
+        command.add(pythonScriptPath);
+        if (CollectionUtils.isNotEmpty(arg)) {
+            command.addAll(arg);
+        }
         try {
-            process = this.processBuilder.start();
+            process = this.processBuilder.command(command).start();
             reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {

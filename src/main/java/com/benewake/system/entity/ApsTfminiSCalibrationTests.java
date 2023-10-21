@@ -23,37 +23,37 @@ public class ApsTfminiSCalibrationTests implements Serializable {
     /**
      * 生产订单编号
      */
-    @TableField(value = "productionOrderNumber")
+    @TableField(value = "production_order_number")
     private String productionordernumber;
 
     /**
      * 物料编码
      */
-    @TableField(value = "materialCode")
+    @TableField(value = "material_code")
     private String materialcode;
 
     /**
      * 物料名称
      */
-    @TableField(value = "materialName")
+    @TableField(value = "material_name")
     private String materialname;
 
     /**
      * 本次校准测试完成数
      */
-    @TableField(value = "burnInCompletionQuantity")
+    @TableField(value = "burn_in_completion_quantity")
     private String burnincompletionquantity;
 
     /**
      * 校准合格数
      */
-    @TableField(value = "BurnQualifiedCount")
+    @TableField(value = "burn_qualified_count")
     private String burnqualifiedcount;
 
     /**
      * 测试工装编号
      */
-    @TableField(value = "BurnFixtureNumber")
+    @TableField(value = "burn_fixture_number")
     private String burnfixturenumber;
 
     /**

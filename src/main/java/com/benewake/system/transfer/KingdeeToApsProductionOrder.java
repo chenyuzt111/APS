@@ -21,7 +21,6 @@ public class KingdeeToApsProductionOrder {
         apsProductionOrder.setFPickMtrlStatus(kingdeeProductionOrder.getFPickMtrlStatus());
         apsProductionOrder.setFStockInQuaAuxQty(kingdeeProductionOrder.getFStockInQuaAuxQty());
         apsProductionOrder.setFBomId(kingdeeProductionOrder.getFBomId());
-        apsProductionOrder.setFWorkShopId(kingdeeProductionOrder.getFWorkShopID());
         apsProductionOrder.setFMaterialName(kingdeeProductionOrder.getFMaterialName());
         apsProductionOrder.setVersion(version);
 

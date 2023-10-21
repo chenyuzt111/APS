@@ -36,8 +36,7 @@ public class KingdeeProductionOrder {
     private String FBomId;
 
 
-    //("生产车间ID")
-    private String FWorkShopID;
+
 
 
 

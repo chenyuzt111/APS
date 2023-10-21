@@ -3,6 +3,7 @@ package com.benewake.system.service.impl;
 import com.benewake.system.entity.ApsTableVersion;
 import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.entity.enums.TableVersionState;
+import com.benewake.system.entity.vo.SchedulingParam;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.ApsIntfaceDataServiceBase;
@@ -10,6 +11,7 @@ import com.benewake.system.service.PythonService;
 import com.benewake.system.utils.HostHolder;
 import com.benewake.system.utils.StringUtils;
 import com.benewake.system.utils.python.PythonBase;
+import com.google.gson.Gson;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,13 +41,15 @@ public class PythonServiceImpl implements PythonService {
     private List<ApsIntfaceDataServiceBase> apsIntfaceDataServiceBase;
 
     @Override
-    public void startScheduling() {
+    public void startScheduling(SchedulingParam schedulingParam) {
 
         Integer schedulingMaxVersion = apsTableVersionService.getMaxVersion();
         ArrayList<ApsTableVersion> apsTableVersions = new ArrayList<>();
         for (ApsIntfaceDataServiceBase service : apsIntfaceDataServiceBase) {
             Integer maxVersion = service.getMaxVersionIncr();
-            if (maxVersion == 1) {throw new BeneWakeException("数据库数据不存在");}
+            if (maxVersion == 1) {
+                throw new BeneWakeException("数据库数据不存在");
+            }
             int codeByServiceName = getCodeByServiceName(service);
             ApsTableVersion apsTableVersion = ApsTableVersion.builder().tableVersion(maxVersion - 1)
                     .tableId(codeByServiceName)
@@ -56,10 +60,12 @@ public class PythonServiceImpl implements PythonService {
             apsTableVersions.add(apsTableVersion);
         }
         apsTableVersionService.saveBatch(apsTableVersions);
-        ArrayList<String> strings = new ArrayList<>();
-        strings.add("123");
-        strings.add("321");
-        schedulingPythonService.startAsync(hostHolder.getUser() , strings);
+        Gson gson = new Gson();
+        String json = gson.toJson(schedulingParam);
+        //todo 转json传参
+        List<String> strings = new ArrayList<>();
+        strings.add(json);
+        schedulingPythonService.startAsync(hostHolder.getUser(), strings);
     }
 
     private int getCodeByServiceName(ApsIntfaceDataServiceBase service) {

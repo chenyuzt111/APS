@@ -11,8 +11,7 @@ public class KingdeeOutsourcedOrder {
 
     //("单据类型")
     private String FBillType;
-    //("单据类型")
-    private String FBILLTYPEID;
+
 
 
     //("物料编码")

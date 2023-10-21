@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benewake.system.mapper.ApsProcessCapacityMapper">
+
+    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsProcessCapacity">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="belongingProcess" column="belonging_process" jdbcType="VARCHAR"/>
+            <result property="processName" column="process_name" jdbcType="VARCHAR"/>
+            <result property="processNumber" column="process_number" jdbcType="INTEGER"/>
+            <result property="productFamily" column="product_family" jdbcType="VARCHAR"/>
+            <result property="packagingMethod" column="packaging_method" jdbcType="VARCHAR"/>
+            <result property="standardTime" column="standard_time" jdbcType="DECIMAL"/>
+            <result property="maxPersonnel" column="max_personnel" jdbcType="INTEGER"/>
+            <result property="minPersonnel" column="min_personnel" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,belonging_process,process_name,
+        process_number,product_family,packaging_method,
+        standard_time,max_personnel,min_personnel
+    </sql>
+</mapper>

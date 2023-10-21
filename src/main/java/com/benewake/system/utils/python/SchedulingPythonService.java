@@ -36,6 +36,9 @@ public class SchedulingPythonService extends PythonBase {
 
     @Override
     void checkCode(String line) {
+        // todo 将结果(version in null)加上版本号 并且添加表控制的数据 并根据结果设置他的状态 为失败还是成功
+        // todo 如果是试一试并且想查看结果的话 那么应该保存不同的状态 在删除的时候删除掉而不是占用已有的名额 这需要在查询的时候做判断
+        System.out.println("arg1111" + line);
         if ("521".equals(line)) {
             String username = hostHolder.getUser().getUsername();
             //通知前端成功
@@ -49,6 +52,7 @@ public class SchedulingPythonService extends PythonBase {
             sseService.sendMessage(username, "排程已完成 快去查看吧~~");
         } else if ("520".equals(line)) {
             String username = hostHolder.getUser().getUsername();
+            distributedLock.releaseLock(SCHEDULING_DATA_LOCK_KEY, TableVersionState.SCHEDULING_ING.getDescription());
             sseService.sendMessage(username, "排程失败了 联系一下管理员~~");
         }
     }
