@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author Lcs
  * @since 2023年08月04 15:13
- * 描 述： TODO
+ * 描 述： TOD
  */
 @Service
 public class OperServiceImpl extends ServiceImpl<OperLogMapper, SysOperLog> implements OperLogService {

@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author Lcs
  * @since 2023年08月14 16:19
- * 描 述： TODO
+ * 描 述： TOD
  */
 @Mapper
 public interface ApsColMapper extends BaseMapper<ApsCol> {

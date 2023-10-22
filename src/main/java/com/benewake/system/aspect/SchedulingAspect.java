@@ -35,7 +35,6 @@ public class SchedulingAspect {
 
     @Around("@annotation(scheduling)")
     public Object doBefore(ProceedingJoinPoint point, Scheduling scheduling) throws Throwable {
-        //todo 校验用户级别的大锁
         String username = redisTemplate.opsForValue().get(SCHEDULING_USER_LOCK_KEY);
         if (Objects.equals(username, hostHolder.getUser().getUsername())) {
             TableVersionState type = scheduling.type();

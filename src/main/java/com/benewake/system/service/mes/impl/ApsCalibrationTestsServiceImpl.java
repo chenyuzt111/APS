@@ -43,7 +43,6 @@ public class ApsCalibrationTestsServiceImpl extends ServiceImpl<ApsCalibrationTe
     public Boolean updateDataVersions() throws Exception {
         Integer maxVersionIncr = this.getMaxVersionIncr();
         String baseUrl = "http://ql.benewake.com//openApi"; // 替换为实际的API URL
-        String accessToken = "2633eb1b-1348-4a8e-bda2-e66540e1d8b7"; // 替换为实际的accessToken
         String app = "5dfb9e96";
         String requestBody = "{\"pageSize\": 100, \"pageNum\": 1}";
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {

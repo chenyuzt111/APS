@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author Lcs
  * @since 2023年08月01 14:30
- * 描 述： TODO
+ * 描 述：
  */
 @Configuration
 public class MybatisPlusConfig {

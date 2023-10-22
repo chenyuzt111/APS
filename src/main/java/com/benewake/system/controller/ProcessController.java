@@ -1,27 +1,20 @@
 package com.benewake.system.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.benewake.system.entity.ApsFinishedProductBasicData;
-import com.benewake.system.entity.ApsProcessCapacity;
-import com.benewake.system.entity.ApsProcessNamePool;
-import com.benewake.system.entity.Result;
-import com.benewake.system.entity.vo.ApsProcessCapacityListVo;
-import com.benewake.system.entity.vo.ApsProcessCapacityVo;
+import com.benewake.system.entity.*;
+import com.benewake.system.entity.vo.*;
 import com.benewake.system.service.ApsFinishedProductBasicDataService;
 import com.benewake.system.service.ApsProcessCapacityService;
 import com.benewake.system.service.ApsProcessNamePoolService;
-import com.benewake.system.transfer.ApsProcessCapacityEntityToVo;
+import com.benewake.system.service.ApsProcessSchemeService;
 import io.swagger.annotations.Api;
-import io.swagger.models.auth.In;
+import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
-import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,8 +32,11 @@ public class ProcessController {
     @Autowired
     private ApsProcessCapacityService apsProcessCapacityService;
 
+    @Autowired
+    private ApsProcessSchemeService apsProcessSchemeService;
 
 
+    @ApiOperation("添加或更新工序名称")
     @PostMapping("/updateProcessName")
     public Result addorUpdateProcess(@RequestBody ApsProcessNamePool apsProcessNamePool) {
         if (apsProcessNamePool == null || StringUtils.isEmpty(apsProcessNamePool.getProcessName())) {
@@ -49,11 +45,13 @@ public class ProcessController {
         return apsProcessNamePoolService.addOrUpdateProcess(apsProcessNamePool) ? Result.ok() : Result.fail();
     }
 
+    @ApiOperation("删除工序名称")
     @PostMapping("/deleteProcessName")
     public Result deleteProcess(@RequestBody List<Integer> ids) {
         return apsProcessNamePoolService.removeBatchByIds(ids) ? Result.ok() : Result.fail();
     }
 
+    @ApiOperation("获取工序名称")
     @GetMapping("/getProcessNamePools")
     public Result getProcess(@RequestParam(required = false) String name) {
         LambdaQueryWrapper<ApsProcessNamePool> apsProcessNamePoolLambdaQueryWrapper = null;
@@ -65,7 +63,7 @@ public class ProcessController {
         return Result.ok(apsProcessNamePools);
     }
 
-
+    @ApiOperation("产品族")
     @GetMapping("/getAllProductFamily")
     public Result getAllProductFamily() {
         List<ApsFinishedProductBasicData> apsFinishedProductBasicData = apsFinishedProductBasicDataService.getBaseMapper().selectList(null);
@@ -73,7 +71,7 @@ public class ProcessController {
         return Result.ok(productFamily);
     }
 
-
+    @ApiOperation("包装类型")
     @GetMapping("/getAllPackagingMethod")
     public Result getAllPackagingMethod() {
         List<ApsFinishedProductBasicData> apsFinishedProductBasicData = apsFinishedProductBasicDataService.getBaseMapper().selectList(null);
@@ -81,8 +79,9 @@ public class ProcessController {
         return Result.ok(productFamily);
     }
 
+    @ApiOperation("添加或修改工序与生产")
     @PostMapping("/addOrUpdateProcessCapacity")
-    public Result addOrUpdateProcessCapacity(@RequestBody ApsProcessCapacityVo apsProcessCapacityVo) {
+    public Result addOrUpdateProcessCapacity(@RequestBody ApsProcessCapacityParam apsProcessCapacityVo) {
         if (apsProcessCapacityVo == null || StringUtils.isEmpty(apsProcessCapacityVo.getProcessName()) ||
                 StringUtils.isEmpty(apsProcessCapacityVo.getBelongingProcess()) ||
                 StringUtils.isEmpty(apsProcessCapacityVo.getPackagingMethod())) {
@@ -93,15 +92,48 @@ public class ProcessController {
         return res ? Result.ok() : Result.fail();
     }
 
+    @ApiOperation("分页查工序与生产")
     @GetMapping("/getProcessCapacity/{page}/{size}")
     public Result getAllProcessCapacity(@PathVariable Integer page, @PathVariable Integer size) {
         ApsProcessCapacityListVo allProcessCapacity = apsProcessCapacityService.getAllProcessCapacity(page, size);
         return Result.ok(allProcessCapacity);
     }
 
+    @ApiOperation("根据产品族查工序与生产")
+    @GetMapping("/getProcessCapacityByProductFamily")
+    public Result getAllProcessCapacity(@PathParam("productFamily") String productFamily) {
+        List<ApsProcessCapacityVo> allProcessCapacity = apsProcessCapacityService.getProcessCapacitysByproductFamily(productFamily);
+        return CollectionUtils.isNotEmpty(allProcessCapacity) ? Result.ok(allProcessCapacity) : Result.fail("当前产品族没有创建工序与产能");
+    }
 
+    @ApiOperation("删除工序与生产数据（真删奥）")
     @PostMapping("/deleteProcessCapacity")
-    public Result deleteProcessCapacity(@RequestBody List<Integer> ids){
-        return apsProcessCapacityService.removeBatchByIds(ids) ? Result.ok() :Result.fail();
+    public Result deleteProcessCapacity(@RequestBody List<Integer> ids) {
+        return apsProcessCapacityService.removeBatchAndUpdateByIds(ids) ? Result.ok() : Result.fail();
+    }
+
+    @ApiOperation("保存工序方案")
+    @PostMapping("/saveProcessScheme")
+    public Result saveProcessScheme(@RequestBody ApsProcessSchemeParams apsProcessSchemeParams) {
+        if (apsProcessSchemeParams == null ||
+                CollectionUtils.isEmpty(apsProcessSchemeParams.getApsProcessSchemeParam()) ||
+                apsProcessSchemeParams.getNumber() == null) {
+            return Result.fail("不能为null");
+        }
+        return apsProcessSchemeService.saveProcessScheme(apsProcessSchemeParams) ? Result.ok() : Result.fail();
+    }
+
+    @ApiOperation("查询工序方案")
+    @GetMapping("/getProcessScheme/{page}/{size}")
+    public Result getProcessScheme(@PathVariable Integer page ,@PathVariable Integer size){
+        List<ApsProcessSchemeVo> apsProcessSchemeVoList = apsProcessSchemeService.getProcessScheme(page ,size);
+        return Result.ok(apsProcessSchemeVoList);
+    }
+
+    @ApiOperation("删除工序方案")
+    @PostMapping("/deleteProcessScheme")
+    public Result deleteProcessScheme(@RequestBody List<Integer> ids){
+        Boolean res = apsProcessSchemeService.deleteProcessScheme(ids);
+        return res ? Result.ok() : Result.fail();
     }
 }

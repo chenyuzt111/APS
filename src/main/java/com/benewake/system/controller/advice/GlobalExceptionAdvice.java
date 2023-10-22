@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * @author Lcs
  * @since 2023年08月01 16:13
- * 描 述： TODO
+ * 描 述：
  */
 @ControllerAdvice
 public class GlobalExceptionAdvice {

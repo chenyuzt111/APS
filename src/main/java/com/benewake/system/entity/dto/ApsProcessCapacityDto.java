@@ -1,4 +1,4 @@
-package com.benewake.system.entity;
+package com.benewake.system.entity.dto;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -14,7 +14,7 @@ import lombok.Data;
  */
 @TableName(value ="aps_process_capacity")
 @Data
-public class ApsProcessCapacity implements Serializable {
+public class ApsProcessCapacityDto implements Serializable {
     /**
      * 唯一标识
      */
@@ -31,7 +31,12 @@ public class ApsProcessCapacity implements Serializable {
      * 工序名称
      */
     @TableField(value = "process_id")
-    private Integer processId;
+    private String processId;
+    /**
+     * 工序名称
+     */
+    @TableField(value = "process_name")
+    private String processName;
 
     /**
      * 序号

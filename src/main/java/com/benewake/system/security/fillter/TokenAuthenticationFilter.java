@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * @author Lcs
  * @since 2023年08月04 11:18
- * 描 述： TODO
+ * 描 述： TOD
  */
 @Component
 public class TokenAuthenticationFilter extends OncePerRequestFilter {

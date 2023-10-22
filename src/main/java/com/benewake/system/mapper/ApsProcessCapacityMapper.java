@@ -2,6 +2,12 @@ package com.benewake.system.mapper;
 
 import com.benewake.system.entity.ApsProcessCapacity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.benewake.system.entity.dto.ApsProcessCapacityDto;
+import com.benewake.system.entity.vo.ApsProcessCapacityVo;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author ASUS
@@ -9,8 +15,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2023-10-20 15:03:52
 * @Entity com.benewake.system.entity.ApsProcessCapacity
 */
+@Mapper
 public interface ApsProcessCapacityMapper extends BaseMapper<ApsProcessCapacity> {
 
+    List<ApsProcessCapacityDto> selectPages(Integer pass, Integer size);
+
+    List<ApsProcessCapacityVo> selectProcessCapacitysByproductFamily(@Param("productFamily") String productFamily);
 }
 
 

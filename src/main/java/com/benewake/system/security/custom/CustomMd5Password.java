@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author Lcs
  * @since 2023年08月04 10:40
- * 描 述： TODO
+ * 描 述： TOD
  */
 @Component
 public class CustomMd5Password implements PasswordEncoder {

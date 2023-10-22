@@ -9,7 +9,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 /**
  * @author Lcs
  * @since 2023年08月12 10:55
- * 描 述： TODO
+ * 描 述： T
  */
 @Data
 @TableName("sys_role_dept")

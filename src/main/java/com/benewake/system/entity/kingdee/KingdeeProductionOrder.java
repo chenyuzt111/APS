@@ -35,6 +35,9 @@ public class KingdeeProductionOrder {
     //("BOM版本")
     private String FBomId;
 
+    //("计划完成时间")
+    private String FPlanFinishDate;
+
 
 
 

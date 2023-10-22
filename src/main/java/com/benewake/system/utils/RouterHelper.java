@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * @author Lcs
  * @since 2023年08月03 16:08
- * 描 述： TODO
+ * 描 述： TOD
  */
 public class RouterHelper {
 
@@ -66,7 +66,6 @@ public class RouterHelper {
      */
     public static String getRouterPath(SysMenu menu) {
         String routerPath =  menu.getPath();
-        //TODO
         if(menu.getParentId().intValue() != 0) {
             routerPath = menu.getPath();
         }

@@ -1,24 +1,23 @@
-package com.benewake.system.entity;
+package com.benewake.system.entity.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
+
 import lombok.Data;
 
 /**
- * 工序与产能表
- * @TableName aps_process_capacity
+ * 
+ * @TableName aps_process_scheme
  */
-@TableName(value ="aps_process_capacity")
+
 @Data
-public class ApsProcessCapacity implements Serializable {
+public class ApsProcessSchemeParam implements Serializable {
+
     /**
-     * 唯一标识
+     * ApsProcessCapacityId
      */
-    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
@@ -28,7 +27,7 @@ public class ApsProcessCapacity implements Serializable {
     private String belongingProcess;
 
     /**
-     * 工序名称
+     * 工序id
      */
     @TableField(value = "process_id")
     private Integer processId;
@@ -73,6 +72,14 @@ public class ApsProcessCapacity implements Serializable {
      */
     @TableField(value = "version")
     private Integer version;
+
+    /**
+     * 员工姓名
+     */
+
+    private String employeeName;
+
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

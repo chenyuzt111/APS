@@ -80,6 +80,12 @@ public class ApsProductionOrder implements Serializable {
     @TableField(value = "f_bom_id")
     private String fBomId;
 
+    /**
+     * BOM版本
+     */
+    @TableField(value = "planned_completion_time")
+    private String plannedCompletionTime;
+
 
 
     /**

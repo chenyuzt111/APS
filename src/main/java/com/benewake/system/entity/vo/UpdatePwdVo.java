@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * @author Lcs
  * @since 2023年08月03 14:47
- * 描 述： TODO
+ * 描 述： TOD
  */
 @Data
 public class UpdatePwdVo implements Serializable {

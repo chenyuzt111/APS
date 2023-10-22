@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  * @author Lcs
  * @since 2023年08月01 10:58
- * 描 述： TODO
+ * 描 述： TOD
  */
 @Data
 public class Result<T> {

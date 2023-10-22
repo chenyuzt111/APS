@@ -2,8 +2,11 @@ package com.benewake.system.service;
 
 import com.benewake.system.entity.ApsProcessCapacity;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.ApsProcessCapacityParam;
 import com.benewake.system.entity.vo.ApsProcessCapacityListVo;
 import com.benewake.system.entity.vo.ApsProcessCapacityVo;
+
+import java.util.List;
 
 /**
 * @author ASUS
@@ -12,7 +15,11 @@ import com.benewake.system.entity.vo.ApsProcessCapacityVo;
 */
 public interface ApsProcessCapacityService extends IService<ApsProcessCapacity> {
 
-    Boolean saveOrUpdateProcessCapacityService(ApsProcessCapacityVo apsProcessCapacityVo);
+    Boolean saveOrUpdateProcessCapacityService(ApsProcessCapacityParam apsProcessCapacityVo);
 
     ApsProcessCapacityListVo getAllProcessCapacity(Integer page, Integer size);
+
+    List<ApsProcessCapacityVo> getProcessCapacitysByproductFamily(String productFamily);
+
+    boolean removeBatchAndUpdateByIds(List<Integer> ids);
 }

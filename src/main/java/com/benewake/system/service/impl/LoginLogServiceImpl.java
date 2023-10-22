@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author Lcs
  * @since 2023年08月04 14:42
- * 描 述： TODO
+ * 描 述： TOD
  */
 @Service
 public class LoginLogServiceImpl extends ServiceImpl<LoginLogMapper, SysLoginLog> implements LoginLogService {

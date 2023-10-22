@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface ApsIntfaceDataServiceBase<T> {
 
+    String accessToken = "a08dd535-f367-4797-a185-1b57435dcdd1"; // 替换为实际的accessToken
+
     Boolean updateDataVersions() throws Exception;
 
     default Integer getMaxVersionIncr() {

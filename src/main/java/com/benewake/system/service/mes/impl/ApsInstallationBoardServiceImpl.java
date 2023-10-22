@@ -42,7 +42,7 @@ public class ApsInstallationBoardServiceImpl extends ServiceImpl<ApsInstallation
     public Boolean updateDataVersions() throws Exception {
         Integer maxVersionIncr = this.getMaxVersionIncr();
         String baseUrl = "http://ql.benewake.com//openApi"; // 替换为实际的API URL
-        String accessToken = "2633eb1b-1348-4a8e-bda2-e66540e1d8b7"; // 替换为实际的accessToken
+
         String app = "949664af";
         // 创建请求体 JSON 字符串
         String requestBody = "{\"pageSize\": 10000, \"pageNum\": 1}";

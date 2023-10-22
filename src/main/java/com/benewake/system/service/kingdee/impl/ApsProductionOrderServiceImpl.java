@@ -127,7 +127,7 @@ public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrde
     private List<KingdeeProductionOrder> getKingdeeProductionOrders() throws Exception {
         QueryParam queryParam = new QueryParam();
         queryParam.setFormId("PRD_MO");
-        queryParam.setFieldKeys("FStatus,FWorkshopID,FBillNo,FBillType,FMaterialId,FMaterialName,FQty,FStatus,FPickMtrlStatus,FStockInQuaAuxQty,FBomId,FWorkShopID");
+        queryParam.setFieldKeys("FStatus,FWorkshopID,FBillNo,FBillType,FMaterialId,FMaterialName,FQty,FStatus,FPickMtrlStatus,FStockInQuaAuxQty,FPlanFinishDate,FBomId,FWorkShopID");
         // 条件筛选
         List<String> queryFilters = new ArrayList<>();
         //创建一个空的字符串列表，用于存储查询过滤条件

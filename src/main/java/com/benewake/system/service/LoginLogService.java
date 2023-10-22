@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author Lcs
  * @since 2023年08月04 14:41
- * 描 述： TODO
+ * 描 述： TOD
  */
 public interface LoginLogService extends IService<SysLoginLog> {
     public void recordLoginLog(String username,Integer status,

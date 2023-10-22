@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * @author Lcs
  * @since 2023年07月29 16:38
- * 描 述： TODO
+ * 描 述： TOD
  */
 @Service
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> implements SysRoleService {

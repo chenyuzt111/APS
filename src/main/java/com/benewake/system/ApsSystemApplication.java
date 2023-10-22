@@ -7,9 +7,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
- * @author Lcs
- * @since 2023年08月14 11:43
- * 描 述： TODO
+ * aps
  */
 @EnableAsync
 @EnableAspectJAutoProxy

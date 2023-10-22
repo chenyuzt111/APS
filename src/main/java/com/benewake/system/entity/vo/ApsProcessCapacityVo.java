@@ -26,7 +26,11 @@ public class ApsProcessCapacityVo implements Serializable {
     private String belongingProcess;
 
     /**
-     * 工序名称
+     * 工序id
+     */
+    private String processId;
+  /**
+     * 工序id
      */
     private String processName;
 

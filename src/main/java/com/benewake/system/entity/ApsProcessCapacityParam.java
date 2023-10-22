@@ -14,65 +14,53 @@ import lombok.Data;
  */
 @TableName(value ="aps_process_capacity")
 @Data
-public class ApsProcessCapacity implements Serializable {
+public class ApsProcessCapacityParam implements Serializable {
     /**
      * 唯一标识
      */
-    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
      * 所属工序
      */
-    @TableField(value = "belonging_process")
     private String belongingProcess;
 
     /**
-     * 工序名称
+     * 工序id
      */
-    @TableField(value = "process_id")
-    private Integer processId;
+    private String processName;
 
     /**
      * 序号
      */
-    @TableField(value = "process_number")
     private Integer processNumber;
 
     /**
      * 产品族
      */
-    @TableField(value = "product_family")
     private String productFamily;
 
     /**
      * 包装方式
      */
-    @TableField(value = "packaging_method")
     private String packagingMethod;
 
     /**
      * 标准工时
      */
-    @TableField(value = "standard_time")
-    private BigDecimal standardTime;
+    private String standardTime;
 
     /**
      * 人数MAX
      */
-    @TableField(value = "max_personnel")
     private Integer maxPersonnel;
 
     /**
      * 人数MIN
      */
-    @TableField(value = "min_personnel")
     private Integer minPersonnel;
-    /**
-     * 人数MIN
-     */
-    @TableField(value = "version")
-    private Integer version;
+
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

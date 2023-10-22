@@ -7,7 +7,7 @@ import lombok.Data;
 /**
  * @author Lcs
  * @since 2023年08月14 15:52
- * 描 述： TODO
+ * 描 述： TOD
  */
 @Data
 @TableName("aps_role_col")
