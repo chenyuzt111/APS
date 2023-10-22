@@ -20,6 +20,8 @@ public interface ApsProcessSchemeMapper extends BaseMapper<ApsProcessScheme> {
     List<String> selectProcessScheme(@Param("processCapacityIds") List<Integer> processCapacityIds, @Param("number") Integer number);
 
     List<ApsProcessSchemeVo> selectProcessSchemePage(@Param("pass") Integer pass, @Param("size") Integer size);
+
+    List<ApsProcessSchemeVo> selectProcessSchemeBycurrentProcessScheme(@Param("currentProcessScheme") String currentProcessScheme);
 }
 
 

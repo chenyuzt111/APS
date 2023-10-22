@@ -1,6 +1,7 @@
 package com.benewake.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsProcessCapacity;
 import com.benewake.system.entity.ApsProcessScheme;
@@ -17,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +39,7 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean saveProcessScheme(ApsProcessSchemeParams apsProcessSchemeParams) {
+    public String saveProcessScheme(ApsProcessSchemeParams apsProcessSchemeParams) {
         List<ApsProcessSchemeParam> apsProcessSchemeParam = apsProcessSchemeParams.getApsProcessSchemeParam();
         List<String> employeeList = apsProcessSchemeParam.stream().map(ApsProcessSchemeParam::getEmployeeName).distinct().collect(Collectors.toList());
         int size = employeeList.size();
@@ -70,8 +71,10 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
             apsProcessScheme.setNumber(number);
             return apsProcessScheme;
         }).collect(Collectors.toList());
-
-        return saveBatch(apsProcessSchemes);
+        if (!saveBatch(apsProcessSchemes)) {
+            throw new BeneWakeException("保存失败");
+        }
+        return currentProcessScheme;
     }
 
     @Override
@@ -83,13 +86,44 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteProcessScheme(List<Integer> ids) {
-        LambdaQueryWrapper<ApsProcessScheme> apsProcessSchemeLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        apsProcessSchemeLambdaQueryWrapper.in(ApsProcessScheme::getId, ids);
-        List<ApsProcessScheme> apsProcessSchemes = apsProcessSchemeMapper.selectList(apsProcessSchemeLambdaQueryWrapper);
+        List<ApsProcessScheme> apsProcessSchemes = getApsProcessSchemes(ids);
+        LambdaQueryWrapper<ApsProcessScheme> apsProcessSchemeLambdaQueryWrapper;
         List<String> currentProcessSchemeList = apsProcessSchemes.stream().map(ApsProcessScheme::getCurrentProcessScheme).distinct().collect(Collectors.toList());
         apsProcessSchemeLambdaQueryWrapper = new LambdaQueryWrapper<>();
         apsProcessSchemeLambdaQueryWrapper.in(ApsProcessScheme::getCurrentProcessScheme, currentProcessSchemeList);
         return remove(apsProcessSchemeLambdaQueryWrapper);
+    }
+
+    //根据id查询
+    private List<ApsProcessScheme> getApsProcessSchemes(List<Integer> ids) {
+        LambdaQueryWrapper<ApsProcessScheme> apsProcessSchemeLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        apsProcessSchemeLambdaQueryWrapper.in(ApsProcessScheme::getId, ids);
+        List<ApsProcessScheme> apsProcessSchemes = apsProcessSchemeMapper.selectList(apsProcessSchemeLambdaQueryWrapper);
+        return apsProcessSchemes;
+    }
+
+    @Override
+    public List<ApsProcessSchemeVo> getProcessSchemeById(Integer id) {
+        ApsProcessScheme apsProcessScheme = getById(id);
+        if (apsProcessScheme != null && StringUtils.isNotEmpty(apsProcessScheme.getCurrentProcessScheme())) {
+            List<ApsProcessSchemeVo> apsProcessSchemeVoList = apsProcessSchemeMapper.selectProcessSchemeBycurrentProcessScheme(apsProcessScheme.getCurrentProcessScheme());
+            return apsProcessSchemeVoList;
+        }
+        return null;
+    }
+
+    @Override
+    public String updateProcessScheme(List<ApsProcessSchemeParam> apsProcessSchemeParam) {
+        List<ApsProcessScheme> apsProcessSchemes = apsProcessSchemeParam.stream().map(x -> {
+            ApsProcessScheme apsProcessScheme = new ApsProcessScheme();
+            apsProcessScheme.setId(x.getId());
+            apsProcessScheme.setEmployeeName(x.getEmployeeName());
+            return apsProcessScheme;
+        }).collect(Collectors.toList());
+        if (updateBatchById(apsProcessSchemes)) {
+            return apsProcessSchemes.get(0).getCurrentProcessScheme();
+        }
+        return null;
     }
 }
 

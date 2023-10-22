@@ -120,13 +120,32 @@ public class ProcessController {
                 apsProcessSchemeParams.getNumber() == null) {
             return Result.fail("不能为null");
         }
-        return apsProcessSchemeService.saveProcessScheme(apsProcessSchemeParams) ? Result.ok() : Result.fail();
+        String saveProcessScheme = apsProcessSchemeService.saveProcessScheme(apsProcessSchemeParams);
+        return  Result.ok(saveProcessScheme);
     }
+
+    @ApiOperation("修改工序方案")
+    @PostMapping("/updateProcessScheme")
+    public Result updateProcessScheme(@RequestBody  List<ApsProcessSchemeParam> apsProcessSchemeParam) {
+        if (CollectionUtils.isEmpty(apsProcessSchemeParam)) {
+            return Result.fail("不能为null");
+        }
+        String saveProcessScheme = apsProcessSchemeService.updateProcessScheme(apsProcessSchemeParam);
+        return  Result.ok(saveProcessScheme);
+    }
+
 
     @ApiOperation("查询工序方案")
     @GetMapping("/getProcessScheme/{page}/{size}")
     public Result getProcessScheme(@PathVariable Integer page ,@PathVariable Integer size){
         List<ApsProcessSchemeVo> apsProcessSchemeVoList = apsProcessSchemeService.getProcessScheme(page ,size);
+        return Result.ok(apsProcessSchemeVoList);
+    }
+
+    @ApiOperation("查询工序方案根据当前方案id")
+    @GetMapping("/getProcessSchemeById")
+    public Result getProcessSchemeById(@PathParam("id") Integer id){
+        List<ApsProcessSchemeVo> apsProcessSchemeVoList = apsProcessSchemeService.getProcessSchemeById(id);
         return Result.ok(apsProcessSchemeVoList);
     }
 

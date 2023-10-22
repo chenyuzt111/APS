@@ -56,7 +56,9 @@ public class SchedulingController {
     @ApiOperation("数据库更新")
     @Scheduling(type = TableVersionState.UPDATE_DATABASE_ING)
     @PostMapping("/dataUpdate")
-    public Result dataUpdate(@RequestBody List<Integer> ids) throws Exception {
+    public Result dataUpdate(@RequestBody List<Integer> ids) {
+
+        //TODO 前端传特殊数值 用来区分更新mes还是erp
         long l = System.currentTimeMillis();
         if (CollectionUtils.isEmpty(ids)) {
             ids = InterfaceDataType.getAllIds();
