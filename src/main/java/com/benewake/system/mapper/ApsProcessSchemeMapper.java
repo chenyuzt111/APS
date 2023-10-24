@@ -3,6 +3,7 @@ package com.benewake.system.mapper;
 import com.benewake.system.entity.ApsProcessScheme;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.benewake.system.entity.vo.ApsProcessSchemeVo;
+import com.benewake.system.entity.vo.ProcessSchemeEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -22,6 +23,10 @@ public interface ApsProcessSchemeMapper extends BaseMapper<ApsProcessScheme> {
     List<ApsProcessSchemeVo> selectProcessSchemePage(@Param("pass") Integer pass, @Param("size") Integer size);
 
     List<ApsProcessSchemeVo> selectProcessSchemeBycurrentProcessScheme(@Param("currentProcessScheme") String currentProcessScheme);
+
+    List<ApsProcessScheme> selectListByIds(@Param("ids") List<Integer> ids);
+
+    List<ProcessSchemeEntity> selectEmployeeTime(@Param("curProcessSchemeNameList") List<String> curProcessSchemeNameList);
 }
 
 

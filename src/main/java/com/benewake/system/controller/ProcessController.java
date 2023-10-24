@@ -3,12 +3,10 @@ package com.benewake.system.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.benewake.system.entity.*;
 import com.benewake.system.entity.vo.*;
-import com.benewake.system.service.ApsFinishedProductBasicDataService;
-import com.benewake.system.service.ApsProcessCapacityService;
-import com.benewake.system.service.ApsProcessNamePoolService;
-import com.benewake.system.service.ApsProcessSchemeService;
+import com.benewake.system.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +32,9 @@ public class ProcessController {
 
     @Autowired
     private ApsProcessSchemeService apsProcessSchemeService;
+
+    @Autowired
+    private ApsProductFamilyProcessSchemeManagementService apsProductFamilyProcessSchemeManagementService;
 
 
     @ApiOperation("添加或更新工序名称")
@@ -121,38 +122,55 @@ public class ProcessController {
             return Result.fail("不能为null");
         }
         String saveProcessScheme = apsProcessSchemeService.saveProcessScheme(apsProcessSchemeParams);
-        return  Result.ok(saveProcessScheme);
+        return Result.ok(saveProcessScheme);
     }
 
     @ApiOperation("修改工序方案")
     @PostMapping("/updateProcessScheme")
-    public Result updateProcessScheme(@RequestBody  List<ApsProcessSchemeParam> apsProcessSchemeParam) {
+    public Result updateProcessScheme(@RequestBody List<ApsProcessSchemeParam> apsProcessSchemeParam) {
         if (CollectionUtils.isEmpty(apsProcessSchemeParam)) {
             return Result.fail("不能为null");
         }
         String saveProcessScheme = apsProcessSchemeService.updateProcessScheme(apsProcessSchemeParam);
-        return  Result.ok(saveProcessScheme);
+        return Result.ok(saveProcessScheme);
     }
 
 
     @ApiOperation("查询工序方案")
     @GetMapping("/getProcessScheme/{page}/{size}")
-    public Result getProcessScheme(@PathVariable Integer page ,@PathVariable Integer size){
-        List<ApsProcessSchemeVo> apsProcessSchemeVoList = apsProcessSchemeService.getProcessScheme(page ,size);
+    public Result getProcessScheme(@PathVariable Integer page, @PathVariable Integer size) {
+        List<ApsProcessSchemeVo> apsProcessSchemeVoList = apsProcessSchemeService.getProcessScheme(page, size);
         return Result.ok(apsProcessSchemeVoList);
     }
 
     @ApiOperation("查询工序方案根据当前方案id")
     @GetMapping("/getProcessSchemeById")
-    public Result getProcessSchemeById(@PathParam("id") Integer id){
-        List<ApsProcessSchemeVo> apsProcessSchemeVoList = apsProcessSchemeService.getProcessSchemeById(id);
+    public Result getProcessSchemeById(@PathParam("id") Integer id) {
+        ApsProcessSchemeByIdListVo apsProcessSchemeVoList = apsProcessSchemeService.getProcessSchemeById(id);
         return Result.ok(apsProcessSchemeVoList);
     }
 
     @ApiOperation("删除工序方案")
     @PostMapping("/deleteProcessScheme")
-    public Result deleteProcessScheme(@RequestBody List<Integer> ids){
+    public Result deleteProcessScheme(@RequestBody List<Integer> ids) {
         Boolean res = apsProcessSchemeService.deleteProcessScheme(ids);
         return res ? Result.ok() : Result.fail();
+    }
+
+    @ApiOperation("查询产品族工艺方案管理")
+    @GetMapping("/getProcessSchemeManagement/{page}/{size}")
+    public Result getProcessSchemeManagement(@PathVariable Integer page, @PathVariable Integer size) {
+        List<ProcessSchemeManagementVo> res = apsProductFamilyProcessSchemeManagementService.getProcessSchemeManagement(page ,size);
+        return Result.ok(res);
+    }
+
+    @ApiOperation("设置经济批量")
+    @PostMapping("/updateProcessSchemeManagement")
+    public Result updateProcessSchemeManagement(@RequestBody ProcessSchemeManagementParam processSchemeManagementParam) {
+        if (processSchemeManagementParam == null) {
+            return Result.fail("不能为null");
+        }
+        Boolean saveProcessScheme = apsProductFamilyProcessSchemeManagementService.setOrderNumber(processSchemeManagementParam);
+        return Result.ok(saveProcessScheme);
     }
 }

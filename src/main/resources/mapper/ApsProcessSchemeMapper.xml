@@ -66,4 +66,21 @@
         where current_process_scheme = #{currentProcessScheme}
         ORDER BY product_family, current_process_scheme, cap.process_number
     </select>
+    <select id="selectListByIds" resultType="com.benewake.system.entity.ApsProcessScheme">
+        select *
+        from aps_process_scheme
+        where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+    <select id="selectEmployeeTime" resultType="com.benewake.system.entity.vo.ProcessSchemeEntity">
+        SELECT sch.id,sch.current_process_scheme,sch.employee_name,cap.standard_time
+        from aps_process_scheme as sch
+        left JOIN aps_process_capacity as cap on sch.process_capacity_id = cap.id
+        WHERE sch.current_process_scheme in
+        <foreach collection="curProcessSchemeNameList" item="curProcessSchemeName" open="(" close=")" separator=",">
+            #{curProcessSchemeName}
+        </foreach>
+    </select>
 </mapper>

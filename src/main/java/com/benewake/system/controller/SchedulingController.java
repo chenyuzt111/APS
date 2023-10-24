@@ -8,6 +8,7 @@ import com.benewake.system.entity.vo.ReturnTest;
 import com.benewake.system.entity.vo.SchedulingParam;
 import com.benewake.system.redis.DistributedLock;
 import com.benewake.system.service.ApsAllPlanNumInProcessService;
+import com.benewake.system.service.ApsProductionPlanService;
 import com.benewake.system.service.InterfaceDataService;
 import com.benewake.system.service.PythonService;
 import com.benewake.system.utils.HostHolder;
@@ -40,8 +41,8 @@ public class SchedulingController {
     @Autowired
     private PythonService pythonService;
 
-    @Autowired
-    private ApsAllPlanNumInProcessService apsAllPlanNumInProcessService;
+//    @Autowired
+//    private ApsAllPlanNumInProcessService apsAllPlanNumInProcessService;
 
     @Autowired
     private DistributedLock distributedLock;
@@ -51,6 +52,9 @@ public class SchedulingController {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private ApsProductionPlanService apsProductionPlanService;
 
 
     @ApiOperation("数据库更新")
@@ -91,7 +95,7 @@ public class SchedulingController {
     @ApiOperation("测试")
     @PostMapping("/getAllPlanNumInProcess")
     public Result<ReturnTest> all_plan_num_in_process() {
-        ReturnTest latestCompletion = apsAllPlanNumInProcessService.getLatestCompletion();
+        ReturnTest latestCompletion = apsProductionPlanService.getLatestCompletion();
         return Result.ok(latestCompletion);
     }
 

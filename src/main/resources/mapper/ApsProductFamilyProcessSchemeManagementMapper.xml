@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benewake.system.mapper.ApsProductFamilyProcessSchemeManagementMapper">
+
+    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsProductFamilyProcessSchemeManagement">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="curProcessSchemeName" column="cur_process_scheme_name" jdbcType="INTEGER"/>
+            <result property="optimalProcessSchemeName" column="optimal_process_scheme_name" jdbcType="INTEGER"/>
+            <result property="orderNumber" column="order_number" jdbcType="INTEGER"/>
+            <result property="productionLineBalanceRate" column="production_line_balance_rate" jdbcType="DECIMAL"/>
+            <result property="completionTime" column="completion_time" jdbcType="DECIMAL"/>
+            <result property="releasableStaffCount" column="releasable_staff_count" jdbcType="INTEGER"/>
+            <result property="totalReleaseTime" column="total_release_time" jdbcType="DOUBLE"/>
+            <result property="number" column="number" jdbcType="INTEGER"/>
+            <result property="productFamily" column="product_family" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,cur_process_scheme_name,optimal_process_scheme_name,
+        order_number,production_line_balance_rate,completion_time,
+        releasable_staff_count,total_release_time,number,
+        product_family
+    </sql>
+    <select id="selectListPage" resultType="com.benewake.system.entity.vo.ProcessSchemeManagementDo">
+
+    </select>
+</mapper>

@@ -33,8 +33,8 @@ public interface ApsIntfaceDataServiceBase<T> {
                     field.setAccessible(false);
                 }
             }
-            return ver + 1;
-        }catch (Exception e) {
+            return ver == null ? 2 : ver + 1;
+        } catch (Exception e) {
             e.printStackTrace();
             throw new BeneWakeException("系统内部错误 请抓紧联系相关人员");
         }

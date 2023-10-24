@@ -2,6 +2,7 @@ package com.benewake.system.service;
 
 import com.benewake.system.entity.ApsProcessScheme;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.vo.ApsProcessSchemeByIdListVo;
 import com.benewake.system.entity.vo.ApsProcessSchemeParam;
 import com.benewake.system.entity.vo.ApsProcessSchemeParams;
 import com.benewake.system.entity.vo.ApsProcessSchemeVo;
@@ -21,7 +22,7 @@ public interface ApsProcessSchemeService extends IService<ApsProcessScheme> {
 
     Boolean deleteProcessScheme(List<Integer> ids);
 
-    List<ApsProcessSchemeVo> getProcessSchemeById(Integer id);
+    ApsProcessSchemeByIdListVo getProcessSchemeById(Integer id);
 
     String updateProcessScheme(List<ApsProcessSchemeParam> apsProcessSchemeParam);
 }

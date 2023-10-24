@@ -13,6 +13,6 @@ public class SchedulingParam {
     Integer yg_delta;
     Boolean produce_in_parallel;
     Boolean consider_the_material;
-    Boolean consider_history;
-    Boolean Consider_the_process;
+    Boolean consider_the_process;
+    Boolean split_po_orders;
 }

@@ -15,7 +15,7 @@ import lombok.Data;
 @Data
 public class ApsProcessSchemeParam implements Serializable {
 
-    /**
+    /**12
      * ApsProcessCapacityId
      */
     private Integer id;
@@ -67,18 +67,12 @@ public class ApsProcessSchemeParam implements Serializable {
      */
     @TableField(value = "min_personnel")
     private Integer minPersonnel;
-    /**
-     * 人数MIN
-     */
-    @TableField(value = "version")
-    private Integer version;
 
     /**
      * 员工姓名
      */
 
     private String employeeName;
-
 
 
     @TableField(exist = false)

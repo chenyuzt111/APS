@@ -1,6 +1,7 @@
 package com.benewake.system.entity.vo;
 
 import com.benewake.system.entity.ApsAllPlanNumInProcess;
+import com.benewake.system.entity.ApsProductionPlan;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -13,5 +14,5 @@ public class ReturnTest {
 
     Set<String> list;
 
-    HashMap<String, ArrayList<ApsAllPlanNumInProcess>> map;
+    HashMap<String, List<ApsProductionPlan>> map;
 }
