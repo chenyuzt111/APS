@@ -6,14 +6,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class IntegrityCheckerPythonService extends PythonBase {
-    public IntegrityCheckerPythonService(@Value("${myPython.integrityCheckerDirectory}") String directory, @Value("${myPython.startClass.integrityChecker}")String startClass) {
+    public IntegrityCheckerPythonService(@Value("${myPython.integrityCheckerDirectory}") String directory, @Value("${myPython.startClass.integrityChecker}") String startClass) {
         super(directory, startClass);
     }
 
     @Override
     void checkCode(String line) {
+        System.err.println("arg11111 : -------" + line);
         //成功需要修改状态 -》 完整性检查完成
-       if ("0".equals(line)) {
+        if ("0".equals(line)) {
             throw new BeneWakeException("完整性检查失败！");
         }
     }

@@ -3,10 +3,13 @@ package com.benewake.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.benewake.system.entity.ApsOptimalStrategy;
 import com.benewake.system.entity.ApsProductFamilyProcessSchemeManagement;
+import com.benewake.system.entity.vo.ApsProcessSchemeParam;
 import com.benewake.system.entity.vo.ProcessSchemeEntity;
 import com.benewake.system.entity.vo.ProcessSchemeManagementParam;
 import com.benewake.system.entity.vo.ProcessSchemeManagementVo;
+import com.benewake.system.mapper.ApsOptimalStrategyMapper;
 import com.benewake.system.mapper.ApsProcessCapacityMapper;
 import com.benewake.system.mapper.ApsProcessSchemeMapper;
 import com.benewake.system.service.ApsProductFamilyProcessSchemeManagementService;
@@ -38,6 +41,9 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
     @Autowired
     private ApsProcessSchemeMapper apsProcessSchemeMapper;
 
+    @Autowired
+    private ApsOptimalStrategyMapper apsOptimalStrategyMapper;
+
     @Override
     public List<ProcessSchemeManagementVo> getProcessSchemeManagement(Integer pageNum, Integer size) {
         Integer pass = (pageNum - 1) * size;
@@ -46,20 +52,22 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
         page.setCurrent(pass);
         Page<ApsProductFamilyProcessSchemeManagement> apsProductFamilyProcessSchemeManagementPage = apsProductFamilyProcessSchemeManagementMapper.selectPage(page, null);
         List<ApsProductFamilyProcessSchemeManagement> records = apsProductFamilyProcessSchemeManagementPage.getRecords();
-        List<ProcessSchemeManagementVo> processSchemeManagementVos = records.stream().map(x -> {
+        return records.stream().map(x -> {
             ProcessSchemeManagementVo processSchemeManagementVo = new ProcessSchemeManagementVo();
             processSchemeManagementVo.setId(x.getId());
             processSchemeManagementVo.setProductFamily(x.getProductFamily());
             processSchemeManagementVo.setCurrentProcessScheme(x.getCurProcessSchemeName());
-            processSchemeManagementVo.setOptimalProcessScheme(x.getOptimalProcessSchemeName());
+            processSchemeManagementVo.setOptimalProcessPlan(x.getOptimalProcessSchemeName());
             processSchemeManagementVo.setOrderNumber(x.getOrderNumber());
-            processSchemeManagementVo.setProductionLineBalanceRate(x.getProductionLineBalanceRate().multiply(new BigDecimal(100)).toString() + "%");
+            if (x.getProductionLineBalanceRate() != null) {
+                processSchemeManagementVo.setProductionLineBalanceRate(x.getProductionLineBalanceRate().multiply(new BigDecimal(100)).toString() + "%");
+            }
             processSchemeManagementVo.setCompletionTime(x.getCompletionTime());
             processSchemeManagementVo.setReleasableStaffCount(x.getReleasableStaffCount());
             processSchemeManagementVo.setTotalReleaseTime(x.getTotalReleaseTime());
+            processSchemeManagementVo.setNumber(x.getNumber());
             return processSchemeManagementVo;
         }).collect(Collectors.toList());
-        return processSchemeManagementVos;
     }
 
     @Override
@@ -91,37 +99,35 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
         BigDecimal sumOfStandardTime = processSchemeEntities.stream()
                 .map(ProcessSchemeEntity::getStandardTime)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        BigDecimal maxStandardTime = processSchemeEntities.stream()
-                .map(ProcessSchemeEntity::getStandardTime)
-                .max(BigDecimal::compareTo)
-                .orElse(BigDecimal.ZERO);
-        Map<String, BigDecimal> employeeStandardTimeSum = processSchemeEntities.stream()
+
+        //每个员工的map和工时和
+        Map<String, BigDecimal> employeeStandardTimeSumMap = processSchemeEntities.stream()
                 .collect(Collectors.groupingBy(
                         ProcessSchemeEntity::getEmployeeName,
                         Collectors.reducing(BigDecimal.ZERO, ProcessSchemeEntity::getStandardTime, BigDecimal::add)
                 ));
+        //员工最大工时
+        BigDecimal maxStandardTime = employeeStandardTimeSumMap.values().stream()
+                .max(BigDecimal::compareTo).get();
         //产线平衡率
-        BigDecimal result = sumOfStandardTime.divide(maxStandardTime, 2, RoundingMode.HALF_UP)
-                .multiply(new BigDecimal(number));
+        BigDecimal result = sumOfStandardTime.divide(maxStandardTime.multiply(new BigDecimal(number)), 8, RoundingMode.HALF_UP);
         //订单完成时间
         BigDecimal multiply = maxStandardTime.multiply(new BigDecimal(orderNumber));
         //可以释放人数
-        long countOfMaxStandardTime = processSchemeEntities.stream()
-                .filter(entity -> entity.getStandardTime().compareTo(maxStandardTime) == 0)
+        long countEqualMaxStandardTime = employeeStandardTimeSumMap.values().stream()
+                .filter(value -> value.compareTo(maxStandardTime) == 0)
                 .count();
-        long releasableStaffCount = number - countOfMaxStandardTime;
+        long releasableStaffCount = number - countEqualMaxStandardTime;
         //释放总时间
-        BigDecimal sum = new BigDecimal(0);
-        for (Map.Entry<String, BigDecimal> stringBigDecimalEntry : employeeStandardTimeSum.entrySet()) {
-            BigDecimal subtract = maxStandardTime.subtract(stringBigDecimalEntry.getValue());
-            sum = sum.add(subtract);
-        }
-        sum = sum.multiply(new BigDecimal(orderNumber));
+        BigDecimal differenceSum = employeeStandardTimeSumMap.values().stream()
+                .map(maxStandardTime::subtract)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        differenceSum = differenceSum.multiply(new BigDecimal(orderNumber));
         productFamilyProcessSchemeManagement.setOrderNumber(orderNumber);
         productFamilyProcessSchemeManagement.setProductionLineBalanceRate(result);
         productFamilyProcessSchemeManagement.setCompletionTime(multiply);
         productFamilyProcessSchemeManagement.setReleasableStaffCount((int) releasableStaffCount);
-        productFamilyProcessSchemeManagement.setTotalReleaseTime(sum.doubleValue());
+        productFamilyProcessSchemeManagement.setTotalReleaseTime(differenceSum.doubleValue());
     }
 }
 

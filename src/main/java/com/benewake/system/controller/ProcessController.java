@@ -3,6 +3,7 @@ package com.benewake.system.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.benewake.system.entity.*;
 import com.benewake.system.entity.vo.*;
+import com.benewake.system.entity.vo.UpdateOptimalStrategyParam;
 import com.benewake.system.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,6 +36,9 @@ public class ProcessController {
 
     @Autowired
     private ApsProductFamilyProcessSchemeManagementService apsProductFamilyProcessSchemeManagementService;
+
+    @Autowired
+    private ApsOptimalStrategyService apsOptimalStrategyService;
 
 
     @ApiOperation("添加或更新工序名称")
@@ -143,7 +147,7 @@ public class ProcessController {
         return Result.ok(apsProcessSchemeVoList);
     }
 
-    @ApiOperation("查询工序方案根据当前方案id")
+    @ApiOperation("查询工序方案根据当前方案Nmme")
     @GetMapping("/getProcessSchemeById")
     public Result getProcessSchemeById(@PathParam("id") Integer id) {
         ApsProcessSchemeByIdListVo apsProcessSchemeVoList = apsProcessSchemeService.getProcessSchemeById(id);
@@ -172,5 +176,12 @@ public class ProcessController {
         }
         Boolean saveProcessScheme = apsProductFamilyProcessSchemeManagementService.setOrderNumber(processSchemeManagementParam);
         return Result.ok(saveProcessScheme);
+    }
+
+    @ApiOperation("修改优先策略")
+    @PostMapping("/updateOptimalStrategy")
+    public Result updateOptimalStrategy(@RequestBody UpdateOptimalStrategyParam updateOptimalStrategyParam){
+        Boolean res = apsOptimalStrategyService.updateAndOptimalProcess(updateOptimalStrategyParam);
+        return Result.ok(res);
     }
 }

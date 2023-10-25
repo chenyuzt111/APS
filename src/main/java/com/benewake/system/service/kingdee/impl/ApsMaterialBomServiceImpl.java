@@ -36,7 +36,7 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
         Integer maxVersionIncr = getMaxVersionIncr();
         QueryParam queryParam = new QueryParam();
         queryParam.setFormId("ENG_BOM");
-        queryParam.setFieldKeys("FNumber,FUseOrgId,FMaterialId,FITEMNAME,FDocumentStatus,FMaterialIDChild,FCHILDITEMNAME,FNumerator,FDenominator,FFixScrapQtyLot,FMaterialType,FReplaceType,FReplaceGroupBop,FScrapRate,FForBidStatus,FExpireDate");
+        queryParam.setFieldKeys("FNumber,FUseOrgId,FMaterialId,FITEMNAME,FDocumentStatus,FMaterialIDChild,FCHILDITEMNAME,FNumerator,FDenominator,FFixScrapQtyLot,FMaterialType,FReplaceType,FReplaceGroup,FScrapRate,FForBidStatus,FExpireDate");
 
         List<String> queryFilters = new ArrayList<>();
         queryFilters.add("FUseOrgId = '1'");

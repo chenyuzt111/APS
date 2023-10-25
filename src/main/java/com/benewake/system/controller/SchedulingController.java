@@ -1,25 +1,32 @@
 package com.benewake.system.controller;
 
 import com.benewake.system.annotation.Scheduling;
+import com.benewake.system.entity.ApsProductionPlan;
 import com.benewake.system.entity.Result;
 import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.entity.enums.TableVersionState;
 import com.benewake.system.entity.vo.ReturnTest;
 import com.benewake.system.entity.vo.SchedulingParam;
 import com.benewake.system.redis.DistributedLock;
-import com.benewake.system.service.ApsAllPlanNumInProcessService;
-import com.benewake.system.service.ApsProductionPlanService;
-import com.benewake.system.service.InterfaceDataService;
-import com.benewake.system.service.PythonService;
+import com.benewake.system.service.*;
 import com.benewake.system.utils.HostHolder;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static com.benewake.system.redis.SchedulingLockKey.SCHEDULING_USER_LOCK_KEY;
@@ -41,9 +48,6 @@ public class SchedulingController {
     @Autowired
     private PythonService pythonService;
 
-//    @Autowired
-//    private ApsAllPlanNumInProcessService apsAllPlanNumInProcessService;
-
     @Autowired
     private DistributedLock distributedLock;
 
@@ -56,18 +60,24 @@ public class SchedulingController {
     @Autowired
     private ApsProductionPlanService apsProductionPlanService;
 
+    @Autowired
+    private ApsFileService apsFileService;
+
 
     @ApiOperation("数据库更新")
     @Scheduling(type = TableVersionState.UPDATE_DATABASE_ING)
     @PostMapping("/dataUpdate")
     public Result dataUpdate(@RequestBody List<Integer> ids) {
-
-        //TODO 前端传特殊数值 用来区分更新mes还是erp
         long l = System.currentTimeMillis();
-        if (CollectionUtils.isEmpty(ids)) {
+        if (CollectionUtils.isEmpty(ids) || (ids.contains(-1) && ids.contains(-2))) {
             ids = InterfaceDataType.getAllIds();
         }
-
+        if (ids.get(0) == -1) {
+            ids = InterfaceDataType.getErpIds();
+        }
+        if (ids.get(0) == -2) {
+            ids = InterfaceDataType.getMesIds();
+        }
         interfaceDataService.updateData(ids);
         long l1 = System.currentTimeMillis();
         System.err.println(l1 - l);
@@ -92,11 +102,20 @@ public class SchedulingController {
         return Result.ok();
     }
 
+
+    //下载不完整数据
+    @ApiOperation("下载完整性检查结果数据")
+    @GetMapping("/downloadIntegrityChecker")
+    public ResponseEntity<Resource> downloadFile() {
+        ResponseEntity<Resource> resourceResponseEntity = apsFileService.ApsIntegrityCheckeFile();
+        return resourceResponseEntity;
+    }
+
     @ApiOperation("测试")
-    @PostMapping("/getAllPlanNumInProcess")
-    public Result<ReturnTest> all_plan_num_in_process() {
-        ReturnTest latestCompletion = apsProductionPlanService.getLatestCompletion();
-        return Result.ok(latestCompletion);
+    @PostMapping("/getProductionPlan")
+    public Result getProductionPlan() {
+        Map<String, List<ApsProductionPlan>> productionPlan = apsProductionPlanService.getProductionPlan();
+        return Result.ok(productionPlan);
     }
 
 

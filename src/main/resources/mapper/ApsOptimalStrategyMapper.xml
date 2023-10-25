@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benewake.system.mapper.ApsOptimalStrategyMapper">
+
+    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsOptimalStrategy">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="productFamily" column="product_family" jdbcType="VARCHAR"/>
+            <result property="number" column="number" jdbcType="INTEGER"/>
+            <result property="strategy" column="strategy" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,product_family,number,
+        strategy
+    </sql>
+</mapper>

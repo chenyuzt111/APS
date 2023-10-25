@@ -2,7 +2,9 @@ package com.benewake.system.service;
 
 import com.benewake.system.entity.ApsProductionPlan;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.benewake.system.entity.vo.ReturnTest;
+
+import java.util.List;
+import java.util.Map;
 
 /**
 * @author ASUS
@@ -10,5 +12,5 @@ import com.benewake.system.entity.vo.ReturnTest;
 * @createDate 2023-10-23 16:40:42
 */
 public interface ApsProductionPlanService extends IService<ApsProductionPlan> {
-    ReturnTest getLatestCompletion();
+    Map<String, List<ApsProductionPlan>> getProductionPlan();
 }

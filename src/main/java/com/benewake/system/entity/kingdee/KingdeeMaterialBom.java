@@ -40,7 +40,7 @@ public class KingdeeMaterialBom {
     //替代方式
     private String FReplaceType;
     //项次
-    private String FReplaceGroupBop;
+    private String FReplaceGroup;
 
     //("变动损耗率%")
     private String FScrapRate;

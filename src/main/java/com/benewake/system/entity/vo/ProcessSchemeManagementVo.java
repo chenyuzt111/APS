@@ -16,7 +16,9 @@ public class ProcessSchemeManagementVo {
 
     private String currentProcessScheme;
 
-    private String optimalProcessScheme;
+    private String optimalId;
+
+    private String optimalProcessPlan;
 
     /**
      * 经济批量
@@ -47,4 +49,6 @@ public class ProcessSchemeManagementVo {
      */
     @TableField(value = "total_release_time")
     private Double totalReleaseTime;
+
+    private Integer number;
 }

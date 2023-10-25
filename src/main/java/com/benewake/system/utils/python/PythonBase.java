@@ -64,6 +64,7 @@ public abstract class PythonBase {
             }
         } catch (Exception e) {
             if (!(e instanceof BeneWakeException)) {
+                e.printStackTrace();
                 callPythonException();
             }
             e.printStackTrace();

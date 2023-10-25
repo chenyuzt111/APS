@@ -27,6 +27,7 @@ public interface ApsProcessSchemeMapper extends BaseMapper<ApsProcessScheme> {
     List<ApsProcessScheme> selectListByIds(@Param("ids") List<Integer> ids);
 
     List<ProcessSchemeEntity> selectEmployeeTime(@Param("curProcessSchemeNameList") List<String> curProcessSchemeNameList);
+
 }
 
 

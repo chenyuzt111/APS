@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -191,11 +192,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         Map<String,Object> res = sysMenuService.getUserMenuAndButtonList(id);
 
         Map<String,Object> map = new HashMap<>();
-        map.put("username",username);
-        map.put("roles",sysRoleList);
-        //map.put("avatat","123");
-        map.put("routers",res.get("routerVoList"));
-        map.put("buttons",res.get("permsList"));
+//        map.put("username",username);
+//        map.put("roles",sysRoleList);
+//        //map.put("avatat","123");
+//        map.put("routers",res.get("routerVoList"));
+//        map.put("buttons",res.get("permsList"));
+        //todo
+        ArrayList<Object> objects = new ArrayList<>();
+        map.put("username",objects);
+        map.put("roles",objects);
+        map.put("routers",objects);
+        map.put("buttons",objects);
         return map;
     }
 

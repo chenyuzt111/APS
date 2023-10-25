@@ -26,7 +26,7 @@ public class KingdeeToApsMaterialBom {
         apsMaterialBom.setFScrapRate(kingdeeMaterialBom.getFScrapRate());
         apsMaterialBom.setFMaterialType(kingdeeMaterialBom.getFMaterialType());
         apsMaterialBom.setFReplaceType(kingdeeMaterialBom.getFReplaceType());
-        apsMaterialBom.setFReplaceGroupBop(kingdeeMaterialBom.getFReplaceGroupBop());
+        apsMaterialBom.setFReplaceGroupBop(kingdeeMaterialBom.getFReplaceGroup());
         apsMaterialBom.setVersion(version);
 
         return apsMaterialBom;

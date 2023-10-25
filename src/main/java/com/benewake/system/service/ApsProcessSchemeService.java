@@ -25,4 +25,5 @@ public interface ApsProcessSchemeService extends IService<ApsProcessScheme> {
     ApsProcessSchemeByIdListVo getProcessSchemeById(Integer id);
 
     String updateProcessScheme(List<ApsProcessSchemeParam> apsProcessSchemeParam);
+
 }

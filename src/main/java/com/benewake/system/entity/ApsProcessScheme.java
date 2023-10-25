@@ -46,8 +46,8 @@ public class ApsProcessScheme implements Serializable {
     /**
      * 人数
      */
-    @TableField(value = "product_family")
-    private Integer productFamily;
+//    @TableField(value = "product_family")
+//    private Integer productFamily;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

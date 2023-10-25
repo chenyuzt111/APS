@@ -68,9 +68,7 @@ public class PythonServiceImpl implements PythonService {
                 apsTableVersions.add(apsTableVersion);
             }
             apsTableVersionService.saveBatch(apsTableVersions);
-//            Gson gson = new Gson();
-//            String json = gson    .toJson(schedulingParam);
-            String jsonString = JSONObject.toJSONString(schedulingParam);
+            String jsonString = "JSONObject.toJSONString(schedulingParam)";
             jsonString = jsonString.replaceAll("\"", "\\\\\"");
             //todo 转json传参
             List<String> strings = new ArrayList<>();
@@ -91,7 +89,25 @@ public class PythonServiceImpl implements PythonService {
 
     @Override
     public void integrityChecker() {
-        integrityCheckerPythonService.start(null);
+        ArrayList<String> strings = new ArrayList<>();
+        SchedulingParam schedulingParam = new SchedulingParam();
+        schedulingParam.setConsider_the_process(true);
+        String jsonString = "{\n" +
+                "    \"number_cycles\": 1,\n" +
+                "    \"scheduled_days_num\": 240,\n" +
+                "    \"scheduling_workload\": 240,\n" +
+                "    \"bach_size\": 10,\n" +
+                "    \"in_advance_po\": 7,\n" +
+                "    \"buy_delay_days\": 5,\n" +
+                "    \"yg_delta\": 90,\n" +
+                "    \"produce_in_parallel\": true,\n" +
+                "    \"consider_the_process\": false,\n" +
+                "    \"consider_the_material\": false,\n" +
+                "    \"split_po_orders\": false\n" +
+                "}";
+        jsonString = jsonString.replaceAll("\"", "\\\\\"");
+        strings.add(jsonString);
+        integrityCheckerPythonService.start(strings);
     }
 
 }
