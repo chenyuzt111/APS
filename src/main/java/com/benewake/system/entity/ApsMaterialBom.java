@@ -92,6 +92,12 @@ public class ApsMaterialBom implements Serializable {
     @TableField(value = "f_replace_group_bop")
     private String fReplaceGroupBop;
 
+    /**
+     * 工序
+     */
+    @TableField(value = "process")
+    private String process;
+
 
     /**
      * 版本号

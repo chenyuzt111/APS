@@ -9,7 +9,8 @@ public enum TableVersionState {
     SCHEDULING(5, "排程完成"),
     UPDATE_DATABASE_ING(6, "更新数据库过程中"),
     INTEGRIT_CHECKER_ING(7, "完整性检查过程中"),
-    SCHEDULING_ING(8, "排程中");
+    SCHEDULING_ING(8, "排程中"),
+    ONE_KEY_SCHEDULING_ING(9, "一键排程中");
 
     private final int code;
     private final String description;

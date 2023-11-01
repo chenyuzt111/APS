@@ -3,6 +3,7 @@ package com.benewake.system.mapper;
 import com.benewake.system.entity.ApsProductFamilyProcessSchemeManagement;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.benewake.system.entity.vo.ProcessSchemeManagementDo;
+import com.benewake.system.entity.vo.ProcessSchemeManagementVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,7 +18,7 @@ import java.util.List;
 @Mapper
 public interface ApsProductFamilyProcessSchemeManagementMapper extends BaseMapper<ApsProductFamilyProcessSchemeManagement> {
 
-    List<ProcessSchemeManagementDo> selectListPage(@Param("pass") Integer pass, @Param("size") Integer size);
+    List<ProcessSchemeManagementVo> selectAllPage(Integer pass, Integer size);
 }
 
 

@@ -11,4 +11,6 @@ public class PageParam {
 
     private Long total;
 
+    private Long pages;
+
 }

@@ -38,9 +38,9 @@ public class RedisConfig {
     public RedissonClient redissonClient(){
         Config config = new Config();
         config.useSingleServer()
-                .setAddress("redis://localhost:6379");
-        RedissonClient redissonClient = Redisson.create(config);
-        return redissonClient;
+                .setAddress("redis://127.0.0.1:6379");
+//                .setPassword("benewake@12345");
+        return Redisson.create(config);
     }
 
 

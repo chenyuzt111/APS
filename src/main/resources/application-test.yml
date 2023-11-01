@@ -1,4 +1,7 @@
 server:
+  mvc:
+    async:
+      request-timeout: 6000000 # 设置请求的超时时间（以毫秒为单位，这里设置为60秒）
   servlet:
     context-path: /benewake
   port: 8800
@@ -23,12 +26,13 @@ spring:
   redis:
     host: 127.0.0.1
     port: 6379
-    password:
+    password: benewake@12345
     database: 0
     jedis:
       pool:
         max-idle: 30
 myPython:
+  path: /usr/bin/python3
   home:
   directory: /aps/benewake/APS_For_Benwake_process_kaolv
   integrityCheckerDirectory: /aps/benewake/APS_For_Benwake_process_kaolv
@@ -36,4 +40,4 @@ myPython:
     scheduling: test.py
     integrityChecker: data_check.py
     integrityCheckerFile:
-      fileDirectory: E:\桌面\APS_For_Benwake_process_kaolv\data\\output_data\
+      fileDirectory: /aps/benewake/APS_For_Benwake_process_kaolv/data/output_data/

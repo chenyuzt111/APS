@@ -2,6 +2,7 @@ package com.benewake.system.service;
 
 import com.benewake.system.entity.ApsProductionPlan;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.vo.PageListRestVo;
 
 import java.util.List;
 import java.util.Map;
@@ -13,4 +14,7 @@ import java.util.Map;
 */
 public interface ApsProductionPlanService extends IService<ApsProductionPlan> {
     Map<String, List<ApsProductionPlan>> getProductionPlan();
+
+    PageListRestVo<ApsProductionPlan> getAllPage(Integer page, Integer size);
+
 }

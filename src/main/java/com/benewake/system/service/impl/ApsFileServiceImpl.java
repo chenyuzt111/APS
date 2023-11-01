@@ -4,7 +4,6 @@ import com.benewake.system.service.ApsFileService;
 import com.benewake.system.utils.MediaTypeUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,15 +22,14 @@ public class ApsFileServiceImpl implements ApsFileService {
     private String FILE_DIRECTORY;
 
     @Override
-    public ResponseEntity<Resource> ApsIntegrityCheckeFile() {
+    public ResponseEntity<InputStreamResource> ApsIntegrityCheckeFile() {
         String filename = "不完整数据统计.xlsx";
         File file = new File(FILE_DIRECTORY + filename);
-
         if (!file.exists()) {
             // 文件不存在，返回404
-            return ResponseEntity.notFound().build();
+            return null;
         }
-
+        // 将文件包装成InputStreamResource
         try {
             // 获取当前日期并格式化为字符串
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -50,12 +47,13 @@ public class ApsFileServiceImpl implements ApsFileService {
             InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
             return ResponseEntity.ok()
                     .headers(headers)
+                    .contentLength(file.length())
+                    .contentType(MediaType.parseMediaType("application/octet-stream"))
                     .body(resource);
         } catch (IOException e) {
             e.printStackTrace();
             // 处理编码或文件读取异常
         }
-
-        return ResponseEntity.notFound().build();
+        return null;
     }
 }

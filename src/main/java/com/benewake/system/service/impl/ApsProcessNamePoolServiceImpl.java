@@ -1,13 +1,17 @@
 package com.benewake.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsProcessNamePool;
-import com.benewake.system.entity.Result;
+import com.benewake.system.entity.vo.ApsProcessNamePoolVo;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsProcessNamePoolService;
 import com.benewake.system.mapper.ApsProcessNamePoolMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author ASUS
@@ -31,6 +35,25 @@ public class ApsProcessNamePoolServiceImpl extends ServiceImpl<ApsProcessNamePoo
             return this.updateById(apsProcessNamePool);
         }
         return this.save(apsProcessNamePool);
+    }
+
+    @Override
+    public ApsProcessNamePoolVo getProcess(String name, Integer page, Integer size) {
+        LambdaQueryWrapper<ApsProcessNamePool> apsProcessNamePoolLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        if (StringUtils.isNotBlank(name)) {
+            apsProcessNamePoolLambdaQueryWrapper.like(ApsProcessNamePool::getProcessName, name);
+        }
+        Page<ApsProcessNamePool> apsProcessNamePoolPage = new Page<>();
+        apsProcessNamePoolPage.setSize(size);
+        apsProcessNamePoolPage.setCurrent(page);
+        Page<ApsProcessNamePool> apsProcessNamePools = this.page(apsProcessNamePoolPage, apsProcessNamePoolLambdaQueryWrapper);
+        ApsProcessNamePoolVo apsProcessNamePoolVo = new ApsProcessNamePoolVo();
+        apsProcessNamePoolVo.setApsProcessNamePools(apsProcessNamePools.getRecords());
+        apsProcessNamePoolVo.setPage(page);
+        apsProcessNamePoolVo.setSize(size);
+        apsProcessNamePoolVo.setTotal(apsProcessNamePoolPage.getTotal());
+        apsProcessNamePoolVo.setPages(apsProcessNamePoolPage.getPages());
+        return apsProcessNamePoolVo;
     }
 }
 

@@ -5,7 +5,9 @@ import lombok.Data;
 @Data
 public class ProcessSchemeManagementParam {
 
-    Integer id;
+    Integer manId;
+
+
 
     Integer orderNumber;
 }

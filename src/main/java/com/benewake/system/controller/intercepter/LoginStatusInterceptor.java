@@ -35,6 +35,7 @@ public class LoginStatusInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //从cookie中获取凭证
         String token = request.getHeader("token");
+        System.out.println("token:-----" + token);
         if(token != null){
             String username = JwtHelper.getUsername(token);
             // 检查凭证是否有效

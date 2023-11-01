@@ -21,6 +21,6 @@ public class IntegrityCheckerPythonService extends PythonBase {
 
     @Override
     void callPythonException() {
-        throw new BeneWakeException("完整性检查失败！-----内部服务器问题");
+        throw new BeneWakeException(201, "完整性检查失败！-----内部服务器问题");
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Api(tags = "消息连接")
 @RestController
-//@Controller
 @RequestMapping("/sse")
 public class SseController {
 
@@ -24,6 +23,6 @@ public class SseController {
 
     @PostMapping("/send/{user}")
     public void data(@PathVariable("user") String username) throws Exception {
-        sseService.sendMessage(username ,"111");
+//        sseService.sendMessage(username ,"111");
     }
 }

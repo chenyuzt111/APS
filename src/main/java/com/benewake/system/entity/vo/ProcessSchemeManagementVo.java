@@ -7,6 +7,9 @@ import java.math.BigDecimal;
 
 @Data
 public class ProcessSchemeManagementVo {
+
+    private Integer manId;
+
     private Integer id;
     /**
      * 产品族
@@ -16,7 +19,7 @@ public class ProcessSchemeManagementVo {
 
     private String currentProcessScheme;
 
-    private String optimalId;
+    private Integer optimalId;
 
     private String optimalProcessPlan;
 

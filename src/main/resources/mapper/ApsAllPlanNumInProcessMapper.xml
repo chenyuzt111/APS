@@ -12,9 +12,9 @@
             <result property="materialName" column="material_name" jdbcType="VARCHAR"/>
             <result property="processName" column="process_name" jdbcType="VARCHAR"/>
             <result property="quantity" column="quantity" jdbcType="INTEGER"/>
-            <result property="taskDate" column="task_date" jdbcType="DATE"/>
-            <result property="startTime" column="start_time" jdbcType="TIME"/>
-            <result property="endTime" column="end_time" jdbcType="TIME"/>
+            <result property="taskDate" column="task_date" jdbcType="VARCHAR"/>
+            <result property="startTime" column="start_time" jdbcType="VARCHAR"/>
+            <result property="endTime" column="end_time" jdbcType="VARCHAR"/>
             <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
 

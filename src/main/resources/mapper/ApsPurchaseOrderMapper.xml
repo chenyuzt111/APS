@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benewake.system.mapper.ApsPurchaseOrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsPurchaseOrder">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="fBillNo" column="f_bill_no" jdbcType="VARCHAR"/>
+            <result property="fMaterialId" column="f_material_id" jdbcType="VARCHAR"/>
+            <result property="fMaterialName" column="f_material_name" jdbcType="VARCHAR"/>
+            <result property="fRemainReceiveQty" column="f_remain_receive_qty" jdbcType="VARCHAR"/>
+            <result property="fDeliveryDate" column="f_delivery_date" jdbcType="TIMESTAMP"/>
+            <result property="version" column="version" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,f_bill_no,f_material_id,
+        f_material_name,f_remain_receive_qty,f_delivery_date,
+        version
+    </sql>
+</mapper>

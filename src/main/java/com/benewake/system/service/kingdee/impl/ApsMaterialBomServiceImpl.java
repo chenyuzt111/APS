@@ -1,9 +1,12 @@
 package com.benewake.system.service.kingdee.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsMaterialBom;
+import com.benewake.system.entity.ApsMaterialProcessMapping;
 import com.benewake.system.entity.kingdee.KingdeeMaterialBom;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
+import com.benewake.system.mapper.ApsMaterialProcessMappingMapper;
 import com.benewake.system.service.kingdee.ApsMaterialBomService;
 import com.benewake.system.mapper.ApsMaterialBomMapper;
 import com.benewake.system.transfer.KingdeeToApsMaterialBom;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
 * @author ASUS
@@ -30,6 +34,9 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
 
     @Autowired
     private K3CloudApi api;
+
+    @Autowired
+    private ApsMaterialProcessMappingMapper apsMaterialProcessMappingMapper;
 
     @Override
     public Boolean updateDataVersions() throws Exception {
@@ -64,6 +71,11 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
         docStatusMap.put("B", "审核中");
         docStatusMap.put("C", "已审核");
         docStatusMap.put("D", "重新审核");
+
+        Map<String, String> pickStatusMap = new HashMap<>();
+        pickStatusMap.put("1", "标准件");
+        pickStatusMap.put("2", "返还件");
+        pickStatusMap.put("3", "替代件");
         // 创建一个映射，用于存储每个FMATERIALID对应的最大FNumber
         Map<String, String> maxFNumberMap = new HashMap<>();
         // 创建一个列表，用于存储最大FNumber
@@ -72,6 +84,8 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
         for (KingdeeMaterialBom wuliao : result) {
             String materialId = mtn.get(wuliao.getFMaterialID());
             String fNumber = wuliao.getFNumber();
+            String fMaterialType = wuliao.getFMaterialType();
+            wuliao.setFMaterialType(pickStatusMap.getOrDefault(fMaterialType ,fMaterialType));
             // 检查是否已经有最大FNumber记录
             if (maxFNumberMap.containsKey(materialId)) {
                 String currentMaxFNumber = maxFNumberMap.get(materialId);
@@ -91,6 +105,9 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
         }
 
         // 再次遍历result，根据最大FNumber打印出相应的记录
+        List<ApsMaterialProcessMapping> apsMaterialProcessMappings = apsMaterialProcessMappingMapper.selectList(null);
+        Map<String, String> materialToProcess = apsMaterialProcessMappings.stream().collect(Collectors.toMap(ApsMaterialProcessMapping::getFMaterialId, ApsMaterialProcessMapping::getProcess , (existing, replacement) -> existing));
+
         ArrayList<ApsMaterialBom> apsMaterialBoms = new ArrayList<>();
         for (KingdeeMaterialBom kingdeeMaterialBom : result) {
             String fNumber = kingdeeMaterialBom.getFNumber();
@@ -106,6 +123,8 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
             if (maxFNumbersList.contains(fNumber) ) {
                 // 打印整条记录
                 ApsMaterialBom apsMaterialBom = kingdeeToApsMaterialBom.convert(kingdeeMaterialBom, maxVersionIncr);
+                String process = materialToProcess.get(apsMaterialBom.getFMaterialIdChild());
+                apsMaterialBom.setProcess(process);
                 apsMaterialBoms.add(apsMaterialBom);
             }
         }

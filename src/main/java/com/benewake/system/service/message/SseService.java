@@ -1,59 +1,53 @@
 package com.benewake.system.service.message;
 
 import com.benewake.system.utils.HostHolder;
-import com.benewake.system.utils.threadpool.BenewakeExecutor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
+@Slf4j
 @Service
 public class SseService {
-    private final Map<String, SseEmitter> sseEmitterMap = new ConcurrentHashMap<>();
 
-    @Autowired
-    private HostHolder hostHolder;
+    private volatile SseEmitter sseEmitter;
 
     public SseEmitter connect() {
-        SseEmitter sseEmitter = new SseEmitter(2000000L);
-        sseEmitterMap.put(hostHolder.getUser().getUsername(), sseEmitter);
-        sseEmitter.onCompletion(() -> disconnect(hostHolder.getUser().getUsername())); // 添加断开连接时的处理
-        BenewakeExecutor.execute(() -> {
-            try {
-                while (true) {
-                    sseEmitter.send("");
-                    Thread.sleep(15000); // 每45秒发送一次
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        sseEmitter = new SseEmitter(200000L);
+        sseEmitter.onCompletion(() -> {
+            sseEmitter = null;
         });
 
+        System.out.println("sse建立 ------------------------" + sseEmitter);
+        Runnable runnable = () -> {
+            try {
+                while (true) {
+                    if (sseEmitter != null) {
+                        sseEmitter.send("1");
+//                        System.out.println(Thread.currentThread().getName() + "sse---心跳" + sseEmitter);
+                        Thread.sleep(10000);
+                    }
+                }
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        };
+
+        new Thread(runnable).start();
         return sseEmitter;
     }
 
-    public void disconnect(String userId) {
-        sseEmitterMap.remove(userId); // 断开连接时移除SseEmitter
-    }
 
-    /**
-     * 给指定用户发送消息
-     */
-    public void sendMessage(String userId, String message) {
-        SseEmitter sseEmitter = sseEmitterMap.get(userId);
-        if (sseEmitter != null) {
-            try {
-                sseEmitter.send(SseEmitter.event().data(message)); // 使用SseEmitter的event()方法创建消息事件
-            } catch (IOException e) {
-                sseEmitterMap.remove(userId);
-                e.printStackTrace();
-            }
+
+    public void sendMessage(String username, String message) {
+        try {
+            sseEmitter.send(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error("username" + username + "排程发送消息失败" + message);
         }
     }
 }

@@ -1,10 +1,12 @@
 package com.benewake.system.utils.python;
 
 
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.benewake.system.entity.ApsProductionPlan;
 import com.benewake.system.entity.ApsTableVersion;
+import com.benewake.system.entity.SseMessageEntity;
 import com.benewake.system.entity.enums.TableVersionState;
 import com.benewake.system.redis.DistributedLock;
 import com.benewake.system.service.ApsProductionPlanService;
@@ -81,14 +83,25 @@ public class SchedulingPythonService extends PythonBase {
                     .versionTime(new Date())
                     .build();
             apsTableVersionService.save(apsTableVersion);
-            sseService.sendMessage(username, "排程已完成 快去查看吧~~");
             distributedLock.releaseLock(SCHEDULING_DATA_LOCK_KEY, TableVersionState.SCHEDULING_ING.getDescription());
+            sendMessage(username ,"排程已完成 快去查看吧~~" , "success");
+//            sseService.sendMessage(username, "排程已完成 快去查看吧~~");
         } else if ("520".equals(line)) {
             deleteVersionIsNull();
             String username = hostHolder.getUser().getUsername();
-            sseService.sendMessage(username, "排程失败了 联系一下管理员~~");
             distributedLock.releaseLock(SCHEDULING_DATA_LOCK_KEY, TableVersionState.SCHEDULING_ING.getDescription());
+            sendMessage(username ,"排程失败了 联系一下管理员" , "error");
+//            sseService.sendMessage(username, "排程失败了 联系一下管理员");
         }
+    }
+
+    private void sendMessage(String username, String message ,String state) {
+        SseMessageEntity sseMessageEntity = new SseMessageEntity();
+        sseMessageEntity.setMessage(message);
+        sseMessageEntity.setDate(new Date());
+        sseMessageEntity.setState(state);
+        String toJSONString = JSON.toJSONString(sseMessageEntity);
+        sseService.sendMessage(username, toJSONString);
     }
 
     private void deleteVersionIsNull() {
@@ -99,7 +112,8 @@ public class SchedulingPythonService extends PythonBase {
 
     @Override
     void callPythonException() {
-        sseService.sendMessage(hostHolder.getUser().getUsername(), "排程失败了 联系一下管理员~~");
+        sendMessage(hostHolder.getUser().getUsername() ,"排程失败了 联系一下管理员~~" , "error");
+//        sseService.sendMessage(hostHolder.getUser().getUsername(), "排程失败了 联系一下管理员~~");
         Integer maxVersion = apsTableVersionService.getMaxVersion();
         LambdaUpdateWrapper<ApsTableVersion> apsTableVersionLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
         apsTableVersionLambdaUpdateWrapper.set(ApsTableVersion::getState, TableVersionState.INVALID.getCode());

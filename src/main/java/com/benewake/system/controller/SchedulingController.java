@@ -5,28 +5,23 @@ import com.benewake.system.entity.ApsProductionPlan;
 import com.benewake.system.entity.Result;
 import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.entity.enums.TableVersionState;
-import com.benewake.system.entity.vo.ReturnTest;
 import com.benewake.system.entity.vo.SchedulingParam;
 import com.benewake.system.redis.DistributedLock;
 import com.benewake.system.service.*;
+import com.benewake.system.service.impl.ApsProductionPlanServiceImpl;
 import com.benewake.system.utils.HostHolder;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import static com.benewake.system.redis.SchedulingLockKey.SCHEDULING_USER_LOCK_KEY;
@@ -57,8 +52,7 @@ public class SchedulingController {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
-    @Autowired
-    private ApsProductionPlanService apsProductionPlanService;
+
 
     @Autowired
     private ApsFileService apsFileService;
@@ -102,21 +96,26 @@ public class SchedulingController {
         return Result.ok();
     }
 
+    @ApiOperation("一键开始排程")
+    @Scheduling(type = TableVersionState.SCHEDULING_ING)
+    @PostMapping("/oneKeyScheduling")
+    public Result oneKeyScheduling(@RequestBody SchedulingParam schedulingParam) {
+        interfaceDataService.updateData(InterfaceDataType.getAllIds());
+        pythonService.integrityChecker();
+        pythonService.startScheduling(schedulingParam);
+        return Result.ok();
+    }
+
 
     //下载不完整数据
     @ApiOperation("下载完整性检查结果数据")
-    @GetMapping("/downloadIntegrityChecker")
-    public ResponseEntity<Resource> downloadFile() {
-        ResponseEntity<Resource> resourceResponseEntity = apsFileService.ApsIntegrityCheckeFile();
+    @PostMapping("/downloadIntegrityChecker")
+    public ResponseEntity<InputStreamResource> downloadFile() {
+        ResponseEntity<InputStreamResource> resourceResponseEntity = apsFileService.ApsIntegrityCheckeFile();
         return resourceResponseEntity;
     }
 
-    @ApiOperation("测试")
-    @PostMapping("/getProductionPlan")
-    public Result getProductionPlan() {
-        Map<String, List<ApsProductionPlan>> productionPlan = apsProductionPlanService.getProductionPlan();
-        return Result.ok(productionPlan);
-    }
+
 
 
     @ApiOperation("获取排程界面的所有权")
@@ -130,7 +129,7 @@ public class SchedulingController {
                 distributedLock.startLockRenewalTask(SCHEDULING_USER_LOCK_KEY);
                 return Result.ok();
             }
-            return Result.fail(username + "正在使用");
+            return Result.fail().message(username + "正在使用");
         }
     }
 

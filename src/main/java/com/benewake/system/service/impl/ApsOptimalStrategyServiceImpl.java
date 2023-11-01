@@ -45,7 +45,7 @@ public class ApsOptimalStrategyServiceImpl extends ServiceImpl<ApsOptimalStrateg
     public void ifInsert(ApsOptimalStrategy apsOptimalStrategy) {
         LambdaQueryWrapper<ApsOptimalStrategy> apsOptimalStrategyLambdaQueryWrapper = new LambdaQueryWrapper<>();
         apsOptimalStrategyLambdaQueryWrapper.eq(ApsOptimalStrategy::getProductFamily, apsOptimalStrategy.getProductFamily())
-                .eq(ApsOptimalStrategy::getNumber, apsOptimalStrategy.getStrategy());
+                .eq(ApsOptimalStrategy::getNumber, apsOptimalStrategy.getNumber());
         ApsOptimalStrategy apsOptimalStrategyByDate = apsOptimalStrategyMapper.selectOne(apsOptimalStrategyLambdaQueryWrapper);
         if (apsOptimalStrategyByDate == null) {
             save(apsOptimalStrategy);

@@ -1,0 +1,18 @@
+package com.benewake.system.mapper;
+
+import com.benewake.system.entity.ApsProductFamilyMachineTable;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+/**
+* @author ASUS
+* @description 针对表【aps_product_family_machine_table】的数据库操作Mapper
+* @createDate 2023-10-31 10:48:29
+* @Entity com.benewake.system.entity.ApsProductFamilyMachineTable
+*/
+public interface ApsProductFamilyMachineTableMapper extends BaseMapper<ApsProductFamilyMachineTable> {
+
+}
+
+
+
+

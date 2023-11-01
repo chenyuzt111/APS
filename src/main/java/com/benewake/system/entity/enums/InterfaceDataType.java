@@ -18,7 +18,6 @@ public enum InterfaceDataType {
     PRODUCTION_ORDER(5, "生产订单列表", "apsProductionOrderServiceImpl"),
     PURCHASE_REQUEST(6, "采购申请单列表", "apsPurchaseRequestServiceImpl"),
     PURCHASE_ORDERS(7, "采购订单列表", "apsPurchaseOrderServiceImpl"),
-    //TODO 7 访问不通
     RECEIVE_NOTICE(8, "收料通知单列表", "apsReceiveNoticeServiceImpl"),
     INVENTORY_LOCK(9, " 库存锁库列表", "apsInventoryLockServiceImpl"),
     MATERIAL_BOM(10, " 物料清单列表", "apsMaterialBomServiceImpl"),

@@ -32,6 +32,12 @@ public class ApsProcessCapacity implements Serializable {
      */
     @TableField(value = "process_id")
     private Integer processId;
+//    /**
+//     * 工序名称
+//     */
+//    @TableField(value = "process_name")
+//    private String processName;
+
 
     /**
      * 序号

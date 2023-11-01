@@ -18,7 +18,7 @@ import java.util.List;
 @Mapper
 public interface ApsProcessCapacityMapper extends BaseMapper<ApsProcessCapacity> {
 
-    List<ApsProcessCapacityDto> selectPages(Integer pass, Integer size);
+    List<ApsProcessCapacityDto> selectPages(@Param("pass") Integer pass, @Param("size") Integer size);
 
     List<ApsProcessCapacityVo> selectProcessCapacitysByproductFamily(@Param("productFamily") String productFamily);
 }

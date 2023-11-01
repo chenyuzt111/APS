@@ -26,4 +26,7 @@
     <select id="selectListPage" resultType="com.benewake.system.entity.vo.ProcessSchemeManagementDo">
 
     </select>
+    <select id="selectAllPage" resultType="com.benewake.system.entity.vo.ProcessSchemeManagementVo">
+
+    </select>
 </mapper>

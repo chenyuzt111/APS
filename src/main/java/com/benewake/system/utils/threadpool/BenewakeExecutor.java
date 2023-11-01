@@ -14,7 +14,7 @@ public class BenewakeExecutor {
     static {
         MAX_SIZE = MIN_SIZE * 20;
         BLOCK_SIZE = MIN_SIZE * 10;
-        EXECUTOR = new BenewakeExecutor.BaseThreadPoolExecutor(MIN_SIZE, MAX_SIZE, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue(BLOCK_SIZE), new CustomizableThreadFactory("YQNExecutor.EXE"));
+        EXECUTOR = new BenewakeExecutor.BaseThreadPoolExecutor(MIN_SIZE, MAX_SIZE, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue(BLOCK_SIZE), new CustomizableThreadFactory("BenewakeExecutor.EXE"));
     }
 
     public BenewakeExecutor() {

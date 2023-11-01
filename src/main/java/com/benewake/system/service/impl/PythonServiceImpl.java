@@ -49,15 +49,14 @@ public class PythonServiceImpl implements PythonService {
 
     @Override
     public void startScheduling(SchedulingParam schedulingParam) {
-
         try {
             Integer schedulingMaxVersion = apsTableVersionService.getMaxVersion();
             ArrayList<ApsTableVersion> apsTableVersions = new ArrayList<>();
             for (ApsIntfaceDataServiceBase service : apsIntfaceDataServiceBase) {
                 Integer maxVersion = service.getMaxVersionIncr();
-                if (maxVersion == 1) {
-                    throw new BeneWakeException("数据库数据不存在");
-                }
+//                if (maxVersion == 1) {
+//                    throw new BeneWakeException("数据库数据不存在");
+//                }
                 int codeByServiceName = getCodeByServiceName(service);
                 ApsTableVersion apsTableVersion = ApsTableVersion.builder().tableVersion(maxVersion - 1)
                         .tableId(codeByServiceName)
@@ -68,14 +67,36 @@ public class PythonServiceImpl implements PythonService {
                 apsTableVersions.add(apsTableVersion);
             }
             apsTableVersionService.saveBatch(apsTableVersions);
-            String jsonString = "JSONObject.toJSONString(schedulingParam)";
-            jsonString = jsonString.replaceAll("\"", "\\\\\"");
+            String jsonString = JSONObject.toJSONString(schedulingParam);
+//            jsonString = jsonString.replaceAll("\"", "\\\\\"");
+//            // 使用字符串替换将 { 后面添加换行符
+//            jsonString = jsonString.replace("{", "{\n");
+//            // 使用字符串替换将 } 后面添加换行符
+//            jsonString = jsonString.replace("}", "\n}");
+//            // 使用字符串替换将 , 后面添加换行符
+//            jsonString = jsonString.replace(",", ",\n");
+//            jsonString = '"' + jsonString + '"';
+//            String jsonString = "{\n" +
+//                    "    \"number_cycles\": 1,\n" +
+//                    "    \"scheduled_days_num\": 240,\n" +
+//                    "    \"scheduling_workload\": 240,\n" +
+//                    "    \"bach_size\": 10,\n" +
+//                    "    \"in_advance_po\": 7,\n" +
+//                    "    \"buy_delay_days\": 5,\n" +
+//                    "    \"yg_delta\": 90,\n" +
+//                    "    \"produce_in_parallel\": true,\n" +
+//                    "    \"consider_the_process\": false,\n" +
+//                    "    \"consider_the_material\": false,\n" +
+//                    "    \"split_po_orders\": false\n" +
+//                    "}";
+//            String a = "{\"bach_size\":10,\"buy_delay_days\":5,\"consider_the_material\":false,\"consider_the_process\":false,\"in_advance_po\":7,\"number_cycles\":5,\"produce_in_parallel\":true,\"scheduled_days_num\":180,\"scheduling_workload\":180,\"split_po_orders\":false,\"yg_delta\":90}";
             //todo 转json传参
             List<String> strings = new ArrayList<>();
             strings.add(jsonString);
             System.out.println(strings);
             schedulingPythonService.startAsync(hostHolder.getUser(), strings);
-        }catch (Exception e){
+//            schedulingPythonService.start(strings);
+        } catch (Exception e) {
             distributedLock.releaseLock(SCHEDULING_DATA_LOCK_KEY, TableVersionState.SCHEDULING_ING.getDescription());
             throw new BeneWakeException(e.getMessage());
         }
@@ -105,7 +126,6 @@ public class PythonServiceImpl implements PythonService {
                 "    \"consider_the_material\": false,\n" +
                 "    \"split_po_orders\": false\n" +
                 "}";
-        jsonString = jsonString.replaceAll("\"", "\\\\\"");
         strings.add(jsonString);
         integrityCheckerPythonService.start(strings);
     }

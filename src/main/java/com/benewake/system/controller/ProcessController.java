@@ -56,15 +56,16 @@ public class ProcessController {
         return apsProcessNamePoolService.removeBatchByIds(ids) ? Result.ok() : Result.fail();
     }
 
+    @ApiOperation("获取工序名称分页")
+    @GetMapping("/getProcessNamePools/{page}/{size}")
+    public Result getProcess(@RequestParam(required = false) String name,@PathVariable Integer page,@PathVariable Integer size) {
+        ApsProcessNamePoolVo apsProcessNamePoolVo = apsProcessNamePoolService.getProcess(name, page ,size);
+        return Result.ok(apsProcessNamePoolVo);
+    }
     @ApiOperation("获取工序名称")
     @GetMapping("/getProcessNamePools")
     public Result getProcess(@RequestParam(required = false) String name) {
-        LambdaQueryWrapper<ApsProcessNamePool> apsProcessNamePoolLambdaQueryWrapper = null;
-        if (StringUtils.isNotBlank(name)) {
-            apsProcessNamePoolLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            apsProcessNamePoolLambdaQueryWrapper.like(ApsProcessNamePool::getProcessName, name);
-        }
-        List<ApsProcessNamePool> apsProcessNamePools = apsProcessNamePoolService.getBaseMapper().selectList(apsProcessNamePoolLambdaQueryWrapper);
+        List<ApsProcessNamePool> apsProcessNamePools = apsProcessNamePoolService.getBaseMapper().selectList(null);
         return Result.ok(apsProcessNamePools);
     }
 
@@ -81,6 +82,7 @@ public class ProcessController {
     public Result getAllPackagingMethod() {
         List<ApsFinishedProductBasicData> apsFinishedProductBasicData = apsFinishedProductBasicDataService.getBaseMapper().selectList(null);
         List<String> productFamily = apsFinishedProductBasicData.stream().map(ApsFinishedProductBasicData::getFPackagingMethod).distinct().collect(Collectors.toList());
+        productFamily.add(" ");
         return Result.ok(productFamily);
     }
 
@@ -88,12 +90,10 @@ public class ProcessController {
     @PostMapping("/addOrUpdateProcessCapacity")
     public Result addOrUpdateProcessCapacity(@RequestBody ApsProcessCapacityParam apsProcessCapacityVo) {
         if (apsProcessCapacityVo == null || StringUtils.isEmpty(apsProcessCapacityVo.getProcessName()) ||
-                StringUtils.isEmpty(apsProcessCapacityVo.getBelongingProcess()) ||
-                StringUtils.isEmpty(apsProcessCapacityVo.getPackagingMethod())) {
+                StringUtils.isEmpty(apsProcessCapacityVo.getBelongingProcess())) {
             return Result.fail("不能为空");
         }
         Boolean res = apsProcessCapacityService.saveOrUpdateProcessCapacityService(apsProcessCapacityVo);
-
         return res ? Result.ok() : Result.fail();
     }
 
@@ -143,11 +143,11 @@ public class ProcessController {
     @ApiOperation("查询工序方案")
     @GetMapping("/getProcessScheme/{page}/{size}")
     public Result getProcessScheme(@PathVariable Integer page, @PathVariable Integer size) {
-        List<ApsProcessSchemeVo> apsProcessSchemeVoList = apsProcessSchemeService.getProcessScheme(page, size);
+        ApsProcessSchemeVoPage apsProcessSchemeVoList = apsProcessSchemeService.getProcessScheme(page, size);
         return Result.ok(apsProcessSchemeVoList);
     }
 
-    @ApiOperation("查询工序方案根据当前方案Nmme")
+    @ApiOperation("查询工序方案根据当前方案id")
     @GetMapping("/getProcessSchemeById")
     public Result getProcessSchemeById(@PathParam("id") Integer id) {
         ApsProcessSchemeByIdListVo apsProcessSchemeVoList = apsProcessSchemeService.getProcessSchemeById(id);
@@ -161,10 +161,10 @@ public class ProcessController {
         return res ? Result.ok() : Result.fail();
     }
 
-    @ApiOperation("查询产品族工艺方案管理")
+    @ApiOperation("最终工艺方案")
     @GetMapping("/getProcessSchemeManagement/{page}/{size}")
     public Result getProcessSchemeManagement(@PathVariable Integer page, @PathVariable Integer size) {
-        List<ProcessSchemeManagementVo> res = apsProductFamilyProcessSchemeManagementService.getProcessSchemeManagement(page ,size);
+        ProcessSchemeManagementVoPage res = apsProductFamilyProcessSchemeManagementService.getProcessSchemeManagement(page ,size);
         return Result.ok(res);
     }
 

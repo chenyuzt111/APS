@@ -45,6 +45,9 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         logger.info("uri:" + request.getRequestURI());
+        String token = request.getHeader("token");
+        logger.info("token:" + token);
+//        request.getHeaders()
         //这里检查请求的URI是否与"/system/index/login"相匹配，如果匹配，就直接放行请求，不进行后续的身份验证处理。
         if ("/benewake/system/index/login".equals(request.getRequestURI())) {
             chain.doFilter(request, response);

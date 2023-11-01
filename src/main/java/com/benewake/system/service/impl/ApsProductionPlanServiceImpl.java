@@ -1,10 +1,12 @@
 package com.benewake.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsProductionPlan;
 import com.benewake.system.entity.ApsTableVersion;
 import com.benewake.system.entity.enums.TableVersionState;
+import com.benewake.system.entity.vo.PageListRestVo;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsProductionPlanService;
 import com.benewake.system.mapper.ApsProductionPlanMapper;
@@ -28,16 +30,7 @@ public class ApsProductionPlanServiceImpl extends ServiceImpl<ApsProductionPlanM
 
     @Override
     public Map<String, List<ApsProductionPlan>> getProductionPlan() {
-        LambdaQueryWrapper<ApsTableVersion> apsTableVersionLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        apsTableVersionLambdaQueryWrapper.eq(ApsTableVersion::getTableId, 23)
-                .eq(ApsTableVersion::getState, TableVersionState.SUCCESS.getCode())
-                .orderByDesc(ApsTableVersion::getVersionNumber)
-                .last("limit 1");
-
-        ApsTableVersion one = apsTableVersionService.getOne(apsTableVersionLambdaQueryWrapper);
-        if (one == null) {
-            throw new BeneWakeException("还未有排程数据");
-        }
+        ApsTableVersion one = getApsTableVersion();
         LambdaQueryWrapper<ApsProductionPlan> apsProductionPlanLambdaQueryWrapper = new LambdaQueryWrapper<>();
         apsProductionPlanLambdaQueryWrapper.eq(ApsProductionPlan::getVersion, one.getTableVersion());
         List<ApsProductionPlan> apsProductionPlans = baseMapper.selectList(apsProductionPlanLambdaQueryWrapper);
@@ -67,6 +60,40 @@ public class ApsProductionPlanServiceImpl extends ServiceImpl<ApsProductionPlanM
 //        returnTest.setMap(stringArrayListHashMap);
         return groupedPlans;
     }
+
+    @Override
+    public PageListRestVo<ApsProductionPlan> getAllPage(Integer page, Integer size) {
+        ApsTableVersion one = getApsTableVersion();
+        LambdaQueryWrapper<ApsProductionPlan> apsProductionPlanLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        apsProductionPlanLambdaQueryWrapper.eq(ApsProductionPlan::getVersion, one.getTableVersion());
+        Page<ApsProductionPlan> apsProductionPlanPage = new Page<>();
+        apsProductionPlanPage.setSize(size);
+        apsProductionPlanPage.setCurrent(page);
+        Page<ApsProductionPlan> planPage = baseMapper.selectPage(apsProductionPlanPage, apsProductionPlanLambdaQueryWrapper);
+        PageListRestVo<ApsProductionPlan> apsProductionPlanPageListRestVo = new PageListRestVo<>();
+        apsProductionPlanPageListRestVo.setList(planPage.getRecords());
+        apsProductionPlanPageListRestVo.setPage(page);
+        apsProductionPlanPageListRestVo.setTotal(planPage.getTotal());
+        apsProductionPlanPageListRestVo.setPages(planPage.getPages());
+        apsProductionPlanPageListRestVo.setSize(size);
+        return apsProductionPlanPageListRestVo;
+    }
+
+    private ApsTableVersion getApsTableVersion() {
+        LambdaQueryWrapper<ApsTableVersion> apsTableVersionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        apsTableVersionLambdaQueryWrapper.eq(ApsTableVersion::getTableId, 23)
+                .eq(ApsTableVersion::getState, TableVersionState.SUCCESS.getCode())
+                .orderByDesc(ApsTableVersion::getVersionNumber)
+                .last("limit 1");
+
+        ApsTableVersion one = apsTableVersionService.getOne(apsTableVersionLambdaQueryWrapper);
+        if (one == null) {
+            throw new BeneWakeException("还未有排程数据");
+        }
+        return one;
+    }
+
+
 }
 
 

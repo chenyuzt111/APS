@@ -40,7 +40,7 @@ public class GlobalExceptionAdvice {
     @ResponseBody
     @Order(1)
     public Result error(BeneWakeException e){
-        return Result.fail().code(ResultCodeEnum.FAIL.getCode()).message(e.getMessage());
+        return Result.fail().code(e.getCode()).message(e.getMessage());
     }
 
     /**

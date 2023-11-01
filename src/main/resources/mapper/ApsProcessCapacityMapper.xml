@@ -39,6 +39,7 @@
         ORDER BY
             pro.product_family,
             pro.process_number
+        limit #{pass} ,#{size}
     </select>
 
     <select id="selectProcessCapacitysByproductFamily"

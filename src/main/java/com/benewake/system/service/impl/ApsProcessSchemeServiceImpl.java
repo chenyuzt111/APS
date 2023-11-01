@@ -7,10 +7,7 @@ import com.benewake.system.entity.ApsOptimalStrategy;
 import com.benewake.system.entity.ApsProcessCapacity;
 import com.benewake.system.entity.ApsProcessScheme;
 import com.benewake.system.entity.ApsProductFamilyProcessSchemeManagement;
-import com.benewake.system.entity.vo.ApsProcessSchemeByIdListVo;
-import com.benewake.system.entity.vo.ApsProcessSchemeParam;
-import com.benewake.system.entity.vo.ApsProcessSchemeParams;
-import com.benewake.system.entity.vo.ApsProcessSchemeVo;
+import com.benewake.system.entity.vo.*;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.mapper.ApsProcessCapacityMapper;
 import com.benewake.system.mapper.ApsProductFamilyProcessSchemeManagementMapper;
@@ -19,6 +16,7 @@ import com.benewake.system.service.ApsProcessSchemeService;
 import com.benewake.system.mapper.ApsProcessSchemeMapper;
 import com.benewake.system.service.ApsProductFamilyProcessSchemeManagementService;
 import com.benewake.system.utils.StringUtils;
+import io.swagger.models.auth.In;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -186,6 +184,8 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
                         .peek(x -> x.setOptimalProcessSchemeName(finalOptimalName)).collect(Collectors.toList());
                 apsProductFamilyProcessSchemeManagementService.updateBatchById(apsProductFamilyProcessSchemeManagements);
                 apsProductFamilyProcessSchemeManagement.setOptimalProcessSchemeName(optimalName);
+            } else {
+                apsProductFamilyProcessSchemeManagement.setOptimalProcessSchemeName(apsProductManagementOptimalToName.getOptimalProcessSchemeName());
             }
             if (apsProductFamilyProcessSchemeManagements.get(0).getOrderNumber() != null) {
                 //如果有数据 有经济批量那么就要计算
@@ -201,17 +201,25 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
                 apsProductFamilyProcessSchemeManagement.setOrderNumber(orderNumber);
                 apsProductFamilyProcessSchemeManagement.setCompletionTime(completionTime);
                 apsProductFamilyProcessSchemeManagement.setTotalReleaseTime(differenceSum.doubleValue());
-                apsProductFamilyProcessSchemeManagementMapper.insert(apsProductFamilyProcessSchemeManagement);
             }
+            apsProductFamilyProcessSchemeManagementMapper.insert(apsProductFamilyProcessSchemeManagement);
         }
 
     }
 
 
     @Override
-    public List<ApsProcessSchemeVo> getProcessScheme(Integer page, Integer size) {
+    public ApsProcessSchemeVoPage getProcessScheme(Integer page, Integer size) {
         Integer pass = (page - 1) * size;
-        return apsProcessSchemeMapper.selectProcessSchemePage(pass, size);
+        List<ApsProcessSchemeVo> apsProcessSchemeVoList = apsProcessSchemeMapper.selectProcessSchemePage(pass, size);
+        ApsProcessSchemeVoPage apsProcessSchemeVoPage = new ApsProcessSchemeVoPage();
+        apsProcessSchemeVoPage.setApsProcessSchemeVo(apsProcessSchemeVoList);
+        apsProcessSchemeVoPage.setPage(page);
+        apsProcessSchemeVoPage.setSize(size);
+        Long total = apsProcessSchemeMapper.selectCount(null);
+        apsProcessSchemeVoPage.setTotal(total);
+        apsProcessSchemeVoPage.setPages(total / size + 1);
+        return apsProcessSchemeVoPage;
     }
 
     @Override
@@ -271,10 +279,13 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
                     String finalOptimalName = optimalName;
                     List<ApsProductFamilyProcessSchemeManagement> updateProductFamilyProcessSchemeManagements = value.stream().peek(x -> x.setOptimalProcessSchemeName(finalOptimalName)).collect(Collectors.toList());
                     apsProductFamilyProcessSchemeManagementService.updateBatchById(updateProductFamilyProcessSchemeManagements);
+
                 }
             }
         }
-
+        LambdaQueryWrapper<ApsProductFamilyProcessSchemeManagement> apsProductQueryWrapper = new LambdaQueryWrapper<>();
+        apsProductQueryWrapper.eq(ApsProductFamilyProcessSchemeManagement::getCurProcessSchemeName ,currentProcessSchemeList.get(0));
+        apsProductFamilyProcessSchemeManagementService.remove(apsProductQueryWrapper);
         LambdaQueryWrapper<ApsProcessScheme> apsProcessSchemeLambdaQueryWrapper = new LambdaQueryWrapper<>();
         apsProcessSchemeLambdaQueryWrapper.in(ApsProcessScheme::getCurrentProcessScheme, currentProcessSchemeList);
         return remove(apsProcessSchemeLambdaQueryWrapper);
