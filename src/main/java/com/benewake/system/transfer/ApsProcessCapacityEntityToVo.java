@@ -18,7 +18,9 @@ public class ApsProcessCapacityEntityToVo {
         apsProcessCapacityVo.setProcessNumber(object.getProcessNumber());
         apsProcessCapacityVo.setProductFamily(object.getProductFamily());
         apsProcessCapacityVo.setPackagingMethod(object.getPackagingMethod());
-        apsProcessCapacityVo.setStandardTime(object.getStandardTime().toString());
+        if (object.getStandardTime() != null) {
+            apsProcessCapacityVo.setStandardTime(object.getStandardTime().toString());
+        }
         apsProcessCapacityVo.setMaxPersonnel(object.getMaxPersonnel());
         apsProcessCapacityVo.setMinPersonnel(object.getMinPersonnel());
 

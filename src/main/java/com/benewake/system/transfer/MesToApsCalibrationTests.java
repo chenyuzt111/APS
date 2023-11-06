@@ -17,7 +17,7 @@ public class MesToApsCalibrationTests {
         apsCalibrationTests.setProductionordernumber(mesCalibrationTests.getProductionOrderNumber());
         apsCalibrationTests.setMaterialcode(mesCalibrationTests.getMaterialCode());
         apsCalibrationTests.setMaterialname(mesCalibrationTests.getMaterialName());
-        apsCalibrationTests.setBurnincompletionquantity(mesCalibrationTests.getBurnFixtureNumber());
+        apsCalibrationTests.setBurnincompletionquantity(mesCalibrationTests.getBurnInCompletionQuantity());
         apsCalibrationTests.setBurnqualifiedcount(mesCalibrationTests.getBurnQualifiedCount());
         apsCalibrationTests.setBurnfixturenumber(mesCalibrationTests.getBurnFixtureNumber());
         apsCalibrationTests.setVersion(version);

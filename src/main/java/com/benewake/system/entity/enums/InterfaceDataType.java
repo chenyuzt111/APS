@@ -21,7 +21,6 @@ public enum InterfaceDataType {
     RECEIVE_NOTICE(8, "收料通知单列表", "apsReceiveNoticeServiceImpl"),
     INVENTORY_LOCK(9, " 库存锁库列表", "apsInventoryLockServiceImpl"),
     MATERIAL_BOM(10, " 物料清单列表", "apsMaterialBomServiceImpl"),
-    //TODO 多个表类型
     // MES向下
     PCBA_BURN(11, "PCBA烧录1", "apsPcbaBurnServiceImpl"),
     TFMINI__S_PCBA_BURN(12, "TFmini-S-PCBA烧录1", "apsTfminiSPcbaBurnServiceImpl"),

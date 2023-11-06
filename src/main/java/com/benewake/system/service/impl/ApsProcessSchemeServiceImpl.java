@@ -54,13 +54,15 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String saveProcessScheme(ApsProcessSchemeParams apsProcessSchemeParams) {
+    public synchronized String saveProcessScheme(ApsProcessSchemeParams apsProcessSchemeParams) {
         List<ApsProcessSchemeParam> apsProcessSchemeParam = apsProcessSchemeParams.getApsProcessSchemeParam();
         List<String> employeeList = apsProcessSchemeParam.stream().map(ApsProcessSchemeParam::getEmployeeName).distinct().collect(Collectors.toList());
         int size = employeeList.size();
         if (size != apsProcessSchemeParams.getNumber()) {
             throw new BeneWakeException("输入人数 与分配人数 不一致~~~~~~~");
         }
+        //todo 判断是否cunzai当前新增的方案
+//        apsProcessSchemeParam.stream()
         List<Integer> processCapacityIds = apsProcessSchemeParam.stream()
                 .map(ApsProcessSchemeParam::getId)
                 .collect(Collectors.toList());

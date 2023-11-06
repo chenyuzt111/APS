@@ -22,4 +22,6 @@ public interface ApsProcessCapacityService extends IService<ApsProcessCapacity> 
     List<ApsProcessCapacityVo> getProcessCapacitysByproductFamily(String productFamily);
 
     boolean removeBatchAndUpdateByIds(List<Integer> ids);
+
+    Boolean updateProcessNumber(List<ApsProcessCapacityParam> apsProcessCapacityVo);
 }

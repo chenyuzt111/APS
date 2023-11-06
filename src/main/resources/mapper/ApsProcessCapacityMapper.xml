@@ -58,7 +58,7 @@
         FROM
             `aps_process_capacity` AS pro
                 LEFT JOIN aps_process_name_pool AS ce ON pro.process_id = ce.id
-        where product_family = #{productFamily}
+        where product_family = #{productFamily}  and pro.belonging_process = '组装'
         ORDER BY
             pro.product_family,
             pro.process_number

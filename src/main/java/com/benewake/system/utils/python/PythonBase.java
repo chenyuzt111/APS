@@ -58,20 +58,20 @@ public abstract class PythonBase {
             process = this.processBuilder.command(command).start();
             reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
-            // 创建线程捕获并输出标准错误输出
-//            Process finalProcess = process;
-//            Thread stdErrThread = new Thread(() -> {
-//                try (BufferedReader readera = new BufferedReader(new InputStreamReader(finalProcess.getErrorStream()))) {
-//                    String line;
-//                    while ((line = readera.readLine()) != null) {
-//                        System.err.println("Standard Error Output: " + line);
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            });
-//            stdErrThread.start();
-//            stdErrThread.join();
+//             创建线程捕获并输出标准错误输出
+            Process finalProcess = process;
+            Thread stdErrThread = new Thread(() -> {
+                try (BufferedReader readera = new BufferedReader(new InputStreamReader(finalProcess.getErrorStream()))) {
+                    String line;
+                    while ((line = readera.readLine()) != null) {
+                        System.err.println("Standard Error Output: " + line);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            stdErrThread.start();
+            stdErrThread.join();
             String line;
             while ((line = reader.readLine()) != null) {
                 checkCode(line);
@@ -91,7 +91,8 @@ public abstract class PythonBase {
                 callPythonException();
             }
             e.printStackTrace();
-            throw new BeneWakeException(e.getMessage());
+            assert e instanceof BeneWakeException;
+            throw new BeneWakeException(((BeneWakeException) e).getCode(), e.getMessage());
         } finally {
             // 在finally块中关闭资源
             if (reader != null) {

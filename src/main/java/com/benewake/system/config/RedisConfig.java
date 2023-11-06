@@ -14,7 +14,6 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-//import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * @author yueqi.shi
@@ -42,6 +41,5 @@ public class RedisConfig {
 //                .setPassword("benewake@12345");
         return Redisson.create(config);
     }
-
 
 }

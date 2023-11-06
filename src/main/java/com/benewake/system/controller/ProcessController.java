@@ -97,6 +97,16 @@ public class ProcessController {
         return res ? Result.ok() : Result.fail();
     }
 
+    @ApiOperation("批量修改修改工序与生产")
+    @PostMapping("/updateProcessNumber")
+    public Result updateProcessNumber(@RequestBody List<ApsProcessCapacityParam> apsProcessCapacityVo) {
+        if (CollectionUtils.isEmpty(apsProcessCapacityVo)) {
+            return Result.fail("不能为空");
+        }
+        Boolean res = apsProcessCapacityService.updateProcessNumber(apsProcessCapacityVo);
+        return res ? Result.ok() : Result.fail();
+    }
+
     @ApiOperation("分页查工序与生产")
     @GetMapping("/getProcessCapacity/{page}/{size}")
     public Result getAllProcessCapacity(@PathVariable Integer page, @PathVariable Integer size) {
@@ -104,7 +114,7 @@ public class ProcessController {
         return Result.ok(allProcessCapacity);
     }
 
-    @ApiOperation("根据产品族查工序与生产")
+    @ApiOperation("根据产品族查工序与生产过滤掉了所属工序不是组装的")
     @GetMapping("/getProcessCapacityByProductFamily")
     public Result getAllProcessCapacity(@PathParam("productFamily") String productFamily) {
         List<ApsProcessCapacityVo> allProcessCapacity = apsProcessCapacityService.getProcessCapacitysByproductFamily(productFamily);

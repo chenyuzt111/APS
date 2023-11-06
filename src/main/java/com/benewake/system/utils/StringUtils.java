@@ -19,6 +19,34 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      */
     private static final char SEPARATOR = '_';
 
+    public static String formatTime(String inputTime) {
+        // 切分时间字符串
+        String[] parts = inputTime.split(":");
+
+        // 確保有兩個部分，如果只有一個部分就添加 '0' 以前置
+        if (parts.length == 2) {
+            int hours = Integer.parseInt(parts[0]);
+            int minutes = Integer.parseInt(parts[1]);
+            return String.format("%02d:%02d", hours, minutes);
+        } else {
+            return inputTime;  // 如果格式不正确，返回原始字符串
+        }
+    }
+
+
+    public static String formatDate(String inputTime) {
+        // 切分时间字符串
+        String[] parts = inputTime.split("-");
+
+        // 確保有兩個部分，如果只有一個部分就添加 '0' 以前置
+        if (parts.length == 2) {
+            int hours = Integer.parseInt(parts[0]);
+            int minutes = Integer.parseInt(parts[1]);
+            return String.format("%02d-%02d", hours, minutes);
+        } else {
+            return inputTime;  // 如果格式不正确，返回原始字符串
+        }
+    }
     /**
      * 获取参数不为空值
      *

@@ -15,7 +15,7 @@ public class IntegrityCheckerPythonService extends PythonBase {
         System.err.println("arg11111 : -------" + line);
         //成功需要修改状态 -》 完整性检查完成
         if ("0".equals(line)) {
-            throw new BeneWakeException("完整性检查失败！");
+            throw new BeneWakeException(202 ,"完整性检查失败！");
         }
     }
 

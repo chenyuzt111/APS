@@ -1,6 +1,6 @@
 package com.benewake.system.controller;
 
-import com.benewake.system.service.message.SseService;
+import com.benewake.system.service.scheduling.message.SseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

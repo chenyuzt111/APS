@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benewake.system.mapper.ApsFimPriorityMapper">
+
+    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsFimPriority">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="fProductionId" column="f_production_id" jdbcType="VARCHAR"/>
+            <result property="fTaskSourceId" column="f_task_source_id" jdbcType="VARCHAR"/>
+            <result property="fMaterialCode" column="f_material_code" jdbcType="VARCHAR"/>
+            <result property="fMaterialName" column="f_material_name" jdbcType="VARCHAR"/>
+            <result property="fReplenishmentQuantity" column="f_replenishment_quantity" jdbcType="VARCHAR"/>
+            <result property="fExpectedStartTime" column="f_expected_start_time" jdbcType="VARCHAR"/>
+            <result property="fRequiredDeliveryTime" column="f_required_delivery_time" jdbcType="VARCHAR"/>
+            <result property="fPriority" column="f_priority" jdbcType="VARCHAR"/>
+            <result property="fContainedSalesOrders" column="f_contained_sales_orders" jdbcType="VARCHAR"/>
+            <result property="version" column="version" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,f_production_id,f_task_source_id,
+        f_material_code,f_material_name,f_replenishment_quantity,
+        f_expected_start_time,f_required_delivery_time,f_priority,
+        f_contained_sales_orders,version
+    </sql>
+</mapper>

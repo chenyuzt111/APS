@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benewake.system.mapper.ApsSemiFinishedGoodsProductionPlanMapper">
+
+    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsSemiFinishedGoodsProductionPlan">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="fMaterialCode" column="f_material_code" jdbcType="VARCHAR"/>
+            <result property="fQuantity" column="f_quantity" jdbcType="VARCHAR"/>
+            <result property="fStartTime" column="f_start_time" jdbcType="VARCHAR"/>
+            <result property="fRequiredDeliveryTime" column="f_required_delivery_time" jdbcType="VARCHAR"/>
+            <result property="version" column="version" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,f_material_code,f_quantity,
+        f_start_time,f_required_delivery_time,version
+    </sql>
+</mapper>

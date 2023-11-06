@@ -15,7 +15,7 @@ public class MesToApsTfminiSCalibrationTests {
         apsTfminiSCalibrationTests.setProductionordernumber(mesCalibrationTests.getProductionOrderNumber());
         apsTfminiSCalibrationTests.setMaterialcode(mesCalibrationTests.getMaterialCode());
         apsTfminiSCalibrationTests.setMaterialname(mesCalibrationTests.getMaterialName());
-        apsTfminiSCalibrationTests.setBurnincompletionquantity(mesCalibrationTests.getBurnFixtureNumber());
+        apsTfminiSCalibrationTests.setBurnincompletionquantity(mesCalibrationTests.getBurnInCompletionQuantity());
         apsTfminiSCalibrationTests.setBurnqualifiedcount(mesCalibrationTests.getBurnQualifiedCount());
         apsTfminiSCalibrationTests.setBurnfixturenumber(mesCalibrationTests.getBurnFixtureNumber());
         apsTfminiSCalibrationTests.setVersion(version);

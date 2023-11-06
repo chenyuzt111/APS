@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
@@ -66,6 +68,7 @@ public class ApsAllPlanNumInProcess implements Serializable {
      * 开始时间
      */
     @TableField(value = "start_time")
+    @JsonFormat(pattern = "HH:mm")
     private String startTime;
 
     /**

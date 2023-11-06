@@ -23,7 +23,7 @@ public class ApsFileServiceImpl implements ApsFileService {
 
     @Override
     public ResponseEntity<InputStreamResource> ApsIntegrityCheckeFile() {
-        String filename = "不完整数据统计.xlsx";
+        String filename = "incomplete_data.xlsx";
         File file = new File(FILE_DIRECTORY + filename);
         if (!file.exists()) {
             // 文件不存在，返回404

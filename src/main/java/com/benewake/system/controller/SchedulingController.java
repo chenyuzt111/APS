@@ -1,21 +1,18 @@
 package com.benewake.system.controller;
 
 import com.benewake.system.annotation.Scheduling;
-import com.benewake.system.entity.ApsProductionPlan;
 import com.benewake.system.entity.Result;
 import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.entity.enums.TableVersionState;
 import com.benewake.system.entity.vo.SchedulingParam;
 import com.benewake.system.redis.DistributedLock;
 import com.benewake.system.service.*;
-import com.benewake.system.service.impl.ApsProductionPlanServiceImpl;
 import com.benewake.system.utils.HostHolder;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
