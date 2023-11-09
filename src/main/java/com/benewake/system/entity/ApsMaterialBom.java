@@ -1,5 +1,7 @@
 package com.benewake.system.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -7,101 +9,69 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import lombok.Data;
 
-/**
- * 
- * @TableName aps_material_bom
- */
 @TableName(value ="aps_material_bom")
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApsMaterialBom implements Serializable {
-    /**
-     * 自增ID
-     */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-
-    /**
-     * 父项物料编码
-     */
+    @JsonProperty("materialId")
     @TableField(value = "f_material_id")
     private String fMaterialId;
-    /**
-     * 父项物料编码
-     */
+
+    @JsonProperty("materialName")
     @TableField(value = "f_material_name")
     private String fMaterialName;
 
-    /**
-     * 数据状态
-     */
+    @JsonProperty("documentStatus")
     @TableField(value = "f_document_status")
     private String fDocumentStatus;
 
-    /**
-     * 子项物料编码
-     */
+    @JsonProperty("materialIdChild")
     @TableField(value = "f_material_id_child")
     private String fMaterialIdChild;
 
-    /**
-     * 子项物料编码
-     */
+    @JsonProperty("materialNameChild")
     @TableField(value = "f_material_name_child")
     private String fMaterialNameChild;
 
-    /**
-     * 用量:分子
-     */
+    @JsonProperty("numerator")
     @TableField(value = "f_numerator")
     private String fNumerator;
 
-    /**
-     * 用量:分母
-     */
+    @JsonProperty("denominator")
     @TableField(value = "f_denominator")
     private String fDenominator;
 
-    /**
-     * 固定损耗
-     */
+    @JsonProperty("fixScrapQtyLot")
     @TableField(value = "f_fix_scrap_qty_lot")
     private String fFixScrapQtyLot;
 
-    /**
-     * 变动损耗率%
-     */
+    @JsonProperty("scrapRate")
     @TableField(value = "f_scrap_rate")
     private String fScrapRate;
 
-    /**
-     *   //子项类型
-     */
+    @JsonProperty("materialType")
     @TableField(value = "f_material_type")
     private String fMaterialType;
 
-    /**
-     * 替代方案
-     */
+    @JsonProperty("replaceType")
     @TableField(value = "f_replace_type")
     private String fReplaceType;
 
-    /**
-     * 项次
-     */
+    @JsonProperty("replaceGroupBop")
     @TableField(value = "f_replace_group_bop")
     private String fReplaceGroupBop;
 
-    /**
-     * 工序
-     */
+    @JsonProperty("process")
     @TableField(value = "process")
     private String process;
 
+    @JsonProperty("bomVersion")
+    @TableField(value = "bom_version")
+    private String bomVersion;
 
-    /**
-     * 版本号
-     */
     @TableField(value = "version")
     private Integer version;
 

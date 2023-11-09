@@ -15,7 +15,7 @@ import lombok.Data;
  */
 @TableName(value ="aps_product_family_machine_table")
 @Data
-public class ApsProductFamilyMachineTable implements Serializable {
+public class ApsProductFamilyMachineTableDto implements Serializable {
     /**
      * 
      */
@@ -50,6 +50,11 @@ public class ApsProductFamilyMachineTable implements Serializable {
     @JsonProperty("fProcessId")
     @TableField(value = "f_process_id")
     private String fProcessId;
+
+
+    @JsonProperty("fProcess")
+    @TableField(value = "process_name")
+    private String processName;
 
 
     /**

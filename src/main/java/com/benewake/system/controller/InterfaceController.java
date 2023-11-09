@@ -3,11 +3,13 @@ package com.benewake.system.controller;
 import com.alibaba.fastjson2.JSON;
 import com.benewake.system.entity.ApsImmediatelyInventory;
 import com.benewake.system.entity.Result;
+import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.entity.vo.PageListRestVo;
 import com.benewake.system.service.InterfaceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.Data;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +23,7 @@ import static org.python.bouncycastle.asn1.x500.style.RFC4519Style.o;
 @RequestMapping("/interface")
 public class InterfaceController {
 
-    
+
     @Autowired
     private InterfaceService interfaceService;
 
@@ -40,10 +42,27 @@ public class InterfaceController {
         return Result.ok(apsResult);
     }
 
-    @ApiOperation("查询")
+    @ApiOperation("新增")
     @PostMapping("/add")
-    public Result add(@RequestBody String request ,@PathParam("type") Integer type) {
-        ApsImmediatelyInventory apsImmediatelyInventory = JSON.parseObject(request, ApsImmediatelyInventory.class);
-        return Result.ok(apsImmediatelyInventory);
+    public Result add(@RequestBody String request, @PathParam("type") Integer type) {
+        Boolean res = interfaceService.add(request, type);
+        return res ? Result.ok() : Result.fail();
+    }
+
+    @ApiOperation("修改")
+    @PostMapping("/update")
+    public Result update(@RequestBody String request, @PathParam("type") Integer type) {
+        Boolean res = interfaceService.update(request, type);
+        return res ? Result.ok() : Result.fail();
+    }
+
+    @ApiOperation("删除")
+    @PostMapping("/delete")
+    public Result delete(@RequestBody List<Integer> ids, @PathParam("type") Integer type) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return Result.fail("id不能为null");
+        }
+        Boolean res = interfaceService.delete(ids, type);
+        return res ? Result.ok() : Result.fail();
     }
 }

@@ -1,58 +1,41 @@
 package com.benewake.system.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
 
-/**
- * 用于存储库存锁定信息的表
- * @TableName aps_inventory_lock
- */
 @TableName(value ="aps_inventory_lock")
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApsInventoryLock implements Serializable {
-    /**
-     * 自增ID
-     */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    /**
-     * 字段物料编码
-     */
+    @JsonProperty("materialId")
     @TableField(value = "f_material_id")
     private String fMaterialId;
-    /**
-     * 字段物料mingcheng
-     */
+
+    @JsonProperty("materialName")
     @TableField(value = "f_material_name")
     private String FMaterialName;
 
-    /**
-     * 到期日
-     */
+    @JsonProperty("expiryDate")
     @TableField(value = "f_expiry_date")
     private String fExpiryDate;
 
-    /**
-     * 锁库数量
-     */
+    @JsonProperty("lockQty")
     @TableField(value = "f_lock_qty")
     private Integer fLockQty;
 
-    /**
-     * 批号
-     */
+    @JsonProperty("lot")
     @TableField(value = "f_lot")
     private String fLot;
 
-    /**
-     * 版本号
-     */
     @TableField(value = "version")
     private Integer version;
 

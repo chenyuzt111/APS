@@ -60,7 +60,6 @@ public class SchedulingResultController {
         return Result.ok(apsProductionPlans);
     }
 
-
     @ApiOperation("成品缺料分析分页")
     @GetMapping("/getMaterialShortageAnalysis/{page}/{size}")
     public Result getMaterialShortageAnalysis(@PathVariable Integer page, @PathVariable Integer size) {

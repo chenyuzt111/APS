@@ -5,17 +5,17 @@
 <mapper namespace="com.benewake.system.mapper.ApsProductFamilyMachineTableMapper">
 
     <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsProductFamilyMachineTable">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="fMachineId" column="f_machine_id" jdbcType="VARCHAR"/>
-            <result property="fMachineName" column="f_machine_name" jdbcType="VARCHAR"/>
-            <result property="fProductFamily" column="f_product_family" jdbcType="VARCHAR"/>
-            <result property="fProcess" column="f_process" jdbcType="VARCHAR"/>
-            <result property="fMachineConfiguration" column="f_machine_configuration" jdbcType="VARCHAR"/>
-            <result property="fWorkshop" column="f_workshop" jdbcType="VARCHAR"/>
-            <result property="available" column="available" jdbcType="VARCHAR"/>
-            <result property="unavailableDates" column="unavailable_dates" jdbcType="VARCHAR"/>
-            <result property="unavailableTime" column="unavailable_time" jdbcType="VARCHAR"/>
-            <result property="version" column="version" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="fMachineId" column="f_machine_id" jdbcType="VARCHAR"/>
+        <result property="fMachineName" column="f_machine_name" jdbcType="VARCHAR"/>
+        <result property="fProductFamily" column="f_product_family" jdbcType="VARCHAR"/>
+        <result property="fProcessId" column="f_process_id" jdbcType="VARCHAR"/>
+        <result property="fMachineConfiguration" column="f_machine_configuration" jdbcType="VARCHAR"/>
+        <result property="fWorkshop" column="f_workshop" jdbcType="VARCHAR"/>
+        <result property="available" column="available" jdbcType="VARCHAR"/>
+        <result property="unavailableDates" column="unavailable_dates" jdbcType="VARCHAR"/>
+        <result property="unavailableTime" column="unavailable_time" jdbcType="VARCHAR"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -24,4 +24,9 @@
         f_workshop,available,unavailable_dates,
         unavailable_time,version
     </sql>
+    <select id="getPage" resultType="com.benewake.system.entity.ApsProductFamilyMachineTableDto">
+        SELECT *
+        FROM aps_product_family_machine_table as mac
+                 LEFT JOIN aps_process_name_pool as pool on mac.f_process_id = pool.id
+    </select>
 </mapper>

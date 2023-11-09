@@ -12,7 +12,7 @@ public class kingdeeToApsOutsourcedOrder {
             return null;
         }
         ApsOutsourcedOrder apsOutsourcedOrder = new ApsOutsourcedOrder();
-        apsOutsourcedOrder.setFBillNo(kingdeeOutsourcedOrder.getFBillType());
+        apsOutsourcedOrder.setFBillNo(kingdeeOutsourcedOrder.getFBillNo());
         apsOutsourcedOrder.setFBillType(kingdeeOutsourcedOrder.getFBillType());
         apsOutsourcedOrder.setFMaterialId(kingdeeOutsourcedOrder.getFMaterialId());
         apsOutsourcedOrder.setFMaterialName(kingdeeOutsourcedOrder.getFMaterialName());

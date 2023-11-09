@@ -2,13 +2,12 @@ package com.benewake.system.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.benewake.system.entity.ApsProductFamilyMachineTableDto;
 import com.benewake.system.entity.ApsProductFamilyMachineTable;
 import com.benewake.system.entity.vo.ApsProductFamilyMachineTableVo;
 import com.benewake.system.service.ApsProductFamilyMachineTableService;
 import com.benewake.system.mapper.ApsProductFamilyMachineTableMapper;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
 * @author ASUS
@@ -24,16 +23,9 @@ public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProd
         Page<ApsProductFamilyMachineTable> apsProductFamilyMachineTablePage = new Page<>();
         apsProductFamilyMachineTablePage.setCurrent(page);
         apsProductFamilyMachineTablePage.setSize(size);
-        Page<ApsProductFamilyMachineTable> tablePage = page(apsProductFamilyMachineTablePage, null);
-        List<ApsProductFamilyMachineTable> records = tablePage.getRecords();
-        long pages = tablePage.getPages();
-        long total = tablePage.getTotal();
+        Page<ApsProductFamilyMachineTableDto> tablePage = baseMapper.getPage(apsProductFamilyMachineTablePage);
         ApsProductFamilyMachineTableVo apsProductFamilyMachineTableVo = new ApsProductFamilyMachineTableVo();
-        apsProductFamilyMachineTableVo.setApsProductFamilyMachineTables(records);
-        apsProductFamilyMachineTableVo.setSize(size);
-        apsProductFamilyMachineTableVo.setPage(page);
-        apsProductFamilyMachineTableVo.setPages(pages);
-        apsProductFamilyMachineTableVo.setTotal(total);
+        apsProductFamilyMachineTableVo = apsProductFamilyMachineTableVo.setPage(tablePage);
         return apsProductFamilyMachineTableVo;
     }
 

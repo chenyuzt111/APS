@@ -5,26 +5,78 @@
 <mapper namespace="com.benewake.system.mapper.ApsMaterialBomMapper">
 
     <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsMaterialBom">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="fNumber" column="f_number" jdbcType="VARCHAR"/>
-            <result property="fUseOrgId" column="f_use_org_id" jdbcType="VARCHAR"/>
-            <result property="fMaterialId" column="f_material_id" jdbcType="VARCHAR"/>
-            <result property="fDocumentStatus" column="f_document_status" jdbcType="VARCHAR"/>
-            <result property="fMaterialIdChild" column="f_material_id_child" jdbcType="VARCHAR"/>
-            <result property="fNumerator" column="f_numerator" jdbcType="VARCHAR"/>
-            <result property="fDenominator" column="f_denominator" jdbcType="VARCHAR"/>
-            <result property="fFixScrapQtyLot" column="f_fix_scrap_qty_lot" jdbcType="VARCHAR"/>
-            <result property="fScrapRate" column="f_scrap_rate" jdbcType="VARCHAR"/>
-            <result property="fForbidStatus" column="f_forbid_status" jdbcType="VARCHAR"/>
-            <result property="fExpireDate" column="f_expire_date" jdbcType="VARCHAR"/>
-            <result property="version" column="version" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="fMaterialId" column="f_material_id" jdbcType="VARCHAR"/>
+        <result property="fMaterialName" column="f_material_name" jdbcType="VARCHAR"/>
+        <result property="fDocumentStatus" column="f_document_status" jdbcType="VARCHAR"/>
+        <result property="fMaterialIdChild" column="f_material_id_child" jdbcType="VARCHAR"/>
+        <result property="fMaterialNameChild" column="f_material_name_child" jdbcType="VARCHAR"/>
+        <result property="fReplaceGroupBop" column="f_replace_group_bop" jdbcType="VARCHAR"/>
+        <result property="fNumerator" column="f_numerator" jdbcType="VARCHAR"/>
+        <result property="fDenominator" column="f_denominator" jdbcType="VARCHAR"/>
+        <result property="fFixScrapQtyLot" column="f_fix_scrap_qty_lot" jdbcType="VARCHAR"/>
+        <result property="fMaterialType" column="f_material_type" jdbcType="VARCHAR"/>
+        <result property="fReplaceType" column="f_replace_type" jdbcType="VARCHAR"/>
+        <result property="fScrapRate" column="f_scrap_rate" jdbcType="VARCHAR"/>
+        <result property="process" column="process" jdbcType="VARCHAR"/>
+        <result property="bomVersion" column="bom_version" jdbcType="VARCHAR"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,f_number,f_use_org_id,
-        f_material_id,f_document_status,f_material_id_child,
-        f_numerator,f_denominator,f_fix_scrap_qty_lot,
-        f_scrap_rate,f_forbid_status,f_expire_date,
+        id,f_material_id,f_material_name,
+        f_document_status,f_material_id_child,f_material_name_child,
+        f_replace_group_bop,f_numerator,f_denominator,
+        f_fix_scrap_qty_lot,f_material_type,f_replace_type,
+        f_scrap_rate,process,bom_version,
         version
     </sql>
+
+    <select id="selectListNotDelete" resultType="com.benewake.system.entity.ApsMaterialBom">
+        SELECT *
+        FROM `aps_material_bom`
+        WHERE
+        <if test="deleteList != null and deleteList.size() > 0">
+            (
+            <foreach collection="deleteList" item="item" index="index" open="" separator=" OR " close="">
+                (f_material_id = #{item.FParentMaterialId} AND f_material_id_child = #{item.FMATERIALIDCHILD})
+            </foreach>
+            ) AND
+        </if>
+        version = (
+        SELECT MAX(version)
+        FROM `aps_material_bom`
+        )
+    </select>
+    <insert id="insertListNotDelete">
+        INSERT INTO `aps_material_bom` (
+        f_material_id,f_material_name,
+        f_document_status,f_material_id_child,f_material_name_child,
+        f_replace_group_bop,f_numerator,f_denominator,
+        f_fix_scrap_qty_lot,f_material_type,f_replace_type,
+        f_scrap_rate,process,bom_version,
+        version
+        )
+        SELECT
+        f_material_id,f_material_name,
+        f_document_status,f_material_id_child,f_material_name_child,
+        f_replace_group_bop,f_numerator,f_denominator,
+        f_fix_scrap_qty_lot,f_material_type,f_replace_type,
+        f_scrap_rate,process,bom_version, (SELECT MAX(version) + 1 FROM `aps_material_bom`)
+        FROM `aps_material_bom`
+        WHERE
+        -- 根据您的条件生成查询条件，注意使用了删除列表的条件
+        <if test="deleteList != null and deleteList.size() > 0">
+            (
+            <foreach collection="deleteList" item="item" index="index" open="" separator=" OR " close="">
+                (f_material_id = #{item.FParentMaterialId} AND f_material_id_child = #{item.FMATERIALIDCHILD})
+            </foreach>
+            ) AND
+        </if>
+        version = (SELECT MAX(version) FROM `aps_material_bom`);
+
+    </insert>
+
+
+
 </mapper>

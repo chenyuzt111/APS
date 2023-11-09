@@ -1,5 +1,6 @@
 package com.benewake.system.service.impl;
 
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -134,6 +135,60 @@ public class InterfaceServiceImpl implements InterfaceService {
             e.printStackTrace();
             throw new BeneWakeException("系统内部错误联系管理员" + this.getClass());
         }
+    }
+
+    @Override
+    public Boolean add(String request, Integer type) {
+        try {
+            InterfaceDataType interfaceDataType = InterfaceDataType.valueOfCode(type);
+            if (interfaceDataType == null) {
+                throw new BeneWakeException("type找不到");
+            }
+            Class classs = interfaceDataType.getClasss();
+            Object object = JSON.parseObject(request, classs);
+            ApsIntfaceDataServiceBase apsIntfaceDataServiceBase = kingdeeServiceMap.get(interfaceDataType.getSeviceName());
+            IService iService = (IService) apsIntfaceDataServiceBase;
+            QueryWrapper<Object> objectQueryWrapper = new QueryWrapper<>();
+            objectQueryWrapper.orderByDesc("version")
+                    .last("limit 1");
+            Object one = iService.getOne(objectQueryWrapper);
+            Integer versionNumber = 1;
+            Field version = classs.getDeclaredField("version");
+            version.setAccessible(true);
+            if (one != null) {
+                versionNumber = (Integer) version.get(one);
+            }
+            version.set(object, versionNumber);
+            version.setAccessible(false);
+            return iService.save(object);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean update(String request, Integer type) {
+        InterfaceDataType interfaceDataType = InterfaceDataType.valueOfCode(type);
+        if (interfaceDataType == null) {
+            throw new BeneWakeException("type找不到");
+        }
+        Class classs = interfaceDataType.getClasss();
+        Object object = JSON.parseObject(request, classs);
+        ApsIntfaceDataServiceBase apsIntfaceDataServiceBase = kingdeeServiceMap.get(interfaceDataType.getSeviceName());
+        IService iService = (IService) apsIntfaceDataServiceBase;
+        return iService.updateById(object);
+    }
+
+    @Override
+    public Boolean delete(List<Integer> ids, Integer type) {
+        InterfaceDataType interfaceDataType = InterfaceDataType.valueOfCode(type);
+        if (interfaceDataType == null) {
+            throw new BeneWakeException("type找不到");
+        }
+        ApsIntfaceDataServiceBase apsIntfaceDataServiceBase = kingdeeServiceMap.get(interfaceDataType.getSeviceName());
+        IService iService = (IService) apsIntfaceDataServiceBase;
+        return iService.removeBatchByIds(ids);
     }
 
     private List<InterfaceDataBase> convertRecordsToRestlt(List records, Map<Integer, String> versionToChVersions) {

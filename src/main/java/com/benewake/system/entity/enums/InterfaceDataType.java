@@ -1,6 +1,6 @@
 package com.benewake.system.entity.enums;
 
-import io.swagger.models.auth.In;
+import com.benewake.system.entity.*;
 import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
@@ -11,34 +11,35 @@ import java.util.List;
 public enum InterfaceDataType {
 
     //APS
-    IMMEDIATELY_INVENTORY(1, "即时库存", "apsImmediatelyInventoryServiceImpl"),
-    OUTSOURCED_MATERIALS(2, "委外用料清单列表", "apsOutsourcedMaterialServiceImpl"),
-    PRODUCTION_MATERIA(3, "生产用料清单列表", "apsProductionMaterialServiceImpl"),
-    OUTSOURCED_ORDER(4, "委外订单列表", "apsOutsourcedOrderServiceImpl"),
-    PRODUCTION_ORDER(5, "生产订单列表", "apsProductionOrderServiceImpl"),
-    PURCHASE_REQUEST(6, "采购申请单列表", "apsPurchaseRequestServiceImpl"),
-    PURCHASE_ORDERS(7, "采购订单列表", "apsPurchaseOrderServiceImpl"),
-    RECEIVE_NOTICE(8, "收料通知单列表", "apsReceiveNoticeServiceImpl"),
-    INVENTORY_LOCK(9, " 库存锁库列表", "apsInventoryLockServiceImpl"),
-    MATERIAL_BOM(10, " 物料清单列表", "apsMaterialBomServiceImpl"),
+    IMMEDIATELY_INVENTORY(1, "即时库存", "apsImmediatelyInventoryServiceImpl", ApsImmediatelyInventory.class),
+    OUTSOURCED_MATERIALS(2, "委外用料清单列表", "apsOutsourcedMaterialServiceImpl", ApsOutsourcedMaterial.class),
+    PRODUCTION_MATERIA(3, "生产用料清单列表", "apsProductionMaterialServiceImpl", ApsProductionMaterial.class),
+    OUTSOURCED_ORDER(4, "委外订单列表", "apsOutsourcedOrderServiceImpl", ApsOutsourcedOrder.class),
+    PRODUCTION_ORDER(5, "生产订单列表", "apsProductionOrderServiceImpl", ApsProductionOrder.class),
+    PURCHASE_REQUEST(6, "采购申请单列表", "apsPurchaseRequestServiceImpl", ApsPurchaseRequest.class),
+    PURCHASE_ORDERS(7, "采购订单列表", "apsPurchaseOrderServiceImpl", ApsPurchaseOrder.class),
+    RECEIVE_NOTICE(8, "收料通知单列表", "apsReceiveNoticeServiceImpl", ApsReceiveNotice.class),
+    INVENTORY_LOCK(9, "库存锁库列表", "apsInventoryLockServiceImpl", ApsInventoryLock.class),
+    MATERIAL_BOM(10, "物料清单列表", "apsMaterialBomServiceImpl", ApsMaterialBom.class),
     // MES向下
-    PCBA_BURN(11, "PCBA烧录1", "apsPcbaBurnServiceImpl"),
-    TFMINI__S_PCBA_BURN(12, "TFmini-S-PCBA烧录1", "apsTfminiSPcbaBurnServiceImpl"),
-    PCBA_VERSION(13, "PCBA分版1", "apsPcbaVersionServiceImpl"),
-    TFMINI_S_PCBA_VERSION(14, "TFmini-S-PCBA分版1", "apsTfminiSPcbaVersionServiceImpl"),
-    INSTALLATION_BOARD(15, "安装主板1", "apsInstallationBoardServiceImpl"),
-    TFMINI_S_INSTALLATION_BOARD(16, "TFmini-s-安装主板1", "apsTfminiSInstallationBoardServiceImpl"),
-    SN_LABELING(17, "贴SN1", "apsSnLabelingServiceImpl"),
-    TFMINI_S_SN_LABELING(18, "TFmini-s-贴SN", "apsTfminiSSnLabelingServiceImpl"),
-    CALIBRATION_TESTS(19, "校验测试1", "apsCalibrationTestsServiceImpl"),
-    TFMINI_S_CALIBRATION_TESTS(20, "TFmini-S-校验测试1", "apsTfminiSCalibrationTestsServiceImpl"),
-    PACKAGING_TEST(21, "包装校验1", "apsPackagingTestServiceImpl"),
-    TFMINI_S_PACKAGING_TEST(22, "TFmini-S-包装校验1", "apsTfminiSPackagingTestServiceImpl");
+    PCBA_BURN(11, "PCBA烧录1", "apsPcbaBurnServiceImpl", ApsPcbaBurn.class),
+    TFMINI__S_PCBA_BURN(12, "TFmini-S-PCBA烧录1", "apsTfminiSPcbaBurnServiceImpl", ApsTfminiSPcbaBurn.class),
+    PCBA_VERSION(13, "PCBA分版1", "apsPcbaVersionServiceImpl", ApsPcbaVersion.class),
+    TFMINI_S_PCBA_VERSION(14, "TFmini-S-PCBA分版1", "apsTfminiSPcbaVersionServiceImpl", ApsTfminiSPcbaVersion.class),
+    INSTALLATION_BOARD(15, "安装主板1", "apsInstallationBoardServiceImpl", ApsInstallationBoard.class),
+    TFMINI_S_INSTALLATION_BOARD(16, "TFmini-s-安装主板1", "apsTfminiSInstallationBoardServiceImpl", ApsTfminiSInstallationBoard.class),
+    SN_LABELING(17, "贴SN1", "apsSnLabelingServiceImpl", ApsSnLabeling.class),
+    TFMINI_S_SN_LABELING(18, "TFmini-s-贴SN", "apsTfminiSSnLabelingServiceImpl", ApsTfminiSSnLabeling.class),
+    CALIBRATION_TESTS(19, "校验测试1", "apsCalibrationTestsServiceImpl", ApsCalibrationTests.class),
+    TFMINI_S_CALIBRATION_TESTS(20, "TFmini-S-校验测试1", "apsTfminiSCalibrationTestsServiceImpl", ApsTfminiSCalibrationTests.class),
+    PACKAGING_TEST(21, "包装校验1", "apsPackagingTestServiceImpl", ApsPackagingTest.class),
+    TFMINI_S_PACKAGING_TEST(22, "TFmini-S-包l 装校验1", "apsTfminiSPackagingTestServiceImpl", ApsTfminiSPackagingTest.class);
 
 
     private int code;
     private String cnTableName;
     private String seviceName;
+    private Class classs;
 
     public static List<Integer> getAllIds() {
         ArrayList<Integer> ids = new ArrayList<>();
@@ -88,6 +89,10 @@ public enum InterfaceDataType {
         }
 
         return null;
+    }
+
+    public Class getClasss() {
+        return classs;
     }
 
     public static String serviceNameOfCode(Integer code) {
