@@ -24,9 +24,9 @@ public class ApsPurchaseOrder implements Serializable {
     @TableField(value = "f_material_id")
     private String fMaterialId;
 
-    @JsonProperty("materialName")
-    @TableField(value = "f_material_name")
-    private String fMaterialName;
+//    @JsonProperty("materialName")
+//    @TableField(value = "f_material_name")
+//    private String fMaterialName;
 
     @JsonProperty("remainReceiveQty")
     @TableField(value = "f_remain_receive_qty")

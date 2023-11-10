@@ -19,9 +19,9 @@ public class ApsProductionMaterial implements Serializable {
     @TableField(value = "f_material_id")
     private String fMaterialId;
 
-    @JsonProperty("materialName")
-    @TableField(value = "f_material_name")
-    private String fMaterialName;
+//    @JsonProperty("materialName")
+//    @TableField(value = "f_material_name")
+//    private String fMaterialName;
 
     @JsonProperty("moBillNo")
     @TableField(value = "f_mo_bill_no")
@@ -31,9 +31,9 @@ public class ApsProductionMaterial implements Serializable {
     @TableField(value = "f_material_id2")
     private String fMaterialId2;
 
-    @JsonProperty("materialName2")
-    @TableField(value = "f_material_name2")
-    private String fMaterialName2;
+//    @JsonProperty("materialName2")
+//    @TableField(value = "f_material_name2")
+//    private String fMaterialName2;
 
     @JsonProperty("materialType")
     @TableField(value = "f_material_type")

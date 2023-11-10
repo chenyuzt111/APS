@@ -16,7 +16,7 @@ public class KingdeeToApsPurchaseRequest {
         apsPurchaseRequest.setFMaterialId(kingdeePurchaseRequest.getFMaterialId());
         apsPurchaseRequest.setFBaseUnitQty(kingdeePurchaseRequest.getFBaseUnitQty());
         apsPurchaseRequest.setFArrivalDate(kingdeePurchaseRequest.getFArrivalDate());
-        apsPurchaseRequest.setFMaterialName(kingdeePurchaseRequest.getFMaterialName());
+//        apsPurchaseRequest.setFMaterialName(kingdeePurchaseRequest.getFMaterialName());
         apsPurchaseRequest.setVersion(version);
 
         return apsPurchaseRequest;

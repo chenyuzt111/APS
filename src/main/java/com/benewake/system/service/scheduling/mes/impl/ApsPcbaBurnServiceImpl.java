@@ -1,5 +1,6 @@
 package com.benewake.system.service.scheduling.mes.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsPcbaBurn;
 import com.benewake.system.entity.mes.MesPcbaBurn;
@@ -130,6 +131,11 @@ public class ApsPcbaBurnServiceImpl extends ServiceImpl<ApsPcbaBurnMapper, ApsPc
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Page selectPageList(Page page, List tableVersionList) {
+        return null;
     }
 
     @Override

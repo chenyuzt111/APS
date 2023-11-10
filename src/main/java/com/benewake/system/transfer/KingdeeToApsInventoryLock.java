@@ -14,7 +14,7 @@ public class KingdeeToApsInventoryLock {
         apsInventoryLock.setFExpiryDate(kingdeeInventoryLock.getFEXPIRYDATE());
         apsInventoryLock.setFLockQty(kingdeeInventoryLock.getFLockQty());
         apsInventoryLock.setFLot(kingdeeInventoryLock.getFLot());
-        apsInventoryLock.setFMaterialName(kingdeeInventoryLock.getFMaterialName());
+//        apsInventoryLock.setFMaterialName(kingdeeInventoryLock.getFMaterialName());
         apsInventoryLock.setVersion(version);
 
         return apsInventoryLock;

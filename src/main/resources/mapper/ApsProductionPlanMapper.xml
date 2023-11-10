@@ -5,22 +5,21 @@
 <mapper namespace="com.benewake.system.mapper.ApsProductionPlanMapper">
 
     <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsProductionPlan">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="fTaskId" column="f_task_id" jdbcType="VARCHAR"/>
-            <result property="fTaskSourceId" column="f_task_source_id" jdbcType="VARCHAR"/>
-            <result property="fMaterialCode" column="f_material_code" jdbcType="VARCHAR"/>
-            <result property="fMaterialName" column="f_material_name" jdbcType="VARCHAR"/>
-            <result property="fTotalQuantity" column="f_total_quantity" jdbcType="VARCHAR"/>
-            <result property="fCompletedQuantity" column="f_completed_quantity" jdbcType="VARCHAR"/>
-            <result property="fActualStartTime" column="f_actual_start_time" jdbcType="VARCHAR"/>
-            <result property="fActualCompletionTime" column="f_actual_completion_time" jdbcType="VARCHAR"/>
-            <result property="fRequiredDeliveryTime" column="f_required_delivery_time" jdbcType="VARCHAR"/>
-            <result property="fOnTimeCompletion" column="f_on_time_completion" jdbcType="VARCHAR"/>
-            <result property="fDelayDays" column="f_delay_days" jdbcType="VARCHAR"/>
-            <result property="fPriority" column="f_priority" jdbcType="VARCHAR"/>
-            <result property="fUnfinishedReason" column="f_unfinished_reason" jdbcType="VARCHAR"/>
-            <result property="fRelatedOrders" column="f_related_orders" jdbcType="VARCHAR"/>
-            <result property="version" column="version" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="fTaskId" column="f_task_id" jdbcType="VARCHAR"/>
+        <result property="fTaskSourceId" column="f_task_source_id" jdbcType="VARCHAR"/>
+        <result property="fMaterialCode" column="f_material_code" jdbcType="VARCHAR"/>
+        <result property="fTotalQuantity" column="f_total_quantity" jdbcType="VARCHAR"/>
+        <result property="fCompletedQuantity" column="f_completed_quantity" jdbcType="VARCHAR"/>
+        <result property="fActualStartTime" column="f_actual_start_time" jdbcType="VARCHAR"/>
+        <result property="fActualCompletionTime" column="f_actual_completion_time" jdbcType="VARCHAR"/>
+        <result property="fRequiredDeliveryTime" column="f_required_delivery_time" jdbcType="VARCHAR"/>
+        <result property="fOnTimeCompletion" column="f_on_time_completion" jdbcType="VARCHAR"/>
+        <result property="fDelayDays" column="f_delay_days" jdbcType="VARCHAR"/>
+        <result property="fPriority" column="f_priority" jdbcType="VARCHAR"/>
+        <result property="fUnfinishedReason" column="f_unfinished_reason" jdbcType="VARCHAR"/>
+        <result property="fRelatedOrders" column="f_related_orders" jdbcType="VARCHAR"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -31,4 +30,24 @@
         f_priority,f_unfinished_reason,f_related_orders,
         version
     </sql>
+    <select id="selectPageList" resultType="com.benewake.system.entity.dto.ApsProductionPlanDto">
+        SELECT plan.id,
+               f_task_id,
+               f_task_source_id,
+               f_material_code,
+               map.f_material_name,
+               f_total_quantity,
+               f_completed_quantity,
+               f_actual_start_time,
+               f_actual_completion_time,
+               f_required_delivery_time,
+               f_on_time_completion,
+               f_delay_days,
+               f_priority,
+               f_unfinished_reason,
+               f_related_orders
+        FROM aps_production_plan AS plan
+                 LEFT JOIN aps_material_name_mapping AS map ON plan.f_material_code = map.f_material_id
+        where version = #{apsTableVersion}
+    </select>
 </mapper>

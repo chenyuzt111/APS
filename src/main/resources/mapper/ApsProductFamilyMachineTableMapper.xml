@@ -24,7 +24,7 @@
         f_workshop,available,unavailable_dates,
         unavailable_time,version
     </sql>
-    <select id="getPage" resultType="com.benewake.system.entity.ApsProductFamilyMachineTableDto">
+    <select id="getPage" resultType="com.benewake.system.entity.dto.ApsProductFamilyMachineTableDto">
         SELECT *
         FROM aps_product_family_machine_table as mac
                  LEFT JOIN aps_process_name_pool as pool on mac.f_process_id = pool.id

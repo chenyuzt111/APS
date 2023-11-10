@@ -48,9 +48,36 @@
         FROM `aps_material_bom`
         )
     </select>
+    <select id="selectPageList" resultType="com.benewake.system.entity.dto.ApsMaterialBomDto">
+        SELECT
+        bom.id,
+        bom.f_material_id,
+        map.f_material_name,
+        f_document_status,
+        bom.f_material_id_child,
+        map1.f_material_name as f_material_name_child,
+        f_replace_group_bop,
+        f_numerator,
+        f_denominator,
+        f_fix_scrap_qty_lot,
+        f_material_type,
+        f_replace_type,
+        f_scrap_rate,
+        process,
+        bom_version,
+        ch_version_name as version
+        FROM
+        <foreach collection="versions" item="item" index="index" open="(" separator=" UNION ALL " close=")">
+            SELECT * ,#{item.chVersionName} as ch_version_name FROM aps_material_bom WHERE version =
+            #{item.version}
+        </foreach>
+        AS bom
+        LEFT JOIN aps_material_name_mapping AS map ON bom.f_material_id = map.f_material_id
+        LEFT JOIN aps_material_name_mapping AS map1 ON bom.f_material_id_child = map1.f_material_id
+    </select>
     <insert id="insertListNotDelete">
         INSERT INTO `aps_material_bom` (
-        f_material_id,f_material_name,
+        f_material_id,
         f_document_status,f_material_id_child,f_material_name_child,
         f_replace_group_bop,f_numerator,f_denominator,
         f_fix_scrap_qty_lot,f_material_type,f_replace_type,
@@ -58,7 +85,7 @@
         version
         )
         SELECT
-        f_material_id,f_material_name,
+        f_material_id,
         f_document_status,f_material_id_child,f_material_name_child,
         f_replace_group_bop,f_numerator,f_denominator,
         f_fix_scrap_qty_lot,f_material_type,f_replace_type,
@@ -76,7 +103,30 @@
         version = (SELECT MAX(version) FROM `aps_material_bom`);
 
     </insert>
-
+    <insert id="insertSelectVersionIncr">
+        INSERT INTO `aps_material_bom` (f_material_id,
+                                        f_document_status, f_material_id_child, f_material_name_child,
+                                        f_replace_group_bop, f_numerator, f_denominator,
+                                        f_fix_scrap_qty_lot, f_material_type, f_replace_type,
+                                        f_scrap_rate, process, bom_version,
+                                        version)
+        select f_material_id,
+               f_document_status,
+               f_material_id_child,
+               f_material_name_child,
+               f_replace_group_bop,
+               f_numerator,
+               f_denominator,
+               f_fix_scrap_qty_lot,
+               f_material_type,
+               f_replace_type,
+               f_scrap_rate,
+               process,
+               bom_version,
+               version + 1
+        from aps_material_bom
+        where version = (select max(version) from aps_material_bom)
+    </insert>
 
 
 </mapper>

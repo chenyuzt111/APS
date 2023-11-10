@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsProcessNamePool;
+import com.benewake.system.entity.vo.ApsProcessNamePoolPageVo;
 import com.benewake.system.entity.vo.ApsProcessNamePoolVo;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsProcessNamePoolService;
@@ -12,6 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * @author ASUS
@@ -38,7 +41,7 @@ public class ApsProcessNamePoolServiceImpl extends ServiceImpl<ApsProcessNamePoo
     }
 
     @Override
-    public ApsProcessNamePoolVo getProcess(String name, Integer page, Integer size) {
+    public ApsProcessNamePoolPageVo getProcess(String name, Integer page, Integer size) {
         LambdaQueryWrapper<ApsProcessNamePool> apsProcessNamePoolLambdaQueryWrapper = new LambdaQueryWrapper<>();
         if (StringUtils.isNotBlank(name)) {
             apsProcessNamePoolLambdaQueryWrapper.like(ApsProcessNamePool::getProcessName, name);
@@ -47,13 +50,22 @@ public class ApsProcessNamePoolServiceImpl extends ServiceImpl<ApsProcessNamePoo
         apsProcessNamePoolPage.setSize(size);
         apsProcessNamePoolPage.setCurrent(page);
         Page<ApsProcessNamePool> apsProcessNamePools = this.page(apsProcessNamePoolPage, apsProcessNamePoolLambdaQueryWrapper);
-        ApsProcessNamePoolVo apsProcessNamePoolVo = new ApsProcessNamePoolVo();
-        apsProcessNamePoolVo.setApsProcessNamePools(apsProcessNamePools.getRecords());
-        apsProcessNamePoolVo.setPage(page);
-        apsProcessNamePoolVo.setSize(size);
-        apsProcessNamePoolVo.setTotal(apsProcessNamePoolPage.getTotal());
-        apsProcessNamePoolVo.setPages(apsProcessNamePoolPage.getPages());
-        return apsProcessNamePoolVo;
+        ApsProcessNamePoolPageVo apsProcessNamePoolPageVo = new ApsProcessNamePoolPageVo();
+        List<ApsProcessNamePool> records = apsProcessNamePools.getRecords();
+        AtomicReference<Integer> number = new AtomicReference<>((page - 1) * size + 1);
+        List<ApsProcessNamePoolVo> processNamePools = records.stream().map(x -> {
+            ApsProcessNamePoolVo apsProcessNamePoolVo = new ApsProcessNamePoolVo();
+            apsProcessNamePoolVo.setProcessName(x.getProcessName());
+            apsProcessNamePoolVo.setId(x.getId());
+            apsProcessNamePoolVo.setNumber(number.getAndSet(number.get() + 1));
+            return apsProcessNamePoolVo;
+        }).collect(Collectors.toList());
+        apsProcessNamePoolPageVo.setApsProcessNamePools(processNamePools);
+        apsProcessNamePoolPageVo.setPage(page);
+        apsProcessNamePoolPageVo.setSize(size);
+        apsProcessNamePoolPageVo.setTotal(apsProcessNamePoolPage.getTotal());
+        apsProcessNamePoolPageVo.setPages(apsProcessNamePoolPage.getPages());
+        return apsProcessNamePoolPageVo;
     }
 }
 

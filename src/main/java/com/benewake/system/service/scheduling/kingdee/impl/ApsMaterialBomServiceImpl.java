@@ -1,10 +1,13 @@
 package com.benewake.system.service.scheduling.kingdee.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsMaterialBom;
+import com.benewake.system.entity.ApsMaterialNameMapping;
 import com.benewake.system.entity.ApsMaterialProcessMapping;
 import com.benewake.system.entity.ApsTableUpdateDate;
+import com.benewake.system.entity.dto.ApsMaterialBomDto;
 import com.benewake.system.entity.enums.BOMChangeType;
 import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.entity.kingdee.KingdeeMaterialBom;
@@ -15,6 +18,7 @@ import com.benewake.system.mapper.ApsMaterialProcessMappingMapper;
 import com.benewake.system.mapper.ApsTableUpdateDateMapper;
 import com.benewake.system.service.scheduling.kingdee.ApsMaterialBomService;
 import com.benewake.system.mapper.ApsMaterialBomMapper;
+import com.benewake.system.service.scheduling.kingdee.ApsMaterialNameMappingService;
 import com.benewake.system.transfer.KingdeeToApsMaterialBom;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
@@ -44,10 +48,16 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
     private K3CloudApi api;
 
     @Autowired
+    private ApsMaterialBomMapper apsMaterialBomMapper;
+
+    @Autowired
     private ApsMaterialProcessMappingMapper apsMaterialProcessMappingMapper;
 
     @Autowired
     private ApsTableUpdateDateMapper tableUpdateDateMapper;
+
+    @Autowired
+    private ApsMaterialNameMappingService apsMaterialNameMappingService;
 
     private final Map<String, String> docStatusMap = new HashMap<>();
 
@@ -72,7 +82,7 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
     public Boolean updateAllDataVersions() throws Exception {
         QueryParam queryParam = new QueryParam();
         queryParam.setFormId("ENG_BOM");
-        queryParam.setFieldKeys("FNumber,FUseOrgId,FMaterialId,FITEMNAME,FDocumentStatus,FMaterialIDChild,FCHILDITEMNAME,FNumerator,FDenominator,FFixScrapQtyLot,FMaterialType,FReplaceType,FReplaceGroup,FScrapRate,FForBidStatus,FExpireDate");
+        queryParam.setFieldKeys("FNumber,FUseOrgId,FMaterialId,FITEMNAME,FITEMMODEL,FDocumentStatus,FMaterialIDChild,FCHILDITEMNAME,FCHILDITEMMODEL,FNumerator,FDenominator,FFixScrapQtyLot,FMaterialType,FReplaceType,FReplaceGroup,FScrapRate,FForBidStatus,FExpireDate");
 
         List<String> queryFilters = new ArrayList<>();
         queryFilters.add("FUseOrgId = '1'");
@@ -104,7 +114,28 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
         tableUpdateDate.setTableId(InterfaceDataType.MATERIAL_BOM.getCode());
         tableUpdateDate.setUpdateDate(new Date());
         tableUpdateDateMapper.insert(tableUpdateDate);
+        List<ApsMaterialNameMapping> nameMappings = getApsMaterialNameMappings(result);
+        apsMaterialNameMappingService.saveBatch(nameMappings);
+        remove(null);
         return saveBatch(apsMaterialBoms);
+    }
+
+    private List<ApsMaterialNameMapping> getApsMaterialNameMappings(List<KingdeeMaterialBom> result) {
+        List<ApsMaterialNameMapping> nameMappings = result.stream().map(x -> {
+            ApsMaterialNameMapping nameMapping = new ApsMaterialNameMapping();
+            nameMapping.setFMaterialId(x.getFMaterialID());
+            nameMapping.setFMaterialName(x.getFitemName());
+            nameMapping.setFItemModel(x.getFItemModel());
+            return nameMapping;
+        }).collect(Collectors.toList());
+        nameMappings.addAll(result.stream().map(x -> {
+            ApsMaterialNameMapping nameMapping = new ApsMaterialNameMapping();
+            nameMapping.setFMaterialId(x.getFMaterialIDChild());
+            nameMapping.setFMaterialName(x.getFChildIteName());
+            nameMapping.setFItemModel(x.getFChildItemModel());
+            return nameMapping;
+        }).collect(Collectors.toList()));
+        return nameMappings;
     }
 
     private List<String> getMaxFNumbersList(List<KingdeeMaterialBom> result, Map<String, String> fMaterialIdToFNumber) {
@@ -183,6 +214,17 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
         }
     }
 
+    @Override
+    public void insertVersionIncr() {
+        apsMaterialBomMapper.insertSelectVersionIncr();
+    }
+
+    @Override
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsMaterialBomDto> materialBomDtoPage = apsMaterialBomMapper.selectPageList(page ,tableVersionList);
+        return materialBomDtoPage;
+    }
+
     @Transactional(rollbackFor = Exception.class)
     Boolean updateProtionDate(ApsTableUpdateDate tableUpdateDate) throws Exception {
         List<MaterialBomChange> materialBomChangeList = getMaterialBomChanges(tableUpdateDate);
@@ -195,7 +237,7 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
                     materialBomChange.setFMATERIALIDCHILD(fMaterialIdToFNumber.get(materialBomChange.getFMATERIALIDCHILD()));
                 })
                 .collect(Collectors.toList());
-        //查了除了删除的所有数据
+        //重新插入 insert into select除了删除的所有数据
         List<MaterialBomChange> addList = materialBomChangeList.stream()
                 .filter(x -> x.getFChangeLabel().equals(BOMChangeType.CHANGE_AFTER.getCode()) ||
                         x.getFChangeLabel().equals(BOMChangeType.ADD.getCode()))
@@ -267,25 +309,11 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
         queryParam.setFieldKeys("FMaterialId,FNumber");
         List<MaterialIdToName> midToName = api.executeBillQuery(queryParam, MaterialIdToName.class);
         Map<String, String> fMaterialIdToFNumber = new HashMap<>();
-        midToName.forEach(c -> {
-            fMaterialIdToFNumber.put(c.getFMaterialId(), c.getFNumber());
-        });
+        midToName.forEach(materialIdToName ->
+                fMaterialIdToFNumber.put(materialIdToName.getFMaterialId(), materialIdToName.getFNumber()));
         return fMaterialIdToFNumber;
     }
 
-    private Map<String, String> getFIDToFNumber() throws Exception {
-        QueryParam queryParam;
-        //BOM版本号映射表
-        queryParam = new QueryParam();
-        queryParam.setFormId("ENG_BOM");//设置查询参数的表单ID为BD_MATERIAL
-        queryParam.setFieldKeys("FID,FNumber");
-        List<FIDToNumber> bidToNameList = api.executeBillQuery(queryParam, FIDToNumber.class);//调用api的executeBillQuery方法进行查询queryParam，并且传入查询参数和目标数据类型MaterialIdToName.class，返回的数据将被转换为MaterialIdToName类型的对象列表，其实是一种映射关系
-        Map<String, String> FIDToNumberMap = new HashMap<>();
-        bidToNameList.forEach(fidToNumber -> {//遍历midtoname列表并且对列表中的数据做括号内的操作
-            FIDToNumberMap.put(fidToNumber.getFID(), fidToNumber.getFNumber());//将物料的id作为键，物料编号作为值，将键值对添加到映射表中
-        });
-        return FIDToNumberMap;
-    }
 }
 
 

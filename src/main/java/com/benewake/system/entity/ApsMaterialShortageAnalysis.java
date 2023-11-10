@@ -32,11 +32,6 @@ public class ApsMaterialShortageAnalysis implements Serializable {
     @TableField(value = "f_parent_material_code")
     private String fParentMaterialCode;
 
-    /**
-     * 
-     */
-    @TableField(value = "f_parent_material_name")
-    private String fParentMaterialName;
 
     /**
      * 

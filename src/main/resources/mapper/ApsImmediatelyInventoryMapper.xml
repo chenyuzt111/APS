@@ -7,7 +7,6 @@
     <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsImmediatelyInventory">
         <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="fMaterialId" column="f_material_id" jdbcType="VARCHAR"/>
-        <result property="fMaterialName" column="f_material_name" jdbcType="VARCHAR"/>
         <result property="fStockName" column="f_stock_name" jdbcType="VARCHAR"/>
         <result property="fBaseQty" column="f_base_qty" jdbcType="INTEGER"/>
         <result property="fAvbQty" column="f_avb_qty" jdbcType="INTEGER"/>
@@ -21,8 +20,24 @@
         f_base_qty,f_avb_qty,f_lot,
         f_expiry_date,version
     </sql>
+    <insert id="insertSelectVersionIncr">
+        INSERT INTO aps_immediately_inventory (f_material_id, f_stock_name, f_base_qty, f_avb_qty, f_lot, f_expiry_date,
+                                               version)
+        SELECT f_material_id,
+               f_stock_name,
+               f_base_qty,
+               f_avb_qty,
+               f_lot,
+               f_expiry_date,
+               version + 1
+        FROM `aps_immediately_inventory`
+        WHERE version = (
+            SELECT max(version)
+            FROM aps_immediately_inventory)
+    </insert>
 
-    <select id="selectVersionPageList" resultType="com.benewake.system.entity.Interface.ApsImmediatelyInventoryMultipleVersions">
+    <select id="selectVersionPageList"
+            resultType="com.benewake.system.entity.Interface.ApsImmediatelyInventoryMultipleVersions">
         SELECT *
         from
         <foreach collection="versions" item="item" index="index" open="(" separator=" UNION ALL " close=")">
@@ -32,6 +47,26 @@
         AS derived_table
         ORDER BY f_lot, version DESC
         limit #{pass},#{size};
+    </select>
+    <select id="selectPageList"
+            resultType="com.benewake.system.entity.dto.ApsImmediatelyInventoryDto">
+        SELECT
+        inv.id,
+        inv.f_material_id,
+        map.f_material_name,
+        f_stock_name,
+        f_base_qty,
+        f_avb_qty,
+        f_lot,
+        f_expiry_date,
+        ch_version_name as version
+        FROM
+        <foreach collection="versions" item="item" index="index" open="(" separator=" UNION ALL " close=")">
+            SELECT * ,#{item.chVersionName} as ch_version_name FROM aps_immediately_inventory WHERE version =
+            #{item.version}
+        </foreach>
+        AS inv
+        LEFT JOIN aps_material_name_mapping AS map ON inv.f_material_id = map.f_material_id
     </select>
 
 </mapper>

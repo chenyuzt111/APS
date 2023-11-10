@@ -92,10 +92,11 @@ public class InterfaceServiceImpl implements InterfaceService {
     @Override
     public PageListRestVo<Object> getAllPage(Integer page, Integer size, Integer type) {
         try {
-
             List<ApsTableVersion> apsTableVersions = getApsTableVersionsLimit5(type);
-            Map<Integer, String> versionToChVersionsMap = getVersionToChVersionsMap(apsTableVersions);
-            List<Integer> tableVersionList = apsTableVersions.stream().map(ApsTableVersion::getTableVersion).collect(Collectors.toList());
+            List<Integer> tableVersionList = apsTableVersions.stream()
+                    .map(ApsTableVersion::getTableVersion)
+                    .collect(Collectors.toList());
+            List<VersionToChVersion> versionToChVersionArrayList = getVersionToChVersions(apsTableVersions);
             InterfaceDataType interfaceDataType = InterfaceDataType.valueOfCode(type);
             if (interfaceDataType == null) {
                 throw new BeneWakeException("type不正确");
@@ -112,7 +113,7 @@ public class InterfaceServiceImpl implements InterfaceService {
                 Integer versionIn = (Integer) version.get(one);
                 version.setAccessible(false);
                 if (!tableVersionList.contains(versionIn)) {
-                    versionToChVersionsMap.put(versionIn, "即时版本");
+                    versionToChVersionArrayList.add(new VersionToChVersion(versionIn, "即时版本"));
                     tableVersionList.add(versionIn);
                 }
             }
@@ -122,10 +123,9 @@ public class InterfaceServiceImpl implements InterfaceService {
             Page<Object> objectPage = new Page<>();
             objectPage.setCurrent(page);
             objectPage.setSize(size);
-            IPage resultPage = iService.page(objectPage, queryWrapper);
+            Page resultPage = apsIntfaceDataServiceBase.selectPageList(objectPage, versionToChVersionArrayList);
             PageListRestVo pageListRestVo = new PageListRestVo();
-            List<InterfaceDataBase> result = convertRecordsToRestlt(resultPage.getRecords(), versionToChVersionsMap);
-            pageListRestVo.setList(result);
+            pageListRestVo.setList(resultPage.getRecords());
             pageListRestVo.setPage(page);
             pageListRestVo.setPages(resultPage.getPages());
             pageListRestVo.setSize(size);
@@ -223,6 +223,7 @@ public class InterfaceServiceImpl implements InterfaceService {
                 .last("limit 5");
 
         List<ApsTableVersion> apsTableVersions = apsTableVersionService.getBaseMapper().selectList(apsTableVersionLambdaQueryWrapper);
+        apsTableVersions = apsTableVersions.stream().distinct().collect(Collectors.toList());
         if (apsTableVersions != null) {
             Collections.reverse(apsTableVersions);
         }

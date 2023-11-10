@@ -6,12 +6,12 @@ import java.util.Objects;
 
 @Getter
 public enum SchedulingResultType {
-    APS_PRODUCTION_PLAN( 23, "成品生产计划" ,"apsProductionPlanServiceImpl"),
-    APS_ALL_PLAN_NUM_IN_PROCESS( 24, "成品生产计划甘特图" ,"apsAllPlanNumInProcessServiceImpl"),
-    APS_SEMI_FINISHED_GOODS_PRODUCTION_PLAN( 25, "半成品生产计划" ,"apsSemiFinishedGoodsProductionPlanServiceImpl"),
-    APS_MATERIAL_SHORTAGE_ANALYSIS( 27, "成品缺料分析" ,"apsMaterialShortageAnalysisServiceImpl"),
-    APS_SEMI_FINISHED_GOODS_MATERIAL_SHORTAGE_ANALYSIS( 29, "半成品缺料分析","apsSemiFinishedGoodsMaterialShortageAnalysisServiceImpl"),
-    APS_FIM_PRIORITY( 31, "FIM需求优先级","apsFimPriorityServiceImpl");
+    APS_PRODUCTION_PLAN( 40, "成品生产计划" ,"apsProductionPlanServiceImpl"),
+    APS_ALL_PLAN_NUM_IN_PROCESS( 41, "成品生产计划甘特图" ,"apsAllPlanNumInProcessServiceImpl"),
+    APS_SEMI_FINISHED_GOODS_PRODUCTION_PLAN( 42, "半成品生产计划" ,"apsSemiFinishedGoodsProductionPlanServiceImpl"),
+    APS_MATERIAL_SHORTAGE_ANALYSIS( 44, "成品缺料分析" ,"apsMaterialShortageAnalysisServiceImpl"),
+    APS_SEMI_FINISHED_GOODS_MATERIAL_SHORTAGE_ANALYSIS( 46, "半成品缺料分析","apsSemiFinishedGoodsMaterialShortageAnalysisServiceImpl"),
+    APS_FIM_PRIORITY( 48, "FIM需求优先级","apsFimPriorityServiceImpl");
 
     private Integer code;
 

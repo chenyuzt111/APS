@@ -1,7 +1,9 @@
 package com.benewake.system.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsMaterialBom;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.benewake.system.entity.dto.ApsMaterialBomDto;
 import com.benewake.system.entity.kingdee.transfer.MaterialBomChange;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -20,6 +22,10 @@ public interface ApsMaterialBomMapper extends BaseMapper<ApsMaterialBom> {
     List<ApsMaterialBom> selectListNotDelete(@Param("deleteList") List<MaterialBomChange> deleteList);
 
     void insertListNotDelete(@Param("deleteList") List<MaterialBomChange> deleteList);
+
+    Page<ApsMaterialBomDto> selectPageList(Page page, @Param("versions") List tableVersionList);
+
+    void insertSelectVersionIncr();
 }
 
 

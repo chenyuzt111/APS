@@ -41,12 +41,6 @@ public class ApsFimPriority implements Serializable {
     /**
      * 
      */
-    @TableField(value = "f_material_name")
-    private String fMaterialName;
-
-    /**
-     * 
-     */
     @TableField(value = "f_replenishment_quantity")
     private String fReplenishmentQuantity;
 

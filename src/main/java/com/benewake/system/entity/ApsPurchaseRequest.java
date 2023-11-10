@@ -28,12 +28,12 @@ public class ApsPurchaseRequest implements Serializable {
     @JsonProperty("materialId")
     @TableField(value = "f_material_id")
     private String fMaterialId;
-    /**
-     * 物料编码
-     */
-    @JsonProperty("materialName")
-    @TableField(value = "f_material_name")
-    private String fMaterialName;
+//    /**
+//     * 物料编码
+//     */
+//    @JsonProperty("materialName")
+//    @TableField(value = "f_material_name")
+//    private String fMaterialName;
 
     /**
      * 批准数量

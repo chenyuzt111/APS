@@ -83,8 +83,9 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
             String optimalProcessSchemeName = record.getOptimalProcessSchemeName();
             Integer opId = collect.get(optimalProcessSchemeName);
             ProcessSchemeManagementVo processSchemeManagementVo = new ProcessSchemeManagementVo();
-
-            processSchemeManagementVo.setProductionLineBalanceRate(record.getProductionLineBalanceRate().multiply(new BigDecimal(100)).toString() + "%");
+            if (record.getProductionLineBalanceRate() != null) {
+                processSchemeManagementVo.setProductionLineBalanceRate(record.getProductionLineBalanceRate().multiply(new BigDecimal(100)).setScale(3, RoundingMode.HALF_UP) + "%");
+            }
             processSchemeManagementVo.setManId(record.getId());
             processSchemeManagementVo.setId(curId);
             processSchemeManagementVo.setCurrentProcessScheme(record.getCurProcessSchemeName());
@@ -93,8 +94,15 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
             processSchemeManagementVo.setProductFamily(record.getProductFamily());
             processSchemeManagementVo.setNumber(record.getNumber());
             processSchemeManagementVo.setOrderNumber(record.getOrderNumber());
-            processSchemeManagementVo.setCompletionTime(record.getCompletionTime());
-            processSchemeManagementVo.setTotalReleaseTime(record.getTotalReleaseTime());
+            if (record.getCompletionTime() != null) {
+                BigDecimal completionTimeInHours = record.getCompletionTime().divide(new BigDecimal(3600), 3, RoundingMode.HALF_UP);
+                processSchemeManagementVo.setCompletionTime(completionTimeInHours);
+            }
+            if (record.getTotalReleaseTime() != null) {
+                double totalReleaseTimeHours = record.getTotalReleaseTime() / 3600;
+                String formattedHours = String.format("%.3f", totalReleaseTimeHours);
+                processSchemeManagementVo.setTotalReleaseTime(formattedHours);
+            }
             processSchemeManagementVo.setReleasableStaffCount(record.getReleasableStaffCount());
             processSchemeManagementVos.add(processSchemeManagementVo);
         }

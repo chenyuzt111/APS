@@ -1,7 +1,11 @@
 package com.benewake.system.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsSemiFinishedGoodsMaterialShortageAnalysis;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.benewake.system.entity.dto.ApsSemiFinishedGoodsMaterialShortageAnalysisDto;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
 * @author ASUS
@@ -9,8 +13,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2023-11-02 11:39:24
 * @Entity com.benewake.system.entity.ApsSemiFinishedGoodsMaterialShortageAnalysis
 */
+@Mapper
 public interface ApsSemiFinishedGoodsMaterialShortageAnalysisMapper extends BaseMapper<ApsSemiFinishedGoodsMaterialShortageAnalysis> {
 
+    Page<ApsSemiFinishedGoodsMaterialShortageAnalysisDto> selectPageList(Page<ApsSemiFinishedGoodsMaterialShortageAnalysisDto> goodsProductionPlanPage, @Param("apsTableVersion") Integer apsTableVersion);
 }
 
 

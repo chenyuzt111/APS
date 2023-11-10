@@ -9,7 +9,6 @@
             <result property="fProductionId" column="f_production_id" jdbcType="VARCHAR"/>
             <result property="fTaskSourceId" column="f_task_source_id" jdbcType="VARCHAR"/>
             <result property="fMaterialCode" column="f_material_code" jdbcType="VARCHAR"/>
-            <result property="fMaterialName" column="f_material_name" jdbcType="VARCHAR"/>
             <result property="fReplenishmentQuantity" column="f_replenishment_quantity" jdbcType="VARCHAR"/>
             <result property="fExpectedStartTime" column="f_expected_start_time" jdbcType="VARCHAR"/>
             <result property="fRequiredDeliveryTime" column="f_required_delivery_time" jdbcType="VARCHAR"/>
@@ -24,4 +23,22 @@
         f_expected_start_time,f_required_delivery_time,f_priority,
         f_contained_sales_orders,version
     </sql>
+    <select id="selectPageList" resultType="com.benewake.system.entity.dto.ApsFimPriorityDto">
+        SELECT
+            pri.id,
+            f_production_id,
+            f_task_source_id,
+            f_material_code,
+            map.f_material_name,
+            f_replenishment_quantity,
+            f_expected_start_time,
+            f_required_delivery_time,
+            f_priority,
+            f_contained_sales_orders,
+            version
+        FROM
+            aps_fim_priority AS pri
+                LEFT JOIN aps_material_name_mapping AS map ON pri.f_material_code = map.f_material_id
+        where version = #{apsTableVersion}
+    </select>
 </mapper>

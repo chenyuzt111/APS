@@ -20,10 +20,6 @@ public class ApsInventoryLock implements Serializable {
     @TableField(value = "f_material_id")
     private String fMaterialId;
 
-    @JsonProperty("materialName")
-    @TableField(value = "f_material_name")
-    private String FMaterialName;
-
     @JsonProperty("expiryDate")
     @TableField(value = "f_expiry_date")
     private String fExpiryDate;

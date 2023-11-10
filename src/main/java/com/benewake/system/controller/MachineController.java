@@ -3,7 +3,7 @@ package com.benewake.system.controller;
 
 import com.benewake.system.entity.ApsProductFamilyMachineTable;
 import com.benewake.system.entity.Result;
-import com.benewake.system.entity.vo.ApsProductFamilyMachineTableVo;
+import com.benewake.system.entity.vo.ApsProductFamilyMachineTablePageVo;
 import com.benewake.system.service.ApsProductFamilyMachineTableService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,10 +24,10 @@ public class MachineController {
 
     @ApiOperation("获取机器管理")
     @GetMapping("/getApsMachineTable/{page}/{size}")
-    public Result<ApsProductFamilyMachineTableVo> getApsMachineTable(@RequestParam(required = false) String name, @PathVariable Integer page, @PathVariable Integer size) {
-        ApsProductFamilyMachineTableVo apsProductFamilyMachineTableVo =
+    public Result<ApsProductFamilyMachineTablePageVo> getApsMachineTable(@RequestParam(required = false) String name, @PathVariable Integer page, @PathVariable Integer size) {
+        ApsProductFamilyMachineTablePageVo apsProductFamilyMachineTablePageVo =
                 apsProductFamilyMachineTableService.getApsMachineTable(name, page ,size);
-        return Result.ok(apsProductFamilyMachineTableVo);
+        return Result.ok(apsProductFamilyMachineTablePageVo);
     }
 
     @ApiOperation("删除机器管理")

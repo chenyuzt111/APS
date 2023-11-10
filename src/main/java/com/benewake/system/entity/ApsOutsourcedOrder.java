@@ -28,9 +28,9 @@ public class ApsOutsourcedOrder implements Serializable {
     @TableField(value = "f_material_id")
     private String fMaterialId;
 
-    @JsonProperty("materialName")
-    @TableField(value = "f_material_name")
-    private String fMaterialName;
+//    @JsonProperty("materialName")
+//    @TableField(value = "f_material_name")
+//    private String fMaterialName;
 
     @JsonProperty("qty")
     @TableField(value = "f_qty")

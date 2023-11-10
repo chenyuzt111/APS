@@ -2,6 +2,7 @@ package com.benewake.system.service.scheduling.result;
 
 import com.benewake.system.entity.ApsFimPriority;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.dto.ApsFimPriorityDto;
 import com.benewake.system.entity.vo.PageListRestVo;
 
 /**
@@ -11,5 +12,5 @@ import com.benewake.system.entity.vo.PageListRestVo;
 */
 public interface ApsFimPriorityService extends IService<ApsFimPriority> ,ApsSchedulingResuleBase{
 
-    PageListRestVo<ApsFimPriority> getAllPage(Integer page, Integer size);
+    PageListRestVo<ApsFimPriorityDto> getAllPage(Integer page, Integer size);
 }

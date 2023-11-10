@@ -1,11 +1,10 @@
 package com.benewake.system.service.scheduling.result.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsSemiFinishedGoodsProductionPlan;
-import com.benewake.system.entity.ApsTableVersion;
 import com.benewake.system.entity.enums.SchedulingResultType;
+import com.benewake.system.entity.dto.ApsSemiFinishedGoodsProductionPlanDto;
 import com.benewake.system.entity.vo.PageListRestVo;
 import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.scheduling.result.ApsSemiFinishedGoodsProductionPlanService;
@@ -26,16 +25,17 @@ public class ApsSemiFinishedGoodsProductionPlanServiceImpl extends ServiceImpl<A
     @Autowired
     private ApsTableVersionService apsTableVersionService;
 
+    @Autowired
+    private ApsSemiFinishedGoodsProductionPlanMapper semiFinishedGoodsProductionPlanMapper;
+
     @Override
-    public PageListRestVo<ApsSemiFinishedGoodsProductionPlan> getAllPage(Integer page, Integer size) {
+    public PageListRestVo<ApsSemiFinishedGoodsProductionPlanDto> getAllPage(Integer page, Integer size) {
         Integer apsTableVersion = getApsTableVersion(SchedulingResultType.APS_SEMI_FINISHED_GOODS_PRODUCTION_PLAN.getCode(), apsTableVersionService);
         Page<ApsSemiFinishedGoodsProductionPlan> goodsProductionPlanPage = new Page<>();
         goodsProductionPlanPage.setSize(size);
         goodsProductionPlanPage.setCurrent(page);
-        LambdaQueryWrapper<ApsSemiFinishedGoodsProductionPlan> productionPlanLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        productionPlanLambdaQueryWrapper.eq(ApsSemiFinishedGoodsProductionPlan::getVersion ,apsTableVersion);
-        Page<ApsSemiFinishedGoodsProductionPlan> productionPlanPage = page(goodsProductionPlanPage, productionPlanLambdaQueryWrapper);
-        PageListRestVo<ApsSemiFinishedGoodsProductionPlan> restVo = new PageListRestVo<>();
+        Page<ApsSemiFinishedGoodsProductionPlanDto> productionPlanPage = semiFinishedGoodsProductionPlanMapper.selectPageList(goodsProductionPlanPage, apsTableVersion);
+        PageListRestVo<ApsSemiFinishedGoodsProductionPlanDto> restVo = new PageListRestVo<>();
         restVo.setList(productionPlanPage.getRecords());
         restVo.setPages(productionPlanPage.getPages());
         restVo.setTotal(productionPlanPage.getTotal());

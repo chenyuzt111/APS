@@ -53,6 +53,7 @@ public class PythonServiceImpl implements PythonService {
             Integer schedulingMaxVersion = apsTableVersionService.getMaxVersion();
             ArrayList<ApsTableVersion> apsTableVersions = new ArrayList<>();
             for (ApsIntfaceDataServiceBase service : apsIntfaceDataServiceBase) {
+                service.insertVersionIncr();
                 Integer maxVersion = service.getMaxVersionIncr();
 //                if (maxVersion == 1) {
 //                    throw new BeneWakeException("数据库数据不存在");

@@ -1,7 +1,9 @@
 package com.benewake.system.service.scheduling.kingdee.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsProductionMaterial;
+import com.benewake.system.entity.dto.ApsProductionMaterialDto;
 import com.benewake.system.entity.enums.FMaterialStatus;
 import com.benewake.system.entity.kingdee.KingdeeProductionMaterial;
 import com.benewake.system.entity.kingdee.YourResultClassForSubQuery;
@@ -56,6 +58,17 @@ public class ApsProductionMaterialServiceImpl extends ServiceImpl<ApsProductionM
             return save(apsProductionMaterial);
         }
         return saveBatch(apsProductionMaterials);
+    }
+
+    @Override
+    public void insertVersionIncr() {
+        apsProductionMaterialMapper.insertSelectVersionIncr();
+    }
+
+    @Override
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsProductionMaterialDto> productionMaterialPage = apsProductionMaterialMapper.selectPageList(page ,tableVersionList);
+        return productionMaterialPage;
     }
 
     @Override

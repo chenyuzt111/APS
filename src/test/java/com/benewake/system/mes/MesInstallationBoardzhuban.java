@@ -1,9 +1,5 @@
 package com.benewake.system.mes;
 
-import com.benewake.saleordersystem.excel.model.PCshaolu;
-import com.benewake.saleordersystem.excel.model.MesInstallationBoard;
-import com.benewake.saleordersystem.excel.model.pcbashaolu;
-import com.benewake.saleordersystem.utils.CommonUtils;
 import com.benewake.system.entity.mes.MesInstallationBoard;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -86,8 +82,8 @@ public class MesInstallationBoardzhuban {
                     }
                     // 将pcshaolu对象添加到数据列表
                     dataList.add(MesInstallationBoard);
-                    for (MesInstallationBoard m : dataList) {
-                        System.out.println(m.toString());
+                    for (MesInstallationBoard mesInstallationBoard : dataList) {
+                        System.out.println(mesInstallationBoard.toString());
                     }
                 }
             }

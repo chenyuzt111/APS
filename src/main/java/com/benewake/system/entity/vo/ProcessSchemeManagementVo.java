@@ -51,7 +51,7 @@ public class ProcessSchemeManagementVo {
      * 总释放时间
      */
     @TableField(value = "total_release_time")
-    private Double totalReleaseTime;
+    private String totalReleaseTime;
 
     private Integer number;
 }

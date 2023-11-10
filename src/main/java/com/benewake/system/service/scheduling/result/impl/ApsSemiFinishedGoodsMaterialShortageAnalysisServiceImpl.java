@@ -1,11 +1,10 @@
 package com.benewake.system.service.scheduling.result.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsSemiFinishedGoodsMaterialShortageAnalysis;
-import com.benewake.system.entity.ApsSemiFinishedGoodsProductionPlan;
 import com.benewake.system.entity.enums.SchedulingResultType;
+import com.benewake.system.entity.dto.ApsSemiFinishedGoodsMaterialShortageAnalysisDto;
 import com.benewake.system.entity.vo.PageListRestVo;
 import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.scheduling.result.ApsSemiFinishedGoodsMaterialShortageAnalysisService;
@@ -24,16 +23,17 @@ public class ApsSemiFinishedGoodsMaterialShortageAnalysisServiceImpl extends Ser
 
     @Autowired
     private ApsTableVersionService apsTableVersionService;
+
+    @Autowired
+    private ApsSemiFinishedGoodsMaterialShortageAnalysisMapper semiFinishedGoodsMaterialShortageAnalysisMapper;
     @Override
-    public PageListRestVo<ApsSemiFinishedGoodsMaterialShortageAnalysis> getAllPage(Integer page, Integer size) {
+    public PageListRestVo<ApsSemiFinishedGoodsMaterialShortageAnalysisDto> getAllPage(Integer page, Integer size) {
         Integer apsTableVersion = getApsTableVersion(SchedulingResultType.APS_SEMI_FINISHED_GOODS_MATERIAL_SHORTAGE_ANALYSIS.getCode(), apsTableVersionService);
-        Page<ApsSemiFinishedGoodsMaterialShortageAnalysis> goodsProductionPlanPage = new Page<>();
+        Page<ApsSemiFinishedGoodsMaterialShortageAnalysisDto> goodsProductionPlanPage = new Page<>();
         goodsProductionPlanPage.setSize(size);
         goodsProductionPlanPage.setCurrent(page);
-        LambdaQueryWrapper<ApsSemiFinishedGoodsMaterialShortageAnalysis> productionPlanLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        productionPlanLambdaQueryWrapper.eq(ApsSemiFinishedGoodsMaterialShortageAnalysis::getVersion ,apsTableVersion);
-        Page<ApsSemiFinishedGoodsMaterialShortageAnalysis> productionPlanPage = page(goodsProductionPlanPage, productionPlanLambdaQueryWrapper);
-        PageListRestVo<ApsSemiFinishedGoodsMaterialShortageAnalysis> restVo = new PageListRestVo<>();
+        Page<ApsSemiFinishedGoodsMaterialShortageAnalysisDto> productionPlanPage = semiFinishedGoodsMaterialShortageAnalysisMapper.selectPageList(goodsProductionPlanPage, apsTableVersion);
+        PageListRestVo<ApsSemiFinishedGoodsMaterialShortageAnalysisDto> restVo = new PageListRestVo<>();
         restVo.setList(productionPlanPage.getRecords());
         restVo.setPages(productionPlanPage.getPages());
         restVo.setTotal(productionPlanPage.getTotal());

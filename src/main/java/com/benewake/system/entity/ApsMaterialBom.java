@@ -19,10 +19,10 @@ public class ApsMaterialBom implements Serializable {
     @JsonProperty("materialId")
     @TableField(value = "f_material_id")
     private String fMaterialId;
-
-    @JsonProperty("materialName")
-    @TableField(value = "f_material_name")
-    private String fMaterialName;
+//
+//    @JsonProperty("materialName")
+//    @TableField(value = "f_material_name")
+//    private String fMaterialName;
 
     @JsonProperty("documentStatus")
     @TableField(value = "f_document_status")
@@ -32,9 +32,9 @@ public class ApsMaterialBom implements Serializable {
     @TableField(value = "f_material_id_child")
     private String fMaterialIdChild;
 
-    @JsonProperty("materialNameChild")
-    @TableField(value = "f_material_name_child")
-    private String fMaterialNameChild;
+//    @JsonProperty("materialNameChild")
+//    @TableField(value = "f_material_name_child")
+//    private String fMaterialNameChild;
 
     @JsonProperty("numerator")
     @TableField(value = "f_numerator")

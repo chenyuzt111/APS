@@ -16,7 +16,7 @@ public class KingdeeToApsPurchaseOrder {
         ApsPurchaseOrder apsPurchaseOrder = new ApsPurchaseOrder();
         apsPurchaseOrder.setFBillNo(purchaseOrder.getFBillNo());
         apsPurchaseOrder.setFMaterialId(purchaseOrder.getFMaterialId());
-        apsPurchaseOrder.setFMaterialName(purchaseOrder.getFMaterialName());
+//        apsPurchaseOrder.setFMaterialName(purchaseOrder.getFMaterialName());
         apsPurchaseOrder.setFRemainReceiveQty(purchaseOrder.getFDeliRemainQty());
         apsPurchaseOrder.setFDeliveryDate(purchaseOrder.getFDeliveryDate_Plan());
         apsPurchaseOrder.setVersion(version);

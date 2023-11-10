@@ -26,11 +26,6 @@ public class ApsFinishedProductBasicData implements Serializable {
     @TableField(value = "f_material_code")
     private String fMaterialCode;
 
-    /**
-     * 
-     */
-    @TableField(value = "f_material_name")
-    private String fMaterialName;
 
     /**
      * 

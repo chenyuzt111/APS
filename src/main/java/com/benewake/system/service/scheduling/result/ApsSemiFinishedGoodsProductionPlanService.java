@@ -2,6 +2,7 @@ package com.benewake.system.service.scheduling.result;
 
 import com.benewake.system.entity.ApsSemiFinishedGoodsProductionPlan;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.dto.ApsSemiFinishedGoodsProductionPlanDto;
 import com.benewake.system.entity.vo.PageListRestVo;
 
 /**
@@ -11,5 +12,5 @@ import com.benewake.system.entity.vo.PageListRestVo;
 */
 public interface ApsSemiFinishedGoodsProductionPlanService extends IService<ApsSemiFinishedGoodsProductionPlan> ,ApsSchedulingResuleBase{
 
-    PageListRestVo<ApsSemiFinishedGoodsProductionPlan> getAllPage(Integer page, Integer size);
+    PageListRestVo<ApsSemiFinishedGoodsProductionPlanDto> getAllPage(Integer page, Integer size);
 }

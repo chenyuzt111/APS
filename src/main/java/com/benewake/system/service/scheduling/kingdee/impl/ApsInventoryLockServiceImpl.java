@@ -1,7 +1,9 @@
 package com.benewake.system.service.scheduling.kingdee.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsInventoryLock;
+import com.benewake.system.entity.dto.ApsInventoryLockDto;
 import com.benewake.system.entity.kingdee.KingdeeInventoryLock;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
 import com.benewake.system.service.scheduling.kingdee.ApsInventoryLockService;
@@ -52,6 +54,17 @@ public class ApsInventoryLockServiceImpl extends ServiceImpl<ApsInventoryLockMap
             return save(apsInventoryLock);
         }
         return saveBatch(apsInventoryLockList);
+    }
+
+    @Override
+    public void insertVersionIncr() {
+        apsInventoryLockMapper.insertSelectVersionIncr();
+    }
+
+    @Override
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsInventoryLockDto> apsInventoryLockDtoPage = apsInventoryLockMapper.selectPageList(page ,tableVersionList);
+        return apsInventoryLockDtoPage;
     }
 
     @Override

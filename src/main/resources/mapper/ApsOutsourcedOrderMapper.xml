@@ -5,17 +5,16 @@
 <mapper namespace="com.benewake.system.mapper.ApsOutsourcedOrderMapper">
 
     <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsOutsourcedOrder">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="fBillNo" column="f_bill_no" jdbcType="VARCHAR"/>
-            <result property="fBillType" column="f_bill_type" jdbcType="VARCHAR"/>
-            <result property="fBillTypeId" column="f_bill_type_id" jdbcType="VARCHAR"/>
-            <result property="fMaterialId" column="f_material_id" jdbcType="VARCHAR"/>
-            <result property="fQty" column="f_qty" jdbcType="VARCHAR"/>
-            <result property="fStatus" column="f_status" jdbcType="VARCHAR"/>
-            <result property="fPickMtrlStatus" column="f_pick_mtrl_status" jdbcType="VARCHAR"/>
-            <result property="fStockInQty" column="f_stock_in_qty" jdbcType="VARCHAR"/>
-            <result property="fBomId" column="f_bom_id" jdbcType="VARCHAR"/>
-            <result property="version" column="version" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="fBillNo" column="f_bill_no" jdbcType="VARCHAR"/>
+        <result property="fBillType" column="f_bill_type" jdbcType="VARCHAR"/>
+        <result property="fMaterialId" column="f_material_id" jdbcType="VARCHAR"/>
+        <result property="fQty" column="f_qty" jdbcType="VARCHAR"/>
+        <result property="fStatus" column="f_status" jdbcType="VARCHAR"/>
+        <result property="fPickMtrlStatus" column="f_pick_mtrl_status" jdbcType="VARCHAR"/>
+        <result property="fStockInQty" column="f_stock_in_qty" jdbcType="VARCHAR"/>
+        <result property="fBomId" column="f_bom_id" jdbcType="VARCHAR"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -24,8 +23,26 @@
         f_status,f_pick_mtrl_status,f_stock_in_qty,
         f_bom_id,version
     </sql>
+    <insert id="insertSelectVersionIncr">
+        insert into aps_outsourced_order(f_bill_no, f_bill_type,
+                                         f_material_id, f_qty,
+                                         f_status, f_pick_mtrl_status, f_stock_in_qty,
+                                         f_bom_id, version)
+        select f_bill_no,
+               f_bill_type,
+               f_material_id,
+               f_qty,
+               f_status,
+               f_pick_mtrl_status,
+               f_stock_in_qty,
+               f_bom_id,
+               version
+        from aps_outsourced_order
+        where version = (select max(version) from aps_outsourced_order)
+    </insert>
 
-    <select id="selectVersionPageList" resultType="com.benewake.system.entity.Interface.ApsOutsourcedOrderMultipleVersions">
+    <select id="selectVersionPageList"
+            resultType="com.benewake.system.entity.Interface.ApsOutsourcedOrderMultipleVersions">
         SELECT *
         from
         <foreach collection="versions" item="item" index="index" open="(" separator=" UNION ALL " close=")">
@@ -35,5 +52,26 @@
         AS derived_table
         ORDER BY f_lot, version DESC
         limit #{pass},#{size};
+    </select>
+    <select id="selectPageList" resultType="com.benewake.system.entity.dto.ApsOutsourcedOrderDto">
+        SELECT
+        ord.id,
+        f_bill_no,
+        f_bill_type,
+        ord.f_material_id,
+        map.f_material_name,
+        f_qty,
+        f_status,
+        f_pick_mtrl_status,
+        f_stock_in_qty,
+        f_bom_id,
+        ch_version_name as version
+        FROM
+        <foreach collection="versions" item="item" index="index" open="(" separator=" UNION ALL " close=")">
+            SELECT * ,#{item.chVersionName} as ch_version_name FROM aps_outsourced_order WHERE version =
+            #{item.version}
+        </foreach>
+        AS ord
+        LEFT JOIN aps_material_name_mapping AS map ON ord.f_material_id = map.f_material_id
     </select>
 </mapper>

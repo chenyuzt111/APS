@@ -2,7 +2,7 @@ package com.benewake.system.service;
 
 import com.benewake.system.entity.ApsProcessNamePool;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.benewake.system.entity.vo.ApsProcessNamePoolVo;
+import com.benewake.system.entity.vo.ApsProcessNamePoolPageVo;
 
 /**
 * @author ASUS
@@ -13,5 +13,5 @@ public interface ApsProcessNamePoolService extends IService<ApsProcessNamePool> 
 
     Boolean addOrUpdateProcess(ApsProcessNamePool apsProcessNamePool);
 
-    ApsProcessNamePoolVo getProcess(String name, Integer page, Integer size);
+    ApsProcessNamePoolPageVo getProcess(String name, Integer page, Integer size);
 }
