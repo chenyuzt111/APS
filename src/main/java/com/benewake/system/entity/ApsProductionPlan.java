@@ -30,11 +30,7 @@ public class ApsProductionPlan implements Serializable {
     @TableField(value = "f_material_code")
     private String fMaterialCode;
 
-    
-    @TableField(value = "f_material_name")
-    private String fMaterialName;
 
-    
     @TableField(value = "f_total_quantity")
     private String fTotalQuantity;
 

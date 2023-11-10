@@ -1,6 +1,6 @@
 package com.benewake.system.KindDee;
 
-public class SuTestVo {
+public class SchedulingVo {
     Integer number_cycles;
     Integer scheduled_days_num;
     Integer scheduling_workload;

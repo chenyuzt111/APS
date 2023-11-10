@@ -1,10 +1,12 @@
 package com.benewake.system.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsOutsourcedOrder;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.benewake.system.entity.Interface.ApsOutsourcedMaterialMultipleVersions;
 import com.benewake.system.entity.Interface.ApsOutsourcedOrderMultipleVersions;
 import com.benewake.system.entity.Interface.VersionToChVersion;
+import com.benewake.system.entity.dto.ApsOutsourcedOrderDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -22,6 +24,10 @@ public interface ApsOutsourcedOrderMapper extends BaseMapper<ApsOutsourcedOrder>
     List<ApsOutsourcedOrderMultipleVersions> selectVersionPageList(@Param("pass") Integer pass, @Param("size") Integer size,
                                                                    @Param("versions") List<VersionToChVersion> versions);
 
+    Page<ApsOutsourcedOrderDto> selectPageList(Page page,
+                                               @Param("versions") List<VersionToChVersion> versions);
+
+    void insertSelectVersionIncr();
 }
 
 

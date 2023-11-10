@@ -1,7 +1,9 @@
 package com.benewake.system.service.scheduling.kingdee.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsOutsourcedOrder;
+import com.benewake.system.entity.dto.ApsOutsourcedOrderDto;
 import com.benewake.system.entity.enums.FPickMtrlStatusEnum;
 import com.benewake.system.entity.enums.FStatusEnum;
 import com.benewake.system.entity.kingdee.KingdeeOutsourcedOrder;
@@ -61,6 +63,17 @@ public class ApsOutsourcedOrderServiceImpl extends ServiceImpl<ApsOutsourcedOrde
             return save(apsOutsourcedOrder);
         }
         return saveBatch(apsOutsourcedOrders);
+    }
+
+    @Override
+    public void insertVersionIncr() {
+        apsOutsourcedOrderMapper.insertSelectVersionIncr();
+    }
+
+    @Override
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsOutsourcedOrderDto> apsOutsourcedOrderDtoPage = apsOutsourcedOrderMapper.selectPageList(page ,tableVersionList);
+        return apsOutsourcedOrderDtoPage;
     }
 
     @Override

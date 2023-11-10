@@ -1,7 +1,9 @@
 package com.benewake.system.service.scheduling.kingdee.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsOutsourcedMaterial;
+import com.benewake.system.entity.dto.ApsOutsourcedMaterialDto;
 import com.benewake.system.entity.enums.FMaterialStatus;
 import com.benewake.system.entity.kingdee.KingdeeOutsourcedMaterial;
 import com.benewake.system.entity.kingdee.YourResultClassForSubQuery;
@@ -56,6 +58,17 @@ public class ApsOutsourcedMaterialServiceImpl extends ServiceImpl<ApsOutsourcedM
             apsOutsourcedMaterial.setVersion(maxVersion);
         }
         return saveBatch(apsOutsourcedMaterials);
+    }
+
+    @Override
+    public void insertVersionIncr() {
+        apsOutsourcedMaterialMapper.insertSelectVersionIncr();
+    }
+
+    @Override
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsOutsourcedMaterialDto> outsourcedMaterialDtoPage = apsOutsourcedMaterialMapper.selectPageList(page ,tableVersionList);
+        return outsourcedMaterialDtoPage;
     }
 
     @Override

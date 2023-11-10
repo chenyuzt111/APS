@@ -1,7 +1,9 @@
 package com.benewake.system.service.scheduling.kingdee.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsReceiveNotice;
+import com.benewake.system.entity.dto.ApsReceiveNoticeDto;
 import com.benewake.system.entity.kingdee.KingdeeReceiveNotice;
 import com.benewake.system.entity.kingdee.transfer.CreateIdToName;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
@@ -58,6 +60,17 @@ public class ApsReceiveNoticeServiceImpl extends ServiceImpl<ApsReceiveNoticeMap
             return save(apsReceiveNotice);
         }
         return saveBatch(apsReceiveNoticeList);
+    }
+
+    @Override
+    public void insertVersionIncr() {
+        apsReceiveNoticeMapper.insertSelectVersionIncr();
+    }
+
+    @Override
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsReceiveNoticeDto> receiveNoticeDtoPage = apsReceiveNoticeMapper.selectPageList(page ,tableVersionList);
+        return receiveNoticeDtoPage;
     }
 
     @Override

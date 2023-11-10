@@ -1,7 +1,9 @@
 package com.benewake.system.service.scheduling.kingdee.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsProductionOrder;
+import com.benewake.system.entity.dto.ApsProductionOrderDto;
 import com.benewake.system.entity.enums.FPickMtrlStatusEnum;
 import com.benewake.system.entity.enums.FStatusEnum;
 import com.benewake.system.entity.kingdee.KingdeeProductionOrder;
@@ -62,6 +64,17 @@ public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrde
             return save(apsProductionOrder);
         }
             return saveBatch(apsProductionOrders);
+    }
+
+    @Override
+    public void insertVersionIncr() {
+        apsProductionOrderMapper.insertSelectVersionIncr();
+    }
+
+    @Override
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsProductionOrderDto> apsProductionOrderDtoPage = apsProductionOrderMapper.selectPageList(page ,tableVersionList);
+        return apsProductionOrderDtoPage;
     }
 
     @Override

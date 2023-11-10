@@ -50,20 +50,15 @@ public class PythonServiceImpl implements PythonService {
     @Override
     public void startScheduling(SchedulingParam schedulingParam) {
         try {
-            //获取最大版本号
             Integer schedulingMaxVersion = apsTableVersionService.getMaxVersion();
             ArrayList<ApsTableVersion> apsTableVersions = new ArrayList<>();
-            //循环遍历apsIntfaceDataServiceBase集合中的每个元素，将其赋值给service变量
             for (ApsIntfaceDataServiceBase service : apsIntfaceDataServiceBase) {
-                //获取当前遍历对象的最大版本号
+                service.insertVersionIncr();
                 Integer maxVersion = service.getMaxVersionIncr();
 //                if (maxVersion == 1) {
 //                    throw new BeneWakeException("数据库数据不存在");
 //                }
-
-                //通过service获取与服务名称对应接口名称存到codeByServiceName中
                 int codeByServiceName = getCodeByServiceName(service);
-                //创建一个apsTableVersion记录版本状态
                 ApsTableVersion apsTableVersion = ApsTableVersion.builder().tableVersion(maxVersion - 1)
                         .tableId(codeByServiceName)
                         .versionNumber(schedulingMaxVersion + 1)
@@ -100,7 +95,6 @@ public class PythonServiceImpl implements PythonService {
             List<String> strings = new ArrayList<>();
             strings.add(jsonString);
             System.out.println(strings);
-            //调用schedulingPythonService的
             schedulingPythonService.startAsync(hostHolder.getUser(), strings);
 //            schedulingPythonService.start(strings);
         } catch (Exception e) {

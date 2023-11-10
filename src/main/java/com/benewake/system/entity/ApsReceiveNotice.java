@@ -24,9 +24,9 @@ public class ApsReceiveNotice implements Serializable {
     @TableField(value = "f_material_id")
     private String fMaterialId;
 
-    @JsonProperty("materialName")
-    @TableField(value = "f_material_name")
-    private String fMaterialName;
+//    @JsonProperty("materialName")
+//    @TableField(value = "f_material_name")
+//    private String fMaterialName;
 
     @JsonProperty("mustQty")
     @TableField(value = "f_must_qty")

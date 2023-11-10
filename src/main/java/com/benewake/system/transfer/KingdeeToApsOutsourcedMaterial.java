@@ -13,10 +13,10 @@ public class KingdeeToApsOutsourcedMaterial {
         }
         ApsOutsourcedMaterial apsOutsourcedMaterial = new ApsOutsourcedMaterial();
         apsOutsourcedMaterial.setFMaterialId(kingdeeOutsourcedMaterial.getFMaterialID());
-        apsOutsourcedMaterial.setFMaterialName(kingdeeOutsourcedMaterial.getFMaterialName());
+//        apsOutsourcedMaterial.setFMaterialName(kingdeeOutsourcedMaterial.getFMaterialName());
         apsOutsourcedMaterial.setFSubReqBillNo(kingdeeOutsourcedMaterial.getFSubReqBillNO());
         apsOutsourcedMaterial.setFMaterialId2(kingdeeOutsourcedMaterial.getFMaterialID2());
-        apsOutsourcedMaterial.setFMaterialName2(kingdeeOutsourcedMaterial.getFMaterialName2());
+//        apsOutsourcedMaterial.setFMaterialName2(kingdeeOutsourcedMaterial.getFMaterialName2());
         apsOutsourcedMaterial.setFMaterialType(kingdeeOutsourcedMaterial.getFMaterialType());
         apsOutsourcedMaterial.setFMustQty(kingdeeOutsourcedMaterial.getFMustQty());
         apsOutsourcedMaterial.setFPickedQty(kingdeeOutsourcedMaterial.getFPickedQty());

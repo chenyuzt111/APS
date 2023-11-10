@@ -1,7 +1,11 @@
 package com.benewake.system.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsProductionPlan;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.benewake.system.entity.dto.ApsProductionPlanDto;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
 * @author ASUS
@@ -9,8 +13,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2023-10-23 16:40:42
 * @Entity com.benewake.system.entity.ApsProductionPlan
 */
+
+@Mapper
 public interface ApsProductionPlanMapper extends BaseMapper<ApsProductionPlan> {
 
+    Page<ApsProductionPlanDto> selectPageList(Page<ApsProductionPlan> apsProductionPlanPage, @Param("apsTableVersion") Integer apsTableVersion);
 }
 
 

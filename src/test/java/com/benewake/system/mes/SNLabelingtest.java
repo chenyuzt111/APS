@@ -1,11 +1,10 @@
 package com.benewake.system.mes;
 
-import com.benewake.system.entity.mes.SNLabeling;
+import com.benewake.system.entity.mes.MesSnLabeling;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -14,7 +13,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -44,11 +42,11 @@ public class SNLabelingtest {
                 fieldMapping.put("物料名称", "materialName");
                 JsonObject jsonObject = JsonParser.parseString(responseString).getAsJsonObject();
                 JsonArray answersArray = jsonObject.getAsJsonObject("result").getAsJsonArray("result");
-                List<SNLabeling> dataList = new ArrayList<>();
+                List<MesSnLabeling> dataList = new ArrayList<>();
                 for (JsonElement element : answersArray) {
                     JsonObject answer = element.getAsJsonObject();
                     JsonArray answerArray = answer.getAsJsonArray("answers"); // Replace "your_array_key" with the actual key
-                    SNLabeling snLabeling = new SNLabeling();
+                    MesSnLabeling snLabeling = new MesSnLabeling();
                     for (int i = 0; i < answerArray.size(); i++) {
                         JsonObject item = answerArray.get(i).getAsJsonObject();
                         String queTitle = item.get("queTitle").getAsString();
@@ -77,8 +75,8 @@ public class SNLabelingtest {
                         }
                     }
                     dataList.add(snLabeling);
-                    for (SNLabeling m : dataList) {
-                        System.out.println(m.toString());
+                    for (MesSnLabeling labeling : dataList) {
+                        System.out.println(labeling.toString());
                     }
                 }
             }

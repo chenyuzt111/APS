@@ -1,24 +1,102 @@
 package com.benewake.system.entity.vo;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.benewake.system.entity.ApsProductFamilyMachineTable;
-import com.benewake.system.entity.ApsProductFamilyMachineTableDto;
-import com.benewake.system.entity.vo.baseParam.PageParam;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.util.List;
-
+/**
+ * 
+ * @TableName aps_product_family_machine_table
+ */
+@TableName(value ="aps_product_family_machine_table")
 @Data
-public class ApsProductFamilyMachineTableVo extends PageParam {
+public class ApsProductFamilyMachineTableVo implements Serializable {
+    /**
+     * 
+     */
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
 
-    List<ApsProductFamilyMachineTableDto> apsProductFamilyMachineTables;
+    private Integer number;
 
-    public ApsProductFamilyMachineTableVo setPage(Page page) {
-        this.setApsProductFamilyMachineTables(page.getRecords());
-        this.setSize((int) page.getSize());
-        this.setPages(page.getPages());
-        this.setTotal(page.getTotal());
-        this.setPage((int) page.getCurrent());
-        return this;
-    }
+    /**
+     * 机器id
+     */
+    @TableField(value = "f_machine_id")
+    @JsonProperty("fMachineId")
+    private String fMachineId;
+
+    /**
+     * 机器名称
+     */
+    @TableField(value = "f_machine_name")
+    @JsonProperty("fMachineName")
+    private String fMachineName;
+
+    /**
+     * 产品族
+     */
+    @TableField(value = "f_product_family")
+    @JsonProperty("fProductFamily")
+    private String fProductFamily;
+
+
+     /**
+     * 适用工序
+     */
+    @JsonProperty("fProcessId")
+    @TableField(value = "f_process_id")
+    private String fProcessId;
+
+
+    @JsonProperty("fProcess")
+    @TableField(value = "process_name")
+    private String processName;
+
+
+    /**
+     * 机器规格
+     */
+    @TableField(value = "f_machine_configuration")
+    @JsonProperty("fMachineConfiguration")
+    private String fMachineConfiguration;
+
+    /**
+     * 使用车间
+     */
+    @TableField(value = "f_workshop")
+    @JsonProperty("fWorkshop")
+    private String fWorkshop;
+
+    /**
+     * 是否可用
+     */
+    @TableField(value = "available")
+    private String available;
+
+    /**
+     * 不可用日期
+     */
+    @TableField(value = "unavailable_dates")
+    private String unavailableDates;
+
+    /**
+     * 不可用时间
+     */
+    @TableField(value = "unavailable_time")
+    private String unavailableTime;
+
+    /**
+     * 
+     */
+    @TableField(value = "version")
+    private Integer version;
+
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
 }

@@ -1,10 +1,6 @@
 package com.benewake.system.entity.kingdee;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 public class KingdeeMaterialBom {
@@ -15,35 +11,40 @@ public class KingdeeMaterialBom {
 //    private String FUseOrgId;
 
     //("父项物料编码")
-    private String FMaterialID;
+    private String fMaterialID;
 
-    private String FITEMNAME;
+    private String fitemName;
+
+    private String fItemModel;
 
     //("数据状态")
-    private String FDocumentStatus;
+    private String fDocumentStatus;
 
     //("子项物料编码")
-    private String FMaterialIDChild;
+    private String fMaterialIDChild;
     //("子项物料编码")
-    private String FCHILDITEMNAME;
+//    private String FCHILDITEMNAME;
+    private String fChildIteName;
 
+    private String fChildItemModel;
     //("用量:分子")
-    private String FNumerator;
+    private String fNumerator;
 
     //("用量:分母")
-    private String FDenominator;
+    private String fDenominator;
 
     //("固定损耗")
-    private String FFixScrapQtyLot;
+    private String fFixScrapQtyLot;
     //子项类型
-    private String FMaterialType;
+    private String fMaterialType;
     //替代方式
-    private String FReplaceType;
+    private String fReplaceType;
     //项次
-    private String FReplaceGroup;
+    private String fReplaceGroup;
 
     //("变动损耗率%")
-    private String FScrapRate;
+    private String fScrapRate;
+
 
 //    private String FForBidStatus;
 //    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "GMT+8")

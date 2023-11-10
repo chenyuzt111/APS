@@ -5,18 +5,47 @@
 <mapper namespace="com.benewake.system.mapper.ApsPurchaseOrderMapper">
 
     <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsPurchaseOrder">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="fBillNo" column="f_bill_no" jdbcType="VARCHAR"/>
-            <result property="fMaterialId" column="f_material_id" jdbcType="VARCHAR"/>
-            <result property="fMaterialName" column="f_material_name" jdbcType="VARCHAR"/>
-            <result property="fRemainReceiveQty" column="f_remain_receive_qty" jdbcType="VARCHAR"/>
-            <result property="fDeliveryDate" column="f_delivery_date" jdbcType="TIMESTAMP"/>
-            <result property="version" column="version" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="fBillNo" column="f_bill_no" jdbcType="VARCHAR"/>
+        <result property="fMaterialId" column="f_material_id" jdbcType="VARCHAR"/>
+        <result property="fRemainReceiveQty" column="f_remain_receive_qty" jdbcType="VARCHAR"/>
+        <result property="fDeliveryDate" column="f_delivery_date" jdbcType="TIMESTAMP"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,f_bill_no,f_material_id,
-        f_material_name,f_remain_receive_qty,f_delivery_date,
+       f_remain_receive_qty,f_delivery_date,
         version
     </sql>
+    <insert id="insertSelectVersionIncr">
+        insert into aps_purchase_order(f_bill_no, f_material_id,
+                                       f_remain_receive_qty, f_delivery_date,
+                                       version)
+        select f_bill_no,
+               f_material_id,
+               f_remain_receive_qty,
+               f_delivery_date,
+               version
+        from aps_purchase_order
+        where version = (select max(version) from aps_purchase_order)
+    </insert>
+
+    <select id="selectPageList" resultType="com.benewake.system.entity.dto.ApsPurchaseOrderDto">
+        SELECT
+        ord.id,
+        f_bill_no,
+        ord.f_material_id,
+        map.f_material_name,
+        f_remain_receive_qty,
+        f_delivery_date,
+        ch_version_name as version
+        FROM
+        <foreach collection="versions" item="item" index="index" open="(" separator=" UNION ALL " close=")">
+            SELECT * ,#{item.chVersionName} as ch_version_name FROM aps_purchase_order WHERE version =
+            #{item.version}
+        </foreach>
+        AS ord
+        LEFT JOIN aps_material_name_mapping AS map ON ord.f_material_id = map.f_material_id
+    </select>
 </mapper>

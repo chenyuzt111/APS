@@ -32,11 +32,6 @@ public class ApsSemiFinishedGoodsMaterialShortageAnalysis implements Serializabl
     @TableField(value = "f_parent_code")
     private String fParentCode;
 
-    /**
-     * 
-     */
-    @TableField(value = "f_parent_name")
-    private String fParentName;
 
     /**
      * 

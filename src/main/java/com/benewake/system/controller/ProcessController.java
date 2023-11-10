@@ -1,13 +1,11 @@
 package com.benewake.system.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.benewake.system.entity.*;
 import com.benewake.system.entity.vo.*;
 import com.benewake.system.entity.vo.UpdateOptimalStrategyParam;
 import com.benewake.system.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +57,7 @@ public class ProcessController {
     @ApiOperation("获取工序名称分页")
     @GetMapping("/getProcessNamePools/{page}/{size}")
     public Result getProcess(@RequestParam(required = false) String name,@PathVariable Integer page,@PathVariable Integer size) {
-        ApsProcessNamePoolVo apsProcessNamePoolVo = apsProcessNamePoolService.getProcess(name, page ,size);
+        ApsProcessNamePoolPageVo apsProcessNamePoolVo = apsProcessNamePoolService.getProcess(name, page ,size);
         return Result.ok(apsProcessNamePoolVo);
     }
     @ApiOperation("获取工序名称")

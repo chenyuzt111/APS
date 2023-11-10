@@ -5,16 +5,16 @@
 <mapper namespace="com.benewake.system.mapper.ApsProductionMaterialMapper">
 
     <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsProductionMaterial">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="fMaterialId" column="f_material_id" jdbcType="VARCHAR"/>
-            <result property="fMoBillNo" column="f_mo_bill_no" jdbcType="VARCHAR"/>
-            <result property="fMaterialId2" column="f_material_id2" jdbcType="VARCHAR"/>
-            <result property="fMaterialType" column="f_material_type" jdbcType="VARCHAR"/>
-            <result property="fMustQty" column="f_must_qty" jdbcType="VARCHAR"/>
-            <result property="fPickedQty" column="f_picked_qty" jdbcType="VARCHAR"/>
-            <result property="fGoodReturnQty" column="f_good_return_qty" jdbcType="VARCHAR"/>
-            <result property="fProcessDefectReturnQty" column="f_process_defect_return_qty" jdbcType="VARCHAR"/>
-            <result property="version" column="version" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="fMaterialId" column="f_material_id" jdbcType="VARCHAR"/>
+        <result property="fMoBillNo" column="f_mo_bill_no" jdbcType="VARCHAR"/>
+        <result property="fMaterialId2" column="f_material_id2" jdbcType="VARCHAR"/>
+        <result property="fMaterialType" column="f_material_type" jdbcType="VARCHAR"/>
+        <result property="fMustQty" column="f_must_qty" jdbcType="VARCHAR"/>
+        <result property="fPickedQty" column="f_picked_qty" jdbcType="VARCHAR"/>
+        <result property="fGoodReturnQty" column="f_good_return_qty" jdbcType="VARCHAR"/>
+        <result property="fProcessDefectReturnQty" column="f_process_defect_return_qty" jdbcType="VARCHAR"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -23,7 +23,25 @@
         f_picked_qty,f_good_return_qty,f_process_defect_return_qty,
         version
     </sql>
-    <select id="selectVersionPageList" resultType="com.benewake.system.entity.Interface.ApsProductionMaterialMultipleVersions">
+    <insert id="insertSelectVersionIncr">
+        insert into aps_production_material(f_material_id, f_mo_bill_no,
+                                            f_material_id2, f_material_type, f_must_qty,
+                                            f_picked_qty, f_good_return_qty, f_process_defect_return_qty,
+                                            version)
+        select f_material_id,
+               f_mo_bill_no,
+               f_material_id2,
+               f_material_type,
+               f_must_qty,
+               f_picked_qty,
+               f_good_return_qty,
+               f_process_defect_return_qty,
+               version + 1
+        from aps_production_material
+        where version = (select max(version) from aps_production_material)
+    </insert>
+    <select id="selectVersionPageList"
+            resultType="com.benewake.system.entity.Interface.ApsProductionMaterialMultipleVersions">
         SELECT *
         from
         <foreach collection="versions" item="item" index="index" open="(" separator=" UNION ALL " close=")">
@@ -33,6 +51,29 @@
         AS derived_table
         ORDER BY f_lot, version DESC
         limit #{pass},#{size};
+    </select>
+    <select id="selectPageList" resultType="com.benewake.system.entity.dto.ApsProductionMaterialDto">
+        SELECT
+        mat.id,
+        mat.f_material_id,
+        map.f_material_name,
+        f_mo_bill_no,
+        mat.f_material_id2,
+        map1.f_material_name as f_material_name2,
+        f_material_type,
+        f_must_qty,
+        f_picked_qty,
+        f_good_return_qty,
+        f_process_defect_return_qty,
+        ch_version_name as version
+        FROM
+        <foreach collection="versions" item="item" index="index" open="(" separator=" UNION ALL " close=")">
+            SELECT * ,#{item.chVersionName} as ch_version_name FROM aps_production_material WHERE version =
+            #{item.version}
+        </foreach>
+        AS mat
+        LEFT JOIN aps_material_name_mapping AS map ON mat.f_material_id = map.f_material_id
+        LEFT JOIN aps_material_name_mapping AS map1 ON mat.f_material_id2 = map1.f_material_id
     </select>
 
 </mapper>

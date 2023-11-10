@@ -1,3 +1,5 @@
+package com.benewake.system;
+
 public class MaxNumberFinder {
 
     public static int findMaxNumber(String[] data) {

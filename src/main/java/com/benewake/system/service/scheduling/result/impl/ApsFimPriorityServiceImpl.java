@@ -1,9 +1,9 @@
 package com.benewake.system.service.scheduling.result.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsFimPriority;
+import com.benewake.system.entity.dto.ApsFimPriorityDto;
 import com.benewake.system.entity.vo.PageListRestVo;
 import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.scheduling.result.ApsFimPriorityService;
@@ -25,16 +25,18 @@ public class ApsFimPriorityServiceImpl extends ServiceImpl<ApsFimPriorityMapper,
     @Autowired
     private ApsTableVersionService apsTableVersionService;
 
+    @Autowired
+    private ApsFimPriorityMapper apsFimPriorityMapper;
+
     @Override
-    public PageListRestVo<ApsFimPriority> getAllPage(Integer page, Integer size) {
+    public PageListRestVo<ApsFimPriorityDto> getAllPage(Integer page, Integer size) {
         Integer apsTableVersion = this.getApsTableVersion(APS_FIM_PRIORITY.getCode(), apsTableVersionService);
-        LambdaQueryWrapper<ApsFimPriority> apsFimPriorityLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        apsFimPriorityLambdaQueryWrapper.eq(ApsFimPriority::getVersion ,apsTableVersion);
-        Page<ApsFimPriority> apsFimPriorityPage = new Page<>();
+
+        Page<ApsFimPriorityDto> apsFimPriorityPage = new Page<>();
         apsFimPriorityPage.setCurrent(page);
         apsFimPriorityPage.setSize(size);
-        Page<ApsFimPriority> priorityPage = page(apsFimPriorityPage, apsFimPriorityLambdaQueryWrapper);
-        PageListRestVo<ApsFimPriority> apsFimPriorityPageListRestVo = new PageListRestVo<>();
+        Page<ApsFimPriorityDto> priorityPage = apsFimPriorityMapper.selectPageList(apsFimPriorityPage, apsTableVersion);
+        PageListRestVo<ApsFimPriorityDto> apsFimPriorityPageListRestVo = new PageListRestVo<>();
         apsFimPriorityPageListRestVo.setList(priorityPage.getRecords());
         apsFimPriorityPageListRestVo.setPages(priorityPage.getPages());
         apsFimPriorityPageListRestVo.setSize(size);

@@ -16,10 +16,10 @@ public class KingdeeToApsMaterialBom {
 
         ApsMaterialBom apsMaterialBom = new ApsMaterialBom();
         apsMaterialBom.setFMaterialId(kingdeeMaterialBom.getFMaterialID());
-        apsMaterialBom.setFMaterialName(kingdeeMaterialBom.getFITEMNAME());
+//        apsMaterialBom.setFMaterialName(kingdeeMaterialBom.getFITEMNAME());
         apsMaterialBom.setFDocumentStatus(kingdeeMaterialBom.getFDocumentStatus());
         apsMaterialBom.setFMaterialIdChild(kingdeeMaterialBom.getFMaterialIDChild());
-        apsMaterialBom.setFMaterialNameChild(kingdeeMaterialBom.getFCHILDITEMNAME());
+//        apsMaterialBom.setFMaterialNameChild(kingdeeMaterialBom.getFCHILDITEMNAME());
         apsMaterialBom.setFNumerator(kingdeeMaterialBom.getFNumerator());
         apsMaterialBom.setFDenominator(kingdeeMaterialBom.getFDenominator());
         apsMaterialBom.setFFixScrapQtyLot(kingdeeMaterialBom.getFFixScrapQtyLot());

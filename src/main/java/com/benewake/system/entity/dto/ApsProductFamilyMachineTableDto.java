@@ -1,4 +1,4 @@
-package com.benewake.system.entity;
+package com.benewake.system.entity.dto;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;

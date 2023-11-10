@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 public interface ApsSchedulingResuleBase {
 
 
+
     default Integer getApsTableVersion(Integer code ,ApsTableVersionService apsTableVersionService) {
         LambdaQueryWrapper<ApsTableVersion> apsTableVersionLambdaQueryWrapper = new LambdaQueryWrapper<>();
         apsTableVersionLambdaQueryWrapper.eq(ApsTableVersion::getTableId, code)

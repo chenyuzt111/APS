@@ -2,7 +2,7 @@ package com.benewake.system.service;
 
 import com.benewake.system.entity.ApsProductFamilyMachineTable;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.benewake.system.entity.vo.ApsProductFamilyMachineTableVo;
+import com.benewake.system.entity.vo.ApsProductFamilyMachineTablePageVo;
 
 /**
 * @author ASUS
@@ -11,7 +11,7 @@ import com.benewake.system.entity.vo.ApsProductFamilyMachineTableVo;
 */
 public interface ApsProductFamilyMachineTableService extends IService<ApsProductFamilyMachineTable> {
 
-    ApsProductFamilyMachineTableVo getApsMachineTable(String name, Integer page, Integer size);
+    ApsProductFamilyMachineTablePageVo getApsMachineTable(String name, Integer page, Integer size);
 
     boolean addOrUpdateApsMachineTable(ApsProductFamilyMachineTable apsProductFamilyMachineTable);
 }

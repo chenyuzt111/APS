@@ -76,8 +76,8 @@ public class TFminiMesInstallationBoardzhuban {
                         }
                     }
                     dataList.add(MesInstallationBoard);
-                    for (MesInstallationBoard m : dataList) {
-                        System.out.println(m.toString());
+                    for (MesInstallationBoard mesInstallationBoard : dataList) {
+                        System.out.println(mesInstallationBoard.toString());
                     }
                 }
             }

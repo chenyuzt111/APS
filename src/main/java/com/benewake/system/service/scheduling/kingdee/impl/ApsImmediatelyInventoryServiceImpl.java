@@ -1,6 +1,8 @@
 package com.benewake.system.service.scheduling.kingdee.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.benewake.system.entity.dto.ApsImmediatelyInventoryDto;
 import com.benewake.system.entity.kingdee.KingdeeInventoryLock;
 import com.benewake.system.transfer.KingdeeToApsImmediatelyInventory;
 import com.benewake.system.entity.ApsImmediatelyInventory;
@@ -35,6 +37,14 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
     @Autowired
     private ApsImmediatelyInventoryMapper apsImmediatelyInventoryMapper;
 
+
+    @Override
+    public Page selectPageList(Page objectPage, List tableVersionList) {
+        Page<ApsImmediatelyInventoryDto> immediatelyInventoryPage = apsImmediatelyInventoryMapper
+                .selectPageList(objectPage ,tableVersionList);
+        return immediatelyInventoryPage;
+    }
+
     @Override
     public Boolean updateDataVersions() throws Exception {
         Integer maxVersion = this.getMaxVersionIncr();
@@ -46,6 +56,12 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
             return save(apsImmediatelyInventory);
         }
         return saveBatch(immediatelyInventories);
+    }
+
+    //迭代一个版本
+    @Override
+    public void insertVersionIncr() {
+        apsImmediatelyInventoryMapper.insertSelectVersionIncr();
     }
 
     @Override
@@ -60,11 +76,11 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
         //获取物料映射表
         Map<String, String> materialIdToNameMap = getMaterialIdToNameMap();
         ArrayList<ApsImmediatelyInventory> immediatelyInventories = new ArrayList<>();
-        transferKingdeeToApsImmediatelyInventory(maxVersion ,result, materialIdToNameMap, immediatelyInventories);
+        transferKingdeeToApsImmediatelyInventory(maxVersion, result, materialIdToNameMap, immediatelyInventories);
         return immediatelyInventories;
     }
 
-    private void transferKingdeeToApsImmediatelyInventory(Integer maxVersion ,List<KingdeeImmediatelyInventory> result, Map<String, String> materialIdToNameMap, ArrayList<ApsImmediatelyInventory> immediatelyInventories) throws Exception {
+    private void transferKingdeeToApsImmediatelyInventory(Integer maxVersion, List<KingdeeImmediatelyInventory> result, Map<String, String> materialIdToNameMap, ArrayList<ApsImmediatelyInventory> immediatelyInventories) throws Exception {
         QueryParam queryParamLock = new QueryParam();
         queryParamLock.setFormId("STK_LockStock");
         queryParamLock.setFieldKeys("FMaterialId,FEXPIRYDATE,FLockQty,FLot");
@@ -127,7 +143,5 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
         });
         return mtn;
     }
-
-
 
 }

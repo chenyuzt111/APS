@@ -28,12 +28,6 @@ public class ApsOutsourcedMaterial implements Serializable {
     @JsonProperty("materialId")
     @TableField(value = "f_material_id")
     private String fMaterialId;
-    /**
-     * 产品编码
-     */
-    @JsonProperty("materialName")
-    @TableField(value = "f_material_name")
-    private String fMaterialName;
 
     /**
      * 委外订单编号
@@ -48,12 +42,6 @@ public class ApsOutsourcedMaterial implements Serializable {
     @JsonProperty("materialId2")
     @TableField(value = "f_material_id2")
     private String fMaterialId2;
-    /**
-     * 子项物料编码
-     */
-    @JsonProperty("materialName2")
-    @TableField(value = "f_material_name2")
-    private String fMaterialName2;
 
     /**
      * 子项类型

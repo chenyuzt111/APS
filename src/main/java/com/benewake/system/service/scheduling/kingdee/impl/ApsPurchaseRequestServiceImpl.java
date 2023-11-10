@@ -1,7 +1,9 @@
 package com.benewake.system.service.scheduling.kingdee.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsPurchaseRequest;
+import com.benewake.system.entity.dto.ApsPurchaseRequestDto;
 import com.benewake.system.entity.kingdee.KingdeePurchaseRequest;
 import com.benewake.system.entity.kingdee.transfer.CreateIdToName;
 import com.benewake.system.entity.kingdee.transfer.FBILLTYPEIDToName;
@@ -62,6 +64,17 @@ public class ApsPurchaseRequestServiceImpl extends ServiceImpl<ApsPurchaseReques
             return save(apsPurchaseRequest);
         }
         return saveBatch(apsPurchaseRequestList);
+    }
+
+    @Override
+    public void insertVersionIncr() {
+        apsPurchaseRequestMapper.insertSelectVersionIncr();
+    }
+
+    @Override
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsPurchaseRequestDto> apsPurchaseRequestPage = apsPurchaseRequestMapper.selectPageList(page ,tableVersionList);
+        return apsPurchaseRequestPage;
     }
 
     @Override

@@ -2,4 +2,4 @@ spring:
   application:
     name: service-system
   profiles:
-    active: test
+    active: dev
