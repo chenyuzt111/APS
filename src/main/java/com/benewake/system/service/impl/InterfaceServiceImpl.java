@@ -81,9 +81,13 @@ public class InterfaceServiceImpl implements InterfaceService {
     }
 
     private Map<Integer, String> getVersionToChVersionsMap(List<ApsTableVersion> apsTableVersions) {
+
         Map<Integer, String> versionToChVersionMap = new HashMap<>();
+        //追踪版本号
         int i = 1;
+        //遍历接收到ApsTableVersion类型的列表
         for (ApsTableVersion apsTableVersion : apsTableVersions) {
+            //数据库表的版本号与中文版本号的映射
             versionToChVersionMap.put(apsTableVersion.getTableVersion(), "版本" + i++);
         }
         return versionToChVersionMap;
@@ -93,13 +97,18 @@ public class InterfaceServiceImpl implements InterfaceService {
     public PageListRestVo<Object> getAllPage(Integer page, Integer size, Integer type) {
         try {
 
+            //返回需要的五版数据
             List<ApsTableVersion> apsTableVersions = getApsTableVersionsLimit5(type);
+            //接收版本号到中文版本号的映射
             Map<Integer, String> versionToChVersionsMap = getVersionToChVersionsMap(apsTableVersions);
+            //从apsTableVersions中提取出TableVersion值作为一个整数列表
             List<Integer> tableVersionList = apsTableVersions.stream().map(ApsTableVersion::getTableVersion).collect(Collectors.toList());
+            //根据type值获取对应的接口对象
             InterfaceDataType interfaceDataType = InterfaceDataType.valueOfCode(type);
             if (interfaceDataType == null) {
                 throw new BeneWakeException("type不正确");
             }
+            //根据interfaceDataType的name获取到对应的实现类对象
             ApsIntfaceDataServiceBase apsIntfaceDataServiceBase = kingdeeServiceMap.get(interfaceDataType.getSeviceName());
             QueryWrapper queryWrapper = new QueryWrapper();
             queryWrapper.orderByDesc("version");
@@ -217,13 +226,19 @@ public class InterfaceServiceImpl implements InterfaceService {
     private List<ApsTableVersion> getApsTableVersionsLimit5(Integer type) {
         //取出前5版本的version
         LambdaQueryWrapper<ApsTableVersion> apsTableVersionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        //添加一个等于条件，筛选出tableid等于type的记录
         apsTableVersionLambdaQueryWrapper.eq(ApsTableVersion::getTableId, type)
+                //添加一个条件，筛选出state等于TableVersionState.SUCCESS.getCode()的记录
                 .eq(ApsTableVersion::getState, TableVersionState.SUCCESS.getCode())
+                //降序排序
                 .orderByDesc(ApsTableVersion::getVersionNumber)
+                //只查询前五条数据
                 .last("limit 5");
 
+        //使用刚刚创建的查询条件，返回符合条件的记录
         List<ApsTableVersion> apsTableVersions = apsTableVersionService.getBaseMapper().selectList(apsTableVersionLambdaQueryWrapper);
         if (apsTableVersions != null) {
+            //将其反转
             Collections.reverse(apsTableVersions);
         }
         return apsTableVersions;

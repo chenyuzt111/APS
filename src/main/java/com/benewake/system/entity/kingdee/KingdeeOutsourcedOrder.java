@@ -34,6 +34,9 @@ public class KingdeeOutsourcedOrder {
     //("BOM版本")
     private String FBomId;
 
+    //("定制物料编码")
+    private String F_ora_FDZMaterialID2;
+
 
 
     // Constructors, getters, setters, and other methods...

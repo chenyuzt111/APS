@@ -52,6 +52,10 @@ public class ApsOutsourcedOrder implements Serializable {
     @TableField(value = "f_bom_id")
     private String fBomId;
 
+
+    @TableField(value = "f_ora_dzmaterial")
+    private String fDzMaterialName;
+
     @TableField(value = "version")
     private Integer version;
 

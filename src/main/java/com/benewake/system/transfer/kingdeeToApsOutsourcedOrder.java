@@ -21,6 +21,7 @@ public class kingdeeToApsOutsourcedOrder {
         apsOutsourcedOrder.setFPickMtrlStatus(kingdeeOutsourcedOrder.getFPickMtrlStatus());
         apsOutsourcedOrder.setFStockInQty(kingdeeOutsourcedOrder.getFStockInQty());
         apsOutsourcedOrder.setFBomId(kingdeeOutsourcedOrder.getFBomId());
+        apsOutsourcedOrder.setFDzMaterialName(kingdeeOutsourcedOrder.getF_ora_FDZMaterialID2());
         apsOutsourcedOrder.setVersion(version);
 
         return apsOutsourcedOrder;

@@ -11,9 +11,11 @@ public class BenewakeExecutor {
     private static final int BLOCK_SIZE;
     private static BenewakeExecutor.BaseThreadPoolExecutor EXECUTOR;
 
+    //静态初始代码块
     static {
         MAX_SIZE = MIN_SIZE * 20;
         BLOCK_SIZE = MIN_SIZE * 10;
+        //创建实例
         EXECUTOR = new BenewakeExecutor.BaseThreadPoolExecutor(MIN_SIZE, MAX_SIZE, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue(BLOCK_SIZE), new CustomizableThreadFactory("BenewakeExecutor.EXE"));
     }
 
