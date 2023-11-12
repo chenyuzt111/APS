@@ -114,12 +114,16 @@ public class SchedulingPythonService extends PythonBase {
     @Override
     void callPythonException() {
         sendMessage(hostHolder.getUser().getUsername() ,"排程失败了 联系一下管理员~~" , "error");
+        setErrorState();
+        deleteVersionIsNull();
+        distributedLock.releaseLock(SCHEDULING_DATA_LOCK_KEY, TableVersionState.SCHEDULING_ING.getDescription());
+    }
+
+    private void setErrorState() {
         Integer maxVersion = apsTableVersionService.getMaxVersion();
         LambdaUpdateWrapper<ApsTableVersion> apsTableVersionLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
         apsTableVersionLambdaUpdateWrapper.set(ApsTableVersion::getState, TableVersionState.INVALID.getCode());
         apsTableVersionLambdaUpdateWrapper.eq(ApsTableVersion::getVersionNumber, maxVersion);
         apsTableVersionService.update(apsTableVersionLambdaUpdateWrapper);
-        deleteVersionIsNull();
-        distributedLock.releaseLock(SCHEDULING_DATA_LOCK_KEY, TableVersionState.SCHEDULING_ING.getDescription());
     }
 }
