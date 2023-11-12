@@ -87,6 +87,7 @@ public class SchedulingPythonService extends PythonBase {
         } else if ("520".equals(line)) {
             deleteVersionIsNull();
             String username = hostHolder.getUser().getUsername();
+            setErrorState();
             distributedLock.releaseLock(SCHEDULING_DATA_LOCK_KEY, TableVersionState.SCHEDULING_ING.getDescription());
             sendMessage(username ,"排程失败了 联系一下管理员" , "error");
         }
