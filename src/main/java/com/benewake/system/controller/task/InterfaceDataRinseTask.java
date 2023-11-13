@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -35,27 +36,47 @@ public class InterfaceDataRinseTask {
     public void cleanTasks() {
         log.info(LocalDateTime.now() + "-- 数据清洗");
         Set<Map.Entry<String, ApsIntfaceDataServiceBase>> entries = kingdeeServiceMap.entrySet();
+        String name = null;
         for (Map.Entry<String, ApsIntfaceDataServiceBase> entry : entries) {
-            String k = entry.getKey();
-            ApsIntfaceDataServiceBase value = entry.getValue();
-            int code = InterfaceDataType.getCodeByServiceName(k);
-            LambdaQueryWrapper<ApsTableVersion> apsTableVersionLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            apsTableVersionLambdaQueryWrapper.eq(ApsTableVersion::getTableId, code)
-                    .eq(ApsTableVersion::getState, TableVersionState.SUCCESS.getCode())
-                    .orderByDesc(ApsTableVersion::getVersionNumber)
-                    .last(" limit 5");
-            List<ApsTableVersion> apsTableVersions = apsTableVersionService.getBaseMapper().selectList(apsTableVersionLambdaQueryWrapper);
-            if (CollectionUtils.isEmpty(apsTableVersions)) {
-                continue;
+            try {
+
+
+                name = name + entry.getKey();
+                String k = entry.getKey();
+                ApsIntfaceDataServiceBase value = entry.getValue();
+                //取出最新的一条为即时库存不删除
+                IService iService = (IService) value;
+                QueryWrapper<Object> objectQueryWrapper = new QueryWrapper<>();
+                objectQueryWrapper.orderByDesc("version").last(" limit 1");
+                Object one = iService.getOne(objectQueryWrapper);
+                if (one == null) {
+                    //如果当前连一条数据都没有那么也没有继续的必要了
+                    continue;
+                }
+                Field version = one.getClass().getDeclaredField("version");
+                //即时库存版本 最新版本
+                Integer inventoryVersion = (Integer) version.get(one);
+                int code = InterfaceDataType.getCodeByServiceName(k);
+                LambdaQueryWrapper<ApsTableVersion> apsTableVersionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+                apsTableVersionLambdaQueryWrapper.eq(ApsTableVersion::getTableId, code)
+                        .eq(ApsTableVersion::getState, TableVersionState.SUCCESS.getCode())
+                        .orderByDesc(ApsTableVersion::getVersionNumber)
+                        .last(" limit 5");
+
+                List<ApsTableVersion> apsTableVersions = apsTableVersionService.getBaseMapper().selectList(apsTableVersionLambdaQueryWrapper);
+                objectQueryWrapper = new QueryWrapper<>();
+                List<Integer> tableVersion = null;
+                if (CollectionUtils.isNotEmpty(apsTableVersions)) {
+                    tableVersion = apsTableVersions.stream().map(ApsTableVersion::getTableVersion).distinct().collect(Collectors.toList());
+                }
+                tableVersion.add(inventoryVersion);
+                objectQueryWrapper.notIn("version", tableVersion);
+                iService.remove(objectQueryWrapper);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace();
             }
-            List<Integer> tableVersion = apsTableVersions.stream().map(ApsTableVersion::getTableVersion).distinct().collect(Collectors.toList());
-            IService iService = (IService) value;
-            QueryWrapper<Object> objectQueryWrapper = new QueryWrapper<>();
-            objectQueryWrapper.notIn("version", tableVersion);
-            iService.remove(objectQueryWrapper);
         }
     }
-
 
 
 }

@@ -39,6 +39,7 @@ public class ApsTfminiSPackagingTestServiceImpl extends ServiceImpl<ApsTfminiSPa
 
     @Autowired
     private MesToApsTfminiSPackagingTest mesToApsTfminiSPackagingTest;
+
     @Override
     public Boolean updateDataVersions() throws Exception {
         Integer maxVersionIncr = this.getMaxVersionIncr();

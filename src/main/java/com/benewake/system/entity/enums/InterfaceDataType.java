@@ -24,7 +24,7 @@ public enum InterfaceDataType {
 //    APS_MATERIAL_NAME_MAPPING(11, "物料编码与名称对应表", "apsMaterialNameMappingServiceImpl", ApsMaterialNameMapping.class),
     // MES向下
     PCBA_BURN(20, "PCBA烧录1", "apsPcbaBurnServiceImpl", ApsPcbaBurn.class),
-    TFMINI__S_PCBA_BURN(21, "TFmini-S-PCBA烧录1", "apsTfminiSPcbaBurnServiceImpl", ApsTfminiSPcbaBurn.class),
+    TFMINI_S_PCBA_BURN(21, "TFmini-S-PCBA烧录", "apsTfminiSPcbaBurnServiceImpl", ApsTfminiSPcbaBurn.class),
     PCBA_VERSION(22, "PCBA分版1", "apsPcbaVersionServiceImpl", ApsPcbaVersion.class),
     TFMINI_S_PCBA_VERSION(23, "TFmini-S-PCBA分版1", "apsTfminiSPcbaVersionServiceImpl", ApsTfminiSPcbaVersion.class),
     INSTALLATION_BOARD(24, "安装主板1", "apsInstallationBoardServiceImpl", ApsInstallationBoard.class),
