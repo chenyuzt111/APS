@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.ApsOutRequestMapper">
+
+    <resultMap id="BaseResultMap" type="generator.domain.ApsOutRequest">
+            <result property="fMaterialCode" column="f_material_code" jdbcType="VARCHAR"/>
+            <result property="fReturnDate" column="f_return_date" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        f_material_code,f_return_date
+    </sql>
+</mapper>
