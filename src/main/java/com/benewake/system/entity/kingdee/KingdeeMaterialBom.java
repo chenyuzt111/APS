@@ -24,7 +24,7 @@ public class KingdeeMaterialBom {
     private String fMaterialIDChild;
     //("子项物料编码")
 //    private String FCHILDITEMNAME;
-    private String fChildIteName;
+    private String FCHILDITEMNAME;
 
     private String fChildItemModel;
     //("用量:分子")

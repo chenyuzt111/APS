@@ -95,12 +95,12 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
             processSchemeManagementVo.setNumber(record.getNumber());
             processSchemeManagementVo.setOrderNumber(record.getOrderNumber());
             if (record.getCompletionTime() != null) {
-                BigDecimal completionTimeInHours = record.getCompletionTime().divide(new BigDecimal(3600), 3, RoundingMode.HALF_UP);
+                BigDecimal completionTimeInHours = record.getCompletionTime().divide(new BigDecimal(3600), 2, RoundingMode.HALF_UP);
                 processSchemeManagementVo.setCompletionTime(completionTimeInHours);
             }
             if (record.getTotalReleaseTime() != null) {
                 double totalReleaseTimeHours = record.getTotalReleaseTime() / 3600;
-                String formattedHours = String.format("%.3f", totalReleaseTimeHours);
+                String formattedHours = String.format("%.2f", totalReleaseTimeHours);
                 processSchemeManagementVo.setTotalReleaseTime(formattedHours);
             }
             processSchemeManagementVo.setReleasableStaffCount(record.getReleasableStaffCount());

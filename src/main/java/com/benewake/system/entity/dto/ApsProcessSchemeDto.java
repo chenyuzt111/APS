@@ -1,25 +1,31 @@
 package com.benewake.system.entity.dto;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
+
 import lombok.Data;
 
 /**
- * 工序与产能表
- * @TableName aps_process_capacity
+ * 
+ * @TableName aps_process_scheme
  */
-@TableName(value ="aps_process_capacity")
+
 @Data
-public class ApsProcessCapacityDto implements Serializable {
+public class ApsProcessSchemeDto implements Serializable {
+
     /**
-     * 唯一标识
+     * ApsProcessCapacityId
      */
-    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+
+    /**
+     * 当前工艺方案
+     */
+    @TableField(value = "current_process_scheme")
+    private String currentProcessScheme;
+
 
     /**
      * 所属工序
@@ -28,12 +34,12 @@ public class ApsProcessCapacityDto implements Serializable {
     private String belongingProcess;
 
     /**
-     * 工序名称
+     * 工序id
      */
     @TableField(value = "process_id")
-    private String processId;
+    private Integer processId;
     /**
-     * 工序名称
+     * 工序name
      */
     @TableField(value = "process_name")
     private String processName;
@@ -75,10 +81,18 @@ public class ApsProcessCapacityDto implements Serializable {
     private Integer minPersonnel;
 
     /**
-     * 人数MIN
+     * 员工姓名
      */
-    @TableField(value = "version")
-    private Integer version;
+
+    private String employeeName;
+
+    /**
+     * 人数
+     */
+
+    private Integer number;
+
+    private Boolean state;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

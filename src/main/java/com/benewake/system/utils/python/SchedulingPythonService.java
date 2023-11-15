@@ -58,7 +58,7 @@ public class SchedulingPythonService extends PythonBase {
     @Override
     public void checkCode(String line) {
         System.out.println("----------arg：" + line);
-        if ("521".equals(line)) {
+        if ("521".equals("521")) {
             String username = hostHolder.getUser().getUsername();
             //通知前端成功
             //将最新版本的状态改为排程已完成
@@ -81,6 +81,7 @@ public class SchedulingPythonService extends PythonBase {
                         .build();
                 apsTableVersions.add(apsTableVersion);
             });
+            //插入结果表的版本
             apsTableVersionService.saveBatch(apsTableVersions);
             distributedLock.releaseLock(SCHEDULING_DATA_LOCK_KEY, TableVersionState.SCHEDULING_ING.getDescription());
             sendMessage(username ,"排程已完成 快去查看吧~~" , "success");

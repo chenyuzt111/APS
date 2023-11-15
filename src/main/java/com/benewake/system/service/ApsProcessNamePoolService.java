@@ -3,6 +3,10 @@ package com.benewake.system.service;
 import com.benewake.system.entity.ApsProcessNamePool;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.benewake.system.entity.vo.ApsProcessNamePoolPageVo;
+import com.benewake.system.entity.vo.DownloadProceeNameParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
 * @author ASUS
@@ -14,4 +18,8 @@ public interface ApsProcessNamePoolService extends IService<ApsProcessNamePool> 
     Boolean addOrUpdateProcess(ApsProcessNamePool apsProcessNamePool);
 
     ApsProcessNamePoolPageVo getProcess(String name, Integer page, Integer size);
+
+    void downloadProceeName(HttpServletResponse response, DownloadProceeNameParam downloadProceeNameParam);
+
+    Boolean saveDataByExcel(Integer type, MultipartFile file);
 }

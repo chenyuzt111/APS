@@ -32,16 +32,12 @@ public class InterfaceDataRinseTask {
     private ApsTableVersionService apsTableVersionService;
 
     //每天0点0分0秒定时执行
-    @Scheduled(cron = "0 0,5 0,11 * * ? ")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void cleanTasks() {
         log.info(LocalDateTime.now() + "-- 数据清洗");
         Set<Map.Entry<String, ApsIntfaceDataServiceBase>> entries = kingdeeServiceMap.entrySet();
-        String name = null;
         for (Map.Entry<String, ApsIntfaceDataServiceBase> entry : entries) {
             try {
-
-
-                name = name + entry.getKey();
                 String k = entry.getKey();
                 ApsIntfaceDataServiceBase value = entry.getValue();
                 //取出最新的一条为即时库存不删除
@@ -55,7 +51,9 @@ public class InterfaceDataRinseTask {
                 }
                 Field version = one.getClass().getDeclaredField("version");
                 //即时库存版本 最新版本
+                version.setAccessible(true);
                 Integer inventoryVersion = (Integer) version.get(one);
+                version.setAccessible(false);
                 int code = InterfaceDataType.getCodeByServiceName(k);
                 LambdaQueryWrapper<ApsTableVersion> apsTableVersionLambdaQueryWrapper = new LambdaQueryWrapper<>();
                 apsTableVersionLambdaQueryWrapper.eq(ApsTableVersion::getTableId, code)
@@ -77,6 +75,4 @@ public class InterfaceDataRinseTask {
             }
         }
     }
-
-
 }

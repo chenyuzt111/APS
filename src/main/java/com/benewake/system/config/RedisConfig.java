@@ -36,9 +36,17 @@ public class RedisConfig {
     @Bean
     public RedissonClient redissonClient(){
         Config config = new Config();
+        //生产
+//        config.useSingleServer()
+//                .setAddress("redis://127.0.0.1:6380")
+//                .setPassword("benewake@12345");
+        //测试
+//        config.useSingleServer()
+//                .setAddress("redis://127.0.0.1:6379")
+//                .setPassword("benewake@12345");
+        //本机
         config.useSingleServer()
                 .setAddress("redis://127.0.0.1:6379");
-//                .setPassword("benewake@12345");
         return Redisson.create(config);
     }
 

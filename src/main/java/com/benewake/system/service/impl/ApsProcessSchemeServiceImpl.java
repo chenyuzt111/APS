@@ -1,12 +1,13 @@
 package com.benewake.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsOptimalStrategy;
 import com.benewake.system.entity.ApsProcessCapacity;
 import com.benewake.system.entity.ApsProcessScheme;
 import com.benewake.system.entity.ApsProductFamilyProcessSchemeManagement;
+import com.benewake.system.entity.dto.ApsProcessSchemeDto;
 import com.benewake.system.entity.vo.*;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.mapper.ApsProcessCapacityMapper;
@@ -15,8 +16,8 @@ import com.benewake.system.service.ApsOptimalStrategyService;
 import com.benewake.system.service.ApsProcessSchemeService;
 import com.benewake.system.mapper.ApsProcessSchemeMapper;
 import com.benewake.system.service.ApsProductFamilyProcessSchemeManagementService;
+import com.benewake.system.transfer.ApsProcessSchemeDtoToVo;
 import com.benewake.system.utils.StringUtils;
-import io.swagger.models.auth.In;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,13 +45,16 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
     private ApsProcessCapacityMapper apsProcessCapacityMapper;
 
     @Autowired
-    private ApsProductFamilyProcessSchemeManagementMapper apsProductFamilyProcessSchemeManagementMapper;
+    private ApsProductFamilyProcessSchemeManagementMapper apsProductManagements;
 
     @Autowired
     private ApsOptimalStrategyService apsOptimalStrategyService;
 
     @Autowired
     private ApsProductFamilyProcessSchemeManagementService apsProductFamilyProcessSchemeManagementService;
+
+    @Autowired
+    private ApsProcessSchemeDtoToVo apsProcessSchemeDtoToVo;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -67,15 +71,16 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
                 .map(ApsProcessSchemeParam::getId)
                 .collect(Collectors.toList());
         Integer number = apsProcessSchemeParams.getNumber();
-        List<String> processSchemes = apsProcessSchemeMapper.selectProcessScheme(processCapacityIds, number);
         String currentProcessScheme;
+        List<String> processSchemes = apsProcessSchemeMapper.selectProcessScheme(processCapacityIds, number);
         if (CollectionUtils.isNotEmpty(processSchemes)
                 && StringUtils.isNotBlank(processSchemes.get(0))) {
             currentProcessScheme = StringUtils.incrementAndExtractLast(processSchemes);
         } else {
-            ApsProcessCapacity apsProcessCapacity = apsProcessCapacityMapper.selectOne(new LambdaQueryWrapper<ApsProcessCapacity>()
-                    .eq(ApsProcessCapacity::getId, apsProcessSchemeParam.get(0).getId())
-                    .select(ApsProcessCapacity::getProductFamily));
+            ApsProcessCapacity apsProcessCapacity = apsProcessCapacityMapper
+                    .selectOne(new LambdaQueryWrapper<ApsProcessCapacity>()
+                            .eq(ApsProcessCapacity::getId, apsProcessSchemeParam.get(0).getId())
+                            .select(ApsProcessCapacity::getProductFamily));
             currentProcessScheme = apsProcessCapacity.getProductFamily() + "-" + number + "人工艺方案1";
         }
 
@@ -86,11 +91,13 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
             apsProcessScheme.setProcessCapacityId(x.getId());
             apsProcessScheme.setEmployeeName(x.getEmployeeName());
             apsProcessScheme.setNumber(number);
+            apsProcessScheme.setState(true);
             return apsProcessScheme;
         }).collect(Collectors.toList());
         saveProducSchemeManagement(apsProcessSchemeParam, number, currentProcessScheme);
         ApsProcessCapacity apsProcessCapacity = apsProcessCapacityMapper.selectById(processCapacityIds.get(0));
 
+        //保存优先级方案
         ApsOptimalStrategy apsOptimalStrategy = new ApsOptimalStrategy();
         apsOptimalStrategy.setProductFamily(apsProcessCapacity.getProductFamily());
         apsOptimalStrategy.setNumber(number);
@@ -110,7 +117,7 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
         apsProcessSchemeManagementLambdaQueryWrapper.eq(ApsProductFamilyProcessSchemeManagement::getNumber, number)
                 .eq(ApsProductFamilyProcessSchemeManagement::getProductFamily, productFamily);
         List<ApsProductFamilyProcessSchemeManagement> apsProductFamilyProcessSchemeManagements =
-                apsProductFamilyProcessSchemeManagementMapper.selectList(apsProcessSchemeManagementLambdaQueryWrapper);
+                apsProductManagements.selectList(apsProcessSchemeManagementLambdaQueryWrapper);
         ApsProductFamilyProcessSchemeManagement apsProductFamilyProcessSchemeManagement = new ApsProductFamilyProcessSchemeManagement();
         apsProductFamilyProcessSchemeManagement.setCurProcessSchemeName(currentProcessScheme);
         apsProductFamilyProcessSchemeManagement.setNumber(number);
@@ -143,32 +150,32 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
         if (CollectionUtils.isEmpty(apsProductFamilyProcessSchemeManagements)) {
             //没有设置经济批量直接保存 // 没有其他最优方案 那么本身就是最优方案
             apsProductFamilyProcessSchemeManagement.setOptimalProcessSchemeName(currentProcessScheme);
-            apsProductFamilyProcessSchemeManagementMapper.insert(apsProductFamilyProcessSchemeManagement);
+            apsProductManagements.insert(apsProductFamilyProcessSchemeManagement);
         } else {
             String optimalName = null;
             //只要有数据就要判断最优方案
             //所有的数据的最优方案都是一个
             ApsProductFamilyProcessSchemeManagement apsProductManagementOptimalToName = apsProductFamilyProcessSchemeManagements.get(0);
-            List<ApsProcessSchemeVo> apsProcessSchemeVoList = apsProcessSchemeMapper.selectProcessSchemeBycurrentProcessScheme(apsProductManagementOptimalToName.getOptimalProcessSchemeName());
+            List<ApsProcessSchemeDto> apsProcessSchemeDtoList = apsProcessSchemeMapper.selectProcessSchemeBycurrentProcessScheme(apsProductManagementOptimalToName.getOptimalProcessSchemeName());
             //最优每个员工的map和工时和
-            Map<String, BigDecimal> employeeStandardTimeSumMapOptimal = apsProcessSchemeVoList.stream()
+            Map<String, BigDecimal> employeeStandardTimeSumMapOptimal = apsProcessSchemeDtoList.stream()
                     .collect(Collectors.groupingBy(
-                            ApsProcessSchemeVo::getEmployeeName,
-                            Collectors.reducing(BigDecimal.ZERO, ApsProcessSchemeVo::getStandardTime, BigDecimal::add)
+                            ApsProcessSchemeDto::getEmployeeName,
+                            Collectors.reducing(BigDecimal.ZERO, ApsProcessSchemeDto::getStandardTime, BigDecimal::add)
                     ));
             //最优的员工最大工时
             BigDecimal maxStandardTimeValueOptimal = employeeStandardTimeSumMapOptimal.values().stream()
                     .max(BigDecimal::compareTo).get();
             //最优工时的和
-            BigDecimal sumOfStandardTimeOptimal = apsProcessSchemeVoList.stream()
-                    .map(ApsProcessSchemeVo::getStandardTime)
+            BigDecimal sumOfStandardTimeOptimal = apsProcessSchemeDtoList.stream()
+                    .map(ApsProcessSchemeDto::getStandardTime)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
             //最优的产线平衡率
             BigDecimal productionLineBalanceRateOptimal = sumOfStandardTimeOptimal.divide(maxStandardTimeValueOptimal.multiply(new BigDecimal(number)), 8, RoundingMode.HALF_UP);
             LambdaQueryWrapper<ApsOptimalStrategy> apsOptimalStrategyLambdaQueryWrapper = new LambdaQueryWrapper<>();
             apsOptimalStrategyLambdaQueryWrapper.eq(ApsOptimalStrategy::getNumber, number).eq(ApsOptimalStrategy::getProductFamily, productFamily);
             ApsOptimalStrategy one = apsOptimalStrategyService.getOne(apsOptimalStrategyLambdaQueryWrapper);
-            Integer strategy = one.getStrategy();
+            Integer strategy = one !=null ?one.getStrategy() : 1;
             if (strategy == 1) {
                 //最优的时间比 新添加的还要长那么就要更新
                 if (maxStandardTimeValueOptimal.compareTo(maxStandardTimeValue) > 0) {
@@ -182,11 +189,14 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
             }
             if (org.apache.commons.lang3.StringUtils.isNotBlank(optimalName)) {
                 String finalOptimalName = optimalName;
+                //将所有最优的都设置成刚刚判断出来的结果
                 apsProductFamilyProcessSchemeManagements = apsProductFamilyProcessSchemeManagements.stream()
                         .peek(x -> x.setOptimalProcessSchemeName(finalOptimalName)).collect(Collectors.toList());
                 apsProductFamilyProcessSchemeManagementService.updateBatchById(apsProductFamilyProcessSchemeManagements);
+                //设置自己
                 apsProductFamilyProcessSchemeManagement.setOptimalProcessSchemeName(optimalName);
             } else {
+                //如果是null说明 新增的不如原来的方案 那么他的最优方案还是他自己
                 apsProductFamilyProcessSchemeManagement.setOptimalProcessSchemeName(apsProductManagementOptimalToName.getOptimalProcessSchemeName());
             }
             if (apsProductFamilyProcessSchemeManagements.get(0).getOrderNumber() != null) {
@@ -204,7 +214,7 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
                 apsProductFamilyProcessSchemeManagement.setCompletionTime(completionTime);
                 apsProductFamilyProcessSchemeManagement.setTotalReleaseTime(differenceSum.doubleValue());
             }
-            apsProductFamilyProcessSchemeManagementMapper.insert(apsProductFamilyProcessSchemeManagement);
+            apsProductManagements.insert(apsProductFamilyProcessSchemeManagement);
         }
 
     }
@@ -212,29 +222,36 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
 
     @Override
     public ApsProcessSchemeVoPage getProcessScheme(Integer page, Integer size) {
-        Integer pass = (page - 1) * size;
-        List<ApsProcessSchemeVo> apsProcessSchemeVoList = apsProcessSchemeMapper.selectProcessSchemePage(pass, size);
+        Page<ApsProcessScheme> schemePage = new Page<>();
+        schemePage.setCurrent(page);
+        schemePage.setSize(size);
+        Page<ApsProcessSchemeDto> apsProcessSchemeVoList = apsProcessSchemeMapper.selectProcessSchemePage(schemePage);
+        List<ApsProcessSchemeDto> records = apsProcessSchemeVoList.getRecords();
+        List<ApsProcessSchemeVo> apsProcessSchemeVos = records.stream().map(x -> apsProcessSchemeDtoToVo.convert(x))
+                .collect(Collectors.toList());
         ApsProcessSchemeVoPage apsProcessSchemeVoPage = new ApsProcessSchemeVoPage();
-        apsProcessSchemeVoPage.setApsProcessSchemeVo(apsProcessSchemeVoList);
+        apsProcessSchemeVoPage.setApsProcessSchemeVos(apsProcessSchemeVos);
         apsProcessSchemeVoPage.setPage(page);
         apsProcessSchemeVoPage.setSize(size);
-        Long total = apsProcessSchemeMapper.selectCount(null);
-        apsProcessSchemeVoPage.setTotal(total);
-        apsProcessSchemeVoPage.setPages(total / size + 1);
+        apsProcessSchemeVoPage.setTotal(apsProcessSchemeVoList.getTotal());
+        apsProcessSchemeVoPage.setPages(apsProcessSchemeVoList.getPages());
         return apsProcessSchemeVoPage;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteProcessScheme(List<Integer> ids) {
+        //获取所有的工艺方案信息
         List<ApsProcessScheme> apsProcessSchemes = getApsProcessSchemes(ids);
-        List<String> currentProcessSchemeList = apsProcessSchemes.stream().map(ApsProcessScheme::getCurrentProcessScheme).distinct().collect(Collectors.toList());
+        List<String> currentProcessSchemeList = apsProcessSchemes.stream()
+                .map(ApsProcessScheme::getCurrentProcessScheme).distinct().collect(Collectors.toList());
         if (CollectionUtils.isEmpty(currentProcessSchemeList)) {
             return true;
         }
-        LambdaQueryWrapper<ApsProductFamilyProcessSchemeManagement> apsProductFamilyProcessSchemeManagementLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        apsProductFamilyProcessSchemeManagementLambdaQueryWrapper.in(ApsProductFamilyProcessSchemeManagement::getOptimalProcessSchemeName, currentProcessSchemeList);
-        List<ApsProductFamilyProcessSchemeManagement> apsProductManagements = apsProductFamilyProcessSchemeManagementMapper.selectList(apsProductFamilyProcessSchemeManagementLambdaQueryWrapper);
+        LambdaQueryWrapper<ApsProductFamilyProcessSchemeManagement> managementLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        managementLambdaQueryWrapper.in(ApsProductFamilyProcessSchemeManagement::getOptimalProcessSchemeName, currentProcessSchemeList);
+        //查出如果这些删除的有最优方案那么就需要重新计算咯
+        List<ApsProductFamilyProcessSchemeManagement> apsProductManagements = this.apsProductManagements.selectList(managementLambdaQueryWrapper);
         if (CollectionUtils.isNotEmpty(apsProductManagements)) {
             Map<String, List<ApsProductFamilyProcessSchemeManagement>> optimalMap = apsProductManagements.stream()
                     .collect(Collectors.groupingBy(ApsProductFamilyProcessSchemeManagement::getOptimalProcessSchemeName));
@@ -243,29 +260,30 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
                 BigDecimal maxProductionLineBalanceRate = new BigDecimal(Double.MIN_VALUE);
                 String optimalName = null;
                 List<ApsProductFamilyProcessSchemeManagement> value = apsProductManList.getValue();
+                //获取最优方案选择策略
                 ApsOptimalStrategy apsOptimalStrategyServiceOne = apsOptimalStrategyService.getOne(new LambdaQueryWrapper<ApsOptimalStrategy>()
                         .eq(ApsOptimalStrategy::getProductFamily, value.get(0).getProductFamily())
                         .eq(ApsOptimalStrategy::getNumber, value.get(0).getNumber()));
                 for (ApsProductFamilyProcessSchemeManagement apsProductManagementItme : value) {
                     if (!apsProductManagementItme.getCurProcessSchemeName().equals(apsProductManList.getKey())) {
-                        List<ApsProcessSchemeVo> apsProcessSchemeVoList = apsProcessSchemeMapper
+                        List<ApsProcessSchemeDto> apsProcessSchemeDtoList = apsProcessSchemeMapper
                                 .selectProcessSchemeBycurrentProcessScheme(apsProductManagementItme.getCurProcessSchemeName());
                         //最优每个员工的map和工时和
-                        Map<String, BigDecimal> employeeStandardTimeSumMap = apsProcessSchemeVoList.stream()
+                        Map<String, BigDecimal> employeeStandardTimeSumMap = apsProcessSchemeDtoList.stream()
                                 .collect(Collectors.groupingBy(
-                                        ApsProcessSchemeVo::getEmployeeName,
-                                        Collectors.reducing(BigDecimal.ZERO, ApsProcessSchemeVo::getStandardTime, BigDecimal::add)
+                                        ApsProcessSchemeDto::getEmployeeName,
+                                        Collectors.reducing(BigDecimal.ZERO, ApsProcessSchemeDto::getStandardTime, BigDecimal::add)
                                 ));
                         //最优的员工最大工时
                         BigDecimal maxStandardTimeValue = employeeStandardTimeSumMap.values().stream()
                                 .max(BigDecimal::compareTo).get();
                         //最优工时的和
-                        BigDecimal sumOfStandardTimeOptimal = apsProcessSchemeVoList.stream()
-                                .map(ApsProcessSchemeVo::getStandardTime)
+                        BigDecimal sumOfStandardTimeOptimal = apsProcessSchemeDtoList.stream()
+                                .map(ApsProcessSchemeDto::getStandardTime)
                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
                         //最优的产线平衡率
                         BigDecimal productionLineBalanceRateOptimal = sumOfStandardTimeOptimal
-                                .divide(maxStandardTimeValue.multiply(new BigDecimal(apsProcessSchemeVoList.get(0).getNumber())), 8, RoundingMode.HALF_UP);
+                                .divide(maxStandardTimeValue.multiply(new BigDecimal(apsProcessSchemeDtoList.get(0).getNumber())), 8, RoundingMode.HALF_UP);
                         if (apsOptimalStrategyServiceOne.getStrategy() == 2) {
                             if (productionLineBalanceRateOptimal.compareTo(maxProductionLineBalanceRate) > 0) {
                                 maxProductionLineBalanceRate = productionLineBalanceRateOptimal;
@@ -285,9 +303,11 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
                 }
             }
         }
+        //删除记录
         LambdaQueryWrapper<ApsProductFamilyProcessSchemeManagement> apsProductQueryWrapper = new LambdaQueryWrapper<>();
-        apsProductQueryWrapper.eq(ApsProductFamilyProcessSchemeManagement::getCurProcessSchemeName ,currentProcessSchemeList.get(0));
+        apsProductQueryWrapper.in(ApsProductFamilyProcessSchemeManagement::getCurProcessSchemeName, currentProcessSchemeList);
         apsProductFamilyProcessSchemeManagementService.remove(apsProductQueryWrapper);
+        //删除
         LambdaQueryWrapper<ApsProcessScheme> apsProcessSchemeLambdaQueryWrapper = new LambdaQueryWrapper<>();
         apsProcessSchemeLambdaQueryWrapper.in(ApsProcessScheme::getCurrentProcessScheme, currentProcessSchemeList);
         return remove(apsProcessSchemeLambdaQueryWrapper);
@@ -302,111 +322,162 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
     @Override
     public ApsProcessSchemeByIdListVo getProcessSchemeById(Integer id) {
         ApsProcessScheme apsProcessScheme = getById(id);
-        if (apsProcessScheme != null && StringUtils.isNotEmpty(apsProcessScheme.getCurrentProcessScheme())) {
-            List<ApsProcessSchemeVo> apsProcessSchemeVoList = apsProcessSchemeMapper.selectProcessSchemeBycurrentProcessScheme(apsProcessScheme.getCurrentProcessScheme());
-            long size = apsProcessSchemeVoList.stream().map(ApsProcessSchemeVo::getProductFamily).distinct().count();
-            if (size != 1) {
-                throw new BeneWakeException("当前数据有问题！");
-            }
-            ApsProcessSchemeByIdListVo apsProcessSchemeByIdListVo = new ApsProcessSchemeByIdListVo();
-            apsProcessSchemeByIdListVo.setApsProcessSchemeVoList(apsProcessSchemeVoList);
-            String productFamily = apsProcessSchemeVoList.get(0).getProductFamily();
-            apsProcessSchemeByIdListVo.setProductFamily(productFamily);
-            apsProcessSchemeByIdListVo.setNumber(apsProcessSchemeVoList.get(0).getNumber());
-            return apsProcessSchemeByIdListVo;
+        if (apsProcessScheme == null || StringUtils.isEmpty(apsProcessScheme.getCurrentProcessScheme())) {
+            return null;
         }
-        return null;
+        ApsProcessCapacity processCapacity = apsProcessCapacityMapper.selectById(apsProcessScheme.getProcessCapacityId());
+        String productFamily = processCapacity.getProductFamily();
+        List<ApsProcessSchemeDto> apsProcessSchemeDtoList = apsProcessSchemeMapper
+                .selectProcessSchemeByProcessScheme(apsProcessScheme.getCurrentProcessScheme(), productFamily);
+        long size = apsProcessSchemeDtoList.stream().map(ApsProcessSchemeDto::getProductFamily).distinct().count();
+        if (size != 1) {
+            throw new BeneWakeException("当前数据有问题！");
+        }
+        List<ApsProcessSchemeVo> apsProcessSchemeVos = apsProcessSchemeDtoList.stream()
+                .map(x -> apsProcessSchemeDtoToVo.convert(x))
+                .collect(Collectors.toList());
+        ApsProcessSchemeByIdListVo apsProcessSchemeByIdListVo = new ApsProcessSchemeByIdListVo();
+        apsProcessSchemeByIdListVo.setApsProcessSchemeVoList(apsProcessSchemeVos);
+        apsProcessSchemeByIdListVo.setProductFamily(productFamily);
+        apsProcessSchemeByIdListVo.setNumber(apsProcessSchemeDtoList.get(0).getNumber());
+        return apsProcessSchemeByIdListVo;
+
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String updateProcessScheme(List<ApsProcessSchemeParam> apsProcessSchemeParam) {
-        String productFamily = apsProcessSchemeParam.get(0).getProductFamily();
-        List<ApsProcessScheme> apsProcessSchemes = apsProcessSchemeParam.stream().map(x -> {
-            ApsProcessScheme apsProcessScheme = new ApsProcessScheme();
-            apsProcessScheme.setId(x.getId());
-            apsProcessScheme.setEmployeeName(x.getEmployeeName());
-            return apsProcessScheme;
-        }).collect(Collectors.toList());
-
-        long size = apsProcessSchemeParam.stream().map(ApsProcessSchemeParam::getEmployeeName).distinct().count();
-        LambdaQueryWrapper<ApsProcessScheme> apsProcessSchemeLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        apsProcessSchemeLambdaQueryWrapper.eq(ApsProcessScheme::getId, apsProcessSchemeParam.get(0).getId());
-        ApsProcessScheme one = getOne(apsProcessSchemeLambdaQueryWrapper);
-        if (one == null) {
-            throw new BeneWakeException("当前数据有问题");
-        }
-        Integer number = one.getNumber();
-        if (size != number) {
-            throw new BeneWakeException("请按照输入人数分组");
-        }
-        //todo 重新计算最优
+    public synchronized Boolean updateProcessScheme(List<ApsProcessSchemeParam> apsProcessSchemeParam) {
         Integer id = apsProcessSchemeParam.get(0).getId();
-        ApsProcessScheme processScheme = getById(id);
+        ApsProcessScheme processScheme = this.getById(id);
+        long count = apsProcessSchemeParam.stream().map(ApsProcessSchemeParam::getEmployeeName).distinct().count();
+        Integer number = processScheme.getNumber();
+        if (count != number){
+            throw new BeneWakeException("分配人数不对");
+        }
         String currentProcessScheme = processScheme.getCurrentProcessScheme();
-        LambdaQueryWrapper<ApsProductFamilyProcessSchemeManagement> apsProductFamilyProcessSchemeManagementLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        apsProductFamilyProcessSchemeManagementLambdaQueryWrapper.eq(ApsProductFamilyProcessSchemeManagement::getCurProcessSchemeName, currentProcessScheme);
-        ApsProductFamilyProcessSchemeManagement curApsProductMana = apsProductFamilyProcessSchemeManagementService.getOne(apsProductFamilyProcessSchemeManagementLambdaQueryWrapper);
-        String optimalProcessSchemeName = curApsProductMana.getOptimalProcessSchemeName();
-        List<ApsProcessSchemeVo> apsProcessSchemeVoListOptimal = apsProcessSchemeMapper.selectProcessSchemeBycurrentProcessScheme(optimalProcessSchemeName);
+        if (processScheme.getState()) {
+            //如果有效说明数据没有变动直接更新员工名
+            List<ApsProcessScheme> apsProcessSchemes = apsProcessSchemeParam.stream().map(x -> {
+                ApsProcessScheme apsProcessScheme = new ApsProcessScheme();
+                apsProcessScheme.setId(x.getId());
+                apsProcessScheme.setEmployeeName(x.getEmployeeName());
 
-        //最优每个员工的map和工时和
-        Map<String, BigDecimal> employeeStandardTimeSumMap = apsProcessSchemeVoListOptimal.stream()
-                .collect(Collectors.groupingBy(
-                        ApsProcessSchemeVo::getEmployeeName,
-                        Collectors.reducing(BigDecimal.ZERO, ApsProcessSchemeVo::getStandardTime, BigDecimal::add)
-                ));
-        //最优的员工最大工时
-        BigDecimal maxStandardTimeValue = employeeStandardTimeSumMap.values().stream()
-                .max(BigDecimal::compareTo).get();
-        //最优工时的和
-        BigDecimal sumOfStandardTimeOptimal = apsProcessSchemeVoListOptimal.stream()
-                .map(ApsProcessSchemeVo::getStandardTime)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        //更新的产线平衡率
-        BigDecimal productionLineBalanceRateOptimal = sumOfStandardTimeOptimal
-                .divide(maxStandardTimeValue.multiply(new BigDecimal(apsProcessSchemeVoListOptimal.get(0).getNumber())), 8, RoundingMode.HALF_UP);
-        //---------------------
-        //更新每个员工的map和工时和
-        Map<String, BigDecimal> employeeStandardTimeSum = apsProcessSchemeParam.stream()
-                .collect(Collectors.groupingBy(
-                        ApsProcessSchemeParam::getEmployeeName,
-                        Collectors.reducing(BigDecimal.ZERO, ApsProcessSchemeParam::getStandardTime, BigDecimal::add)
-                ));
-        BigDecimal maxStandardTime = employeeStandardTimeSum.values().stream()
-                .max(BigDecimal::compareTo).get();
-        BigDecimal sumOfStandardTime = apsProcessSchemeVoListOptimal.stream()
-                .map(ApsProcessSchemeVo::getStandardTime)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        BigDecimal productionLineBalanceRate = sumOfStandardTimeOptimal
-                .divide(sumOfStandardTime.multiply(new BigDecimal(apsProcessSchemeVoListOptimal.get(0).getNumber())), 8, RoundingMode.HALF_UP);
-
-        LambdaQueryWrapper<ApsOptimalStrategy> apsOptimalStrategyLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        apsOptimalStrategyLambdaQueryWrapper.eq(ApsOptimalStrategy::getProductFamily, productFamily)
-                .eq(ApsOptimalStrategy::getNumber, number);
-        ApsOptimalStrategy apsOptimalStrategyServiceOne = apsOptimalStrategyService.getOne(apsOptimalStrategyLambdaQueryWrapper);
-        Integer strategy = apsOptimalStrategyServiceOne.getStrategy();
-        LambdaUpdateWrapper<ApsProductFamilyProcessSchemeManagement> apsProductFamilyProcessSchemeManagementLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
-        apsProductFamilyProcessSchemeManagementLambdaUpdateWrapper.eq(ApsProductFamilyProcessSchemeManagement::getOptimalProcessSchemeName, optimalProcessSchemeName)
-                .set(ApsProductFamilyProcessSchemeManagement::getOptimalProcessSchemeName, currentProcessScheme);
-        if (strategy == 2) {
-            if (productionLineBalanceRateOptimal.compareTo(productionLineBalanceRate) > 0) {
-                apsProductFamilyProcessSchemeManagementService.update(apsProductFamilyProcessSchemeManagementLambdaUpdateWrapper);
-            }
+                apsProcessScheme.setState(true);
+                return apsProcessScheme;
+            }).collect(Collectors.toList());
+            this.updateBatchById(apsProcessSchemes);
         } else {
-            if (maxStandardTimeValue.compareTo(maxStandardTime) < 0) {
-                apsProductFamilyProcessSchemeManagementService.update(apsProductFamilyProcessSchemeManagementLambdaUpdateWrapper);
-            }
+            //数据无效 有可能是新增或删除数据 直接删除相关数据重新添加
+            LambdaQueryWrapper<ApsProcessScheme> schemeLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            schemeLambdaQueryWrapper.eq(ApsProcessScheme::getCurrentProcessScheme, currentProcessScheme);
+            remove(schemeLambdaQueryWrapper);
+            List<ApsProcessScheme> apsProcessSchemes = apsProcessSchemeParam.stream().map(x -> {
+                ApsProcessScheme apsProcessScheme = new ApsProcessScheme();
+                apsProcessScheme.setCurrentProcessScheme(currentProcessScheme);
+                apsProcessScheme.setProcessCapacityId(x.getProcessId());
+                apsProcessScheme.setEmployeeName(x.getEmployeeName());
+                apsProcessScheme.setNumber(number);
+                apsProcessScheme.setState(true);
+                return apsProcessScheme;
+            }).collect(Collectors.toList());
+            LambdaQueryWrapper<ApsProcessScheme> queryWrapper = new LambdaQueryWrapper<ApsProcessScheme>()
+                    .eq(ApsProcessScheme::getCurrentProcessScheme, currentProcessScheme);
+            remove(queryWrapper);
+            saveBatch(apsProcessSchemes);
         }
-
-        Integer processId = apsProcessSchemeParam.get(0).getId();
-        ApsProcessScheme apsProcessScheme = apsProcessSchemeMapper.selectById(processId);
-        saveProducSchemeManagement(apsProcessSchemeParam, number, apsProcessScheme.getCurrentProcessScheme());
-        if (updateBatchById(apsProcessSchemes)) {
-            return apsProcessSchemes.get(0).getCurrentProcessScheme();
-        }
-        return null;
+        //重新计算最优方案
+        saveProducSchemeManagement(apsProcessSchemeParam, number, currentProcessScheme);
+        return true;
     }
+//    @Override
+//    @Transactional(rollbackFor = Exception.class)
+//    public String updateProcessScheme(List<ApsProcessSchemeParam> apsProcessSchemeParam) {
+//        String productFamily = apsProcessSchemeParam.get(0).getProductFamily();
+//        List<ApsProcessScheme> apsProcessSchemes = apsProcessSchemeParam.stream().map(x -> {
+//            ApsProcessScheme apsProcessScheme = new ApsProcessScheme();
+//            apsProcessScheme.setId(x.getId());
+//            apsProcessScheme.setEmployeeName(x.getEmployeeName());
+//            return apsProcessScheme;
+//        }).collect(Collectors.toList());
+//
+//        long size = apsProcessSchemeParam.stream().map(ApsProcessSchemeParam::getEmployeeName).distinct().count();
+//        LambdaQueryWrapper<ApsProcessScheme> apsProcessSchemeLambdaQueryWrapper = new LambdaQueryWrapper<>();
+//        apsProcessSchemeLambdaQueryWrapper.eq(ApsProcessScheme::getId, apsProcessSchemeParam.get(0).getId());
+//        ApsProcessScheme one = getOne(apsProcessSchemeLambdaQueryWrapper);
+//        if (one == null) {
+//            throw new BeneWakeException("当前数据有问题");
+//        }
+//        Integer number = one.getNumber();
+//        if (size != number) {
+//            throw new BeneWakeException("请按照输入人数分组");
+//        }
+//        //todo 重新计算最优
+//        Integer id = apsProcessSchemeParam.get(0).getId();
+//        ApsProcessScheme processScheme = getById(id);
+//        String currentProcessScheme = processScheme.getCurrentProcessScheme();
+//        LambdaQueryWrapper<ApsProductFamilyProcessSchemeManagement> apsProductFamilyProcessSchemeManagementLambdaQueryWrapper = new LambdaQueryWrapper<>();
+//        apsProductFamilyProcessSchemeManagementLambdaQueryWrapper.eq(ApsProductFamilyProcessSchemeManagement::getCurProcessSchemeName, currentProcessScheme);
+//        ApsProductFamilyProcessSchemeManagement curApsProductMana = apsProductFamilyProcessSchemeManagementService.getOne(apsProductFamilyProcessSchemeManagementLambdaQueryWrapper);
+//        String optimalProcessSchemeName = curApsProductMana.getOptimalProcessSchemeName();
+//        List<ApsProcessSchemeDto> apsProcessSchemeDtoListOptimal = apsProcessSchemeMapper.selectProcessSchemeBycurrentProcessScheme(optimalProcessSchemeName);
+//
+//        //最优每个员工的map和工时和
+//        Map<String, BigDecimal> employeeStandardTimeSumMap = apsProcessSchemeDtoListOptimal.stream()
+//                .collect(Collectors.groupingBy(
+//                        ApsProcessSchemeDto::getEmployeeName,
+//                        Collectors.reducing(BigDecimal.ZERO, ApsProcessSchemeDto::getStandardTime, BigDecimal::add)
+//                ));
+//        //最优的员工最大工时
+//        BigDecimal maxStandardTimeValue = employeeStandardTimeSumMap.values().stream()
+//                .max(BigDecimal::compareTo).get();
+//        //最优工时的和
+//        BigDecimal sumOfStandardTimeOptimal = apsProcessSchemeDtoListOptimal.stream()
+//                .map(ApsProcessSchemeDto::getStandardTime)
+//                .reduce(BigDecimal.ZERO, BigDecimal::add);
+//        //更新的产线平衡率
+//        BigDecimal productionLineBalanceRateOptimal = sumOfStandardTimeOptimal
+//                .divide(maxStandardTimeValue.multiply(new BigDecimal(apsProcessSchemeDtoListOptimal.get(0).getNumber())), 8, RoundingMode.HALF_UP);
+//        //---------------------
+//        //更新每个员工的map和工时和
+//        Map<String, BigDecimal> employeeStandardTimeSum = apsProcessSchemeParam.stream()
+//                .collect(Collectors.groupingBy(
+//                        ApsProcessSchemeParam::getEmployeeName,
+//                        Collectors.reducing(BigDecimal.ZERO, ApsProcessSchemeParam::getStandardTime, BigDecimal::add)
+//                ));
+//        BigDecimal maxStandardTime = employeeStandardTimeSum.values().stream()
+//                .max(BigDecimal::compareTo).get();
+//        BigDecimal sumOfStandardTime = apsProcessSchemeDtoListOptimal.stream()
+//                .map(ApsProcessSchemeDto::getStandardTime)
+//                .reduce(BigDecimal.ZERO, BigDecimal::add);
+//        BigDecimal productionLineBalanceRate = sumOfStandardTimeOptimal
+//                .divide(sumOfStandardTime.multiply(new BigDecimal(apsProcessSchemeDtoListOptimal.get(0).getNumber())), 8, RoundingMode.HALF_UP);
+//
+//        LambdaQueryWrapper<ApsOptimalStrategy> apsOptimalStrategyLambdaQueryWrapper = new LambdaQueryWrapper<>();
+//        apsOptimalStrategyLambdaQueryWrapper.eq(ApsOptimalStrategy::getProductFamily, productFamily)
+//                .eq(ApsOptimalStrategy::getNumber, number);
+//        ApsOptimalStrategy apsOptimalStrategyServiceOne = apsOptimalStrategyService.getOne(apsOptimalStrategyLambdaQueryWrapper);
+//        Integer strategy = apsOptimalStrategyServiceOne.getStrategy();
+//        LambdaUpdateWrapper<ApsProductFamilyProcessSchemeManagement> apsProductFamilyProcessSchemeManagementLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+//        apsProductFamilyProcessSchemeManagementLambdaUpdateWrapper.eq(ApsProductFamilyProcessSchemeManagement::getOptimalProcessSchemeName, optimalProcessSchemeName)
+//                .set(ApsProductFamilyProcessSchemeManagement::getOptimalProcessSchemeName, currentProcessScheme);
+//        if (strategy == 2) {
+//            if (productionLineBalanceRateOptimal.compareTo(productionLineBalanceRate) > 0) {
+//                apsProductFamilyProcessSchemeManagementService.update(apsProductFamilyProcessSchemeManagementLambdaUpdateWrapper);
+//            }
+//        } else {
+//            if (maxStandardTimeValue.compareTo(maxStandardTime) < 0) {
+//                apsProductFamilyProcessSchemeManagementService.update(apsProductFamilyProcessSchemeManagementLambdaUpdateWrapper);
+//            }
+//        }
+//
+//        Integer processId = apsProcessSchemeParam.get(0).getId();
+//        ApsProcessScheme apsProcessScheme = apsProcessSchemeMapper.selectById(processId);
+//        saveProducSchemeManagement(apsProcessSchemeParam, number, apsProcessScheme.getCurrentProcessScheme());
+//        if (updateBatchById(apsProcessSchemes)) {
+//            return apsProcessSchemes.get(0).getCurrentProcessScheme();
+//        }
+//        return null;
+//    }
 }
 
 

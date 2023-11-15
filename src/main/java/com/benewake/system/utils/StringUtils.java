@@ -598,7 +598,6 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
                 // 处理空字符串或空值情况
                 return processSchemeName;
             }
-
             // 找到字符串中的最后一个数字
             int lastIndex = processSchemeName.length() - 1;
             while (lastIndex >= 0 && Character.isDigit(processSchemeName.charAt(lastIndex))) {
@@ -623,9 +622,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
         try {
             // 解析数字并加一
-
             max++;
-
             // 构建新的字符串，替换原来的数字部分
             String incrementedValue = maxProcessSchemeName.substring(0, maxLength + 1) + max;
 

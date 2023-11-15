@@ -11,7 +11,6 @@ import com.benewake.system.entity.dto.ApsMaterialBomDto;
 import com.benewake.system.entity.enums.BOMChangeType;
 import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.entity.kingdee.KingdeeMaterialBom;
-import com.benewake.system.entity.kingdee.transfer.FIDToNumber;
 import com.benewake.system.entity.kingdee.transfer.MaterialBomChange;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
 import com.benewake.system.mapper.ApsMaterialProcessMappingMapper;
@@ -103,7 +102,8 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
 
         // 再次遍历result，根据最大FNumber打印出相应的记录
         List<ApsMaterialProcessMapping> apsMaterialProcessMappings = apsMaterialProcessMappingMapper.selectList(null);
-        Map<String, String> materialToProcess = apsMaterialProcessMappings.stream().collect(Collectors.toMap(ApsMaterialProcessMapping::getFMaterialId, ApsMaterialProcessMapping::getProcess, (existing, replacement) -> existing));
+        Map<String, String> materialToProcess = apsMaterialProcessMappings.stream()
+                .collect(Collectors.toMap(ApsMaterialProcessMapping::getFMaterialId, ApsMaterialProcessMapping::getProcess, (existing, replacement) -> existing));
         ArrayList<ApsMaterialBom> apsMaterialBoms = getApsMaterialBoms(result, fMaterialIdToFNumber, maxFNumbersList, materialToProcess);
         if (CollectionUtils.isEmpty(apsMaterialBoms)) {
             ApsMaterialBom apsMaterialBom = new ApsMaterialBom();
@@ -115,6 +115,8 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
         tableUpdateDate.setUpdateDate(new Date());
         tableUpdateDateMapper.insert(tableUpdateDate);
         List<ApsMaterialNameMapping> nameMappings = getApsMaterialNameMappings(result);
+        //新增之前删除
+        apsMaterialNameMappingService.remove(null);
         apsMaterialNameMappingService.saveBatch(nameMappings);
         remove(null);
         return saveBatch(apsMaterialBoms);
@@ -131,10 +133,11 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
         nameMappings.addAll(result.stream().map(x -> {
             ApsMaterialNameMapping nameMapping = new ApsMaterialNameMapping();
             nameMapping.setFMaterialId(x.getFMaterialIDChild());
-            nameMapping.setFMaterialName(x.getFChildIteName());
+            nameMapping.setFMaterialName(x.getFCHILDITEMNAME());
             nameMapping.setFItemModel(x.getFChildItemModel());
             return nameMapping;
         }).collect(Collectors.toList()));
+        nameMappings = nameMappings.stream().distinct().collect(Collectors.toList());
         return nameMappings;
     }
 

@@ -1,0 +1,43 @@
+server:
+  mvc:
+    async:
+      request-timeout: 6000000 # 设置请求的超时时间（以毫秒为单位，这里设置为60秒）
+  servlet:
+    context-path: /benewake
+  port: 8800
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 查看日志 生产环境下建议关闭
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/fim_aps_system?characterEncoding=utf-8&useSSL=false&serverTimezone=Hongkong&allowMultiQueries=true&rewriteBatchedStatements=true
+    username: root2
+    password: EAZWSX#f0ae2f2fdE
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    hikari:
+      maximum-pool-size: 15
+      minimum-idle: 5
+      idle-timeout: 30000
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  redis:
+    host: 127.0.0.1
+    port: 6380
+    password: benewake@12345
+    database: 0
+    jedis:
+      pool:
+        max-idle: 30
+myPython:
+  path: /usr/bin/python3
+  home:
+  directory: /aps/benewake/APS_For_Benwake_process_kaolv
+  integrityCheckerDirectory: /aps/benewake/APS_For_Benwake_process_kaolv
+  startClass:
+    scheduling: test.py
+    integrityChecker: data_check.py
+    integrityCheckerFile:
+      fileDirectory: /aps/benewake/APS_For_Benwake_process_kaolv/data/output_data/

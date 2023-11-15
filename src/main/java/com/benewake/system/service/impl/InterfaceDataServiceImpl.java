@@ -2,6 +2,7 @@ package com.benewake.system.service.impl;
 
 import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.exception.BeneWakeException;
+import com.benewake.system.mapper.ApsFinalUnfinishedDataMapper;
 import com.benewake.system.service.InterfaceDataService;
 import com.benewake.system.service.ApsIntfaceDataServiceBase;
 import com.benewake.system.utils.threadpool.BenewakeExecutor;
@@ -24,6 +25,9 @@ public class InterfaceDataServiceImpl implements InterfaceDataService {
 
     @Autowired
     private Map<String, ApsIntfaceDataServiceBase> kingdeeServiceMap;
+
+    @Autowired
+    private ApsFinalUnfinishedDataMapper finalUnfinishedDataMapper;
 
 
     @Override
@@ -50,9 +54,10 @@ public class InterfaceDataServiceImpl implements InterfaceDataService {
                 return true;
             });
             codeToFutureMap.put(code, future);
-//        }
         });
         checkFutrueException(codeToFutureMap);
+        //数据库更新后 调用mysql函数 将mes表合到一起
+        finalUnfinishedDataMapper.callUpdateApsFinalUnfinishedData();
         return Boolean.TRUE;
     }
 

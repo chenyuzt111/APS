@@ -92,6 +92,8 @@ public class ApsProcessSchemeVo implements Serializable {
 
     private Integer number;
 
+    private String state;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

@@ -23,7 +23,6 @@ public class ApsProcessCapacityEntityToVo {
         }
         apsProcessCapacityVo.setMaxPersonnel(object.getMaxPersonnel());
         apsProcessCapacityVo.setMinPersonnel(object.getMinPersonnel());
-
         return apsProcessCapacityVo;
     }
 }

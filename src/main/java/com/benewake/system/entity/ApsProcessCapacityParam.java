@@ -26,7 +26,7 @@ public class ApsProcessCapacityParam implements Serializable {
     private String belongingProcess;
 
     /**
-     * 工序id
+     * 工序名称
      */
     private String processName;
 

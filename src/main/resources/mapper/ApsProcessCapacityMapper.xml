@@ -5,15 +5,15 @@
 <mapper namespace="com.benewake.system.mapper.ApsProcessCapacityMapper">
 
     <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsProcessCapacity">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="belongingProcess" column="belonging_process" jdbcType="VARCHAR"/>
-            <result property="processId" column="process_id" jdbcType="VARCHAR"/>
-            <result property="processNumber" column="process_number" jdbcType="INTEGER"/>
-            <result property="productFamily" column="product_family" jdbcType="VARCHAR"/>
-            <result property="packagingMethod" column="packaging_method" jdbcType="VARCHAR"/>
-            <result property="standardTime" column="standard_time" jdbcType="DECIMAL"/>
-            <result property="maxPersonnel" column="max_personnel" jdbcType="INTEGER"/>
-            <result property="minPersonnel" column="min_personnel" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="belongingProcess" column="belonging_process" jdbcType="VARCHAR"/>
+        <result property="processId" column="process_id" jdbcType="VARCHAR"/>
+        <result property="processNumber" column="process_number" jdbcType="INTEGER"/>
+        <result property="productFamily" column="product_family" jdbcType="VARCHAR"/>
+        <result property="packagingMethod" column="packaging_method" jdbcType="VARCHAR"/>
+        <result property="standardTime" column="standard_time" jdbcType="DECIMAL"/>
+        <result property="maxPersonnel" column="max_personnel" jdbcType="INTEGER"/>
+        <result property="minPersonnel" column="min_personnel" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -22,45 +22,40 @@
         standard_time,max_personnel,min_personnel
     </sql>
     <select id="selectPages" resultType="com.benewake.system.entity.dto.ApsProcessCapacityDto">
-        SELECT
-            pro.id,
-            belonging_process,
-            pro.process_id,
-            process_name,
-            process_number,
-            product_family,
-            packaging_method,
-            standard_time,
-            max_personnel,
-            min_personnel
-        FROM
-            `aps_process_capacity` AS pro
-                LEFT JOIN aps_process_name_pool AS ce ON pro.process_id = ce.id
-        ORDER BY
-            pro.product_family,
-            pro.process_number
+        SELECT pro.id,
+               belonging_process,
+               pro.process_id,
+               process_name,
+               process_number,
+               product_family,
+               packaging_method,
+               standard_time,
+               max_personnel,
+               min_personnel
+        FROM `aps_process_capacity` AS pro
+                 LEFT JOIN aps_process_name_pool AS ce ON pro.process_id = ce.id
+        ORDER BY pro.product_family,
+                 pro.process_number
         limit #{pass} ,#{size}
     </select>
 
     <select id="selectProcessCapacitysByproductFamily"
             resultType="com.benewake.system.entity.vo.ApsProcessCapacityVo">
-        SELECT
-            pro.id,
-            belonging_process,
-            pro.process_id,
-            process_name,
-            process_number,
-            product_family,
-            packaging_method,
-            standard_time,
-            max_personnel,
-            min_personnel
-        FROM
-            `aps_process_capacity` AS pro
-                LEFT JOIN aps_process_name_pool AS ce ON pro.process_id = ce.id
-        where product_family = #{productFamily}  and pro.belonging_process = '组装'
-        ORDER BY
-            pro.product_family,
-            pro.process_number
+        SELECT pro.id,
+               belonging_process,
+               pro.process_id,
+               process_name,
+               process_number,
+               product_family,
+               packaging_method,
+               standard_time,
+               max_personnel,
+               min_personnel
+        FROM `aps_process_capacity` AS pro
+                 LEFT JOIN aps_process_name_pool AS ce ON pro.process_id = ce.id
+        where product_family = #{productFamily}
+          and pro.belonging_process = '组装'
+        ORDER BY pro.product_family,
+                 pro.process_number
     </select>
 </mapper>

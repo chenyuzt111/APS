@@ -36,39 +36,32 @@ public class ApsOutRequestServiceImpl extends ServiceImpl<ApsOutRequestMapper, A
     private KingdeeToApsOutRequest kingdeeToApsOutRequest;
 
 
-
-
     @Override
     public Boolean updateDataVersions() throws Exception {
         List<KingdeeOutRequest> result = getKingdeeOutRequest();
-
         // 物料映射表
         Map<String, String> mtn = getMaterialIdToNameMap();
-
         ArrayList<ApsOutRequest> apsOutRequests = new ArrayList<>();
-        Integer maxVersion =this.getMaxVersionIncr();
-        for (KingdeeOutRequest kingdeeOutRequest : result){
-            getApsOutRequestList(maxVersion,mtn,apsOutRequests,kingdeeOutRequest);
+        Integer maxVersion = this.getMaxVersionIncr();
+        for (KingdeeOutRequest kingdeeOutRequest : result) {
+            getApsOutRequestList(maxVersion, mtn, apsOutRequests, kingdeeOutRequest);
         }
         if (CollectionUtils.isEmpty(apsOutRequests)) {
             ApsOutRequest apsOutRequest = new ApsOutRequest();
             apsOutRequest.setVersion(maxVersion);
-
             return save(apsOutRequest);
         }
         return saveBatch(apsOutRequests);
     }
+
     @Override
     public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
         return null;
     }
 
-    private void getApsOutRequestList(Integer maxVersion, Map<String, String> mtn, ArrayList<ApsOutRequest> apsOutRequests,KingdeeOutRequest kingdeeOutRequest){
-
-
+    private void getApsOutRequestList(Integer maxVersion, Map<String, String> mtn, ArrayList<ApsOutRequest> apsOutRequests, KingdeeOutRequest kingdeeOutRequest) {
         kingdeeOutRequest.setFMaterialId(mtn.get(kingdeeOutRequest.getFMaterialId()));
-
-        ApsOutRequest apsOutRequest = kingdeeToApsOutRequest.convert(kingdeeOutRequest,maxVersion);
+        ApsOutRequest apsOutRequest = kingdeeToApsOutRequest.convert(kingdeeOutRequest, maxVersion);
         apsOutRequests.add(apsOutRequest);
     }
 
@@ -78,9 +71,7 @@ public class ApsOutRequestServiceImpl extends ServiceImpl<ApsOutRequestMapper, A
         queryParam.setFieldKeys("FMaterialId,FNumber");
         List<MaterialIdToName> midToName = api.executeBillQuery(queryParam, MaterialIdToName.class);
         Map<String, String> mtn = new HashMap<>();
-        midToName.forEach(c -> {
-            mtn.put(c.getFMaterialId(), c.getFNumber());
-        });
+        midToName.forEach(c -> mtn.put(c.getFMaterialId(), c.getFNumber()));
         return mtn;
     }
 

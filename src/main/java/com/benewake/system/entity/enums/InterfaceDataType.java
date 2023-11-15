@@ -22,7 +22,7 @@ public enum InterfaceDataType {
     INVENTORY_LOCK(9, "库存锁库列表", "apsInventoryLockServiceImpl", ApsInventoryLock.class),
     MATERIAL_BOM(10, "物料清单列表", "apsMaterialBomServiceImpl", ApsMaterialBom.class),
 //    APS_MATERIAL_NAME_MAPPING(11, "物料编码与名称对应表", "apsMaterialNameMappingServiceImpl", ApsMaterialNameMapping.class),
-    OUT_REQUEST(11, "出库申请单", "apsOutRequestImpl", ApsOutRequest.class),
+    OUT_REQUEST(11, "出库申请单", "apsOutRequestServiceImpl", ApsOutRequest.class),
     // MES向下
     PCBA_BURN(20, "PCBA烧录1", "apsPcbaBurnServiceImpl", ApsPcbaBurn.class),
     TFMINI_S_PCBA_BURN(21, "TFmini-S-PCBA烧录", "apsTfminiSPcbaBurnServiceImpl", ApsTfminiSPcbaBurn.class),

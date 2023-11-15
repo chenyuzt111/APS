@@ -1,8 +1,9 @@
 package com.benewake.system.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsProcessScheme;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.benewake.system.entity.vo.ApsProcessSchemeVo;
+import com.benewake.system.entity.dto.ApsProcessSchemeDto;
 import com.benewake.system.entity.vo.ProcessSchemeEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -20,14 +21,17 @@ public interface ApsProcessSchemeMapper extends BaseMapper<ApsProcessScheme> {
 
     List<String> selectProcessScheme(@Param("processCapacityIds") List<Integer> processCapacityIds, @Param("number") Integer number);
 
-    List<ApsProcessSchemeVo> selectProcessSchemePage(@Param("pass") Integer pass, @Param("size") Integer size);
+    List<ApsProcessSchemeDto> selectProcessSchemePage(@Param("pass") Integer pass, @Param("size") Integer size);
 
-    List<ApsProcessSchemeVo> selectProcessSchemeBycurrentProcessScheme(@Param("currentProcessScheme") String currentProcessScheme);
+    List<ApsProcessSchemeDto> selectProcessSchemeBycurrentProcessScheme(@Param("currentProcessScheme") String currentProcessScheme);
 
     List<ApsProcessScheme> selectListByIds(@Param("ids") List<Integer> ids);
 
     List<ProcessSchemeEntity> selectEmployeeTime(@Param("curProcessSchemeNameList") List<String> curProcessSchemeNameList);
 
+    Page<ApsProcessSchemeDto> selectProcessSchemePage(Page<ApsProcessScheme> schemePage);
+
+    List<ApsProcessSchemeDto> selectProcessSchemeByProcessScheme(@Param("currentProcessScheme") String currentProcessScheme, @Param("productFamily") String productFamily);
 }
 
 

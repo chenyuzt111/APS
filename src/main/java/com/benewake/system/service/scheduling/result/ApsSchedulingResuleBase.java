@@ -16,8 +16,6 @@ import java.lang.reflect.Field;
 
 public interface ApsSchedulingResuleBase {
 
-
-
     default Integer getApsTableVersion(Integer code ,ApsTableVersionService apsTableVersionService) {
         LambdaQueryWrapper<ApsTableVersion> apsTableVersionLambdaQueryWrapper = new LambdaQueryWrapper<>();
         apsTableVersionLambdaQueryWrapper.eq(ApsTableVersion::getTableId, code)
@@ -48,7 +46,7 @@ public interface ApsSchedulingResuleBase {
                 Class<?> aClass = iServiceOne.getClass();
                 Field version = aClass.getDeclaredField("version");
                 version.setAccessible(true);
-                Integer o = (Integer) version.get(iService);
+                Integer o = (Integer) version.get(iServiceOne);
                 if (o == null) {
                     curVersion = 1;
                 } else {

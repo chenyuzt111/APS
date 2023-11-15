@@ -1,11 +1,9 @@
 package com.benewake.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.benewake.system.entity.ApsProcessCapacity;
-import com.benewake.system.entity.ApsProcessCapacityParam;
-import com.benewake.system.entity.ApsProcessNamePool;
-import com.benewake.system.entity.ApsProcessScheme;
+import com.benewake.system.entity.*;
 import com.benewake.system.entity.dto.ApsProcessCapacityDto;
 import com.benewake.system.entity.vo.ApsProcessCapacityListVo;
 import com.benewake.system.entity.vo.ApsProcessCapacityVo;
@@ -14,6 +12,7 @@ import com.benewake.system.mapper.ApsProcessSchemeMapper;
 import com.benewake.system.service.ApsProcessCapacityService;
 import com.benewake.system.mapper.ApsProcessCapacityMapper;
 import com.benewake.system.service.ApsProcessNamePoolService;
+import com.benewake.system.service.ApsProductFamilyProcessSchemeManagementService;
 import com.benewake.system.transfer.ApsProcessCapacityEntityToVo;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +51,11 @@ public class ApsProcessCapacityServiceImpl extends ServiceImpl<ApsProcessCapacit
     @Autowired
     private ApsProcessSchemeMapper apsProcessSchemeMapper;
 
+    @Autowired
+    private ApsProductFamilyProcessSchemeManagementService managementService;
 
+
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Boolean saveOrUpdateProcessCapacityService(ApsProcessCapacityParam apsProcessCapacityParam) {
         ApsProcessCapacity apsProcessCapacity = new ApsProcessCapacity();
@@ -62,30 +65,55 @@ public class ApsProcessCapacityServiceImpl extends ServiceImpl<ApsProcessCapacit
         apsProcessNamePoolLambdaQueryWrapper.eq(ApsProcessNamePool::getProcessName, apsProcessCapacityParam.getProcessName());
         ApsProcessNamePool apsProcessNamePoolServiceOne = apsProcessNamePoolService.getOne(apsProcessNamePoolLambdaQueryWrapper);
         if (apsProcessNamePoolServiceOne == null) {
-            return false;
+            throw new BeneWakeException("当前工序名称不存在");
         }
-
         apsProcessCapacity.setProcessId(apsProcessNamePoolServiceOne.getId());
 
         if (apsProcessCapacity.getId() == null) {
-            LambdaQueryWrapper<ApsProcessCapacity> apsProcessCapacityLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            apsProcessCapacityLambdaQueryWrapper
-                    .eq(ApsProcessCapacity::getProductFamily, apsProcessCapacity.getProductFamily())
-                    .orderByDesc(ApsProcessCapacity::getProcessNumber)
-                    .last("limit 1")
-                    .select(ApsProcessCapacity::getProcessNumber);
-            ApsProcessCapacity processCapacity = this.getOne(apsProcessCapacityLambdaQueryWrapper);
-            if (processCapacity != null) {
-                apsProcessCapacity.setProcessNumber(processCapacity.getProcessNumber() + 1);
-            } else {
-                apsProcessCapacity.setProcessNumber(1);
-            }
-            return this.save(apsProcessCapacity);
+            //如果当前产品族有基础工艺方案并且他们的有效性为true 那么现在应该将他们的有效性全部设为false
+            setSchemeStateFalse(Collections.singletonList(apsProcessCapacity.getProductFamily()));
+            //删除当前所有的最优方案表
+            deleteOptimal(Collections.singletonList(apsProcessCapacity.getProductFamily()));
+            //保存一个新的工序与产能
+            return saveProcessCapacity(apsProcessCapacity);
         }
 
         ApsProcessCapacity processCapacity = getById(apsProcessCapacityParam.getId());
         apsProcessCapacity.setProcessNumber(processCapacity.getProcessNumber());
         return this.updateById(apsProcessCapacity);
+    }
+
+    private void deleteOptimal(List<String> productFamily) {
+        LambdaQueryWrapper<ApsProductFamilyProcessSchemeManagement> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(ApsProductFamilyProcessSchemeManagement::getProductFamily,
+                productFamily);
+        managementService.remove(queryWrapper);
+    }
+
+    private void setSchemeStateFalse(List<String> productFamily) {
+        LambdaUpdateWrapper<ApsProcessScheme> schemeUpdateWrapper = new LambdaUpdateWrapper<>();
+        for (String family : productFamily) {
+            schemeUpdateWrapper.or(i -> i.likeRight(ApsProcessScheme::getCurrentProcessScheme, family));
+        }
+        schemeUpdateWrapper.eq(ApsProcessScheme::getState, true)
+                .set(ApsProcessScheme::getState, false);
+        apsProcessSchemeMapper.update(null, schemeUpdateWrapper);
+    }
+
+    private boolean saveProcessCapacity(ApsProcessCapacity apsProcessCapacity) {
+        LambdaQueryWrapper<ApsProcessCapacity> apsProcessCapacityLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        apsProcessCapacityLambdaQueryWrapper
+                .eq(ApsProcessCapacity::getProductFamily, apsProcessCapacity.getProductFamily())
+                .orderByDesc(ApsProcessCapacity::getProcessNumber)
+                .last("limit 1")
+                .select(ApsProcessCapacity::getProcessNumber);
+        ApsProcessCapacity processCapacity = this.getOne(apsProcessCapacityLambdaQueryWrapper);
+        if (processCapacity != null) {
+            apsProcessCapacity.setProcessNumber(processCapacity.getProcessNumber() + 1);
+        } else {
+            apsProcessCapacity.setProcessNumber(1);
+        }
+        return this.save(apsProcessCapacity);
     }
 
     @Override
@@ -94,6 +122,7 @@ public class ApsProcessCapacityServiceImpl extends ServiceImpl<ApsProcessCapacit
         List<ApsProcessCapacityDto> records = apsProcessCapacityMapper.selectPages(pass, size);
         Long total = apsProcessCapacityMapper.selectCount(null);
         Map<String, Integer> productFamilyToNumberMap = new HashMap<>();
+        //处理序号
         List<ApsProcessCapacityVo> apsProcessCapacityVos = records.stream()
                 .map(x -> apsProcessCapacityEntityToVo.convert(x))
                 .peek(x -> {
@@ -103,6 +132,7 @@ public class ApsProcessCapacityServiceImpl extends ServiceImpl<ApsProcessCapacit
                     x.setProcessNumber(number + 1);
                 })
                 .collect(Collectors.toList());
+
         String productFamily = null;
         Integer oneCount = null;
         if (CollectionUtils.isNotEmpty(apsProcessCapacityVos)) {
@@ -116,7 +146,10 @@ public class ApsProcessCapacityServiceImpl extends ServiceImpl<ApsProcessCapacit
             }
         }
         String finalProductFamily = productFamily;
-        final long[] count = {apsProcessCapacityVos.stream().filter(x -> x.getProductFamily().equals(finalProductFamily)).count()};
+        final long[] count = {
+                apsProcessCapacityVos.stream()
+                        .filter(x -> x.getProductFamily().equals(finalProductFamily))
+                        .count()};
         Integer finalOneCount = oneCount;
         //转换第一行序号
         apsProcessCapacityVos = apsProcessCapacityVos.stream().peek(x -> {
@@ -138,7 +171,8 @@ public class ApsProcessCapacityServiceImpl extends ServiceImpl<ApsProcessCapacit
 
     @Override
     public List<ApsProcessCapacityVo> getProcessCapacitysByproductFamily(String productFamily) {
-        List<ApsProcessCapacityVo> apsProcessCapacities = apsProcessCapacityMapper.selectProcessCapacitysByproductFamily(productFamily);
+        List<ApsProcessCapacityVo> apsProcessCapacities = apsProcessCapacityMapper
+                .selectProcessCapacitysByproductFamily(productFamily);
         final int[] counter = {0};
         List<ApsProcessCapacityVo> processCapacityList = apsProcessCapacities.stream().peek(x -> {
             x.setProcessNumber(++counter[0]);
@@ -149,38 +183,60 @@ public class ApsProcessCapacityServiceImpl extends ServiceImpl<ApsProcessCapacit
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean removeBatchAndUpdateByIds(List<Integer> ids) {
-        LambdaQueryWrapper<ApsProcessScheme> apsProcessSchemeLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        apsProcessSchemeLambdaQueryWrapper.in(ApsProcessScheme::getProcessCapacityId, ids);
-        List<ApsProcessScheme> processSchemes = apsProcessSchemeMapper.selectList(apsProcessSchemeLambdaQueryWrapper);
-        if (CollectionUtils.isNotEmpty(processSchemes)) {
-            String process = processSchemes.stream().map(ApsProcessScheme::getCurrentProcessScheme)
-                    .distinct().collect(Collectors.joining(","));
-            throw new BeneWakeException(process + "还存在当前方案，请删除当前基础工艺方案后在删除");
-        }
+        LambdaQueryWrapper<ApsProcessCapacity> capacityQueryWrapper = new LambdaQueryWrapper<>();
+        capacityQueryWrapper.in(ApsProcessCapacity::getId, ids);
+        List<ApsProcessCapacity> apsProcessCapacities = getBaseMapper().selectList(capacityQueryWrapper);
+        List<String> productFamilyList = apsProcessCapacities.stream()
+                .map(ApsProcessCapacity::getProductFamily)
+                .distinct()
+                .collect(Collectors.toList());
 
-        LambdaQueryWrapper<ApsProcessCapacity> apsProcessCapacityLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        apsProcessCapacityLambdaQueryWrapper.in(ApsProcessCapacity::getId, ids);
-        List<ApsProcessCapacity> apsProcessCapacities = apsProcessCapacityMapper.selectList(apsProcessCapacityLambdaQueryWrapper);
-        List<String> productFamilys = apsProcessCapacities.stream().map(ApsProcessCapacity::getProductFamily).distinct().collect(Collectors.toList());
-
-        boolean removeBatchByIds = removeBatchByIds(ids);
-        if (removeBatchByIds) {
-            ArrayList<ApsProcessCapacity> apsProcessSchemes = new ArrayList<>();
-            final int[] count = new int[1];
-            for (String productFamily : productFamilys) {
-                count[0] = 0;
-                apsProcessCapacityLambdaQueryWrapper = new LambdaQueryWrapper<>();
-                apsProcessCapacityLambdaQueryWrapper.eq(ApsProcessCapacity::getProductFamily, productFamily)
-                        .orderBy(true, true, ApsProcessCapacity::getProcessNumber);
-                List<ApsProcessCapacity> apsProcessCapacityList = apsProcessCapacityMapper.selectList(apsProcessCapacityLambdaQueryWrapper);
-                apsProcessCapacityList = apsProcessCapacityList.stream().peek(x -> x.setProcessNumber(++count[0])).collect(Collectors.toList());
-                apsProcessSchemes.addAll(apsProcessCapacityList);
-            }
-            updateBatchById(apsProcessSchemes);
-        }
-
-        return removeBatchByIds;
+        LambdaQueryWrapper<ApsProcessScheme> schemeLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        schemeLambdaQueryWrapper.in(ApsProcessScheme::getProcessCapacityId ,ids);
+        apsProcessSchemeMapper.delete(schemeLambdaQueryWrapper);
+        //将所有的状态值设为false
+        setSchemeStateFalse(productFamilyList);
+        //删除当前的所有最终方案
+        deleteOptimal(productFamilyList);
+        return removeBatchByIds(ids);
     }
+//    @Override
+//    @Transactional(rollbackFor = Exception.class)
+//    public boolean removeBatchAndUpdateByIds(List<Integer> ids) {
+//        LambdaQueryWrapper<ApsProcessScheme> apsProcessSchemeLambdaQueryWrapper = new LambdaQueryWrapper<>();
+//        apsProcessSchemeLambdaQueryWrapper.in(ApsProcessScheme::getProcessCapacityId, ids);
+//        List<ApsProcessScheme> processSchemes = apsProcessSchemeMapper.selectList(apsProcessSchemeLambdaQueryWrapper);
+//        if (CollectionUtils.isNotEmpty(processSchemes)) {
+//            String process = processSchemes.stream().map(ApsProcessScheme::getCurrentProcessScheme)
+//                    .distinct().collect(Collectors.joining(","));
+//            throw new BeneWakeException(process + "还存在当前方案，请删除当前基础工艺方案后在删除");
+//        }
+
+//        LambdaQueryWrapper<ApsProcessCapacity> apsProcessCapacityLambdaQueryWrapper = new LambdaQueryWrapper<>();
+//        apsProcessCapacityLambdaQueryWrapper.in(ApsProcessCapacity::getId, ids);
+//        List<ApsProcessCapacity> apsProcessCapacities = apsProcessCapacityMapper
+//                .selectList(apsProcessCapacityLambdaQueryWrapper);
+//        List<String> productFamilys = apsProcessCapacities.stream()
+//                .map(ApsProcessCapacity::getProductFamily).distinct().collect(Collectors.toList());
+
+//        boolean removeBatchByIds = removeBatchByIds(ids);
+//        if (removeBatchByIds) {
+//            ArrayList<ApsProcessCapacity> apsProcessSchemes = new ArrayList<>();
+//            final int[] count = new int[1];
+//            for (String productFamily : productFamilys) {
+//                count[0] = 0;
+//                apsProcessCapacityLambdaQueryWrapper = new LambdaQueryWrapper<>();
+//                apsProcessCapacityLambdaQueryWrapper.eq(ApsProcessCapacity::getProductFamily, productFamily)
+//                        .orderBy(true, true, ApsProcessCapacity::getProcessNumber);
+//                List<ApsProcessCapacity> apsProcessCapacityList = apsProcessCapacityMapper.selectList(apsProcessCapacityLambdaQueryWrapper);
+//                apsProcessCapacityList = apsProcessCapacityList.stream().peek(x -> x.setProcessNumber(++count[0])).collect(Collectors.toList());
+//                apsProcessSchemes.addAll(apsProcessCapacityList);
+//            }
+//            updateBatchById(apsProcessSchemes);
+//        }
+
+//        return removeBatchByIds;
+//    }
 
     @Override
     public Boolean updateProcessNumber(List<ApsProcessCapacityParam> apsProcessCapacityVo) {
