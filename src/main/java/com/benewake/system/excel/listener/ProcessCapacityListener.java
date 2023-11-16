@@ -29,19 +29,20 @@ public class ProcessCapacityListener extends AnalysisEventListener<ExcelProcessC
     private final Map<String, Integer> processNameMap;
 
     //    private final ProcessCapacityExcelToPo processCapacityExcelToPo;
-    private List<ApsProcessCapacity> processCapacities = new ArrayList<>();
+    private List<ApsProcessCapacity> excelProcessCapacities = new ArrayList<>();
 
     private StringBuilder processNameError;
 
     static {
         head.add("所属工序");
-        head.add("产品族");
-        head.add("序号");
         head.add("工序名称");
+        head.add("序号");
+        head.add("产品族");
         head.add("包装方式");
         head.add("标准工时");
-        head.add("人员MAX");
-        head.add("人员MIN");
+        head.add("切换时间");
+        head.add("人数MAX");
+        head.add("人数MIN");
     }
 
     public ProcessCapacityListener(ApsProcessCapacityService processCapacityService, ApsProcessNamePoolService processNamePoolService, Integer type) {
@@ -89,7 +90,7 @@ public class ProcessCapacityListener extends AnalysisEventListener<ExcelProcessC
         }
         apsProcessCapacity.setMaxPersonnel(data.getMaxPersonnel());
         apsProcessCapacity.setMinPersonnel(data.getMinPersonnel());
-        processCapacities.add(apsProcessCapacity);
+        excelProcessCapacities.add(apsProcessCapacity);
     }
 
     @Override
@@ -100,14 +101,14 @@ public class ProcessCapacityListener extends AnalysisEventListener<ExcelProcessC
 
         if (type.equals(ExcelOperationEnum.OVERRIDE.getCode())) {
             processCapacityService.remove(null);
-            processCapacityService.saveBatch(processCapacities);
+            processCapacityService.saveBatch(excelProcessCapacities);
         } else {
             List<ApsProcessCapacity> processCapacityList = processCapacityService.getBaseMapper().selectList(null);
             List<String> productFamily = processCapacityList.stream()
                     .map(ApsProcessCapacity::getProductFamily)
                     .distinct()
                     .collect(Collectors.toList());
-            List<String> addProductFamily = processCapacities.stream()
+            List<String> addProductFamily = excelProcessCapacities.stream()
                     .map(ApsProcessCapacity::getProductFamily)
                     .distinct()
                     .collect(Collectors.toList());
@@ -118,7 +119,7 @@ public class ProcessCapacityListener extends AnalysisEventListener<ExcelProcessC
                 String existFamily = String.join("、", duplicates);
                 throw new BeneWakeException(existFamily + "已经存在了");
             }
-            processCapacityService.saveBatch(processCapacityList);
+            processCapacityService.saveBatch(excelProcessCapacities);
         }
     }
 }

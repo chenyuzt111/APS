@@ -24,10 +24,11 @@ public class ProcessPoolListener extends AnalysisEventListener<ExcelProcessNameP
 
     private Integer type;
 
-    public ProcessPoolListener(ApsProcessNamePoolService apsProcessNamePoolService , Integer type) {
+    public ProcessPoolListener(ApsProcessNamePoolService apsProcessNamePoolService, Integer type) {
         this.apsProcessNamePoolService = apsProcessNamePoolService;
         this.type = type;
     }
+
     //员工集合
     private List<ExcelProcessNamePool> excelProcessNamePools = new ArrayList<>();
 
@@ -40,7 +41,7 @@ public class ProcessPoolListener extends AnalysisEventListener<ExcelProcessNameP
     @Override
     public void invokeHeadMap(Map<Integer, String> headMap, AnalysisContext context) {
         String h;
-        if((h = headMap.get(0))==null || !h.equals("工序名称")){
+        if ((h = headMap.get(0)) == null || !h.equals("工序名称")) {
             throw new BeneWakeException("第一列名称应该为 工序名称");
         }
     }
@@ -53,15 +54,21 @@ public class ProcessPoolListener extends AnalysisEventListener<ExcelProcessNameP
             apsProcessNamePool.setProcessName(x.getProcessName());
             return apsProcessNamePool;
         }).collect(Collectors.toList());
+        // ...
         if (type == ExcelOperationEnum.OVERRIDE.getCode()) {
-            //覆盖
+            // 覆盖
             apsProcessNamePoolService.remove(null);
             apsProcessNamePoolService.saveBatch(apsProcessNamePools);
         } else {
+            // 从数据库中获取所有现有的工序命名池记录
             List<ApsProcessNamePool> processNamePools = apsProcessNamePoolService.getBaseMapper().selectList(null);
-            apsProcessNamePools.removeIf(processNamePools::contains);
+            List<String> processNames = processNamePools.stream().map(ApsProcessNamePool::getProcessName).collect(Collectors.toList());
+            // 过滤出不在processNamePools中存在的apsProcessNamePools元素
+            apsProcessNamePools = apsProcessNamePools.stream()
+                    .filter(x -> !processNames.contains(x.getProcessName())
+                    ).collect(Collectors.toList());
+            // 保存那些在数据库中不存在的记录
             apsProcessNamePoolService.saveBatch(apsProcessNamePools);
         }
     }
-
 }

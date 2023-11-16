@@ -273,7 +273,7 @@ public class ApsProcessCapacityServiceImpl extends ServiceImpl<ApsProcessCapacit
                     .sheet().headRowNumber(1).doRead();
         } catch (Exception e) {
             log.error("工序与产能导入失败" + e);
-            throw new BeneWakeException("工序与产能导入失败");
+            throw new BeneWakeException(e.getMessage());
         }
         return true;
     }

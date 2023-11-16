@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import javax.websocket.server.PathParam;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Api(tags = "工序与产能")
@@ -245,7 +246,7 @@ public class ProcessController {
         if (file.isEmpty()) {
             return Result.fail("文件为空！");
         }
-        String[] split = file.getOriginalFilename().split("\\.");
+        String[] split = Objects.requireNonNull(file.getOriginalFilename()).split("\\.");
         if (!"xlsx".equals(split[1]) && !"xls".equals(split[1])) {
             return Result.fail("请提供.xlsx或.xls为后缀的Excel文件");
         }

@@ -116,8 +116,8 @@ public class ApsProcessNamePoolServiceImpl extends ServiceImpl<ApsProcessNamePoo
                     ExcelProcessNamePool.class, new ProcessPoolListener(this ,type))
                     .sheet().headRowNumber(1).doRead();
         } catch (Exception e) {
-            log.error("工序与产能导入失败" + e);
-            throw new BeneWakeException("导入失败");
+            log.error("工序与产能导入失败" + e.getMessage());
+            throw new BeneWakeException(e.getMessage());
         }
         return true;
     }
