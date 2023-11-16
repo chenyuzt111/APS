@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsProcessScheme;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.benewake.system.entity.dto.ApsProcessSchemeDto;
+import com.benewake.system.entity.vo.ApsProcessSchemeVo;
 import com.benewake.system.entity.vo.ProcessSchemeEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -19,8 +20,7 @@ import java.util.List;
 @Mapper
 public interface ApsProcessSchemeMapper extends BaseMapper<ApsProcessScheme> {
 
-    List<String> selectProcessScheme(@Param("processCapacityIds") List<Integer> processCapacityIds, @Param("number") Integer number);
-
+    List<String> selectSchemeBycaIdandNumber(@Param("processCapacityIds") List<Integer> processCapacityIds, @Param("number") Integer number);
 
     List<ApsProcessSchemeDto> selectProcessSchemeBycurrentProcessScheme(@Param("currentProcessScheme") String currentProcessScheme);
 
@@ -31,6 +31,8 @@ public interface ApsProcessSchemeMapper extends BaseMapper<ApsProcessScheme> {
     Page<ApsProcessSchemeDto> selectProcessSchemePage(Page<ApsProcessScheme> schemePage);
 
     List<ApsProcessSchemeDto> selectProcessSchemeByProcessScheme(@Param("currentProcessScheme") String currentProcessScheme, @Param("productFamily") String productFamily);
+
+    List<ApsProcessSchemeVo> selectProcessScheme();
 }
 
 

@@ -258,7 +258,7 @@ public class ApsProcessCapacityServiceImpl extends ServiceImpl<ApsProcessCapacit
                 List<ApsProcessCapacityDto> apsProcessCapacityDtos = apsProcessCapacityMapper.selectAllDtos();
                 excelProcessCapacities = processCapacityDtoToExcelList.convert(apsProcessCapacityDtos);
             }
-            EasyExcel.write(response.getOutputStream(), ExcelProcessCapacity.class).sheet("模板").doWrite(excelProcessCapacities);
+            EasyExcel.write(response.getOutputStream(), ExcelProcessCapacity.class).sheet("sheet1").doWrite(excelProcessCapacities);
         } catch (Exception e) {
             log.error("工序与产能导出失败了" + e);
             throw new BeneWakeException("工序与产能导出失败了");

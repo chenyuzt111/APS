@@ -2,10 +2,7 @@ package com.benewake.system.excel.entity;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -13,13 +10,20 @@ import java.math.BigDecimal;
 import lombok.Data;
 
 /**
- * 工序与产能表
- *
- * @TableName aps_process_capacity
+ * 
+ * @TableName aps_process_scheme
  */
-@TableName(value = "aps_process_capacity")
+
 @Data
-public class ExcelProcessCapacity implements Serializable {
+public class ExcelProcessScheme implements Serializable {
+
+
+    /**
+     * 当前工艺方案
+     */
+    @ColumnWidth(22)
+    @ExcelProperty("当前工艺方案")
+    private String currentProcessScheme;
 
 
     /**
@@ -29,27 +33,26 @@ public class ExcelProcessCapacity implements Serializable {
     @ExcelProperty("所属工序")
     private String belongingProcess;
 
-
     /**
-     * 工序id
+     * 产品族
      */
-    @ColumnWidth(19)
-    @ExcelProperty("工序名称")
-    private String processName;
+    @ColumnWidth(11)
+    @ExcelProperty("产品族")
+    private String productFamily;
 
     /**
      * 序号
      */
-    @ColumnWidth(8)
+    @ColumnWidth(7)
     @ExcelProperty("序号")
     private Integer processNumber;
 
     /**
-     * 产品族
+     * 工序name
      */
-    @ColumnWidth(12)
-    @ExcelProperty("产品族")
-    private String productFamily;
+    @ColumnWidth(26)
+    @ExcelProperty("工序名称")
+    private String processName;
 
     /**
      * 包装方式
@@ -58,18 +61,20 @@ public class ExcelProcessCapacity implements Serializable {
     @ExcelProperty("包装方式")
     private String packagingMethod;
 
+
     /**
      * 标准工时
      */
     @ColumnWidth(12)
     @ExcelProperty("标准工时")
-    private String standardTime;
+    private BigDecimal standardTime;
+
     /**
-     * 标准工时
+     * 切换时间
      */
     @ColumnWidth(12)
     @ExcelProperty("切换时间")
-    private Integer switchTime;
+    private BigDecimal switchTime;
 
     /**
      * 人数MAX
@@ -85,6 +90,24 @@ public class ExcelProcessCapacity implements Serializable {
     @ExcelProperty("人数MIN")
     private Integer minPersonnel;
 
+    /**
+     * 员工姓名
+     */
+    @ColumnWidth(12)
+    @ExcelProperty("员工姓名")
+    private String employeeName;
+
+    /**
+     * 人数
+     */
+    @ColumnWidth(7)
+    @ExcelProperty("人数")
+    private Integer number;
+
+
+    @ColumnWidth(7)
+    @ExcelProperty("状态")
+    private String state;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

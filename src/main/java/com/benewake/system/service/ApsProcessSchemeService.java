@@ -4,6 +4,7 @@ import com.benewake.system.entity.ApsProcessScheme;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.benewake.system.entity.vo.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -23,4 +24,5 @@ public interface ApsProcessSchemeService extends IService<ApsProcessScheme> {
 
     Boolean updateProcessScheme(List<ApsProcessSchemeParam> apsProcessSchemeParam);
 
+    void downloadProcessCapacity(HttpServletResponse response, DownloadParam downloadParam);
 }

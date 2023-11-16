@@ -1,6 +1,7 @@
 package com.benewake.system.excel.entity;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -17,6 +18,7 @@ public class ExcelProcessNamePool implements Serializable {
     private Integer number;
 
 
+    @ColumnWidth(20)
     @ExcelProperty("工序名称")
     private String processName;
 

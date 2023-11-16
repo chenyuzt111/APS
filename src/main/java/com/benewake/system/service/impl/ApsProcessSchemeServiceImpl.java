@@ -1,5 +1,6 @@
 package com.benewake.system.service.impl;
 
+import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -8,7 +9,10 @@ import com.benewake.system.entity.ApsProcessCapacity;
 import com.benewake.system.entity.ApsProcessScheme;
 import com.benewake.system.entity.ApsProductFamilyProcessSchemeManagement;
 import com.benewake.system.entity.dto.ApsProcessSchemeDto;
+import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.vo.*;
+import com.benewake.system.excel.entity.ExcelProcessScheme;
+import com.benewake.system.excel.transfer.ProcessSchemeVoToExcelList;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.mapper.ApsProcessCapacityMapper;
 import com.benewake.system.mapper.ApsProductFamilyProcessSchemeManagementMapper;
@@ -23,8 +27,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -56,6 +62,9 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
     @Autowired
     private ApsProcessSchemeDtoToVo apsProcessSchemeDtoToVo;
 
+    @Autowired
+    private ProcessSchemeVoToExcelList processSchemeVoToExcelList;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public synchronized String saveProcessScheme(ApsProcessSchemeParams apsProcessSchemeParams) {
@@ -72,7 +81,7 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
                 .collect(Collectors.toList());
         Integer number = apsProcessSchemeParams.getNumber();
         String currentProcessScheme;
-        List<String> processSchemes = apsProcessSchemeMapper.selectProcessScheme(processCapacityIds, number);
+        List<String> processSchemes = apsProcessSchemeMapper.selectSchemeBycaIdandNumber(processCapacityIds, number);
         if (CollectionUtils.isNotEmpty(processSchemes)
                 && StringUtils.isNotBlank(processSchemes.get(0))) {
             currentProcessScheme = StringUtils.incrementAndExtractLast(processSchemes);
@@ -175,7 +184,7 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
             LambdaQueryWrapper<ApsOptimalStrategy> apsOptimalStrategyLambdaQueryWrapper = new LambdaQueryWrapper<>();
             apsOptimalStrategyLambdaQueryWrapper.eq(ApsOptimalStrategy::getNumber, number).eq(ApsOptimalStrategy::getProductFamily, productFamily);
             ApsOptimalStrategy one = apsOptimalStrategyService.getOne(apsOptimalStrategyLambdaQueryWrapper);
-            Integer strategy = one !=null ?one.getStrategy() : 1;
+            Integer strategy = one != null ? one.getStrategy() : 1;
             if (strategy == 1) {
                 //最优的时间比 新添加的还要长那么就要更新
                 if (maxStandardTimeValueOptimal.compareTo(maxStandardTimeValue) > 0) {
@@ -351,7 +360,7 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
         ApsProcessScheme processScheme = this.getById(id);
         long count = apsProcessSchemeParam.stream().map(ApsProcessSchemeParam::getEmployeeName).distinct().count();
         Integer number = processScheme.getNumber();
-        if (count != number){
+        if (count != number) {
             throw new BeneWakeException("分配人数不对");
         }
         String currentProcessScheme = processScheme.getCurrentProcessScheme();
@@ -388,6 +397,30 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
         //重新计算最优方案
         saveProducSchemeManagement(apsProcessSchemeParam, number, currentProcessScheme);
         return true;
+    }
+
+    @Override
+    public void downloadProcessCapacity(HttpServletResponse response, DownloadParam downloadParam) {
+        try {
+            response.setContentType("application/vnd.ms-excel");
+            response.setCharacterEncoding("utf-8");
+            // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+            String fileName = URLEncoder.encode("我是文件名", "UTF-8").replaceAll("\\+", "%20");
+            response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+            List<ExcelProcessScheme> excelProcessSchemes = null;
+            if (downloadParam.getType() == ExcelOperationEnum.CURRENT_PAGE.getCode()) {
+                ApsProcessSchemeVoPage processScheme = getProcessScheme(downloadParam.getPage(), downloadParam.getSize());
+                List<ApsProcessSchemeVo> apsProcessSchemeVos = processScheme.getApsProcessSchemeVos();
+                excelProcessSchemes = processSchemeVoToExcelList.convert(apsProcessSchemeVos);
+            } else {
+                List<ApsProcessSchemeVo> apsProcessSchemeVos = apsProcessSchemeMapper.selectProcessScheme();
+                excelProcessSchemes = processSchemeVoToExcelList.convert(apsProcessSchemeVos);
+            }
+            EasyExcel.write(response.getOutputStream() ,ExcelProcessScheme.class).sheet("sheet1").doWrite(excelProcessSchemes);
+        } catch (Exception e) {
+            log.error("导出基础工艺方案列表失败" + e.getMessage());
+            throw new BeneWakeException(e.getMessage());
+        }
     }
 //    @Override
 //    @Transactional(rollbackFor = Exception.class)

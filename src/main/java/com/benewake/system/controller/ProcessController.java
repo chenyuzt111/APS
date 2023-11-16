@@ -60,7 +60,7 @@ public class ProcessController {
     }
 
     @ApiOperation("获取工序名称分页")
-    @GetMapping("/getProcessNamePools/{`page`}/{size}")
+    @GetMapping("/getProcessNamePools/{page}/{size}")
     public Result getProcess(@RequestParam(required = false) String name, @PathVariable Integer page, @PathVariable Integer size) {
         ApsProcessNamePoolPageVo apsProcessNamePoolVo = apsProcessNamePoolService.getProcess(name, page, size);
         return Result.ok(apsProcessNamePoolVo);
@@ -252,5 +252,16 @@ public class ProcessController {
         }
         Boolean res = apsProcessCapacityService.saveDataByExcel(type, file);
         return res ? Result.ok() : Result.fail();
+    }
+
+    @ApiOperation("导出基础工艺方案")
+    @PostMapping("/downloadProcessScheme")
+    public void downloadProcessScheme(@RequestBody DownloadParam downloadParam, HttpServletResponse response) {
+        if (downloadParam == null || downloadParam.getType() == null
+                || (downloadParam.getType() == ExcelOperationEnum.CURRENT_PAGE.getCode()
+                && (downloadParam.getPage() == null || downloadParam.getSize() == null))) {
+            throw new BeneWakeException("数据不正确");
+        }
+        apsProcessSchemeService.downloadProcessCapacity(response, downloadParam);
     }
 }

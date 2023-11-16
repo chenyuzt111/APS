@@ -41,12 +41,12 @@ public class RedisConfig {
 //                .setAddress("redis://127.0.0.1:6380")
 //                .setPassword("benewake@12345");
         //测试
-        config.useSingleServer()
-                .setAddress("redis://127.0.0.1:6379")
-                .setPassword("benewake@12345");
-        //本机
 //        config.useSingleServer()
-//                .setAddress("redis://127.0.0.1:6379");
+//                .setAddress("redis://127.0.0.1:6379")
+//                .setPassword("benewake@12345");
+        //本机
+        config.useSingleServer()
+                .setAddress("redis://127.0.0.1:6379");
         return Redisson.create(config);
     }
 
