@@ -58,9 +58,11 @@ public class ApsTfminiSCalibrationTestsServiceImpl extends ServiceImpl<ApsTfmini
                 fieldMapping.put("生产订单编号", "productionOrderNumber");
                 fieldMapping.put("本次校准测试完成数", "burnInCompletionQuantity");
                 fieldMapping.put("校准合格数", "BurnQualifiedCount");
+                fieldMapping.put("校准不合格数", "UnBurnQualifiedCount");
                 fieldMapping.put("物料编码", "materialCode");
                 fieldMapping.put("物料名称", "materialName");
                 fieldMapping.put("测试工装编号", "BurnFixtureNumber");
+                fieldMapping.put("订单总数", "totalNumber");
                 JsonObject jsonObject = JsonParser.parseString(responseString).getAsJsonObject();
                 JsonArray answersArray = jsonObject.getAsJsonObject("result").getAsJsonArray("result");
                 List<MesCalibrationTests> dataList = new ArrayList<>();
@@ -85,7 +87,11 @@ public class ApsTfminiSCalibrationTestsServiceImpl extends ServiceImpl<ApsTfmini
                                         if (id == 84939999) {
                                             field.set(jiaozhun, dataValue);
                                         }
-                                    } else {
+                                    } else if (excelFieldName.equals("UnBurnQualifiedCount")){
+                                        if (id == 84939998) {
+                                            field.set(jiaozhun, dataValue);
+                                        }
+                                    }  else {
                                         field.set(jiaozhun, dataValue);
                                     }
                                     field.setAccessible(false);

@@ -49,6 +49,8 @@ public class ApsTfminiSPcbaBurn implements Serializable {
      */
     @TableField(value = "burn_qualified_count")
     private String burnQualifiedCount;
+    @TableField(value = "un_burn_qualified_count")
+    private String unburnQualifiedCount;
 
     /**
      * 烧录工装编号
@@ -56,6 +58,11 @@ public class ApsTfminiSPcbaBurn implements Serializable {
     @TableField(value = "burn_fixture_number")
     private String burnFixtureNumber;
 
+    /**
+     * 订单总数
+     */
+    @TableField(value = "total_number")
+    private String totalNumber;
     /**
      * 版本号
      */

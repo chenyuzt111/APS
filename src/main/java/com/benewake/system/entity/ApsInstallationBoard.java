@@ -50,6 +50,13 @@ public class ApsInstallationBoard implements Serializable {
     @TableField(value = "burn_qualified_count")
     private String burnQualifiedCount;
 
+    @TableField(value = "un_burn_qualified_count")
+    private String unburnQualifiedCount;
+    /**
+     * 订单总数
+     */
+    @TableField(value = "total_number")
+    private String totalNumber;
     /**
      * 版本号
      */

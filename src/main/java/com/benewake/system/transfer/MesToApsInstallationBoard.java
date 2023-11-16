@@ -18,6 +18,8 @@ public class MesToApsInstallationBoard {
         apsInstallationBoard.setMaterialName(mesInstallationBoard.getMaterialName());
         apsInstallationBoard.setBurnInCompletionQuantity(mesInstallationBoard.getBurnInCompletionQuantity());
         apsInstallationBoard.setBurnQualifiedCount(mesInstallationBoard.getBurnQualifiedCount());
+        apsInstallationBoard.setTotalNumber(mesInstallationBoard.getTotalNumber());
+        apsInstallationBoard.setUnburnQualifiedCount(mesInstallationBoard.getUnBurnQualifiedCount());
         apsInstallationBoard.setVersion(version);
 
         return apsInstallationBoard;

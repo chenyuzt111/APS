@@ -49,12 +49,20 @@ public class ApsTfminiSCalibrationTests implements Serializable {
      */
     @TableField(value = "burn_qualified_count")
     private String burnqualifiedcount;
+    @TableField(value = "un_burn_qualified_count")
+    private String unburnQualifiedCount;
 
     /**
      * 测试工装编号
      */
     @TableField(value = "burn_fixture_number")
     private String burnfixturenumber;
+
+    /**
+     * 订单总数
+     */
+    @TableField(value = "total_number")
+    private String totalNumber;
 
     /**
      * 版本号

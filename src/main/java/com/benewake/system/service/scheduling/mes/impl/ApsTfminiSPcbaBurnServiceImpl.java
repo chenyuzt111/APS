@@ -68,9 +68,11 @@ public class ApsTfminiSPcbaBurnServiceImpl extends ServiceImpl<ApsTfminiSPcbaBur
                 fieldMapping.put("生产订单编号", "productionOrderNumber");
                 fieldMapping.put("本次烧录完成数", "burnInCompletionQuantity");
                 fieldMapping.put("烧录合格数", "BurnQualifiedCount");
+                fieldMapping.put("烧录不合格数", "UnBurnQualifiedCount");
                 fieldMapping.put("物料编码", "materialCode");
                 fieldMapping.put("物料名称", "materialName");
                 fieldMapping.put("烧录工装编号", "BurnFixtureNumber");
+                fieldMapping.put("订单总数", "totalNumber");
                 // 使用Gson解析JSON
                 JsonObject jsonObject = JsonParser.parseString(responseString).getAsJsonObject();
                 JsonArray answersArray = jsonObject.getAsJsonObject("result").getAsJsonArray("result");
@@ -103,6 +105,10 @@ public class ApsTfminiSPcbaBurnServiceImpl extends ServiceImpl<ApsTfminiSPcbaBur
                                     // 如果字段是BurnQualifiedCount并且还没有设置过，设置字段值
                                     if (excelFieldName.equals("BurnQualifiedCount")) {
                                         if (id == 84939165) {
+                                            field.set(MesPcbaBurn, dataValue);
+                                        }
+                                    } else if (excelFieldName.equals("UnBurnQualifiedCount")){
+                                        if (id == 84939164) {
                                             field.set(MesPcbaBurn, dataValue);
                                         }
                                     } else {

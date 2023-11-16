@@ -16,8 +16,12 @@ public class MesSnLabeling {
     //("本次粘贴完成数")
     private String burnInCompletionQuantity;
 
+    private String UnBurnQualifiedCount;
+
     //("粘贴合格数")
     private String BurnQualifiedCount;
 
+    //("订单总数")
+    private String totalNumber;
 
 }

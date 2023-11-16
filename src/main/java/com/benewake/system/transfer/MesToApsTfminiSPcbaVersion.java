@@ -20,6 +20,8 @@ public class MesToApsTfminiSPcbaVersion {
         apsTfminiSPcbaVersion.setBurnInCompletionQuantity(mesPcbaVersion.getBurnInCompletionQuantity());
         apsTfminiSPcbaVersion.setBurnQualifiedCount(mesPcbaVersion.getBurnQualifiedCount());
         apsTfminiSPcbaVersion.setBurnFixtureNumber(mesPcbaVersion.getBurnFixtureNumber());
+        apsTfminiSPcbaVersion.setTotalNumber(mesPcbaVersion.getTotalNumber());
+        apsTfminiSPcbaVersion.setUnburnQualifiedCount(mesPcbaVersion.getUnBurnQualifiedCount());
         apsTfminiSPcbaVersion.setVersion(version);
 
         return apsTfminiSPcbaVersion;

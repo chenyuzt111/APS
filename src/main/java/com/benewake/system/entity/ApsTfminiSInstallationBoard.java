@@ -49,12 +49,20 @@ public class ApsTfminiSInstallationBoard implements Serializable {
      */
     @TableField(value = "burn_qualified_count")
     private String burnQualifiedCount;
+    @TableField(value = "un_burn_qualified_count")
+    private String unburnQualifiedCount;
 
     /**
      * 版本号
      */
     @TableField(value = "version")
     private Integer version;
+
+    /**
+     * 订单总数
+     */
+    @TableField(value = "total_number")
+    private String totalNumber;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

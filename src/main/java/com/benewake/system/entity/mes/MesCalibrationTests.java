@@ -19,8 +19,12 @@ public class MesCalibrationTests {
 
     //("校准合格数")
     private String BurnQualifiedCount;
+    private String UnBurnQualifiedCount;
 
 
     //("测试工装编号")
     private String BurnFixtureNumber;
+
+    //("订单总数")
+    private String totalNumber;
 }

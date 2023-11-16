@@ -59,8 +59,10 @@ public class ApsTfminiSInstallationBoardServiceImpl extends ServiceImpl<ApsTfmin
                 fieldMapping.put("生产订单编号", "productionOrderNumber");
                 fieldMapping.put("本次安装完成数", "burnInCompletionQuantity");
                 fieldMapping.put("安装合格数", "BurnQualifiedCount");
+                fieldMapping.put("安装不合格数", "UnBurnQualifiedCount");
                 fieldMapping.put("物料编码", "materialCode");
                 fieldMapping.put("物料名称", "materialName");
+                fieldMapping.put("订单总数", "totalNumber");
                 JsonObject jsonObject = JsonParser.parseString(responseString).getAsJsonObject();
                 JsonArray answersArray = jsonObject.getAsJsonObject("result").getAsJsonArray("result");
                 List<MesInstallationBoard> dataList = new ArrayList<>();
@@ -83,6 +85,10 @@ public class ApsTfminiSInstallationBoardServiceImpl extends ServiceImpl<ApsTfmin
                                     field.setAccessible(true);
                                     if (excelFieldName.equals("BurnQualifiedCount")) {
                                         if (id == 84939594) {
+                                            field.set(MesInstallationBoard, dataValue);
+                                        }
+                                    }else if (excelFieldName.equals("UnBurnQualifiedCount")){
+                                        if (id == 84939593) {
                                             field.set(MesInstallationBoard, dataValue);
                                         }
                                     } else {

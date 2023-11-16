@@ -60,8 +60,10 @@ public class ApsInstallationBoardServiceImpl extends ServiceImpl<ApsInstallation
                 fieldMapping.put("生产订单编号", "productionOrderNumber");
                 fieldMapping.put("本次安装完成数", "burnInCompletionQuantity");
                 fieldMapping.put("安装合格数", "BurnQualifiedCount");
+                fieldMapping.put("安装不合格数", "UnBurnQualifiedCount");
                 fieldMapping.put("物料编码", "materialCode");
                 fieldMapping.put("物料名称", "materialName");
+                fieldMapping.put("订单总数", "totalNumber");
                 JsonObject jsonObject = JsonParser.parseString(responseString).getAsJsonObject();
                 JsonArray answersArray = jsonObject.getAsJsonObject("result").getAsJsonArray("result");
                 List<MesInstallationBoard> dataList = new ArrayList<>();
@@ -86,6 +88,10 @@ public class ApsInstallationBoardServiceImpl extends ServiceImpl<ApsInstallation
                                     // 如果字段是BurnQualifiedCount并且还没有设置过，设置字段
                                     if (excelFieldName.equals("BurnQualifiedCount")) {
                                         if (id == 84934591) {
+                                            field.set(MesInstallationBoard, dataValue);
+                                        }
+                                    }else if (excelFieldName.equals("UnBurnQualifiedCount")){
+                                        if (id == 84934590) {
                                             field.set(MesInstallationBoard, dataValue);
                                         }
                                     } else {

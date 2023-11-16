@@ -18,6 +18,10 @@ public class MesPackagingTest {
 
    //("包装终检合格数")
     private String BurnQualifiedCount;
+    private String UnBurnQualifiedCount;
+
+    //("订单总数")
+    private String totalNumber;
 
 
 }

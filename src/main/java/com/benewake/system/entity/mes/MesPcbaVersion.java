@@ -19,7 +19,12 @@ public class MesPcbaVersion {
     //("分板合格数")
     private String BurnQualifiedCount;
 
+    //"分板不合格数")
+    private String UnBurnQualifiedCount;
 
     //("分板治具编号")
     private String BurnFixtureNumber;
+
+    //("订单总数")
+    private String totalNumber;
 }

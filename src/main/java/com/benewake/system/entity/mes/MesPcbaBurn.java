@@ -19,8 +19,14 @@ public class MesPcbaBurn {
     //"烧录合格数")
     private String BurnQualifiedCount;
 
+    //"烧录不合格数")
+    private String UnBurnQualifiedCount;
+
 
     //"烧录工装编号")
     private String BurnFixtureNumber;
+
+    //("订单总数")
+    private String totalNumber;
 
 }

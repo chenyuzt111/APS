@@ -59,8 +59,10 @@ public class ApsSnLabelingServiceImpl extends ServiceImpl<ApsSnLabelingMapper, A
                 fieldMapping.put("生产订单编号", "productionOrderNumber");
                 fieldMapping.put("本次粘贴完成数", "burnInCompletionQuantity");
                 fieldMapping.put("粘贴合格数", "BurnQualifiedCount");
+                fieldMapping.put("粘贴不合格数", "UnBurnQualifiedCount");
                 fieldMapping.put("物料编码 ", "materialCode");
                 fieldMapping.put("物料名称", "materialName");
+                fieldMapping.put("订单总数", "totalNumber");
                 JsonObject jsonObject = JsonParser.parseString(responseString).getAsJsonObject();
                 JsonArray answersArray = jsonObject.getAsJsonObject("result").getAsJsonArray("result");
                 List<MesSnLabeling> dataList = new ArrayList<>();
@@ -83,6 +85,10 @@ public class ApsSnLabelingServiceImpl extends ServiceImpl<ApsSnLabelingMapper, A
                                     field.setAccessible(true);
                                     if (excelFieldName.equals("BurnQualifiedCount")) {
                                         if (id == 84935594) {
+                                            field.set(snLabeling, dataValue);
+                                        }
+                                    }else if (excelFieldName.equals("UnBurnQualifiedCount")){
+                                        if (id == 84935542) {
                                             field.set(snLabeling, dataValue);
                                         }
                                     } else {

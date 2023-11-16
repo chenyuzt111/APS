@@ -59,9 +59,11 @@ public class ApsCalibrationTestsServiceImpl extends ServiceImpl<ApsCalibrationTe
                 fieldMapping.put("生产订单编号", "productionOrderNumber");
                 fieldMapping.put("本次校准测试完成数", "burnInCompletionQuantity");
                 fieldMapping.put("校准合格数", "BurnQualifiedCount");
+                fieldMapping.put("校准不合格数", "UnBurnQualifiedCount");
                 fieldMapping.put("物料编码", "materialCode");
                 fieldMapping.put("物料名称", "materialName");
                 fieldMapping.put("测试工装编号", "BurnFixtureNumber");
+                fieldMapping.put("订单总数", "totalNumber");
                 JsonObject jsonObject = JsonParser.parseString(responseString).getAsJsonObject();
                 JsonArray answersArray = jsonObject.getAsJsonObject("result").getAsJsonArray("result");
                 List<MesCalibrationTests> dataList = new ArrayList<>();
@@ -84,6 +86,10 @@ public class ApsCalibrationTestsServiceImpl extends ServiceImpl<ApsCalibrationTe
                                     field.setAccessible(true);
                                     if (excelFieldName.equals("BurnQualifiedCount")) {
                                         if (id == 84935387) {
+                                            field.set(mesCalibrationTests1, dataValue);
+                                        }
+                                    } else if (excelFieldName.equals("UnBurnQualifiedCount")){
+                                        if (id == 84935386) {
                                             field.set(mesCalibrationTests1, dataValue);
                                         }
                                     } else {

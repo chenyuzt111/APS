@@ -17,9 +17,15 @@ public class MesInstallationBoard {
     //("本次安装完成数")
     private String burnInCompletionQuantity;
 
+
+
     //("安装合格数")
     private String BurnQualifiedCount;
 
+    private String UnBurnQualifiedCount;
+
+    //("订单总数")
+    private String totalNumber;
 
 
 }

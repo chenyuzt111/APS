@@ -51,10 +51,22 @@ public class ApsPcbaBurn implements Serializable {
     private String burnQualifiedCount;
 
     /**
+     * 烧录不合格数
+     */
+    @TableField(value = "un_burn_qualified_count")
+    private String unburnQualifiedCount;
+
+    /**
      * 烧录工装编号
      */
     @TableField(value = "burn_fixture_number")
     private String burnFixtureNumber;
+
+    /**
+     * 订单总数
+     */
+    @TableField(value = "total_number")
+    private String totalNumber;
 
     /**
      * 版本号

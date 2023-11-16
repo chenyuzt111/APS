@@ -60,8 +60,10 @@ public class ApsPackagingTestServiceImpl extends ServiceImpl<ApsPackagingTestMap
                 fieldMapping.put("生产订单编号", "productionOrderNumber");
                 fieldMapping.put("本次包装终检完成数", "burnInCompletionQuantity");
                 fieldMapping.put("包装终检合格数", "BurnQualifiedCount");
+                fieldMapping.put("包装终检不合格数", "UnBurnQualifiedCount");
                 fieldMapping.put("物料编码", "materialCode");
                 fieldMapping.put("物料名称", "materialName");
+                fieldMapping.put("订单总数", "totalNumber");
                 JsonObject jsonObject = JsonParser.parseString(responseString).getAsJsonObject();
                 JsonArray answersArray = jsonObject.getAsJsonObject("result").getAsJsonArray("result");
                 List<MesPackagingTest> dataList = new ArrayList<>();
@@ -86,7 +88,11 @@ public class ApsPackagingTestServiceImpl extends ServiceImpl<ApsPackagingTestMap
                                         if (id == 84935951) {
                                             field.set(baozhuang, dataValue);
                                         }
-                                    } else {
+                                    } else if (excelFieldName.equals("UnBurnQualifiedCount")){
+                                        if (id == 84935950) {
+                                            field.set(baozhuang, dataValue);
+                                        }
+                                    }else {
                                         field.set(baozhuang, dataValue);
                                     }
                                     field.setAccessible(false);

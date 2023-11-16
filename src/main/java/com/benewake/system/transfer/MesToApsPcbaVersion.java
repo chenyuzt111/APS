@@ -19,6 +19,8 @@ public class MesToApsPcbaVersion {
         apsPcbaVersion.setBurnInCompletionQuantity(mesPcbaVersion.getBurnInCompletionQuantity());
         apsPcbaVersion.setBurnQualifiedCount(mesPcbaVersion.getBurnQualifiedCount());
         apsPcbaVersion.setBurnFixtureNumber(mesPcbaVersion.getBurnFixtureNumber());
+        apsPcbaVersion.setUnburnQualifiedCount(mesPcbaVersion.getUnBurnQualifiedCount());
+        apsPcbaVersion.setTotalNumber(mesPcbaVersion.getTotalNumber());
         apsPcbaVersion.setVersion(version);
         return apsPcbaVersion;
     }

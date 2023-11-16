@@ -18,6 +18,8 @@ public class MesToApsTfminiSPackagingTest {
         apsTfminiSPackagingTest.setMaterialName(mesPackagingTest.getMaterialName());
         apsTfminiSPackagingTest.setBurnInCompletionQuantity(mesPackagingTest.getBurnInCompletionQuantity());
         apsTfminiSPackagingTest.setBurnQualifiedCount(mesPackagingTest.getBurnQualifiedCount());
+        apsTfminiSPackagingTest.setTotalNumber(mesPackagingTest.getTotalNumber());
+        apsTfminiSPackagingTest.setUnburnQualifiedCount(mesPackagingTest.getUnBurnQualifiedCount());
         apsTfminiSPackagingTest.setVersion(version);
 
         return apsTfminiSPackagingTest;

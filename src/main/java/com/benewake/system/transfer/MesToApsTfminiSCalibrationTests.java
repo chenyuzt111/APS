@@ -18,6 +18,8 @@ public class MesToApsTfminiSCalibrationTests {
         apsTfminiSCalibrationTests.setBurnincompletionquantity(mesCalibrationTests.getBurnInCompletionQuantity());
         apsTfminiSCalibrationTests.setBurnqualifiedcount(mesCalibrationTests.getBurnQualifiedCount());
         apsTfminiSCalibrationTests.setBurnfixturenumber(mesCalibrationTests.getBurnFixtureNumber());
+        apsTfminiSCalibrationTests.setTotalNumber(mesCalibrationTests.getTotalNumber());
+        apsTfminiSCalibrationTests.setUnburnQualifiedCount(mesCalibrationTests.getUnBurnQualifiedCount());
         apsTfminiSCalibrationTests.setVersion(version);
 
         return apsTfminiSCalibrationTests;

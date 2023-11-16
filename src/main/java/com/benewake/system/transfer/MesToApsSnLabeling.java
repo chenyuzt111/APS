@@ -17,6 +17,8 @@ public class MesToApsSnLabeling {
         apsSnLabeling.setMaterialName(mesSnLabeling.getMaterialName());
         apsSnLabeling.setBurnInCompletionQuantity(mesSnLabeling.getBurnInCompletionQuantity());
         apsSnLabeling.setBurnQualifiedCount(mesSnLabeling.getBurnQualifiedCount());
+        apsSnLabeling.setTotalNumber(mesSnLabeling.getTotalNumber());
+        apsSnLabeling.setUnburnQualifiedCount(mesSnLabeling.getUnBurnQualifiedCount());
         apsSnLabeling.setVersion(version);
 
         return apsSnLabeling;

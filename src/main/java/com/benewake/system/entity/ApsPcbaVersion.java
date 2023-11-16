@@ -51,6 +51,12 @@ public class ApsPcbaVersion implements Serializable {
     private String burnQualifiedCount;
 
     /**
+     * 分板不合格数
+     */
+    @TableField(value = "un_burn_qualified_count")
+    private String unburnQualifiedCount;
+
+    /**
      * 分板治具编号
      */
     @TableField(value = "burn_fixture_number")
@@ -61,6 +67,12 @@ public class ApsPcbaVersion implements Serializable {
      */
     @TableField(value = "version")
     private Integer version;
+
+    /**
+     * 订单总数
+     */
+    @TableField(value = "total_number")
+    private String totalNumber;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
