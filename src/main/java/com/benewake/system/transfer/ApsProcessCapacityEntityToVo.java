@@ -17,6 +17,7 @@ public class ApsProcessCapacityEntityToVo {
         apsProcessCapacityVo.setProcessName(object.getProcessName());
         apsProcessCapacityVo.setProcessNumber(object.getProcessNumber());
         apsProcessCapacityVo.setProductFamily(object.getProductFamily());
+        apsProcessCapacityVo.setSwitchTime(object.getSwitchTime());
         apsProcessCapacityVo.setPackagingMethod(object.getPackagingMethod());
         if (object.getStandardTime() != null) {
             apsProcessCapacityVo.setStandardTime(object.getStandardTime().toString());

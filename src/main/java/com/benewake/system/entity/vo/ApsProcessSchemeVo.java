@@ -69,6 +69,12 @@ public class ApsProcessSchemeVo implements Serializable {
     private BigDecimal standardTime;
 
     /**
+     * 标准工时
+     */
+    @TableField(value = "switch_time")
+    private BigDecimal switchTime;
+
+    /**
      * 人数MAX
      */
     @TableField(value = "max_personnel")

@@ -38,6 +38,7 @@
                cap.packaging_method,
                standard_time,
                employee_name,
+               switch_time,
                max_personnel,
                min_personnel,
                number,

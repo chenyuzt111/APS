@@ -2,6 +2,7 @@ package com.benewake.system.mapper;
 
 import com.benewake.system.entity.ApsFinalUnfinishedData;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Update;
 
 /**
@@ -10,6 +11,7 @@ import org.apache.ibatis.annotations.Update;
 * @createDate 2023-11-15 15:33:25
 * @Entity com.benewake.system.entity.ApsFinalUnfinishedData
 */
+@Mapper
 public interface ApsFinalUnfinishedDataMapper extends BaseMapper<ApsFinalUnfinishedData> {
 
     @Update("call UpdateApsFinalUnfinishedData()")

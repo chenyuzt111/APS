@@ -9,11 +9,12 @@ import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.excel.entity.ExcelProcessNamePool;
 import com.benewake.system.entity.vo.ApsProcessNamePoolPageVo;
 import com.benewake.system.entity.vo.ApsProcessNamePoolVo;
-import com.benewake.system.entity.vo.DownloadProceeNameParam;
+import com.benewake.system.entity.vo.DownloadParam;
+import com.benewake.system.excel.listener.ProcessPoolListener;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsProcessNamePoolService;
 import com.benewake.system.mapper.ApsProcessNamePoolMapper;
-import com.benewake.system.excel.transfer.ApsProcessNamePoolDtoToExcelList;
+import com.benewake.system.excel.transfer.ProcessNamePoolDtoToExcelList;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class ApsProcessNamePoolServiceImpl extends ServiceImpl<ApsProcessNamePoo
         implements ApsProcessNamePoolService {
 
     @Autowired
-    private ApsProcessNamePoolDtoToExcelList processNamePoolDtoToExcelList;
+    private ProcessNamePoolDtoToExcelList processNamePoolDtoToExcelList;
 
     @Override
     public Boolean addOrUpdateProcess(ApsProcessNamePool apsProcessNamePool) {
@@ -84,7 +85,7 @@ public class ApsProcessNamePoolServiceImpl extends ServiceImpl<ApsProcessNamePoo
     }
 
     @Override
-    public void downloadProceeName(HttpServletResponse response, DownloadProceeNameParam downloadProceeNameParam) {
+    public void downloadProceeName(HttpServletResponse response, DownloadParam downloadParam) {
         try {
             response.setContentType("application/vnd.ms-excel");
             response.setCharacterEncoding("utf-8");
@@ -92,10 +93,10 @@ public class ApsProcessNamePoolServiceImpl extends ServiceImpl<ApsProcessNamePoo
             String fileName = URLEncoder.encode("我是文件名", "UTF-8").replaceAll("\\+", "%20");
             response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
             List<ApsProcessNamePool> apsProcessNamePools = null;
-            if (downloadProceeNameParam.getType() == ExcelOperationEnum.CURRENT_PAGE.getCode()) {
+            if (downloadParam.getType() == ExcelOperationEnum.CURRENT_PAGE.getCode()) {
                 Page<ApsProcessNamePool> poolPage = new Page<>();
-                poolPage.setSize(downloadProceeNameParam.getSize());
-                poolPage.setCurrent(downloadProceeNameParam.getPage());
+                poolPage.setSize(downloadParam.getSize());
+                poolPage.setCurrent(downloadParam.getPage());
                 apsProcessNamePools = page(poolPage).getRecords();
             } else {
                 apsProcessNamePools = getBaseMapper().selectList(null);
@@ -110,12 +111,15 @@ public class ApsProcessNamePoolServiceImpl extends ServiceImpl<ApsProcessNamePoo
 
     @Override
     public Boolean saveDataByExcel(Integer type, MultipartFile file) {
-//        try {
-//            EasyExcel.read(file.getInputStream(), ExcelProcessNamePool.class, listener).sheet().headRowNumber(1).doRead();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        return null;
+        try {
+            EasyExcel.read(file.getInputStream(),
+                    ExcelProcessNamePool.class, new ProcessPoolListener(this ,type))
+                    .sheet().headRowNumber(1).doRead();
+        } catch (Exception e) {
+            log.error("工序与产能导入失败" + e);
+            throw new BeneWakeException("导入失败");
+        }
+        return true;
     }
 
 }

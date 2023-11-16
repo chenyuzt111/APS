@@ -45,6 +45,12 @@ public class ApsProcessCapacityParam implements Serializable {
      */
     private String packagingMethod;
 
+
+    /**
+     * 切换时间（s）
+     */
+    private Integer switchTime;
+
     /**
      * 标准工时
      */

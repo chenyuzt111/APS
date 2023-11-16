@@ -12,6 +12,7 @@
         <result property="productFamily" column="product_family" jdbcType="VARCHAR"/>
         <result property="packagingMethod" column="packaging_method" jdbcType="VARCHAR"/>
         <result property="standardTime" column="standard_time" jdbcType="DECIMAL"/>
+        <result property="switchTime" column="switch_time" jdbcType="INTEGER"/>
         <result property="maxPersonnel" column="max_personnel" jdbcType="INTEGER"/>
         <result property="minPersonnel" column="min_personnel" jdbcType="INTEGER"/>
     </resultMap>
@@ -30,13 +31,13 @@
                product_family,
                packaging_method,
                standard_time,
+               switch_time,
                max_personnel,
                min_personnel
         FROM `aps_process_capacity` AS pro
                  LEFT JOIN aps_process_name_pool AS ce ON pro.process_id = ce.id
         ORDER BY pro.product_family,
                  pro.process_number
-        limit #{pass} ,#{size}
     </select>
 
     <select id="selectProcessCapacitysByproductFamily"
@@ -48,6 +49,7 @@
                process_number,
                product_family,
                packaging_method,
+               switch_time,
                standard_time,
                max_personnel,
                min_personnel
@@ -55,6 +57,23 @@
                  LEFT JOIN aps_process_name_pool AS ce ON pro.process_id = ce.id
         where product_family = #{productFamily}
           and pro.belonging_process = '组装'
+        ORDER BY pro.product_family,
+                 pro.process_number
+    </select>
+    <select id="selectAllDtos" resultType="com.benewake.system.entity.dto.ApsProcessCapacityDto">
+        SELECT pro.id,
+               belonging_process,
+               pro.process_id,
+               process_name,
+               process_number,
+               product_family,
+               packaging_method,
+               standard_time,
+               switch_time,
+               max_personnel,
+               min_personnel
+        FROM `aps_process_capacity` AS pro
+                 LEFT JOIN aps_process_name_pool AS ce ON pro.process_id = ce.id
         ORDER BY pro.product_family,
                  pro.process_number
     </select>

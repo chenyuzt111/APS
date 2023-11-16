@@ -21,6 +21,7 @@ public class ApsProcessSchemeDtoToVo {
         apsProcessSchemeVo.setProcessNumber(object.getProcessNumber());
         apsProcessSchemeVo.setProductFamily(object.getProductFamily());
         apsProcessSchemeVo.setPackagingMethod(object.getPackagingMethod());
+        apsProcessSchemeVo.setSwitchTime(object.getSwitchTime());
         if (object.getStandardTime() != null) {
             apsProcessSchemeVo.setStandardTime(object.getStandardTime());
         }

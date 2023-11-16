@@ -63,6 +63,12 @@ public class ApsProcessSchemeDto implements Serializable {
     private String packagingMethod;
 
     /**
+     * 切换时间（s）
+     */
+    @TableField(value = "switch_time")
+    private BigDecimal switchTime;
+
+    /*
      * 标准工时
      */
     @TableField(value = "standard_time")

@@ -59,7 +59,7 @@ public class ProcessController {
     }
 
     @ApiOperation("获取工序名称分页")
-    @GetMapping("/getProcessNamePools/{page}/{size}")
+    @GetMapping("/getProcessNamePools/{`page`}/{size}")
     public Result getProcess(@RequestParam(required = false) String name, @PathVariable Integer page, @PathVariable Integer size) {
         ApsProcessNamePoolPageVo apsProcessNamePoolVo = apsProcessNamePoolService.getProcess(name, page, size);
         return Result.ok(apsProcessNamePoolVo);
@@ -203,15 +203,16 @@ public class ProcessController {
 
     @ApiOperation("导出工序命名池数据")
     @PostMapping("/downloadProceeName")
-    public void downloadProceeName(@RequestBody DownloadProceeNameParam downloadProceeNameParam, HttpServletResponse response) {
-        if (downloadProceeNameParam == null || downloadProceeNameParam.getType() == null
-                || (downloadProceeNameParam.getType() == ExcelOperationEnum.CURRENT_PAGE.getCode()
-                && (downloadProceeNameParam.getPage() == null || downloadProceeNameParam.getSize() == null))) {
+    public void downloadProceeName(@RequestBody DownloadParam downloadParam, HttpServletResponse response) {
+        if (downloadParam == null || downloadParam.getType() == null
+                || (downloadParam.getType() == ExcelOperationEnum.CURRENT_PAGE.getCode()
+                && (downloadParam.getPage() == null || downloadParam.getSize() == null))) {
             throw new BeneWakeException("数据不正确");
         }
-        apsProcessNamePoolService.downloadProceeName(response, downloadProceeNameParam);
+        apsProcessNamePoolService.downloadProceeName(response, downloadParam);
     }
 
+    @ApiOperation("导入工序命名池数据")
     @PostMapping("/importProceeName")
     public Result importProceeName(@PathParam("type") Integer type, @RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
@@ -222,6 +223,33 @@ public class ProcessController {
             return Result.fail("请提供.xlsx或.xls为后缀的Excel文件");
         }
         Boolean res = apsProcessNamePoolService.saveDataByExcel(type, file);
+        return res ? Result.ok() : Result.fail();
+    }
+
+
+
+    @ApiOperation("导出工序与产能")
+    @PostMapping("/downloadProcessCapacity")
+    public void downloadProcessCapacity(@RequestBody DownloadParam downloadParam, HttpServletResponse response) {
+        if (downloadParam == null || downloadParam.getType() == null
+                || (downloadParam.getType() == ExcelOperationEnum.CURRENT_PAGE.getCode()
+                && (downloadParam.getPage() == null || downloadParam.getSize() == null))) {
+            throw new BeneWakeException("数据不正确");
+        }
+        apsProcessCapacityService.downloadProcessCapacity(response, downloadParam);
+    }
+
+    @ApiOperation("导入工序与产能")
+    @PostMapping("/importProcessCapacity")
+    public Result importProcessCapacity(@PathParam("type") Integer type, @RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return Result.fail("文件为空！");
+        }
+        String[] split = file.getOriginalFilename().split("\\.");
+        if (!"xlsx".equals(split[1]) && !"xls".equals(split[1])) {
+            return Result.fail("请提供.xlsx或.xls为后缀的Excel文件");
+        }
+        Boolean res = apsProcessCapacityService.saveDataByExcel(type, file);
         return res ? Result.ok() : Result.fail();
     }
 }

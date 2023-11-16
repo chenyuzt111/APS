@@ -1,5 +1,6 @@
 package com.benewake.system.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsProcessCapacity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.benewake.system.entity.dto.ApsProcessCapacityDto;
@@ -18,9 +19,11 @@ import java.util.List;
 @Mapper
 public interface ApsProcessCapacityMapper extends BaseMapper<ApsProcessCapacity> {
 
-    List<ApsProcessCapacityDto> selectPages(@Param("pass") Integer pass, @Param("size") Integer size);
+    Page<ApsProcessCapacityDto> selectPages(Page<ApsProcessCapacityDto> capacityDtoPage);
 
     List<ApsProcessCapacityVo> selectProcessCapacitysByproductFamily(@Param("productFamily") String productFamily);
+
+    List<ApsProcessCapacityDto> selectAllDtos();
 }
 
 

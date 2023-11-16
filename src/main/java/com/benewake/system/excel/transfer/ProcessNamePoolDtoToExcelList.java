@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Component
-public class ApsProcessNamePoolDtoToExcelList {
+public class ProcessNamePoolDtoToExcelList {
 
     public List<ExcelProcessNamePool> convert(List<ApsProcessNamePool> object) {
         if (CollectionUtils.isEmpty(object)) {

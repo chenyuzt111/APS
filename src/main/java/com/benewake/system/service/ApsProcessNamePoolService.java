@@ -3,7 +3,7 @@ package com.benewake.system.service;
 import com.benewake.system.entity.ApsProcessNamePool;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.benewake.system.entity.vo.ApsProcessNamePoolPageVo;
-import com.benewake.system.entity.vo.DownloadProceeNameParam;
+import com.benewake.system.entity.vo.DownloadParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +19,7 @@ public interface ApsProcessNamePoolService extends IService<ApsProcessNamePool> 
 
     ApsProcessNamePoolPageVo getProcess(String name, Integer page, Integer size);
 
-    void downloadProceeName(HttpServletResponse response, DownloadProceeNameParam downloadProceeNameParam);
+    void downloadProceeName(HttpServletResponse response, DownloadParam downloadParam);
 
     Boolean saveDataByExcel(Integer type, MultipartFile file);
 }

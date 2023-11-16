@@ -1,71 +1,78 @@
-package com.benewake.system.entity.vo;
+package com.benewake.system.excel.entity;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
+
 import lombok.Data;
 
 /**
  * 工序与产能表
+ *
  * @TableName aps_process_capacity
  */
-@TableName(value ="aps_process_capacity")
+@TableName(value = "aps_process_capacity")
 @Data
-public class ApsProcessCapacityVo implements Serializable {
-    /**
-     * 唯一标识
-     */
-    private Integer id;
+public class ExcelProcessCapacity implements Serializable {
+
 
     /**
      * 所属工序
      */
+    @ExcelProperty("所属工序")
     private String belongingProcess;
+
 
     /**
      * 工序id
      */
-    private String processId;
-  /**
-     * 工序id
-     */
+    @ExcelProperty("工序名称")
     private String processName;
 
     /**
      * 序号
      */
+    @ExcelProperty("序号")
     private Integer processNumber;
 
     /**
      * 产品族
      */
+    @ExcelProperty("产品族")
     private String productFamily;
 
     /**
      * 包装方式
      */
+    @ExcelProperty("包装方式")
     private String packagingMethod;
 
     /**
-     * 切换时间
+     * 标准工时
      */
-    private Integer switchTime;
+    @ExcelProperty("标准工时")
+    private String standardTime;
     /**
      * 标准工时
      */
-    private String standardTime;
+    @ExcelProperty("切换时间")
+    private Integer switchTime;
 
     /**
      * 人数MAX
      */
+    @ExcelProperty("人数MAX")
     private Integer maxPersonnel;
 
     /**
      * 人数MIN
      */
+    @ExcelProperty("人数MIN")
     private Integer minPersonnel;
 
 
