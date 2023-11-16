@@ -5,6 +5,7 @@ import com.benewake.system.entity.ApsDailyDataUpload;
 import com.benewake.system.service.ApsDailyDataUploadService;
 import com.benewake.system.mapper.ApsDailyDataUploadMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
 * @author ASUS
@@ -15,6 +16,11 @@ import org.springframework.stereotype.Service;
 public class ApsDailyDataUploadServiceImpl extends ServiceImpl<ApsDailyDataUploadMapper, ApsDailyDataUpload>
     implements ApsDailyDataUploadService{
 
+    @Override
+    public Boolean saveDataByExcel(MultipartFile file) {
+//        file
+        return null;
+    }
 }
 
 

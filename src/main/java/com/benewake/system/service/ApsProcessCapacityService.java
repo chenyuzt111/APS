@@ -5,7 +5,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.benewake.system.entity.ApsProcessCapacityParam;
 import com.benewake.system.entity.vo.ApsProcessCapacityListVo;
 import com.benewake.system.entity.vo.ApsProcessCapacityVo;
+import com.benewake.system.entity.vo.DownloadParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -24,4 +27,8 @@ public interface ApsProcessCapacityService extends IService<ApsProcessCapacity> 
     boolean removeBatchAndUpdateByIds(List<Integer> ids);
 
     Boolean updateProcessNumber(List<ApsProcessCapacityParam> apsProcessCapacityVo);
+
+    void downloadProcessCapacity(HttpServletResponse response, DownloadParam downloadParam);
+
+    Boolean saveDataByExcel(Integer type, MultipartFile file);
 }

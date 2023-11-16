@@ -61,6 +61,11 @@ public class ApsProcessCapacityDto implements Serializable {
      */
     @TableField(value = "standard_time")
     private BigDecimal standardTime;
+    /**
+     * 标准工时
+     */
+    @TableField(value = "switch_time")
+    private Integer switchTime;
 
     /**
      * 人数MAX
@@ -73,6 +78,7 @@ public class ApsProcessCapacityDto implements Serializable {
      */
     @TableField(value = "min_personnel")
     private Integer minPersonnel;
+
     /**
      * 人数MIN
      */

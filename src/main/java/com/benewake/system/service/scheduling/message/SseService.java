@@ -56,7 +56,8 @@ public class SseService {
     public void shutdown() {
         executor.shutdownNow();
     }
-        public void sendMessage(String username, String message) {
+
+    public void sendMessage(String username, String message) {
         try {
             sseEmitter.send(message);
             sseEmitter.complete();

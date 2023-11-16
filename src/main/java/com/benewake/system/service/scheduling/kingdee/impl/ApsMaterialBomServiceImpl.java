@@ -11,7 +11,6 @@ import com.benewake.system.entity.dto.ApsMaterialBomDto;
 import com.benewake.system.entity.enums.BOMChangeType;
 import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.entity.kingdee.KingdeeMaterialBom;
-import com.benewake.system.entity.kingdee.transfer.FIDToNumber;
 import com.benewake.system.entity.kingdee.transfer.MaterialBomChange;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
 import com.benewake.system.mapper.ApsMaterialProcessMappingMapper;
@@ -103,7 +102,8 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
 
         // 再次遍历result，根据最大FNumber打印出相应的记录
         List<ApsMaterialProcessMapping> apsMaterialProcessMappings = apsMaterialProcessMappingMapper.selectList(null);
-        Map<String, String> materialToProcess = apsMaterialProcessMappings.stream().collect(Collectors.toMap(ApsMaterialProcessMapping::getFMaterialId, ApsMaterialProcessMapping::getProcess, (existing, replacement) -> existing));
+        Map<String, String> materialToProcess = apsMaterialProcessMappings.stream()
+                .collect(Collectors.toMap(ApsMaterialProcessMapping::getFMaterialId, ApsMaterialProcessMapping::getProcess, (existing, replacement) -> existing));
         ArrayList<ApsMaterialBom> apsMaterialBoms = getApsMaterialBoms(result, fMaterialIdToFNumber, maxFNumbersList, materialToProcess);
         if (CollectionUtils.isEmpty(apsMaterialBoms)) {
             ApsMaterialBom apsMaterialBom = new ApsMaterialBom();
@@ -115,6 +115,8 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
         tableUpdateDate.setUpdateDate(new Date());
         tableUpdateDateMapper.insert(tableUpdateDate);
         List<ApsMaterialNameMapping> nameMappings = getApsMaterialNameMappings(result);
+        //新增之前删除
+        apsMaterialNameMappingService.remove(null);
         apsMaterialNameMappingService.saveBatch(nameMappings);
         remove(null);
         return saveBatch(apsMaterialBoms);
@@ -131,10 +133,11 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
         nameMappings.addAll(result.stream().map(x -> {
             ApsMaterialNameMapping nameMapping = new ApsMaterialNameMapping();
             nameMapping.setFMaterialId(x.getFMaterialIDChild());
-            nameMapping.setFMaterialName(x.getFChildIteName());
+            nameMapping.setFMaterialName(x.getFCHILDITEMNAME());
             nameMapping.setFItemModel(x.getFChildItemModel());
             return nameMapping;
         }).collect(Collectors.toList()));
+        nameMappings = nameMappings.stream().distinct().collect(Collectors.toList());
         return nameMappings;
     }
 
@@ -168,8 +171,8 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
         return maxFNumbersList;
     }
 
-    private ArrayList<ApsMaterialBom> getApsMaterialBoms(List<KingdeeMaterialBom> result, Map<String, String> fMaterialIdToFNumber, List<String> maxFNumbersList, Map<String, String> materialToProcess) {
-        long l = System.currentTimeMillis();
+    private ArrayList<ApsMaterialBom> getApsMaterialBoms(List<KingdeeMaterialBom> result, Map<String, String> fMaterialIdToFNumber,
+                                                         List<String> maxFNumbersList, Map<String, String> materialToProcess) {
         ArrayList<ApsMaterialBom> apsMaterialBoms = new ArrayList<>();
         for (KingdeeMaterialBom kingdeeMaterialBom : result) {
             String fNumber = kingdeeMaterialBom.getFNumber();
@@ -190,8 +193,6 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
                 apsMaterialBoms.add(apsMaterialBom);
             }
         }
-        long l1 = System.currentTimeMillis();
-        System.err.println("转化：" + (l1 - l));
         return apsMaterialBoms;
     }
 
@@ -227,8 +228,10 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
 
     @Transactional(rollbackFor = Exception.class)
     Boolean updateProtionDate(ApsTableUpdateDate tableUpdateDate) throws Exception {
+        //查询变更表的数据
         List<MaterialBomChange> materialBomChangeList = getMaterialBomChanges(tableUpdateDate);
         Map<String, String> fMaterialIdToFNumber = getFMaterialIdToFNumber();
+        //需要删除的
         List<MaterialBomChange> deleteList = materialBomChangeList.stream()
                 .filter(x -> x.getFChangeLabel().equals(BOMChangeType.CHANGE_BEFORE.getCode()) ||
                         x.getFChangeLabel().equals(BOMChangeType.DELETE.getCode()))
@@ -247,6 +250,11 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
         List<KingdeeMaterialBom> addByFMaterialIdAndChild = getAddByFMaterialIdAndChild(addList);
         List<ApsMaterialBom> apsMaterialBoms = null;
         if (CollectionUtils.isNotEmpty(addByFMaterialIdAndChild)) {
+            List<ApsMaterialNameMapping> apsMaterialNameMappings = getApsMaterialNameMappings(addByFMaterialIdAndChild);
+            List<String> materidlIds = apsMaterialNameMappings.stream().map(ApsMaterialNameMapping::getFMaterialId).collect(Collectors.toList());
+            //将新的物料名称对应关系 添加进去
+            apsMaterialNameMappingService.remove(new LambdaQueryWrapper<ApsMaterialNameMapping>().in(ApsMaterialNameMapping::getFMaterialId ,materidlIds));
+            apsMaterialNameMappingService.saveBatch(apsMaterialNameMappings);
             List<String> maxFNumbersList = getMaxFNumbersList(addByFMaterialIdAndChild, fMaterialIdToFNumber);
             List<ApsMaterialProcessMapping> apsMaterialProcessMappings = apsMaterialProcessMappingMapper.selectList(null);
             Map<String, String> materialToProcess = apsMaterialProcessMappings.stream().collect(Collectors.toMap(ApsMaterialProcessMapping::getFMaterialId, ApsMaterialProcessMapping::getProcess, (existing, replacement) -> existing));
@@ -255,7 +263,9 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
         }
         tableUpdateDate.setUpdateDate(new Date());
         tableUpdateDateMapper.updateById(tableUpdateDate);
-        saveBatch(apsMaterialBoms);
+        if (CollectionUtils.isNotEmpty(apsMaterialBoms)) {
+            saveBatch(apsMaterialBoms);
+        }
         return true;
     }
 

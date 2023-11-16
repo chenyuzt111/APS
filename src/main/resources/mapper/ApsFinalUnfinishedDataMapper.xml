@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benewake.system.mapper.ApsFinalUnfinishedDataMapper">
+
+    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsFinalUnfinishedData">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="fOrderNumber" column="f_order_number" jdbcType="VARCHAR"/>
+            <result property="fMaterialCode" column="f_material_code" jdbcType="VARCHAR"/>
+            <result property="fMaterialName" column="f_material_name" jdbcType="VARCHAR"/>
+            <result property="fProcess" column="f_process" jdbcType="VARCHAR"/>
+            <result property="fTotalQuantity" column="f_total_quantity" jdbcType="VARCHAR"/>
+            <result property="fCompletedQuantity" column="f_completed_quantity" jdbcType="VARCHAR"/>
+            <result property="fCapacityPsPuPp" column="f_capacity_ps_pu_pp" jdbcType="VARCHAR"/>
+            <result property="fRemainingQuantity" column="f_remaining_quantity" jdbcType="VARCHAR"/>
+            <result property="fRemainingCapacity" column="f_remaining_capacity" jdbcType="VARCHAR"/>
+            <result property="version" column="version" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,f_order_number,f_material_code,
+        f_material_name,f_process,f_total_quantity,
+        f_completed_quantity,f_capacity_ps_pu_pp,f_remaining_quantity,
+        f_remaining_capacity,version
+    </sql>
+</mapper>

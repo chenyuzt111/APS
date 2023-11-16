@@ -25,8 +25,12 @@
         unavailable_time,version
     </sql>
     <select id="getPage" resultType="com.benewake.system.entity.dto.ApsProductFamilyMachineTableDto">
-        SELECT *
-        FROM aps_product_family_machine_table as mac
-                 LEFT JOIN aps_process_name_pool as pool on mac.f_process_id = pool.id
+        SELECT
+            *
+        FROM
+            aps_product_family_machine_table AS mac
+                LEFT JOIN aps_process_name_pool AS pool ON mac.f_process_id = pool.id
+        ORDER BY
+            mac.f_product_family
     </select>
 </mapper>

@@ -1,8 +1,10 @@
 package com.benewake.system.controller;
 
 import com.benewake.system.entity.*;
+import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.vo.*;
 import com.benewake.system.entity.vo.UpdateOptimalStrategyParam;
+import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -10,9 +12,12 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.websocket.server.PathParam;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Api(tags = "工序与产能")
@@ -56,10 +61,11 @@ public class ProcessController {
 
     @ApiOperation("获取工序名称分页")
     @GetMapping("/getProcessNamePools/{page}/{size}")
-    public Result getProcess(@RequestParam(required = false) String name,@PathVariable Integer page,@PathVariable Integer size) {
-        ApsProcessNamePoolPageVo apsProcessNamePoolVo = apsProcessNamePoolService.getProcess(name, page ,size);
+    public Result getProcess(@RequestParam(required = false) String name, @PathVariable Integer page, @PathVariable Integer size) {
+        ApsProcessNamePoolPageVo apsProcessNamePoolVo = apsProcessNamePoolService.getProcess(name, page, size);
         return Result.ok(apsProcessNamePoolVo);
     }
+
     @ApiOperation("获取工序名称")
     @GetMapping("/getProcessNamePools")
     public Result getProcess(@RequestParam(required = false) String name) {
@@ -80,7 +86,7 @@ public class ProcessController {
     public Result getAllPackagingMethod() {
         List<ApsFinishedProductBasicData> apsFinishedProductBasicData = apsFinishedProductBasicDataService.getBaseMapper().selectList(null);
         List<String> productFamily = apsFinishedProductBasicData.stream().map(ApsFinishedProductBasicData::getFPackagingMethod).distinct().collect(Collectors.toList());
-        productFamily.add(" ");
+        productFamily.add("空");
         return Result.ok(productFamily);
     }
 
@@ -90,6 +96,9 @@ public class ProcessController {
         if (apsProcessCapacityVo == null || StringUtils.isEmpty(apsProcessCapacityVo.getProcessName()) ||
                 StringUtils.isEmpty(apsProcessCapacityVo.getBelongingProcess())) {
             return Result.fail("不能为空");
+        }
+        if (apsProcessCapacityVo.getPackagingMethod() != null && apsProcessCapacityVo.getPackagingMethod().equals("空")) {
+            apsProcessCapacityVo.setPackagingMethod("");
         }
         Boolean res = apsProcessCapacityService.saveOrUpdateProcessCapacityService(apsProcessCapacityVo);
         return res ? Result.ok() : Result.fail();
@@ -143,12 +152,12 @@ public class ProcessController {
         if (CollectionUtils.isEmpty(apsProcessSchemeParam)) {
             return Result.fail("不能为null");
         }
-        String saveProcessScheme = apsProcessSchemeService.updateProcessScheme(apsProcessSchemeParam);
-        return Result.ok(saveProcessScheme);
+        Boolean saveProcessScheme = apsProcessSchemeService.updateProcessScheme(apsProcessSchemeParam);
+        return saveProcessScheme ? Result.ok() : Result.fail();
     }
 
 
-    @ApiOperation("查询工序方案")
+    @ApiOperation("查询基础工序方案")
     @GetMapping("/getProcessScheme/{page}/{size}")
     public Result getProcessScheme(@PathVariable Integer page, @PathVariable Integer size) {
         ApsProcessSchemeVoPage apsProcessSchemeVoList = apsProcessSchemeService.getProcessScheme(page, size);
@@ -172,7 +181,7 @@ public class ProcessController {
     @ApiOperation("最终工艺方案")
     @GetMapping("/getProcessSchemeManagement/{page}/{size}")
     public Result getProcessSchemeManagement(@PathVariable Integer page, @PathVariable Integer size) {
-        ProcessSchemeManagementVoPage res = apsProductFamilyProcessSchemeManagementService.getProcessSchemeManagement(page ,size);
+        ProcessSchemeManagementVoPage res = apsProductFamilyProcessSchemeManagementService.getProcessSchemeManagement(page, size);
         return Result.ok(res);
     }
 
@@ -188,8 +197,71 @@ public class ProcessController {
 
     @ApiOperation("修改优先策略")
     @PostMapping("/updateOptimalStrategy")
-    public Result updateOptimalStrategy(@RequestBody UpdateOptimalStrategyParam updateOptimalStrategyParam){
+    public Result updateOptimalStrategy(@RequestBody UpdateOptimalStrategyParam updateOptimalStrategyParam) {
         Boolean res = apsOptimalStrategyService.updateAndOptimalProcess(updateOptimalStrategyParam);
         return Result.ok(res);
+    }
+
+    @ApiOperation("导出工序命名池数据")
+    @PostMapping("/downloadProceeName")
+    public void downloadProceeName(@RequestBody DownloadParam downloadParam, HttpServletResponse response) {
+        if (downloadParam == null || downloadParam.getType() == null
+                || (downloadParam.getType() == ExcelOperationEnum.CURRENT_PAGE.getCode()
+                && (downloadParam.getPage() == null || downloadParam.getSize() == null))) {
+            throw new BeneWakeException("数据不正确");
+        }
+        apsProcessNamePoolService.downloadProceeName(response, downloadParam);
+    }
+
+    @ApiOperation("导入工序命名池数据")
+    @PostMapping("/importProceeName")
+    public Result importProceeName(@PathParam("type") Integer type, @RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return Result.fail("文件为空！");
+        }
+        String[] split = file.getOriginalFilename().split("\\.");
+        if (!"xlsx".equals(split[1]) && !"xls".equals(split[1])) {
+            return Result.fail("请提供.xlsx或.xls为后缀的Excel文件");
+        }
+        Boolean res = apsProcessNamePoolService.saveDataByExcel(type, file);
+        return res ? Result.ok() : Result.fail();
+    }
+
+
+
+    @ApiOperation("导出工序与产能")
+    @PostMapping("/downloadProcessCapacity")
+    public void downloadProcessCapacity(@RequestBody DownloadParam downloadParam, HttpServletResponse response) {
+        if (downloadParam == null || downloadParam.getType() == null
+                || (downloadParam.getType() == ExcelOperationEnum.CURRENT_PAGE.getCode()
+                && (downloadParam.getPage() == null || downloadParam.getSize() == null))) {
+            throw new BeneWakeException("数据不正确");
+        }
+        apsProcessCapacityService.downloadProcessCapacity(response, downloadParam);
+    }
+
+    @ApiOperation("导入工序与产能")
+    @PostMapping("/importProcessCapacity")
+    public Result importProcessCapacity(@PathParam("type") Integer type, @RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return Result.fail("文件为空！");
+        }
+        String[] split = Objects.requireNonNull(file.getOriginalFilename()).split("\\.");
+        if (!"xlsx".equals(split[1]) && !"xls".equals(split[1])) {
+            return Result.fail("请提供.xlsx或.xls为后缀的Excel文件");
+        }
+        Boolean res = apsProcessCapacityService.saveDataByExcel(type, file);
+        return res ? Result.ok() : Result.fail();
+    }
+
+    @ApiOperation("导出基础工艺方案")
+    @PostMapping("/downloadProcessScheme")
+    public void downloadProcessScheme(@RequestBody DownloadParam downloadParam, HttpServletResponse response) {
+        if (downloadParam == null || downloadParam.getType() == null
+                || (downloadParam.getType() == ExcelOperationEnum.CURRENT_PAGE.getCode()
+                && (downloadParam.getPage() == null || downloadParam.getSize() == null))) {
+            throw new BeneWakeException("数据不正确");
+        }
+        apsProcessSchemeService.downloadProcessCapacity(response, downloadParam);
     }
 }

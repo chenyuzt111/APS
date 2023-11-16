@@ -50,6 +50,10 @@ public class ApsProcessCapacityVo implements Serializable {
     private String packagingMethod;
 
     /**
+     * 切换时间
+     */
+    private Integer switchTime;
+    /**
      * 标准工时
      */
     private String standardTime;
@@ -63,7 +67,6 @@ public class ApsProcessCapacityVo implements Serializable {
      * 人数MIN
      */
     private Integer minPersonnel;
-
 
 
     @TableField(exist = false)

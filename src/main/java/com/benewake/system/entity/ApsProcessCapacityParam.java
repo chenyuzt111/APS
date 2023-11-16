@@ -26,7 +26,7 @@ public class ApsProcessCapacityParam implements Serializable {
     private String belongingProcess;
 
     /**
-     * 工序id
+     * 工序名称
      */
     private String processName;
 
@@ -44,6 +44,12 @@ public class ApsProcessCapacityParam implements Serializable {
      * 包装方式
      */
     private String packagingMethod;
+
+
+    /**
+     * 切换时间（s）
+     */
+    private Integer switchTime;
 
     /**
      * 标准工时

@@ -38,7 +38,8 @@ public class DistributedLock {
     public boolean releaseLock(String lockKey, String requestId) {
         // 使用Lua脚本释放锁，确保原子性
         String luaScript = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
-        Object result = redisTemplate.execute(new DefaultRedisScript<>(luaScript, Long.class), Collections.singletonList(lockKey), requestId);
+        Object result = redisTemplate.execute(new DefaultRedisScript<>(luaScript, Long.class)
+                , Collections.singletonList(lockKey), requestId);
         return result != null && (long) result == 1;
     }
 

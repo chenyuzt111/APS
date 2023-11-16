@@ -1,5 +1,6 @@
 package com.benewake.system.entity.vo;
 
+import com.benewake.system.entity.dto.ApsProcessSchemeDto;
 import lombok.Data;
 
 import java.util.List;

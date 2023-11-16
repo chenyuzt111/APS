@@ -10,6 +10,7 @@ import com.benewake.system.service.*;
 import com.benewake.system.utils.HostHolder;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,6 +31,7 @@ import static com.benewake.system.redis.SchedulingLockKey.SCHEDULING_USER_LOCK_K
  * @author wangxuyue
  * @since 2023-09-27
  */
+@Slf4j
 @Api(tags = "排程")
 @RestController
 @RequestMapping("/scheduling")
@@ -71,7 +74,7 @@ public class SchedulingController {
         }
         interfaceDataService.updateData(ids);
         long l1 = System.currentTimeMillis();
-        System.err.println(l1 - l);
+        log.info("数据库更新接口消耗时长" + (l1 - l) + new Date());
         return Result.ok();
     }
 
@@ -111,9 +114,6 @@ public class SchedulingController {
         ResponseEntity<InputStreamResource> resourceResponseEntity = apsFileService.ApsIntegrityCheckeFile();
         return resourceResponseEntity;
     }
-
-
-
 
     @ApiOperation("获取排程界面的所有权")
     @PostMapping("/getPageLock")

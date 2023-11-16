@@ -43,6 +43,13 @@ public class ApsProcessScheme implements Serializable {
      */
     @TableField(value = "number")
     private Integer number;
+
+
+    /**
+     * 1-true 0-false
+     */
+    @TableField(value = "state")
+    private Boolean state;
     /**
      * 人数
      */

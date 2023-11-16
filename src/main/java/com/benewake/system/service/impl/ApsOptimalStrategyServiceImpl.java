@@ -1,21 +1,22 @@
 package com.benewake.system.service.impl;
 
+import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsOptimalStrategy;
-import com.benewake.system.entity.ApsProcessScheme;
 import com.benewake.system.entity.ApsProductFamilyProcessSchemeManagement;
-import com.benewake.system.entity.vo.ApsProcessSchemeVo;
+import com.benewake.system.entity.dto.ApsProcessSchemeDto;
+import com.benewake.system.entity.vo.DownloadParam;
 import com.benewake.system.entity.vo.UpdateOptimalStrategyParam;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.mapper.ApsProcessSchemeMapper;
 import com.benewake.system.service.ApsOptimalStrategyService;
 import com.benewake.system.mapper.ApsOptimalStrategyMapper;
-import com.benewake.system.service.ApsProcessSchemeService;
 import com.benewake.system.service.ApsProductFamilyProcessSchemeManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -70,19 +71,19 @@ public class ApsOptimalStrategyServiceImpl extends ServiceImpl<ApsOptimalStrateg
         BigDecimal productionLineBalanceRateOptimal = new BigDecimal(Double.MIN_VALUE);
         String optimalName = null;
         for (ApsProductFamilyProcessSchemeManagement itme : apsProductManList) {
-            List<ApsProcessSchemeVo> apsProcessSchemeVoList = apsProcessSchemeMapper.selectProcessSchemeBycurrentProcessScheme(itme.getCurProcessSchemeName());
+            List<ApsProcessSchemeDto> apsProcessSchemeDtoList = apsProcessSchemeMapper.selectProcessSchemeBycurrentProcessScheme(itme.getCurProcessSchemeName());
             //最优每个员工的map和工时和
-            Map<String, BigDecimal> employeeStandardTimeSumMapOptimal = apsProcessSchemeVoList.stream()
+            Map<String, BigDecimal> employeeStandardTimeSumMapOptimal = apsProcessSchemeDtoList.stream()
                     .collect(Collectors.groupingBy(
-                            ApsProcessSchemeVo::getEmployeeName,
-                            Collectors.reducing(BigDecimal.ZERO, ApsProcessSchemeVo::getStandardTime, BigDecimal::add)
+                            ApsProcessSchemeDto::getEmployeeName,
+                            Collectors.reducing(BigDecimal.ZERO, ApsProcessSchemeDto::getStandardTime, BigDecimal::add)
                     ));
             //最优的员工最大工时
             BigDecimal standardTimeValueOptimal = employeeStandardTimeSumMapOptimal.values().stream()
                     .max(BigDecimal::compareTo).get();
             //最优工时的和
-            BigDecimal sumOfStandardTime = apsProcessSchemeVoList.stream()
-                    .map(ApsProcessSchemeVo::getStandardTime)
+            BigDecimal sumOfStandardTime = apsProcessSchemeDtoList.stream()
+                    .map(ApsProcessSchemeDto::getStandardTime)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
             //最优的产线平衡率
             BigDecimal productionLineBalanceRate = sumOfStandardTime
@@ -110,6 +111,7 @@ public class ApsOptimalStrategyServiceImpl extends ServiceImpl<ApsOptimalStrateg
                         .eq(ApsOptimalStrategy::getNumber ,updateOptimalStrategyParam.getNumber());
         return update(apsOptimalStrategyLambdaQueryWrapper);
     }
+
 }
 
 

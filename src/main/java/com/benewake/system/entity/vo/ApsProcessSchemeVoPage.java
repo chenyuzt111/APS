@@ -8,6 +8,6 @@ import java.util.List;
 @Data
 public class ApsProcessSchemeVoPage extends PageParam {
 
-    private List<ApsProcessSchemeVo> apsProcessSchemeVo;
+    private List<ApsProcessSchemeVo> apsProcessSchemeVos;
 
 }

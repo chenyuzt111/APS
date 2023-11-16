@@ -10,13 +10,14 @@
         <result property="processCapacityId" column="process_capacity_id" jdbcType="INTEGER"/>
         <result property="employeeName" column="employee_name" jdbcType="VARCHAR"/>
         <result property="number" column="number" jdbcType="INTEGER"/>
+        <result property="state" column="state" jdbcType="BOOLEAN"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,current_process_scheme,process_capacity_id,
         employee_name,number
     </sql>
-    <select id="selectProcessScheme" resultType="java.lang.String">
+    <select id="selectSchemeBycaIdandNumber" resultType="java.lang.String">
         SELECT
         current_process_scheme
         FROM
@@ -27,7 +28,7 @@
             #{processCapacityId}
         </foreach>
     </select>
-    <select id="selectProcessSchemePage" resultType="com.benewake.system.entity.vo.ApsProcessSchemeVo">
+    <select id="selectProcessSchemePage" resultType="com.benewake.system.entity.dto.ApsProcessSchemeDto">
         SELECT sch.id,
                sch.current_process_scheme,
                cap.belonging_process,
@@ -37,17 +38,18 @@
                cap.packaging_method,
                standard_time,
                employee_name,
+               switch_time,
                max_personnel,
                min_personnel,
-               number
+               number,
+               state
         FROM aps_process_scheme AS sch
-                 JOIN aps_process_capacity AS cap ON sch.process_capacity_id = cap.id
-                 JOIN aps_process_name_pool AS pool ON cap.process_id = pool.id
+                 LEFT JOIN aps_process_capacity AS cap ON sch.process_capacity_id = cap.id
+                 LEFT JOIN aps_process_name_pool AS pool ON cap.process_id = pool.id
         ORDER BY product_family, current_process_scheme, cap.process_number
-        LIMIT #{pass},#{size}
     </select>
     <select id="selectProcessSchemeBycurrentProcessScheme"
-            resultType="com.benewake.system.entity.vo.ApsProcessSchemeVo">
+            resultType="com.benewake.system.entity.dto.ApsProcessSchemeDto">
         SELECT sch.id,
                sch.current_process_scheme,
                cap.belonging_process,
@@ -59,7 +61,8 @@
                employee_name,
                max_personnel,
                min_personnel,
-               number
+               number,
+               state
         FROM aps_process_scheme AS sch
                  JOIN aps_process_capacity AS cap ON sch.process_capacity_id = cap.id
                  JOIN aps_process_name_pool AS pool ON cap.process_id = pool.id
@@ -82,6 +85,52 @@
         <foreach collection="curProcessSchemeNameList" item="curProcessSchemeName" open="(" close=")" separator=",">
             #{curProcessSchemeName}
         </foreach>
+    </select>
+    <select id="selectProcessSchemeByProcessScheme"
+            resultType="com.benewake.system.entity.dto.ApsProcessSchemeDto">
+        SELECT sch.id,
+               sch.current_process_scheme,
+               cap.belonging_process,
+               cap.product_family,
+               cap.process_number,
+               cap.id AS process_id,
+               pool.process_name,
+               cap.packaging_method,
+               standard_time,
+               employee_name,
+               max_personnel,
+               min_personnel,
+               number,
+               state
+        FROM aps_process_capacity AS cap
+                 LEFT JOIN (SELECT *
+                            FROM aps_process_scheme
+                            WHERE current_process_scheme = #{currentProcessScheme}) AS sch
+                           ON sch.process_capacity_id = cap.id
+                 LEFT JOIN aps_process_name_pool AS pool ON cap.process_id = pool.id
+        WHERE product_family = #{productFamily}
+          and cap.belonging_process = '组装'
+        ORDER BY process_number
+    </select>
+    <select id="selectProcessScheme" resultType="com.benewake.system.entity.vo.ApsProcessSchemeVo">
+        SELECT sch.id,
+               sch.current_process_scheme,
+               cap.belonging_process,
+               cap.product_family,
+               cap.process_number,
+               pool.process_name,
+               cap.packaging_method,
+               standard_time,
+               employee_name,
+               switch_time,
+               max_personnel,
+               min_personnel,
+               number,
+               state
+        FROM aps_process_scheme AS sch
+                 LEFT JOIN aps_process_capacity AS cap ON sch.process_capacity_id = cap.id
+                 LEFT JOIN aps_process_name_pool AS pool ON cap.process_id = pool.id
+        ORDER BY product_family, current_process_scheme, cap.process_number
     </select>
 
 </mapper>

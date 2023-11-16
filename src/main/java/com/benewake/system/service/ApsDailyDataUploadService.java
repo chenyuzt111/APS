@@ -2,6 +2,7 @@ package com.benewake.system.service;
 
 import com.benewake.system.entity.ApsDailyDataUpload;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
 * @author ASUS
@@ -10,4 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface ApsDailyDataUploadService extends IService<ApsDailyDataUpload> {
 
+    Boolean saveDataByExcel(MultipartFile file);
 }
