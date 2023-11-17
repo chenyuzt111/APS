@@ -41,19 +41,19 @@ public class ApsProductionMaterialDto implements Serializable {
 
     @JsonProperty("mustQty")
     @TableField(value = "f_must_qty")
-    private String fMustQty;
+    private Integer fMustQty;
 
     @JsonProperty("pickedQty")
     @TableField(value = "f_picked_qty")
-    private String fPickedQty;
+    private Integer fPickedQty;
 
     @JsonProperty("goodReturnQty")
     @TableField(value = "f_good_return_qty")
-    private String fGoodReturnQty;
+    private Integer fGoodReturnQty;
 
     @JsonProperty("processDefectReturnQty")
     @TableField(value = "f_process_defect_return_qty")
-    private String fProcessDefectReturnQty;
+    private Integer fProcessDefectReturnQty;
 
     @JsonProperty("chVersion")
     @TableField(value = "version")

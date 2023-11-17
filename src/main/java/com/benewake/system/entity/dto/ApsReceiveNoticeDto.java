@@ -30,23 +30,23 @@ public class ApsReceiveNoticeDto implements Serializable {
 
     @JsonProperty("mustQty")
     @TableField(value = "f_must_qty")
-    private String fMustQty;
+    private Integer fMustQty;
 
     @JsonProperty("checkQty")
     @TableField(value = "f_check_qty")
-    private String fCheckQty;
+    private Integer fCheckQty;
 
     @JsonProperty("receiveQty")
     @TableField(value = "f_receive_qty")
-    private String fReceiveQty;
+    private Integer fReceiveQty;
 
     @JsonProperty("csnReceiveBaseQty")
     @TableField(value = "f_csn_receive_base_qty")
-    private String fCsnReceiveBaseQty;
+    private Integer fCsnReceiveBaseQty;
 
     @JsonProperty("inStockQty")
     @TableField(value = "f_in_stock_qty")
-    private String fInStockQty;
+    private Integer fInStockQty;
 
     @JsonProperty("chVersion")
     @TableField(value = "version")

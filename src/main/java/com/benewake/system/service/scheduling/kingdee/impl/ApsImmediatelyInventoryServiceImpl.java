@@ -40,6 +40,7 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
 
     @Override
     public Page selectPageList(Page objectPage, List tableVersionList) {
+
         Page<ApsImmediatelyInventoryDto> immediatelyInventoryPage = apsImmediatelyInventoryMapper
                 .selectPageList(objectPage ,tableVersionList);
         return immediatelyInventoryPage;

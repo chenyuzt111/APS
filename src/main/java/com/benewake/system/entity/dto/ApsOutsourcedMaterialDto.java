@@ -67,28 +67,28 @@ public class ApsOutsourcedMaterialDto implements Serializable {
      */
     @JsonProperty("mustQty")
     @TableField(value = "f_must_qty")
-    private String fMustQty;
+    private Integer fMustQty;
 
     /**
      * 已领数量
      */
     @JsonProperty("pickedQty")
     @TableField(value = "f_picked_qty")
-    private String fPickedQty;
+    private Integer fPickedQty;
 
     /**
      * 良品退料数量
      */
     @JsonProperty("goodReturnQty")
     @TableField(value = "f_good_return_qty")
-    private String fGoodReturnQty;
+    private Integer fGoodReturnQty;
 
     /**
      * 作业不良退料数量
      */
     @JsonProperty("processDefectReturnQty")
     @TableField(value = "f_process_defect_return_qty")
-    private String fProcessDefectReturnQty;
+    private Integer fProcessDefectReturnQty;
 
     /**
      * 版本号

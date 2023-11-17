@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -71,6 +72,7 @@ public class ApsImmediatelyInventoryDto implements Serializable {
      */
     @JsonProperty("expiryDate") // 使用@JsonProperty注解修改属性名
     @TableField(value = "f_expiry_date")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8") // 指定日期格式
     private Date fExpiryDate;
 
     /**

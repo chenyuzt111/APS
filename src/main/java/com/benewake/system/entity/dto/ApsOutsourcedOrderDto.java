@@ -34,7 +34,7 @@ public class ApsOutsourcedOrderDto implements Serializable {
 
     @JsonProperty("qty")
     @TableField(value = "f_qty")
-    private String fQty;
+    private Integer fQty;
 
     @JsonProperty("status")
     @TableField(value = "f_status")
@@ -46,7 +46,7 @@ public class ApsOutsourcedOrderDto implements Serializable {
 
     @JsonProperty("stockInQty")
     @TableField(value = "f_stock_in_qty")
-    private String fStockInQty;
+    private Integer fStockInQty;
 
     @JsonProperty("bomId")
     @TableField(value = "f_bom_id")

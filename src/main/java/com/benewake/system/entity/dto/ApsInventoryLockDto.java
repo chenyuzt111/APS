@@ -1,5 +1,6 @@
 package com.benewake.system.entity.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -7,6 +8,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.util.Date;
+
 import lombok.Data;
 
 @TableName(value ="aps_inventory_lock")
@@ -26,7 +29,8 @@ public class ApsInventoryLockDto implements Serializable {
 
     @JsonProperty("expiryDate")
     @TableField(value = "f_expiry_date")
-    private String fExpiryDate;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8") // 指定日期格式
+    private Date fExpiryDate;
 
     @JsonProperty("lockQty")
     @TableField(value = "f_lock_qty")

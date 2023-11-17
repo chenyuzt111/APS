@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -47,7 +49,8 @@ public class ApsPurchaseRequestDto implements Serializable {
      */
     @JsonProperty("arrivalDate")
     @TableField(value = "f_arrival_date")
-    private String fArrivalDate;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8") // 指定日期格式
+    private Date fArrivalDate;
 
     /**
      * 版本号

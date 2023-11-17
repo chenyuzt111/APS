@@ -49,26 +49,32 @@ public class ProcessPoolListener extends AnalysisEventListener<ExcelProcessNameP
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
         log.info("工序命名池解析完成" + excelProcessNamePools.size() + new Date());
-        List<ApsProcessNamePool> apsProcessNamePools = excelProcessNamePools.stream().map(x -> {
+        List<ApsProcessNamePool> excelProcessNamePools = this.excelProcessNamePools.stream().map(x -> {
             ApsProcessNamePool apsProcessNamePool = new ApsProcessNamePool();
             apsProcessNamePool.setProcessName(x.getProcessName());
             return apsProcessNamePool;
         }).collect(Collectors.toList());
-        // ...
+        List<ApsProcessNamePool> aprProcessNamePools = apsProcessNamePoolService.getBaseMapper().selectList(null);
+        // 从数据库中获取所有现有的工序命名池记录
+        List<String> processNames = aprProcessNamePools.stream().map(ApsProcessNamePool::getProcessName).collect(Collectors.toList());
         if (type == ExcelOperationEnum.OVERRIDE.getCode()) {
-            // 覆盖
-            apsProcessNamePoolService.remove(null);
-            apsProcessNamePoolService.saveBatch(apsProcessNamePools);
-        } else {
-            // 从数据库中获取所有现有的工序命名池记录
-            List<ApsProcessNamePool> processNamePools = apsProcessNamePoolService.getBaseMapper().selectList(null);
-            List<String> processNames = processNamePools.stream().map(ApsProcessNamePool::getProcessName).collect(Collectors.toList());
-            // 过滤出不在processNamePools中存在的apsProcessNamePools元素
-            apsProcessNamePools = apsProcessNamePools.stream()
-                    .filter(x -> !processNames.contains(x.getProcessName())
-                    ).collect(Collectors.toList());
-            // 保存那些在数据库中不存在的记录
-            apsProcessNamePoolService.saveBatch(apsProcessNamePools);
+            //全量更新
+            List<String> excelProcessName = excelProcessNamePools
+                    .stream()
+                    .map(ApsProcessNamePool::getProcessName)
+                    .collect(Collectors.toList());
+            //获取当前需要删除的
+            List<Integer> deleteIds = aprProcessNamePools.stream()
+                    .filter(x -> !excelProcessName.contains(x.getProcessName()))
+                    .map(ApsProcessNamePool::getId).collect(Collectors.toList());
+            apsProcessNamePoolService.removeBatchByIds(deleteIds);
         }
+        // 过滤出不在processNamePools中存在的apsProcessNamePools元素
+        excelProcessNamePools = excelProcessNamePools.stream()
+                .filter(x -> !processNames.contains(x.getProcessName())
+                ).collect(Collectors.toList());
+        // 保存那些在数据库中不存在的记录
+        apsProcessNamePoolService.saveBatch(excelProcessNamePools);
+
     }
 }

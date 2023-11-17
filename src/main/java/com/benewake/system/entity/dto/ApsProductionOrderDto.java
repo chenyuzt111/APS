@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -62,7 +64,7 @@ public class ApsProductionOrderDto implements Serializable {
      */
     @JsonProperty("qty")
     @TableField(value = "f_qty")
-    private String fQty;
+    private Integer fQty;
 
     /**
      * 业务状态
@@ -83,7 +85,7 @@ public class ApsProductionOrderDto implements Serializable {
      */
     @JsonProperty("stockInQuaAuxQty")
     @TableField(value = "f_stock_in_qua_aux_qty")
-    private String fStockInQuaAuxQty;
+    private Integer fStockInQuaAuxQty;
 
     /**
      * BOM版本
@@ -93,12 +95,11 @@ public class ApsProductionOrderDto implements Serializable {
     private String fBomId;
 
     /**
-     * BOM版本
+     * 完成时间
      */
     @TableField(value = "planned_completion_time")
-    private String plannedCompletionTime;
-
-
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8") // 指定日期格式
+    private Date plannedCompletionTime;
 
     /**
      * 版本号

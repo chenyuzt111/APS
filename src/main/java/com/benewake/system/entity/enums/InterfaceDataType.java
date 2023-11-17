@@ -12,12 +12,12 @@ public enum InterfaceDataType {
 
     //APS
     IMMEDIATELY_INVENTORY(1, "即时库存", "apsImmediatelyInventoryServiceImpl", ApsImmediatelyInventory.class),
-    OUTSOURCED_MATERIALS(2, "委外用料清单列表", "apsOutsourcedMaterialServiceImpl", ApsOutsourcedMaterial.class),
+    OUTSOURCED_MATERIAL(2, "委外用料清单列表", "apsOutsourcedMaterialServiceImpl", ApsOutsourcedMaterial.class),
     PRODUCTION_MATERIA(3, "生产用料清单列表", "apsProductionMaterialServiceImpl", ApsProductionMaterial.class),
     OUTSOURCED_ORDER(4, "委外订单列表", "apsOutsourcedOrderServiceImpl", ApsOutsourcedOrder.class),
     PRODUCTION_ORDER(5, "生产订单列表", "apsProductionOrderServiceImpl", ApsProductionOrder.class),
     PURCHASE_REQUEST(6, "采购申请单列表", "apsPurchaseRequestServiceImpl", ApsPurchaseRequest.class),
-    PURCHASE_ORDERS(7, "采购订单列表", "apsPurchaseOrderServiceImpl", ApsPurchaseOrder.class),
+    PURCHASE_ORDER(7, "采购订单列表", "apsPurchaseOrderServiceImpl", ApsPurchaseOrder.class),
     RECEIVE_NOTICE(8, "收料通知单列表", "apsReceiveNoticeServiceImpl", ApsReceiveNotice.class),
     INVENTORY_LOCK(9, "库存锁库列表", "apsInventoryLockServiceImpl", ApsInventoryLock.class),
     MATERIAL_BOM(10, "物料清单列表", "apsMaterialBomServiceImpl", ApsMaterialBom.class),
