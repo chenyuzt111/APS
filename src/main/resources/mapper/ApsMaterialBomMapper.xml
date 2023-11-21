@@ -55,7 +55,7 @@
         map.f_material_name,
         f_document_status,
         bom.f_material_id_child,
-        map1.f_material_name as f_material_name_child,
+        map1.f_material_name AS f_material_name_child,
         f_replace_group_bop,
         f_numerator,
         f_denominator,
@@ -65,16 +65,27 @@
         f_scrap_rate,
         process,
         bom_version,
-        ch_version_name as version
+        ch_version_name AS version
         FROM
-        <foreach collection="versions" item="item" index="index" open="(" separator=" UNION ALL " close=")">
-            SELECT * ,#{item.chVersionName} as ch_version_name FROM aps_material_bom WHERE version =
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        ELSE NULL
+        END AS ch_version_name
+        FROM aps_material_bom
+        WHERE version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
             #{item.version}
         </foreach>
-        AS bom
+        ) AS bom
         LEFT JOIN aps_material_name_mapping AS map ON bom.f_material_id = map.f_material_id
         LEFT JOIN aps_material_name_mapping AS map1 ON bom.f_material_id_child = map1.f_material_id
+        ORDER BY bom.version desc
     </select>
+
     <insert id="insertListNotDelete">
         INSERT INTO `aps_material_bom` (
         f_material_id,

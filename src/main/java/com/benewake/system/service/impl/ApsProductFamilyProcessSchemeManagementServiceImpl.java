@@ -1,14 +1,16 @@
 package com.benewake.system.service.impl;
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsProcessScheme;
 import com.benewake.system.entity.ApsProductFamilyProcessSchemeManagement;
-import com.benewake.system.entity.vo.ProcessSchemeEntity;
-import com.benewake.system.entity.vo.ProcessSchemeManagementParam;
-import com.benewake.system.entity.vo.ProcessSchemeManagementVo;
-import com.benewake.system.entity.vo.ProcessSchemeManagementVoPage;
+import com.benewake.system.entity.enums.ExcelOperationEnum;
+import com.benewake.system.entity.vo.*;
+import com.benewake.system.excel.entity.ExcelSchemeManagement;
+import com.benewake.system.excel.transfer.ProcessSchemeManaDtoToExcel;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.mapper.ApsOptimalStrategyMapper;
 import com.benewake.system.mapper.ApsProcessCapacityMapper;
@@ -19,9 +21,13 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -46,6 +52,9 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
 
     @Autowired
     private ApsOptimalStrategyMapper apsOptimalStrategyMapper;
+
+    @Autowired
+    private ProcessSchemeManaDtoToExcel processSchemeManaDtoToExcel;
 
     @Override
     public ProcessSchemeManagementVoPage getProcessSchemeManagement(Integer pageNum, Integer size) {
@@ -82,32 +91,7 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
                 ));
         ArrayList<ProcessSchemeManagementVo> processSchemeManagementVos = new ArrayList<>();
         for (ApsProductFamilyProcessSchemeManagement record : records) {
-            String curProcessSchemeName = record.getCurProcessSchemeName();
-            Integer curId = collect.get(curProcessSchemeName);
-            String optimalProcessSchemeName = record.getOptimalProcessSchemeName();
-            Integer opId = collect.get(optimalProcessSchemeName);
-            ProcessSchemeManagementVo processSchemeManagementVo = new ProcessSchemeManagementVo();
-            if (record.getProductionLineBalanceRate() != null) {
-                processSchemeManagementVo.setProductionLineBalanceRate(record.getProductionLineBalanceRate().multiply(new BigDecimal(100)).setScale(3, RoundingMode.HALF_UP) + "%");
-            }
-            processSchemeManagementVo.setManId(record.getId());
-            processSchemeManagementVo.setId(curId);
-            processSchemeManagementVo.setCurrentProcessScheme(record.getCurProcessSchemeName());
-            processSchemeManagementVo.setOptimalId(opId);
-            processSchemeManagementVo.setOptimalProcessPlan(record.getOptimalProcessSchemeName());
-            processSchemeManagementVo.setProductFamily(record.getProductFamily());
-            processSchemeManagementVo.setNumber(record.getNumber());
-            processSchemeManagementVo.setOrderNumber(record.getOrderNumber());
-            if (record.getCompletionTime() != null) {
-                BigDecimal completionTimeInHours = record.getCompletionTime().divide(new BigDecimal(3600), 2, RoundingMode.HALF_UP);
-                processSchemeManagementVo.setCompletionTime(completionTimeInHours);
-            }
-            if (record.getTotalReleaseTime() != null) {
-                double totalReleaseTimeHours = record.getTotalReleaseTime() / 3600;
-                String formattedHours = String.format("%.2f", totalReleaseTimeHours);
-                processSchemeManagementVo.setTotalReleaseTime(formattedHours);
-            }
-            processSchemeManagementVo.setReleasableStaffCount(record.getReleasableStaffCount());
+            ProcessSchemeManagementVo processSchemeManagementVo = processSchemeManagementDtoToVo(collect, record);
             processSchemeManagementVos.add(processSchemeManagementVo);
         }
 
@@ -118,6 +102,36 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
         processSchemeManagementVoPage.setTotal(page.getTotal());
         processSchemeManagementVoPage.setPages(page.getPages());
         return processSchemeManagementVoPage;
+    }
+
+    private ProcessSchemeManagementVo processSchemeManagementDtoToVo(Map<String, Integer> collect, ApsProductFamilyProcessSchemeManagement record) {
+        String curProcessSchemeName = record.getCurProcessSchemeName();
+        Integer curId = collect.get(curProcessSchemeName);
+        String optimalProcessSchemeName = record.getOptimalProcessSchemeName();
+        Integer opId = collect.get(optimalProcessSchemeName);
+        ProcessSchemeManagementVo processSchemeManagementVo = new ProcessSchemeManagementVo();
+        if (record.getProductionLineBalanceRate() != null) {
+            processSchemeManagementVo.setProductionLineBalanceRate(record.getProductionLineBalanceRate().multiply(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP) + "%");
+        }
+        processSchemeManagementVo.setManId(record.getId());
+        processSchemeManagementVo.setId(curId);
+        processSchemeManagementVo.setCurrentProcessScheme(record.getCurProcessSchemeName());
+        processSchemeManagementVo.setOptimalId(opId);
+        processSchemeManagementVo.setOptimalProcessPlan(record.getOptimalProcessSchemeName());
+        processSchemeManagementVo.setProductFamily(record.getProductFamily());
+        processSchemeManagementVo.setNumber(record.getNumber());
+        processSchemeManagementVo.setOrderNumber(record.getOrderNumber());
+        if (record.getCompletionTime() != null) {
+            BigDecimal completionTimeInHours = record.getCompletionTime().divide(new BigDecimal(3600), 2, RoundingMode.HALF_UP);
+            processSchemeManagementVo.setCompletionTime(completionTimeInHours);
+        }
+        if (record.getTotalReleaseTime() != null) {
+            double totalReleaseTimeHours = record.getTotalReleaseTime() / 3600;
+            String formattedHours = String.format("%.2f", totalReleaseTimeHours);
+            processSchemeManagementVo.setTotalReleaseTime(formattedHours);
+        }
+        processSchemeManagementVo.setReleasableStaffCount(record.getReleasableStaffCount());
+        return processSchemeManagementVo;
     }
 
     @Override
@@ -144,6 +158,31 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
             getRes(orderNumber, number, processSchemeMap, productFamilyProcessSchemeManagement);
         }
         return updateBatchById(apsProductFamilyProcessSchemeManagements);
+    }
+
+    @Override
+    public void downloadProcessCapacity(HttpServletResponse response, DownloadParam downloadParam) {
+        try {
+            response.setContentType("application/vnd.ms-excel");
+            response.setCharacterEncoding("utf-8");
+            // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+            String fileName = URLEncoder.encode("我是文件名", "UTF-8").replaceAll("\\+", "%20");
+            response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+
+            List<ExcelSchemeManagement> excelSchemeManagements = null;
+            if (downloadParam.getType() == ExcelOperationEnum.ALL_PAGES.getCode()) {
+                List<ApsProductFamilyProcessSchemeManagement> schemeManagements = getBaseMapper().selectList(null);
+                excelSchemeManagements = processSchemeManaDtoToExcel.convert(schemeManagements);
+            } else {
+                Page<ApsProductFamilyProcessSchemeManagement> schemeManagementPage = page(new Page<ApsProductFamilyProcessSchemeManagement>()
+                        .setSize(downloadParam.getSize()).setCurrent(downloadParam.getPage()));
+                excelSchemeManagements = processSchemeManaDtoToExcel.convert(schemeManagementPage.getRecords());
+            }
+            EasyExcel.write(response.getOutputStream(), ExcelSchemeManagement.class).sheet("sheel1").doWrite(excelSchemeManagements);
+        } catch (Exception e) {
+            log.error("最终工艺方案导出失败" + "-----" + new Date() + e.getMessage());
+            throw new BeneWakeException("最终工艺方案导出失败");
+        }
     }
 
     private void getRes(Integer orderNumber, Integer number, Map<String, List<ProcessSchemeEntity>> processSchemeMap, ApsProductFamilyProcessSchemeManagement productFamilyProcessSchemeManagement) {

@@ -61,13 +61,24 @@
         f_receive_qty,
         f_csn_receive_base_qty,
         f_in_stock_qty,
-        ch_version_name as version
+        ch_version_name AS version
         FROM
-        <foreach collection="versions" item="item" index="index" open="(" separator=" UNION ALL " close=")">
-            SELECT * ,#{item.chVersionName} as ch_version_name FROM aps_receive_notice WHERE version =
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        ELSE NULL
+        END AS ch_version_name
+        FROM aps_receive_notice
+        WHERE version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
             #{item.version}
         </foreach>
-        AS noti
+        ) AS noti
         LEFT JOIN aps_material_name_mapping AS map ON noti.f_material_id = map.f_material_id
+        ORDER BY noti.version desc
     </select>
+
 </mapper>

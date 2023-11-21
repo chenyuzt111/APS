@@ -48,14 +48,23 @@
         f_expiry_date,
         f_lock_qty,
         f_lot,
-        ch_version_name as version
+        ch_version_name AS version
         FROM
-        <foreach collection="versions" item="item" index="index" open="(" separator=" UNION ALL " close=")">
-            SELECT * ,#{item.chVersionName} as ch_version_name FROM aps_inventory_lock WHERE version =
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        ELSE NULL
+        END AS ch_version_name
+        FROM aps_inventory_lock
+        WHERE version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
             #{item.version}
         </foreach>
-        AS loc
+        ) AS loc
         LEFT JOIN aps_material_name_mapping AS map ON loc.f_material_id = map.f_material_id
+        ORDER BY loc.version desc
     </select>
-
 </mapper>

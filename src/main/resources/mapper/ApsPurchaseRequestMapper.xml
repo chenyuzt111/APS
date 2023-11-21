@@ -45,13 +45,24 @@
         map.f_material_name,
         f_base_unit_qty,
         f_arrival_date,
-        ch_version_name as version
+        ch_version_name AS version
         FROM
-        <foreach collection="versions" item="item" index="index" open="(" separator=" UNION ALL " close=")">
-            SELECT * ,#{item.chVersionName} as ch_version_name FROM aps_purchase_request WHERE version =
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        ELSE NULL
+        END AS ch_version_name
+        FROM aps_purchase_request
+        WHERE version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
             #{item.version}
         </foreach>
-        AS req
+        ) AS req
         LEFT JOIN aps_material_name_mapping AS map ON req.f_material_id = map.f_material_id
+        ORDER BY req.version desc
     </select>
+
 </mapper>

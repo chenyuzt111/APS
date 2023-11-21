@@ -264,4 +264,15 @@ public class ProcessController {
         }
         apsProcessSchemeService.downloadProcessCapacity(response, downloadParam);
     }
+
+    @ApiOperation("导出基础工艺方案")
+    @PostMapping("/downloadSchemeManagement")
+    public void downloadSchemeManagement(@RequestBody DownloadParam downloadParam, HttpServletResponse response) {
+        if (downloadParam == null || downloadParam.getType() == null
+                || (downloadParam.getType() == ExcelOperationEnum.CURRENT_PAGE.getCode()
+                && (downloadParam.getPage() == null || downloadParam.getSize() == null))) {
+            throw new BeneWakeException("数据不正确");
+        }
+        apsProductFamilyProcessSchemeManagementService.downloadProcessCapacity(response, downloadParam);
+    }
 }

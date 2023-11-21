@@ -2,8 +2,11 @@ package com.benewake.system.service;
 
 import com.benewake.system.entity.ApsProductFamilyProcessSchemeManagement;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.vo.DownloadParam;
 import com.benewake.system.entity.vo.ProcessSchemeManagementParam;
 import com.benewake.system.entity.vo.ProcessSchemeManagementVoPage;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
 * @author ASUS
@@ -15,4 +18,6 @@ public interface ApsProductFamilyProcessSchemeManagementService extends IService
     ProcessSchemeManagementVoPage getProcessSchemeManagement(Integer page, Integer size);
 
     Boolean setOrderNumber(ProcessSchemeManagementParam processSchemeManagementParam);
+
+    void downloadProcessCapacity(HttpServletResponse response, DownloadParam downloadParam);
 }
