@@ -17,7 +17,7 @@ public class ApsMaterialProcessMapping implements Serializable {
     /**
      * 自增id
      */
-    @TableField(value = "id")
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**

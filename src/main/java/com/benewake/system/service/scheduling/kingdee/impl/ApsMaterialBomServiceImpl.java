@@ -11,10 +11,12 @@ import com.benewake.system.entity.dto.ApsMaterialBomDto;
 import com.benewake.system.entity.enums.BOMChangeType;
 import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.entity.kingdee.KingdeeMaterialBom;
+import com.benewake.system.entity.kingdee.transfer.FMaterialIdToSub;
 import com.benewake.system.entity.kingdee.transfer.MaterialBomChange;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
 import com.benewake.system.mapper.ApsMaterialProcessMappingMapper;
 import com.benewake.system.mapper.ApsTableUpdateDateMapper;
+import com.benewake.system.service.ApsMaterialProcessMappingService;
 import com.benewake.system.service.scheduling.kingdee.ApsMaterialBomService;
 import com.benewake.system.mapper.ApsMaterialBomMapper;
 import com.benewake.system.service.scheduling.kingdee.ApsMaterialNameMappingService;
@@ -57,6 +59,9 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
 
     @Autowired
     private ApsMaterialNameMappingService apsMaterialNameMappingService;
+
+    @Autowired
+    private ApsMaterialProcessMappingService materialProcessMappingService;
 
     private final Map<String, String> docStatusMap = new HashMap<>();
 
@@ -222,7 +227,7 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
 
     @Override
     public Page selectPageList(Page page, List tableVersionList) {
-        Page<ApsMaterialBomDto> materialBomDtoPage = apsMaterialBomMapper.selectPageList(page ,tableVersionList);
+        Page<ApsMaterialBomDto> materialBomDtoPage = apsMaterialBomMapper.selectPageList(page, tableVersionList);
         return materialBomDtoPage;
     }
 
@@ -253,7 +258,7 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
             List<ApsMaterialNameMapping> apsMaterialNameMappings = getApsMaterialNameMappings(addByFMaterialIdAndChild);
             List<String> materidlIds = apsMaterialNameMappings.stream().map(ApsMaterialNameMapping::getFMaterialId).collect(Collectors.toList());
             //将新的物料名称对应关系 添加进去
-            apsMaterialNameMappingService.remove(new LambdaQueryWrapper<ApsMaterialNameMapping>().in(ApsMaterialNameMapping::getFMaterialId ,materidlIds));
+            apsMaterialNameMappingService.remove(new LambdaQueryWrapper<ApsMaterialNameMapping>().in(ApsMaterialNameMapping::getFMaterialId, materidlIds));
             apsMaterialNameMappingService.saveBatch(apsMaterialNameMappings);
             List<String> maxFNumbersList = getMaxFNumbersList(addByFMaterialIdAndChild, fMaterialIdToFNumber);
             List<ApsMaterialProcessMapping> apsMaterialProcessMappings = apsMaterialProcessMappingMapper.selectList(null);
@@ -263,10 +268,80 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
         }
         tableUpdateDate.setUpdateDate(new Date());
         tableUpdateDateMapper.updateById(tableUpdateDate);
+
         if (CollectionUtils.isNotEmpty(apsMaterialBoms)) {
+            Set<String> fMaterialIdSet = apsMaterialBoms.stream()
+                    .map(x -> "'" + x.getFMaterialIdChild() + "'").collect(Collectors.toSet());
+            updateMaterialIdProcessMapping(fMaterialIdSet);
             saveBatch(apsMaterialBoms);
         }
         return true;
+    }
+
+    public void updateMaterialIdProcessMapping(Set<String> fMaterialIdSet) throws Exception {
+        // First Query
+        QueryParam materialQueryParam = new QueryParam();
+        materialQueryParam.setFormId("BD_MATERIAL");
+        materialQueryParam.setFieldKeys("FMaterialId,FNumber");
+        materialQueryParam.setFilterString("FNumber in (" + String.join(",", fMaterialIdSet) + ")");
+        List<MaterialIdToName> materialIdToNames = api.executeBillQuery(materialQueryParam, MaterialIdToName.class);
+
+        // Second Query
+        QueryParam substitutionQueryParam = new QueryParam();
+        substitutionQueryParam.setFormId("ENG_Substitution");
+        substitutionQueryParam.setFieldKeys("FNumber,FMaterialID,FSubMaterialID,FEffectDate,FExpireDate");
+
+        List<String> materialIds = materialIdToNames.stream()
+                .map(x -> "'" + x.getFMaterialId() + "'")
+                .collect(Collectors.toList());
+
+        substitutionQueryParam.setFilterString("FMaterialID in (" + String.join(",", materialIds) + ")");
+
+        List<FMaterialIdToSub> substitutionResult = api.executeBillQuery(substitutionQueryParam, FMaterialIdToSub.class);
+        if (CollectionUtils.isEmpty(substitutionResult)) {
+            return;
+        }
+
+        // Third Query
+        List<String> subMaterialIds = substitutionResult.stream()
+                .map(x -> "'" + x.getFSubMaterialID() + "'")
+                .collect(Collectors.toList());
+
+        QueryParam subMaterialQueryParam = new QueryParam();
+        subMaterialQueryParam.setFormId("BD_MATERIAL");
+        subMaterialQueryParam.setFieldKeys("FMaterialId,FNumber");
+        subMaterialQueryParam.setFilterString("FMaterialId in (" + String.join(",", subMaterialIds) + ")");
+        List<MaterialIdToName> subMaterialIdToNames = api.executeBillQuery(subMaterialQueryParam, MaterialIdToName.class);
+
+        // Create maps
+        Map<String, String> materialIdToNumberMap = materialIdToNames.stream()
+                .collect(Collectors.toMap(MaterialIdToName::getFMaterialId, MaterialIdToName::getFNumber));
+
+        Map<String, String> subMaterialIdToNumberMap = subMaterialIdToNames.stream()
+                .collect(Collectors.toMap(MaterialIdToName::getFMaterialId, MaterialIdToName::getFNumber));
+
+        Set<String> fMaterialId = substitutionResult.stream().map(x ->
+                materialIdToNumberMap.get(x.getFMaterialID())).collect(Collectors.toSet());
+        Set<String> fSubMaterialId = substitutionResult.stream().map(x ->
+                subMaterialIdToNumberMap.get(x.getFSubMaterialID())).collect(Collectors.toSet());
+        fMaterialId.addAll(fSubMaterialId);
+        LambdaQueryWrapper<ApsMaterialProcessMapping> processMappingLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        processMappingLambdaQueryWrapper.in(ApsMaterialProcessMapping::getFMaterialId, fMaterialId);
+        List<ApsMaterialProcessMapping> apsMaterialProcessMappings = materialProcessMappingService.getBaseMapper().selectList(processMappingLambdaQueryWrapper);
+        Map<String, String> fMaterialIdToProcessMap = apsMaterialProcessMappings.stream().collect(Collectors.toMap(ApsMaterialProcessMapping::getFMaterialId, ApsMaterialProcessMapping::getProcess));
+        // Update test objects
+
+        List<ApsMaterialProcessMapping> processMappings = substitutionResult.stream().map(testObj -> {
+            if (fMaterialIdToProcessMap.get(materialIdToNumberMap.get(testObj.getFMaterialID())) != null &&
+                    fMaterialIdToProcessMap.get(subMaterialIdToNumberMap.get(testObj.getFSubMaterialID())) == null) {
+                ApsMaterialProcessMapping apsMaterialProcessMapping = new ApsMaterialProcessMapping();
+                apsMaterialProcessMapping.setFMaterialId(subMaterialIdToNumberMap.get(testObj.getFSubMaterialID()));
+                apsMaterialProcessMapping.setProcess(fMaterialIdToProcessMap.get(materialIdToNumberMap.get(testObj.getFMaterialID())));
+                return apsMaterialProcessMapping;
+            }
+            return null;
+        }).filter(Objects::nonNull).collect(Collectors.toList());
+        materialProcessMappingService.saveBatch(processMappings);
     }
 
     public List<KingdeeMaterialBom> getAddByFMaterialIdAndChild(List<MaterialBomChange> addList) throws Exception {
