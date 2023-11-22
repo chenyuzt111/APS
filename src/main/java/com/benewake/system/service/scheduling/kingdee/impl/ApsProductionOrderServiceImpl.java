@@ -63,7 +63,7 @@ public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrde
             apsProductionOrder.setVersion(maxVersion);
             return save(apsProductionOrder);
         }
-            return saveBatch(apsProductionOrders);
+        return saveBatch(apsProductionOrders);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrde
 
     @Override
     public Page selectPageList(Page page, List tableVersionList) {
-        Page<ApsProductionOrderDto> apsProductionOrderDtoPage = apsProductionOrderMapper.selectPageList(page ,tableVersionList);
+        Page<ApsProductionOrderDto> apsProductionOrderDtoPage = apsProductionOrderMapper.selectPageList(page, tableVersionList);
         return apsProductionOrderDtoPage;
     }
 

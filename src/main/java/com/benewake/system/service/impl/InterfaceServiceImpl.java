@@ -1,5 +1,6 @@
 package com.benewake.system.service.impl;
 
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -9,17 +10,22 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.benewake.system.entity.ApsTableVersion;
 import com.benewake.system.entity.Interface.VersionToChVersion;
 import com.benewake.system.entity.base.InterfaceDataBase;
+import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.entity.enums.TableVersionState;
+import com.benewake.system.entity.vo.DownloadParam;
 import com.benewake.system.entity.vo.PageListRestVo;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.InterfaceService;
 import com.benewake.system.service.ApsIntfaceDataServiceBase;
+import com.benewake.system.utils.ResponseUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -189,6 +195,36 @@ public class InterfaceServiceImpl implements InterfaceService {
         ApsIntfaceDataServiceBase apsIntfaceDataServiceBase = kingdeeServiceMap.get(interfaceDataType.getSeviceName());
         IService iService = (IService) apsIntfaceDataServiceBase;
         return iService.removeBatchByIds(ids);
+    }
+
+    @Override
+    public void downloadProcessCapacity(HttpServletResponse response, Integer type, DownloadParam downloadParam) {
+        try {
+            ResponseUtil.setFileResp(response, "接口数据type1");
+            List<Object> list = null;
+            if (downloadParam.getType() == ExcelOperationEnum.ALL_PAGES.getCode()) {
+                InterfaceDataType interfaceDataType = InterfaceDataType.valueOfCode(type);
+                if (interfaceDataType == null) {
+                    throw new BeneWakeException("type找不到");
+                }
+                ApsIntfaceDataServiceBase apsIntfaceDataServiceBase = kingdeeServiceMap.get(interfaceDataType.getSeviceName());
+                IService iService = (IService) apsIntfaceDataServiceBase;
+                Long count = iService.getBaseMapper().selectCount(null);
+                PageListRestVo<Object> objectPageListRestVo = getAllPage(1, Math.toIntExact(count), type);
+                list = objectPageListRestVo.getList();
+            } else {
+                PageListRestVo<Object> objectPageListRestVo = getAllPage(downloadParam.getPage(), downloadParam.getSize(), type);
+                list = objectPageListRestVo.getList();
+            }
+            if (CollectionUtils.isNotEmpty(list)) {
+                EasyExcel.write(response.getOutputStream(), list.get(0)
+                        .getClass()).sheet("sheet1").doWrite(list);
+            } else {
+                throw new BeneWakeException("当前数据为空");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private List<InterfaceDataBase> convertRecordsToRestlt(List records, Map<Integer, String> versionToChVersions) {

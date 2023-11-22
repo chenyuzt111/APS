@@ -3,7 +3,10 @@ package com.benewake.system.controller;
 
 import com.benewake.system.entity.ApsProductFamilyMachineTable;
 import com.benewake.system.entity.Result;
+import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.vo.ApsProductFamilyMachineTablePageVo;
+import com.benewake.system.entity.vo.DownloadParam;
+import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsProductFamilyMachineTableService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Api(tags = "机器管理")
@@ -40,7 +44,7 @@ public class MachineController {
         return Result.ok(removeBatchByIds);
     }
 
-    @ApiOperation("修改机器管理")
+    @ApiOperation("新增或修改机器管理")
     @PostMapping("/addOrUpdateApsMachineTable")
     public Result addOrUpdateApsMachineTable(@RequestBody ApsProductFamilyMachineTable apsProductFamilyMachineTable) {
         if (apsProductFamilyMachineTable == null) {
@@ -50,5 +54,17 @@ public class MachineController {
         return Result.ok(res);
     }
 
+
+
+    @ApiOperation("导出机器管理列表")
+    @PostMapping("/downloadApsMachineTable")
+    public void downloadSchemeManagement(@RequestBody DownloadParam downloadParam, HttpServletResponse response) {
+        if (downloadParam == null || downloadParam.getType() == null
+                || (downloadParam.getType() == ExcelOperationEnum.CURRENT_PAGE.getCode()
+                && (downloadParam.getPage() == null || downloadParam.getSize() == null))) {
+            throw new BeneWakeException("数据不正确");
+        }
+        apsProductFamilyMachineTableService.downloadProcessCapacity(response, downloadParam);
+    }
 
 }

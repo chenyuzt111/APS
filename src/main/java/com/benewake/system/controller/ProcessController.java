@@ -1,11 +1,15 @@
 package com.benewake.system.controller;
 
+import com.alibaba.excel.EasyExcel;
 import com.benewake.system.entity.*;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.vo.*;
 import com.benewake.system.entity.vo.UpdateOptimalStrategyParam;
+import com.benewake.system.excel.entity.ExcelProcessCapacityTemplate;
+import com.benewake.system.excel.entity.ExcelProcessNamePoolTemplate;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.*;
+import com.benewake.system.utils.ResponseUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections4.CollectionUtils;
@@ -16,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.websocket.server.PathParam;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -213,6 +218,18 @@ public class ProcessController {
         apsProcessNamePoolService.downloadProceeName(response, downloadParam);
     }
 
+    @ApiOperation("下载工序命名池导入模板")
+    @PostMapping("/proceeNameTemplate")
+    public void proceeNameTemplate(HttpServletResponse response) {
+        try {
+            ResponseUtil.setFileResp(response ,"工序命名池导入模板");
+            EasyExcel.write(response.getOutputStream(), ExcelProcessNamePoolTemplate.class).sheet("sheet1")
+                    .doWrite((java.util.Collection<?>) null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @ApiOperation("导入工序命名池数据")
     @PostMapping("/importProceeName")
     public Result importProceeName(@PathParam("type") Integer type, @RequestParam("file") MultipartFile file) {
@@ -228,7 +245,6 @@ public class ProcessController {
     }
 
 
-
     @ApiOperation("导出工序与产能")
     @PostMapping("/downloadProcessCapacity")
     public void downloadProcessCapacity(@RequestBody DownloadParam downloadParam, HttpServletResponse response) {
@@ -238,6 +254,18 @@ public class ProcessController {
             throw new BeneWakeException("数据不正确");
         }
         apsProcessCapacityService.downloadProcessCapacity(response, downloadParam);
+    }
+
+    @ApiOperation("下载工序与产能导入模板")
+    @PostMapping("/processCapacityTemplate")
+    public void processCapacityTemplate(HttpServletResponse response) {
+        try {
+            ResponseUtil.setFileResp(response ,"工序与产能导入模板");
+            EasyExcel.write(response.getOutputStream(), ExcelProcessCapacityTemplate.class).sheet("sheet1")
+                    .doWrite((java.util.Collection<?>) null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @ApiOperation("导入工序与产能")

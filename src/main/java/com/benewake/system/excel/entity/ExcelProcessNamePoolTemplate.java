@@ -13,11 +13,7 @@ import java.io.Serializable;
 
 
 @Data
-public class ExcelProcessNamePool implements Serializable {
-
-    @ExcelProperty("序号")
-    private Integer number;
-
+public class ExcelProcessNamePoolTemplate implements Serializable {
 
     @ColumnWidth(20)
     @ExcelProperty("工序名称")

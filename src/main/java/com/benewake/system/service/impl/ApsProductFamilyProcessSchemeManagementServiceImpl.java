@@ -17,6 +17,7 @@ import com.benewake.system.mapper.ApsProcessCapacityMapper;
 import com.benewake.system.mapper.ApsProcessSchemeMapper;
 import com.benewake.system.service.ApsProductFamilyProcessSchemeManagementService;
 import com.benewake.system.mapper.ApsProductFamilyProcessSchemeManagementMapper;
+import com.benewake.system.utils.ResponseUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -163,12 +164,7 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
     @Override
     public void downloadProcessCapacity(HttpServletResponse response, DownloadParam downloadParam) {
         try {
-            response.setContentType("application/vnd.ms-excel");
-            response.setCharacterEncoding("utf-8");
-            // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
-            String fileName = URLEncoder.encode("我是文件名", "UTF-8").replaceAll("\\+", "%20");
-            response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
-
+            ResponseUtil.setFileResp(response ,"基础工艺方案");
             List<ExcelSchemeManagement> excelSchemeManagements = null;
             if (downloadParam.getType() == ExcelOperationEnum.ALL_PAGES.getCode()) {
                 List<ApsProductFamilyProcessSchemeManagement> schemeManagements = getBaseMapper().selectList(null);
@@ -178,7 +174,8 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
                         .setSize(downloadParam.getSize()).setCurrent(downloadParam.getPage()));
                 excelSchemeManagements = processSchemeManaDtoToExcel.convert(schemeManagementPage.getRecords());
             }
-            EasyExcel.write(response.getOutputStream(), ExcelSchemeManagement.class).sheet("sheel1").doWrite(excelSchemeManagements);
+            EasyExcel.write(response.getOutputStream(), ExcelSchemeManagement.class)
+                    .sheet("sheel1").doWrite(excelSchemeManagements);
         } catch (Exception e) {
             log.error("最终工艺方案导出失败" + "-----" + new Date() + e.getMessage());
             throw new BeneWakeException("最终工艺方案导出失败");

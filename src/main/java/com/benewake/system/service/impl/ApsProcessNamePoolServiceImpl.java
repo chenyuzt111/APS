@@ -10,6 +10,7 @@ import com.benewake.system.excel.entity.ExcelProcessNamePool;
 import com.benewake.system.entity.vo.ApsProcessNamePoolPageVo;
 import com.benewake.system.entity.vo.ApsProcessNamePoolVo;
 import com.benewake.system.entity.vo.DownloadParam;
+import com.benewake.system.excel.entity.ExcelProcessNamePoolTemplate;
 import com.benewake.system.excel.listener.ProcessPoolListener;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsProcessNamePoolService;
@@ -113,7 +114,7 @@ public class ApsProcessNamePoolServiceImpl extends ServiceImpl<ApsProcessNamePoo
     public Boolean saveDataByExcel(Integer type, MultipartFile file) {
         try {
             EasyExcel.read(file.getInputStream(),
-                    ExcelProcessNamePool.class, new ProcessPoolListener(this ,type))
+                    ExcelProcessNamePoolTemplate.class, new ProcessPoolListener(this ,type))
                     .sheet().headRowNumber(1).doRead();
         } catch (Exception e) {
             log.error("工序与产能导入失败" + e.getMessage());

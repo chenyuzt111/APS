@@ -1,6 +1,7 @@
 package com.benewake.system.entity.kingdee;
 
 import lombok.Data;
+
 /*
  * 生产订单列表数据类型*/
 @Data
@@ -10,9 +11,9 @@ public class KingdeeProductionOrder {
 
     //("单据类型")
     private String FBillType;
-    //("单据类型")
-    private String FBILLTYPEID;
 
+    //("单据类型")
+//    private String FBILLTYPEID;
 
     //("物料编码")
     private String FMaterialId;
@@ -37,12 +38,6 @@ public class KingdeeProductionOrder {
 
     //("计划完成时间")
     private String FPlanFinishDate;
-
-
-
-
-
-
 
 
 }

@@ -6,6 +6,7 @@ import com.alibaba.excel.exception.ExcelAnalysisStopException;
 import com.benewake.system.entity.ApsProcessNamePool;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.excel.entity.ExcelProcessNamePool;
+import com.benewake.system.excel.entity.ExcelProcessNamePoolTemplate;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsProcessNamePoolService;
 import io.swagger.models.auth.In;
@@ -18,7 +19,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class ProcessPoolListener extends AnalysisEventListener<ExcelProcessNamePool> {
+public class ProcessPoolListener extends AnalysisEventListener<ExcelProcessNamePoolTemplate> {
 
     private final ApsProcessNamePoolService apsProcessNamePoolService;
 
@@ -30,11 +31,11 @@ public class ProcessPoolListener extends AnalysisEventListener<ExcelProcessNameP
     }
 
     //员工集合
-    private List<ExcelProcessNamePool> excelProcessNamePools = new ArrayList<>();
+    private List<ExcelProcessNamePoolTemplate> excelProcessNamePools = new ArrayList<>();
 
 
     @Override
-    public void invoke(ExcelProcessNamePool data, AnalysisContext context) {
+    public void invoke(ExcelProcessNamePoolTemplate data, AnalysisContext context) {
         excelProcessNamePools.add(data);
     }
 

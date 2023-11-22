@@ -12,13 +12,14 @@ import com.benewake.system.entity.vo.ApsProcessCapacityListVo;
 import com.benewake.system.entity.vo.ApsProcessCapacityVo;
 import com.benewake.system.entity.vo.DownloadParam;
 import com.benewake.system.excel.entity.ExcelProcessCapacity;
-import com.benewake.system.excel.entity.ExcelProcessNamePool;
+
+import com.benewake.system.excel.entity.ExcelProcessCapacityTemplate;
 import com.benewake.system.excel.listener.ProcessCapacityListener;
-import com.benewake.system.excel.listener.ProcessPoolListener;
 import com.benewake.system.excel.transfer.ProcessCapacityDtoToExcelList;
 import com.benewake.system.excel.transfer.ProcessCapacityVoToExcelList;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.mapper.ApsProcessSchemeMapper;
+import com.benewake.system.service.ApsFinishedProductBasicDataService;
 import com.benewake.system.service.ApsProcessCapacityService;
 import com.benewake.system.mapper.ApsProcessCapacityMapper;
 import com.benewake.system.service.ApsProcessNamePoolService;
@@ -73,13 +74,18 @@ public class ApsProcessCapacityServiceImpl extends ServiceImpl<ApsProcessCapacit
     @Autowired
     private ProcessCapacityVoToExcelList processCapacityVoToExcelList;
 
+    @Autowired
+    private ApsFinishedProductBasicDataService apsFinishedProductBasicDataService;
+
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Boolean saveOrUpdateProcessCapacityService(ApsProcessCapacityParam apsProcessCapacityParam) {
         ApsProcessCapacity apsProcessCapacity = new ApsProcessCapacity();
         BeanUtils.copyProperties(apsProcessCapacityParam, apsProcessCapacity);
-        apsProcessCapacity.setStandardTime(new BigDecimal(apsProcessCapacityParam.getStandardTime()));
+        if (StringUtils.isNotEmpty(apsProcessCapacityParam.getStandardTime())) {
+            apsProcessCapacity.setStandardTime(new BigDecimal(apsProcessCapacityParam.getStandardTime()));
+        }
         LambdaQueryWrapper<ApsProcessNamePool> apsProcessNamePoolLambdaQueryWrapper = new LambdaQueryWrapper<>();
         apsProcessNamePoolLambdaQueryWrapper.eq(ApsProcessNamePool::getProcessName, apsProcessCapacityParam.getProcessName());
         ApsProcessNamePool apsProcessNamePoolServiceOne = apsProcessNamePoolService.getOne(apsProcessNamePoolLambdaQueryWrapper);
@@ -268,8 +274,8 @@ public class ApsProcessCapacityServiceImpl extends ServiceImpl<ApsProcessCapacit
     @Override
     public Boolean saveDataByExcel(Integer type, MultipartFile file) {
         try {
-            EasyExcel.read(file.getInputStream(), ExcelProcessCapacity.class,
-                            new ProcessCapacityListener(this, apsProcessNamePoolService, type))
+            EasyExcel.read(file.getInputStream(), ExcelProcessCapacityTemplate.class,
+                            new ProcessCapacityListener(this, apsProcessNamePoolService, type, apsFinishedProductBasicDataService))
                     .sheet().headRowNumber(1).doRead();
         } catch (Exception e) {
             log.error("工序与产能导入失败" + e);

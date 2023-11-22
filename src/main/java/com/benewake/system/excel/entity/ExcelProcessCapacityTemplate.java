@@ -19,7 +19,7 @@ import lombok.Data;
  */
 @TableName(value = "aps_process_capacity")
 @Data
-public class ExcelProcessCapacity implements Serializable {
+public class ExcelProcessCapacityTemplate implements Serializable {
 
 
     /**

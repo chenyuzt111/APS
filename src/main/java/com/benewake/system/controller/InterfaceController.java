@@ -3,8 +3,11 @@ package com.benewake.system.controller;
 import com.alibaba.fastjson2.JSON;
 import com.benewake.system.entity.ApsImmediatelyInventory;
 import com.benewake.system.entity.Result;
+import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.enums.InterfaceDataType;
+import com.benewake.system.entity.vo.DownloadParam;
 import com.benewake.system.entity.vo.PageListRestVo;
+import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsDailyDataUploadService;
 import com.benewake.system.service.InterfaceService;
 import io.swagger.annotations.Api;
@@ -16,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.websocket.server.PathParam;
 import java.util.List;
 import java.util.Map;
@@ -73,16 +77,14 @@ public class InterfaceController {
         return res ? Result.ok() : Result.fail();
     }
 
-    @PostMapping("/importExcel")
-    public Result addOrdersByExcel(@PathParam("type") Integer type ,@RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
-            return Result.fail("文件为空！");
+    @ApiOperation("导出接口数据")
+    @PostMapping("/downloadSchemeManagement")
+    public void downloadSchemeManagement(@RequestBody DownloadParam downloadParam, @PathParam("type") Integer type, HttpServletResponse response) {
+        if (downloadParam == null || downloadParam.getType() == null
+                || (downloadParam.getType() == ExcelOperationEnum.CURRENT_PAGE.getCode()
+                && (downloadParam.getPage() == null || downloadParam.getSize() == null))) {
+            throw new BeneWakeException("数据不正确");
         }
-        String[] split = file.getOriginalFilename().split("\\.");
-        if (!"xlsx".equals(split[1]) && !"xls".equals(split[1])) {
-            return Result.fail("请提供.xlsx或.xls为后缀的Excel文件");
-        }
-        Boolean res = dailyDataUploadService.saveDataByExcel(file);
-        return res ? Result.ok() : Result.fail();
+        interfaceService.downloadProcessCapacity(response, type, downloadParam);
     }
 }

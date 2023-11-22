@@ -4,12 +4,17 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.dto.ApsProductFamilyMachineTableDto;
 import com.benewake.system.entity.ApsProductFamilyMachineTable;
+import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.vo.ApsProductFamilyMachineTablePageVo;
 import com.benewake.system.entity.vo.ApsProductFamilyMachineTableVo;
+import com.benewake.system.entity.vo.DownloadParam;
 import com.benewake.system.service.ApsProductFamilyMachineTableService;
 import com.benewake.system.mapper.ApsProductFamilyMachineTableMapper;
+import com.benewake.system.utils.ResponseUtil;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -67,6 +72,19 @@ public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProd
             res = updateById(apsProductFamilyMachineTable);
         }
         return res;
+    }
+
+    @Override
+    public void downloadProcessCapacity(HttpServletResponse response, DownloadParam downloadParam) {
+        try {
+            ResponseUtil.setFileResp(response, "机器管理");
+
+            if (downloadParam.getType() == ExcelOperationEnum.ALL_PAGES.getCode()) {
+
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 }
 
