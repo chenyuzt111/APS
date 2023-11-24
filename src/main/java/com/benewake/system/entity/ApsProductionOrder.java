@@ -98,7 +98,9 @@ public class ApsProductionOrder implements Serializable {
     @TableField(value = "planned_completion_time")
     private String plannedCompletionTime;
 
-
+/*定制物料编码*/
+    @TableField(value = "f_dzmaterial_id")
+    private String fDzMaterialName;
 
     /**
      * 版本号

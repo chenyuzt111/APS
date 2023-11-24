@@ -23,6 +23,7 @@ public class KingdeeToApsProductionOrder {
         apsProductionOrder.setFBomId(kingdeeProductionOrder.getFBomId());
         apsProductionOrder.setFMaterialName(kingdeeProductionOrder.getFMaterialName());
         apsProductionOrder.setPlannedCompletionTime(kingdeeProductionOrder.getFPlanFinishDate());
+        apsProductionOrder.setFDzMaterialName(kingdeeProductionOrder.getF_ora_FDZMaterialID2());
         apsProductionOrder.setVersion(version);
 
         return apsProductionOrder;
