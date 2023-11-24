@@ -15,7 +15,7 @@ public class MesToApsInstallationBoard {
         ApsInstallationBoard apsInstallationBoard = new ApsInstallationBoard();
         apsInstallationBoard.setProductionOrderNumber(mesInstallationBoard.getProductionOrderNumber());
         apsInstallationBoard.setMaterialCode(mesInstallationBoard.getMaterialCode());
-        apsInstallationBoard.setMaterialName(mesInstallationBoard.getMaterialName());
+//        apsInstallationBoard.setMaterialName(mesInstallationBoard.getMaterialName());
         apsInstallationBoard.setBurnInCompletionQuantity(mesInstallationBoard.getBurnInCompletionQuantity());
         apsInstallationBoard.setBurnQualifiedCount(mesInstallationBoard.getBurnQualifiedCount());
         apsInstallationBoard.setTotalNumber(mesInstallationBoard.getTotalNumber());

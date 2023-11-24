@@ -32,6 +32,7 @@ public class SysLogController {
     private LoginLogService loginLogService;
     @Autowired
     private OperLogService operLogService;
+
     @PreAuthorize("hasAnyAuthority('bnt.sysLoginLog.list')")
     @ApiOperation("条件查询登录日志")
     @PostMapping("loginLog")

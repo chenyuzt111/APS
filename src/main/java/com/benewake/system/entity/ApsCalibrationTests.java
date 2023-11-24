@@ -35,8 +35,8 @@ public class ApsCalibrationTests implements Serializable {
     /**
      * 物料名称
      */
-    @TableField(value = "material_name")
-    private String materialname;
+//    @TableField(value = "material_name")
+//    private String materialname;
 
     /**
      * 本次校准测试完成数

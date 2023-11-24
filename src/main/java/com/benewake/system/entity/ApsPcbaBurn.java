@@ -32,11 +32,6 @@ public class ApsPcbaBurn implements Serializable {
     @TableField(value = "material_code")
     private String materialCode;
 
-    /**
-     * 物料名称
-     */
-    @TableField(value = "material_name")
-    private String materialName;
 
     /**
      * 本次烧录完成数

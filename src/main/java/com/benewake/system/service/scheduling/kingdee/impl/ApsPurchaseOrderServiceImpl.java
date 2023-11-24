@@ -104,10 +104,6 @@ public class ApsPurchaseOrderServiceImpl extends ServiceImpl<ApsPurchaseOrderMap
         return result;
     }
 
-    @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
-        return null;
-    }
 }
 
 

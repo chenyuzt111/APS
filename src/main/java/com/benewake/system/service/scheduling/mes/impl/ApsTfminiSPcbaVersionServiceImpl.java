@@ -3,6 +3,7 @@ package com.benewake.system.service.scheduling.mes.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsTfminiSPcbaVersion;
+import com.benewake.system.entity.dto.ApsTfminiSPcbaVersionDto;
 import com.benewake.system.entity.mes.MesPcbaVersion;
 import com.benewake.system.service.scheduling.mes.ApsTfminiSPcbaVersionService;
 import com.benewake.system.mapper.ApsTfminiSPcbaVersionMapper;
@@ -39,6 +40,9 @@ public class ApsTfminiSPcbaVersionServiceImpl extends ServiceImpl<ApsTfminiSPcba
 
     @Autowired
     private MesToApsTfminiSPcbaVersion mesToApsTfminiSPcbaVersion;
+
+    @Autowired
+    private ApsTfminiSPcbaVersionMapper tfminiSPcbaVersionMapper;
 
     @Override
     public Boolean updateDataVersions() throws Exception {
@@ -135,11 +139,15 @@ public class ApsTfminiSPcbaVersionServiceImpl extends ServiceImpl<ApsTfminiSPcba
         }
     }
 
-
+    @Override
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsTfminiSPcbaVersionDto> apsTfminiSPcbaVersionDtoPage = tfminiSPcbaVersionMapper.selectPageList(page, tableVersionList);
+        return apsTfminiSPcbaVersionDtoPage;
+    }
 
     @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
-        return null;
+    public void insertVersionIncr() {
+        tfminiSPcbaVersionMapper.insertVersionIncr();
     }
 }
 

@@ -3,6 +3,7 @@ package com.benewake.system.service.scheduling.mes.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsTfminiSSnLabeling;
+import com.benewake.system.entity.dto.ApsTfminiSSnLabelingDto;
 import com.benewake.system.entity.mes.MesSnLabeling;
 import com.benewake.system.service.scheduling.mes.ApsTfminiSSnLabelingService;
 import com.benewake.system.mapper.ApsTfminiSSnLabelingMapper;
@@ -29,16 +30,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
-* @author ASUS
-* @description 针对表【aps_tfmini_s_sn_labeling】的数据库操作Service实现
-* @createDate 2023-10-19 13:59:51
-*/
+ * @author ASUS
+ * @description 针对表【aps_tfmini_s_sn_labeling】的数据库操作Service实现
+ * @createDate 2023-10-19 13:59:51
+ */
 @Service
 public class ApsTfminiSSnLabelingServiceImpl extends ServiceImpl<ApsTfminiSSnLabelingMapper, ApsTfminiSSnLabeling>
-    implements ApsTfminiSSnLabelingService{
+        implements ApsTfminiSSnLabelingService {
 
     @Autowired
     private MesToApsTfminiSSnLabeling mesToApsTfminiSSnLabeling;
+
+    @Autowired
+    private ApsTfminiSSnLabelingMapper tfminiSSnLabelingMapper;
 
     @Override
     public Boolean updateDataVersions() throws Exception {
@@ -88,7 +92,7 @@ public class ApsTfminiSSnLabelingServiceImpl extends ServiceImpl<ApsTfminiSSnLab
                                         if (id == 84939793) {
                                             field.set(mesSnLabeling, dataValue);
                                         }
-                                    }else if (excelFieldName.equals("UnBurnQualifiedCount")){
+                                    } else if (excelFieldName.equals("UnBurnQualifiedCount")) {
                                         if (id == 84939792) {
                                             field.set(mesSnLabeling, dataValue);
                                         }
@@ -117,10 +121,15 @@ public class ApsTfminiSSnLabelingServiceImpl extends ServiceImpl<ApsTfminiSSnLab
         }
     }
 
+    @Override
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsTfminiSSnLabelingDto> snLabelingDtoPage = tfminiSSnLabelingMapper.selectPageList(page, tableVersionList);
+        return snLabelingDtoPage;
+    }
 
     @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
-        return null;
+    public void insertVersionIncr() {
+        tfminiSSnLabelingMapper.insertVersionIncr();
     }
 }
 

@@ -12,6 +12,7 @@ import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsFinishedProductBasicDataService;
 import com.benewake.system.service.ApsProcessCapacityService;
 import com.benewake.system.service.ApsProcessNamePoolService;
+import com.benewake.system.utils.ExcelUtil;
 import com.benewake.system.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -27,7 +28,7 @@ public class ProcessCapacityListener extends AnalysisEventListener<ExcelProcessC
     private final Integer type;
     private final List<String> head = Arrays.asList("所属工序", "产品族", "序号", "工序名称", "切换时间", "包装方式", "标准工时", "人数MAX", "人数MIN");
     private final Map<String, Integer> processNameMap;
-    private final List<ApsProcessCapacity> excelProcessCapacities = new ArrayList<>();
+    private final List<ApsProcessCapacity> apsProcessCapacities = new ArrayList<>();
     private final StringBuilder processNameError = new StringBuilder();
     private final StringBuilder errorMassage = new StringBuilder();
     private final Set<String> productFamilySet;
@@ -45,7 +46,7 @@ public class ProcessCapacityListener extends AnalysisEventListener<ExcelProcessC
 
     @Override
     public void invokeHeadMap(Map<Integer, String> headMap, AnalysisContext context) {
-        validateHeadMap(headMap);
+        ExcelUtil.validateHeadMap(headMap ,head);
     }
 
     @Override
@@ -53,7 +54,7 @@ public class ProcessCapacityListener extends AnalysisEventListener<ExcelProcessC
         int rowIndex = context.readRowHolder().getRowIndex();
         ApsProcessCapacity apsProcessCapacity = createApsProcessCapacity(data, rowIndex);
         if (apsProcessCapacity != null)
-            excelProcessCapacities.add(apsProcessCapacity);
+            apsProcessCapacities.add(apsProcessCapacity);
     }
 
     @Override
@@ -66,19 +67,7 @@ public class ProcessCapacityListener extends AnalysisEventListener<ExcelProcessC
         handleException(exception, context);
     }
 
-    private void validateHeadMap(Map<Integer, String> headMap) {
-        StringBuilder res = new StringBuilder();
-        for (int i = 0; i < head.size(); i++) {
-            String h = headMap.get(i);
-            if (h == null || !h.equals(head.get(i))) {
-                res.append("第").append(i + 1).append("列的列名不符合条件，应改为:").append(head.get(i)).append("\n");
-            }
-        }
-        if (StringUtils.isNotEmpty(res.toString())) {
-            log.info("工序与产能导入" + res + new Date());
-            throw new BeneWakeException(res.toString());
-        }
-    }
+
 
     private ApsProcessCapacity createApsProcessCapacity(ExcelProcessCapacityTemplate data, int rowIndex) {
         ApsProcessCapacity apsProcessCapacity = new ApsProcessCapacity();
@@ -126,14 +115,14 @@ public class ProcessCapacityListener extends AnalysisEventListener<ExcelProcessC
 
         if (type.equals(ExcelOperationEnum.OVERRIDE.getCode())) {
             processCapacityService.remove(null);
-            processCapacityService.saveBatch(excelProcessCapacities);
+            processCapacityService.saveBatch(apsProcessCapacities);
         } else {
             List<ApsProcessCapacity> processCapacityList = processCapacityService.getBaseMapper().selectList(null);
             List<String> productFamily = processCapacityList.stream()
                     .map(ApsProcessCapacity::getProductFamily)
                     .distinct()
                     .collect(Collectors.toList());
-            List<String> addProductFamily = excelProcessCapacities.stream()
+            List<String> addProductFamily = apsProcessCapacities.stream()
                     .map(ApsProcessCapacity::getProductFamily)
                     .distinct()
                     .collect(Collectors.toList());
@@ -144,7 +133,7 @@ public class ProcessCapacityListener extends AnalysisEventListener<ExcelProcessC
                 String existFamily = String.join("、", duplicates);
                 throw new BeneWakeException(existFamily + "已经存在了");
             }
-            processCapacityService.saveBatch(excelProcessCapacities);
+            processCapacityService.saveBatch(apsProcessCapacities);
         }
     }
 
@@ -152,7 +141,7 @@ public class ProcessCapacityListener extends AnalysisEventListener<ExcelProcessC
         if (exception instanceof ExcelDataConvertException) {
             ExcelDataConvertException dataConvertException = (ExcelDataConvertException) exception;
             String exceptionMessage = "第 " + dataConvertException.getRowIndex() + " 行，第 " +
-                    dataConvertException.getColumnIndex() + " 列的数据转换异常：";
+                    dataConvertException.getColumnIndex() + " 列的数据格式或者类型不正确：";
             log.error(exceptionMessage + dataConvertException.getCellData());
             throw new BeneWakeException(exceptionMessage);
         } else {

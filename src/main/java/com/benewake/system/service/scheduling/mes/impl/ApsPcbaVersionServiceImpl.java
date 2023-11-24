@@ -1,7 +1,9 @@
 package com.benewake.system.service.scheduling.mes.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsPcbaVersion;
+import com.benewake.system.entity.dto.ApsPcbaVersionDto;
 import com.benewake.system.entity.mes.MesPcbaVersion;
 import com.benewake.system.service.scheduling.mes.ApsPcbaVersionService;
 import com.benewake.system.mapper.ApsPcbaVersionMapper;
@@ -37,6 +39,10 @@ public class ApsPcbaVersionServiceImpl extends ServiceImpl<ApsPcbaVersionMapper,
 
     @Autowired
     private MesToApsPcbaVersion mesToApsPcbaVersion;
+
+    @Autowired
+    private ApsPcbaVersionMapper apsPcbaVersionMapper;
+
     @Override
     public Boolean updateDataVersions() throws Exception {
         Integer maxVersionIncr = this.getMaxVersionIncr();
@@ -134,8 +140,14 @@ public class ApsPcbaVersionServiceImpl extends ServiceImpl<ApsPcbaVersionMapper,
     }
 
     @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
-        return null;
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsPcbaVersionDto> pcbaVersionDtoPage =  apsPcbaVersionMapper.selectPageList(page ,tableVersionList);
+        return pcbaVersionDtoPage;
+    }
+
+    @Override
+    public void insertVersionIncr() {
+        apsPcbaVersionMapper.insertVersionIncr();
     }
 }
 

@@ -1,7 +1,9 @@
 package com.benewake.system.service.scheduling.mes.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsTfminiSCalibrationTests;
+import com.benewake.system.entity.dto.ApsTfminiSCalibrationTestsDto;
 import com.benewake.system.entity.mes.MesCalibrationTests;
 import com.benewake.system.service.scheduling.mes.ApsTfminiSCalibrationTestsService;
 import com.benewake.system.mapper.ApsTfminiSCalibrationTestsMapper;
@@ -38,6 +40,10 @@ public class ApsTfminiSCalibrationTestsServiceImpl extends ServiceImpl<ApsTfmini
 
     @Autowired
     private MesToApsTfminiSCalibrationTests mesToApsTfminiSCalibrationTests;
+
+    @Autowired
+    private ApsTfminiSCalibrationTestsMapper tfminiSCalibrationTestsMapper;
+
     @Override
     public Boolean updateDataVersions() throws Exception {
         Integer maxVersionIncr = this.getMaxVersionIncr();
@@ -116,8 +122,14 @@ public class ApsTfminiSCalibrationTestsServiceImpl extends ServiceImpl<ApsTfmini
     }
 
     @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
-        return null;
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsTfminiSCalibrationTestsDto> tfminiSCalibrationTestsPage = tfminiSCalibrationTestsMapper.selectPageList(page, tableVersionList);
+        return tfminiSCalibrationTestsPage;
+    }
+
+    @Override
+    public void insertVersionIncr() {
+        tfminiSCalibrationTestsMapper.insertVersionIncr();
     }
 }
 

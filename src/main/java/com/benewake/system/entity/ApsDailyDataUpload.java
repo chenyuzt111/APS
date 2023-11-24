@@ -35,14 +35,8 @@ public class ApsDailyDataUpload implements Serializable {
     /**
      * 
      */
-    @TableField(value = "f_material_name")
-    private String fMaterialName;
-
-    /**
-     * 
-     */
-    @TableField(value = "f_process")
-    private String fProcess;
+    @TableField(value = "f_process_id")
+    private Integer fProcessId;
 
     /**
      * 

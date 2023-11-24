@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface InterfaceService {
-    List<Object> getMultipleVersionsData(Integer page, Integer size, Integer type);
 
     PageListRestVo<Object> getAllPage(Integer page, Integer size, Integer type);
 

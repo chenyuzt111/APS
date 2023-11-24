@@ -1,7 +1,9 @@
 package com.benewake.system.service.scheduling.mes.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsTfminiSInstallationBoard;
+import com.benewake.system.entity.dto.ApsTfminiSInstallationBoardDto;
 import com.benewake.system.entity.mes.MesInstallationBoard;
 import com.benewake.system.service.scheduling.mes.ApsTfminiSInstallationBoardService;
 import com.benewake.system.mapper.ApsTfminiSInstallationBoardMapper;
@@ -38,6 +40,9 @@ public class ApsTfminiSInstallationBoardServiceImpl extends ServiceImpl<ApsTfmin
 
     @Autowired
     private MesToApsTfminiSInstallationBoard mesToApsTfminiSInstallationBoard;
+
+    @Autowired
+    private ApsTfminiSInstallationBoardMapper tfminiSInstallationBoardMapper;
 
     @Override
     public Boolean updateDataVersions() throws Exception {
@@ -115,8 +120,14 @@ public class ApsTfminiSInstallationBoardServiceImpl extends ServiceImpl<ApsTfmin
     }
 
     @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
-        return null;
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsTfminiSInstallationBoardDto> tfminiSInstallationBoardDtoPage = tfminiSInstallationBoardMapper.selectPageList(page, tableVersionList);
+        return tfminiSInstallationBoardDtoPage;
+    }
+
+    @Override
+    public void insertVersionIncr() {
+        tfminiSInstallationBoardMapper.insertVersionIncr();
     }
 }
 

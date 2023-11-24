@@ -3,6 +3,8 @@ package com.benewake.system.service.scheduling.mes.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsPcbaBurn;
+import com.benewake.system.entity.dto.ApsImmediatelyInventoryDto;
+import com.benewake.system.entity.dto.ApsPcbaBurnDto;
 import com.benewake.system.entity.mes.MesPcbaBurn;
 import com.benewake.system.service.scheduling.mes.ApsPcbaBurnService;
 import com.benewake.system.mapper.ApsPcbaBurnMapper;
@@ -38,6 +40,9 @@ public class ApsPcbaBurnServiceImpl extends ServiceImpl<ApsPcbaBurnMapper, ApsPc
 
     @Autowired
     private MesToApsPcbaBurn mesToApsPcbaBurn;
+
+    @Autowired
+    private ApsPcbaBurnMapper apsPcbaBurnMapper;
 
     @Override
     public Boolean updateDataVersions() throws Exception {
@@ -141,12 +146,13 @@ public class ApsPcbaBurnServiceImpl extends ServiceImpl<ApsPcbaBurnMapper, ApsPc
 
     @Override
     public Page selectPageList(Page page, List tableVersionList) {
-        return null;
+        Page<ApsPcbaBurnDto> apsPcbaBurnDtoPage = apsPcbaBurnMapper.selectPageList(page, tableVersionList);
+        return apsPcbaBurnDtoPage;
     }
 
     @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
-        return null;
+    public void insertVersionIncr() {
+        apsPcbaBurnMapper.insertSelectVersionIncr();
     }
 }
 

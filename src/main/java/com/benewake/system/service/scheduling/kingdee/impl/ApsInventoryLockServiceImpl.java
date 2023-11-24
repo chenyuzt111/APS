@@ -6,6 +6,7 @@ import com.benewake.system.entity.ApsInventoryLock;
 import com.benewake.system.entity.dto.ApsInventoryLockDto;
 import com.benewake.system.entity.kingdee.KingdeeInventoryLock;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
+import com.benewake.system.entity.kingdee.transfer.fLotIdToFNumber;
 import com.benewake.system.service.scheduling.kingdee.ApsInventoryLockService;
 import com.benewake.system.mapper.ApsInventoryLockMapper;
 import com.benewake.system.transfer.KingdeeToApsInventoryLock;
@@ -47,13 +48,26 @@ public class ApsInventoryLockServiceImpl extends ServiceImpl<ApsInventoryLockMap
         List<KingdeeInventoryLock> result = getKingdeeInventoryLockList();
         // 物料映射表
         Map<String, String> materialIdToNameMap = getMaterialIdToNameMap();
-        ArrayList<ApsInventoryLock> apsInventoryLockList = getApsInventoryLockList(result, materialIdToNameMap);
+        Map<String, String> lotIdToFNumberMap = getLotIdToFNumberMap();
+        ArrayList<ApsInventoryLock> apsInventoryLockList = getApsInventoryLockList(result, materialIdToNameMap ,lotIdToFNumberMap);
         if (CollectionUtils.isEmpty(apsInventoryLockList)) {
             ApsInventoryLock apsInventoryLock = new ApsInventoryLock();
             apsInventoryLock.setVersion(maxVersion);
             return save(apsInventoryLock);
         }
         return saveBatch(apsInventoryLockList);
+    }
+
+    public Map<String, String> getLotIdToFNumberMap() throws Exception {
+        QueryParam queryParam = new QueryParam();
+        queryParam.setFormId("BD_BatchMainFile");
+        queryParam.setFieldKeys("FLOTID,FNumber");
+        List<fLotIdToFNumber> fLotIdToFNumbers = api.executeBillQuery(queryParam, fLotIdToFNumber.class);
+        Map<String, String> fLotIdToFNumberMap = new HashMap<>();
+        fLotIdToFNumbers.forEach(fLotIdToFNumber -> {
+            fLotIdToFNumberMap.put(fLotIdToFNumber.getFLOTID(), fLotIdToFNumber.getFNumber());
+        });
+        return fLotIdToFNumberMap;
     }
 
     @Override
@@ -67,18 +81,16 @@ public class ApsInventoryLockServiceImpl extends ServiceImpl<ApsInventoryLockMap
         return apsInventoryLockDtoPage;
     }
 
-    @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
-        return (List<Object>) apsInventoryLockMapper.selectVersionPageList(pass, size, versionToChVersionArrayList);
-    }
 
-    private ArrayList<ApsInventoryLock> getApsInventoryLockList(List<KingdeeInventoryLock> result, Map<String, String> materialIdToNameMap) throws NoSuchFieldException, IllegalAccessException {
+
+    private ArrayList<ApsInventoryLock> getApsInventoryLockList(List<KingdeeInventoryLock> result, Map<String, String> materialIdToNameMap, Map<String, String> lotIdToFNumberMap) throws NoSuchFieldException, IllegalAccessException {
         ArrayList<ApsInventoryLock> apsInventoryLockList = new ArrayList<>();
 
         for (KingdeeInventoryLock kingdeeInventoryLock : result) {
             // 获取 FDocumentStatus 的 id
             kingdeeInventoryLock.setFMaterialId(materialIdToNameMap.get(kingdeeInventoryLock.getFMaterialId()));
-
+            String lot = kingdeeInventoryLock.getFLot();
+            kingdeeInventoryLock.setFLot(lotIdToFNumberMap.getOrDefault(lot ,lotIdToFNumberMap + "-----对应表内不存在"));
             ApsInventoryLock apsInventoryLock = kingdeeToApsInventoryLock.convert(kingdeeInventoryLock ,maxVersion);
             apsInventoryLockList.add(apsInventoryLock);
         }

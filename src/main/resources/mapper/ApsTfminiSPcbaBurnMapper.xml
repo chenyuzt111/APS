@@ -5,19 +5,69 @@
 <mapper namespace="com.benewake.system.mapper.ApsTfminiSPcbaBurnMapper">
 
     <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsTfminiSPcbaBurn">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="productionOrderNumber" column="production_order_number" jdbcType="VARCHAR"/>
-            <result property="materialCode" column="material_code" jdbcType="VARCHAR"/>
-            <result property="materialName" column="material_name" jdbcType="VARCHAR"/>
-            <result property="burnInCompletionQuantity" column="burn_in_completion_quantity" jdbcType="VARCHAR"/>
-            <result property="burnQualifiedCount" column="burn_qualified_count" jdbcType="VARCHAR"/>
-            <result property="burnFixtureNumber" column="burn_fixture_number" jdbcType="VARCHAR"/>
-            <result property="version" column="version" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="productionOrderNumber" column="production_order_number" jdbcType="VARCHAR"/>
+        <result property="materialCode" column="material_code" jdbcType="VARCHAR"/>
+        <!--        <result property="materialName" column="material_name" jdbcType="VARCHAR"/>-->
+        <result property="burnInCompletionQuantity" column="burn_in_completion_quantity" jdbcType="VARCHAR"/>
+        <result property="burnQualifiedCount" column="burn_qualified_count" jdbcType="VARCHAR"/>
+        <result property="burnFixtureNumber" column="burn_fixture_number" jdbcType="VARCHAR"/>
+        <result property="burnFixtureId" column="burn_fixture_id" jdbcType="INTEGER"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
+        <result property="totalNumber" column="total_number" jdbcType="VARCHAR"/>
+        <result property="unBurnQualifiedCount" column="un_burn_qualified_count" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,production_order_number,material_code,
         material_name,burn_in_completion_quantity,burn_qualified_count,
-        burn_fixture_number,version
+        burn_fixture_number,burn_fixture_id,version,
+        total_number,un_burn_qualified_count
     </sql>
+
+    <insert id="insertVersionIncr">
+        INSERT INTO aps_tfmini_s_pcba_burn (production_order_number, material_code,
+                                            burn_in_completion_quantity, burn_qualified_count,
+                                            burn_fixture_number, burn_fixture_id,
+                                            total_number, un_burn_qualified_count, version)
+        SELECT production_order_number,
+               material_code,
+               burn_in_completion_quantity,
+               burn_qualified_count,
+               burn_fixture_number,
+               burn_fixture_id,
+               total_number,
+               un_burn_qualified_count,
+               version + 1
+        FROM `aps_tfmini_s_pcba_burn`
+        WHERE version = (
+            SELECT max(version)
+            FROM aps_tfmini_s_pcba_burn)
+    </insert>
+
+    <select id="selectPageList" resultType="com.benewake.system.entity.dto.ApsTfminiSPcbaBurnDto">
+        SELECT
+        burn.id,production_order_number,material_code,
+        map.f_material_name as material_name,burn_in_completion_quantity,burn_qualified_count,
+        burn_fixture_number,burn_fixture_id,
+        total_number,un_burn_qualified_count,
+        ch_version_name AS version
+        FROM
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        END AS ch_version_name
+        FROM aps_tfmini_s_pcba_burn
+        WHERE version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>
+        ) AS burn
+        LEFT JOIN
+        aps_material_name_mapping AS map ON burn.material_code = map.f_material_id
+        ORDER BY burn.version desc
+    </select>
 </mapper>

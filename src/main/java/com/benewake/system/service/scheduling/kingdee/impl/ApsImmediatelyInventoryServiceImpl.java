@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.dto.ApsImmediatelyInventoryDto;
 import com.benewake.system.entity.kingdee.KingdeeInventoryLock;
+import com.benewake.system.entity.kingdee.transfer.fLotIdToFNumber;
 import com.benewake.system.transfer.KingdeeToApsImmediatelyInventory;
 import com.benewake.system.entity.ApsImmediatelyInventory;
 import com.benewake.system.entity.kingdee.KingdeeImmediatelyInventory;
@@ -40,9 +41,8 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
 
     @Override
     public Page selectPageList(Page objectPage, List tableVersionList) {
-
         Page<ApsImmediatelyInventoryDto> immediatelyInventoryPage = apsImmediatelyInventoryMapper
-                .selectPageList(objectPage ,tableVersionList);
+                .selectPageList(objectPage, tableVersionList);
         return immediatelyInventoryPage;
     }
 
@@ -65,10 +65,6 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
         apsImmediatelyInventoryMapper.insertSelectVersionIncr();
     }
 
-    @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List arrayList) {
-        return (List<Object>) apsImmediatelyInventoryMapper.selectVersionPageList(pass, size, arrayList);
-    }
 
 
     private ArrayList<ApsImmediatelyInventory> getApsImmediatelyInventoriesByKingdee(Integer maxVersion) throws Exception {
@@ -76,12 +72,26 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
         List<KingdeeImmediatelyInventory> result = getKingdeeImmediatelyInventories();
         //获取物料映射表
         Map<String, String> materialIdToNameMap = getMaterialIdToNameMap();
+        Map<String, String> lotIdToFNumberMap = getLotIdToFNumberMap();
         ArrayList<ApsImmediatelyInventory> immediatelyInventories = new ArrayList<>();
-        transferKingdeeToApsImmediatelyInventory(maxVersion, result, materialIdToNameMap, immediatelyInventories);
+        transferKingdeeToApsImmediatelyInventory(maxVersion, result, materialIdToNameMap, immediatelyInventories, lotIdToFNumberMap);
         return immediatelyInventories;
     }
 
-    private void transferKingdeeToApsImmediatelyInventory(Integer maxVersion, List<KingdeeImmediatelyInventory> result, Map<String, String> materialIdToNameMap, ArrayList<ApsImmediatelyInventory> immediatelyInventories) throws Exception {
+    public Map<String, String> getLotIdToFNumberMap() throws Exception {
+        QueryParam queryParam = new QueryParam();
+        queryParam.setFormId("BD_BatchMainFile");
+        queryParam.setFieldKeys("FLOTID,FNumber");
+        List<fLotIdToFNumber> fLotIdToFNumbers = api.executeBillQuery(queryParam, fLotIdToFNumber.class);
+        Map<String, String> fLotIdToFNumberMap = new HashMap<>();
+        fLotIdToFNumbers.forEach(fLotIdToFNumber -> {
+            fLotIdToFNumberMap.put(fLotIdToFNumber.getFLOTID(), fLotIdToFNumber.getFNumber());
+        });
+        return fLotIdToFNumberMap;
+    }
+
+    private void transferKingdeeToApsImmediatelyInventory(Integer maxVersion, List<KingdeeImmediatelyInventory> result, Map<String, String> materialIdToNameMap,
+                                                          ArrayList<ApsImmediatelyInventory> immediatelyInventories, Map<String, String> lotIdToFNumberMap) throws Exception {
         QueryParam queryParamLock = new QueryParam();
         queryParamLock.setFormId("STK_LockStock");
         queryParamLock.setFieldKeys("FMaterialId,FEXPIRYDATE,FLockQty,FLot");
@@ -107,6 +117,8 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
             kingdeeImmediatelyInventory.setFMaterialId(s);
             // 更新 FAVBQty 字段
             kingdeeImmediatelyInventory.setFAVBQty(avbQty);
+
+            kingdeeImmediatelyInventory.setFLot(lotIdToFNumberMap.getOrDefault(lot, lot + "---对应表内不存在"));
             ApsImmediatelyInventory apsImmediatelyInventory = kingdeeToApsImmediatelyInventory.convert(kingdeeImmediatelyInventory, maxVersion);
 
             immediatelyInventories.add(apsImmediatelyInventory);

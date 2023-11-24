@@ -35,8 +35,8 @@ public class ApsPcbaVersion implements Serializable {
     /**
      * 物料名称
      */
-    @TableField(value = "material_name")
-    private String materialName;
+//    @TableField(value = "material_name")
+//    private String materialName;
 
     /**
      * 本次分板完成数
@@ -55,6 +55,12 @@ public class ApsPcbaVersion implements Serializable {
      */
     @TableField(value = "un_burn_qualified_count")
     private String unburnQualifiedCount;
+
+    /**
+     *
+     */
+    @TableField(value = "burn_fixture_id")
+    private Integer burnFixtureId;
 
     /**
      * 分板治具编号

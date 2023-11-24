@@ -54,10 +54,6 @@ public class ApsOutRequestServiceImpl extends ServiceImpl<ApsOutRequestMapper, A
         return saveBatch(apsOutRequests);
     }
 
-    @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
-        return null;
-    }
 
     private void getApsOutRequestList(Integer maxVersion, Map<String, String> mtn, ArrayList<ApsOutRequest> apsOutRequests, KingdeeOutRequest kingdeeOutRequest) {
         kingdeeOutRequest.setFMaterialId(mtn.get(kingdeeOutRequest.getFMaterialId()));

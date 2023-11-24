@@ -73,10 +73,6 @@ public class ApsReceiveNoticeServiceImpl extends ServiceImpl<ApsReceiveNoticeMap
         return receiveNoticeDtoPage;
     }
 
-    @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
-        return (List<Object>) apsReceiveNoticeMapper.selectVersionPageList(pass, size, versionToChVersionArrayList);
-    }
 
     private ArrayList<ApsReceiveNotice> getApsReceiveNoticeList(List<KingdeeReceiveNotice> result, Map<String, String> materialIdToNameMap) throws NoSuchFieldException, IllegalAccessException {
         ArrayList<ApsReceiveNotice> apsReceiveNoticeList = new ArrayList<>();

@@ -35,8 +35,14 @@ public class ApsTfminiSPcbaBurn implements Serializable {
     /**
      * 物料名称
      */
-    @TableField(value = "material_name")
-    private String materialName;
+//    @TableField(value = "material_name")
+//    private String materialName;
+
+    /**
+     *
+     */
+    @TableField(value = "burn_fixture_id")
+    private Integer burnFixtureId;
 
     /**
      * 本次烧录完成数
@@ -49,6 +55,8 @@ public class ApsTfminiSPcbaBurn implements Serializable {
      */
     @TableField(value = "burn_qualified_count")
     private String burnQualifiedCount;
+
+
     @TableField(value = "un_burn_qualified_count")
     private String unburnQualifiedCount;
 

@@ -15,7 +15,7 @@ public class MesToApsPcbaVersion {
         ApsPcbaVersion apsPcbaVersion = new ApsPcbaVersion();
         apsPcbaVersion.setProductionOrderNumber(mesPcbaVersion.getProductionOrderNumber());
         apsPcbaVersion.setMaterialCode(mesPcbaVersion.getMaterialCode());
-        apsPcbaVersion.setMaterialName(mesPcbaVersion.getMaterialName());
+//        apsPcbaVersion.setMaterialName(mesPcbaVersion.getMaterialName());
         apsPcbaVersion.setBurnInCompletionQuantity(mesPcbaVersion.getBurnInCompletionQuantity());
         apsPcbaVersion.setBurnQualifiedCount(mesPcbaVersion.getBurnQualifiedCount());
         apsPcbaVersion.setBurnFixtureNumber(mesPcbaVersion.getBurnFixtureNumber());

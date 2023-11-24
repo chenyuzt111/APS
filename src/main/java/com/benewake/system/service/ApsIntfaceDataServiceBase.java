@@ -41,8 +41,6 @@ public interface ApsIntfaceDataServiceBase<T> {
         }
     }
 
-    List<Object> selectVersionPageList(Integer pass, Integer size, List<VersionToChVersion> versionToChVersionArrayList);
-
     default Page selectPageList(Page<Object> objectPage, List<Integer> tableVersionList) {
         throw new BeneWakeException("该表不能通过该方式查询");
     }

@@ -14,7 +14,6 @@ public class MesToApsPcbaBurn {
         ApsPcbaBurn apsPcbaBurn = new ApsPcbaBurn();
         apsPcbaBurn.setProductionOrderNumber(mesPcbaBurn.getProductionOrderNumber());
         apsPcbaBurn.setMaterialCode(mesPcbaBurn.getMaterialCode());
-        apsPcbaBurn.setMaterialName(mesPcbaBurn.getMaterialName());
         apsPcbaBurn.setBurnInCompletionQuantity(mesPcbaBurn.getBurnInCompletionQuantity());
         apsPcbaBurn.setBurnQualifiedCount(mesPcbaBurn.getBurnQualifiedCount());
         apsPcbaBurn.setBurnFixtureNumber(mesPcbaBurn.getBurnFixtureNumber());

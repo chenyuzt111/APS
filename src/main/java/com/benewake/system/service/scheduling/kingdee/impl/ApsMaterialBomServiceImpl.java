@@ -201,10 +201,7 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
         return apsMaterialBoms;
     }
 
-    @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
-        return null;
-    }
+
 
     @Transactional(rollbackFor = Exception.class)
     @Override

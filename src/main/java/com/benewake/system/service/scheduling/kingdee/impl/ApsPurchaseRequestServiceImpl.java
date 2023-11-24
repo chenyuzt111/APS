@@ -77,10 +77,7 @@ public class ApsPurchaseRequestServiceImpl extends ServiceImpl<ApsPurchaseReques
         return apsPurchaseRequestPage;
     }
 
-    @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
-        return (List<Object>) apsPurchaseRequestMapper.selectVersionPageList(pass, size, versionToChVersionArrayList);
-    }
+
 
     private ArrayList<ApsPurchaseRequest> getApsPurchaseRequestArrayList(List<KingdeePurchaseRequest> kingdeePurchaseRequestList, Map<String, String> materialIdToNumberMap) throws NoSuchFieldException, IllegalAccessException {
         ArrayList<ApsPurchaseRequest> apsPurchaseRequestList = new ArrayList<>();

@@ -1,7 +1,9 @@
 package com.benewake.system.service.scheduling.mes.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsTfminiSPcbaBurn;
+import com.benewake.system.entity.dto.ApsTfminiSPcbaBurnDto;
 import com.benewake.system.entity.mes.MesPcbaBurn;
 import com.benewake.system.service.scheduling.mes.ApsTfminiSPcbaBurnService;
 import com.benewake.system.mapper.ApsTfminiSPcbaBurnMapper;
@@ -39,6 +41,9 @@ public class ApsTfminiSPcbaBurnServiceImpl extends ServiceImpl<ApsTfminiSPcbaBur
 
     @Autowired
     private MesToApsTfminiSPcbaBurn mesToApsTfminiSPcbaBurn;
+
+    @Autowired
+    private ApsTfminiSPcbaBurnMapper tfminiSPcbaBurnMapper;
     @Override
     public Boolean updateDataVersions() throws Exception {
         Integer maxVersionIncr = this.getMaxVersionIncr();
@@ -136,9 +141,16 @@ public class ApsTfminiSPcbaBurnServiceImpl extends ServiceImpl<ApsTfminiSPcbaBur
         }
     }
 
+
     @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
-        return null;
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsTfminiSPcbaBurnDto> tfminiSPcbaBurnDtoPage = tfminiSPcbaBurnMapper.selectPageList(page ,tableVersionList);
+        return tfminiSPcbaBurnDtoPage;
+    }
+
+    @Override
+    public void insertVersionIncr() {
+        tfminiSPcbaBurnMapper.insertVersionIncr();
     }
 }
 

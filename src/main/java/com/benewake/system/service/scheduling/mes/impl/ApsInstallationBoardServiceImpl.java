@@ -1,7 +1,9 @@
 package com.benewake.system.service.scheduling.mes.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsInstallationBoard;
+import com.benewake.system.entity.dto.ApsInstallationBoardDto;
 import com.benewake.system.entity.mes.MesInstallationBoard;
 import com.benewake.system.service.scheduling.mes.ApsInstallationBoardService;
 import com.benewake.system.mapper.ApsInstallationBoardMapper;
@@ -38,6 +40,10 @@ public class ApsInstallationBoardServiceImpl extends ServiceImpl<ApsInstallation
 
     @Autowired
     private MesToApsInstallationBoard mesToApsInstallationBoard;
+
+    @Autowired
+    private ApsInstallationBoardMapper installationBoardMapper;
+
     @Override
     public Boolean updateDataVersions() throws Exception {
         Integer maxVersionIncr = this.getMaxVersionIncr();
@@ -120,8 +126,14 @@ public class ApsInstallationBoardServiceImpl extends ServiceImpl<ApsInstallation
     }
 
     @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
-        return null;
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsInstallationBoardDto> installationBoardDtoPage = installationBoardMapper.selectPageList(page, tableVersionList);
+        return installationBoardDtoPage;
+    }
+
+    @Override
+    public void insertVersionIncr() {
+        installationBoardMapper.insertVersionIncr();
     }
 }
 

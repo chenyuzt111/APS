@@ -71,10 +71,7 @@ public class ApsOutsourcedMaterialServiceImpl extends ServiceImpl<ApsOutsourcedM
         return outsourcedMaterialDtoPage;
     }
 
-    @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
-        return (List<Object>) apsOutsourcedMaterialMapper.selectVersionPageList(pass, size, versionToChVersionArrayList);
-    }
+
 
     private ArrayList<ApsOutsourcedMaterial> transferKingdeeToApsOutsourcedMaterial(List<KingdeeOutsourcedMaterial> kingdeeOutsourcedMaterials, Map<String, String> materialIdToNameMap) throws NoSuchFieldException, IllegalAccessException {
         ArrayList<ApsOutsourcedMaterial> apsOutsourcedMaterials = new ArrayList<>();

@@ -35,8 +35,8 @@ public class ApsTfminiSInstallationBoard implements Serializable {
     /**
      * 物料名称
      */
-    @TableField(value = "material_name")
-    private String materialName;
+//    @TableField(value = "material_name")
+//    private String materialName;
 
     /**
      * 本次安装完成数

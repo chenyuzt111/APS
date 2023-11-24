@@ -2,7 +2,13 @@ package com.benewake.system.service;
 
 import com.benewake.system.entity.ApsDailyDataUpload;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.dto.ApsDailyDataUploadDto;
+import com.benewake.system.entity.vo.ApsDailyDataUploadParam;
+import com.benewake.system.entity.vo.DownloadParam;
+import com.benewake.system.entity.vo.PageListRestVo;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
 * @author ASUS
@@ -11,5 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 */
 public interface ApsDailyDataUploadService extends IService<ApsDailyDataUpload> {
 
-    Boolean saveDataByExcel(MultipartFile file);
+    PageListRestVo<ApsDailyDataUploadDto> getDailyDataListPage(Integer page, Integer size);
+
+    void downloadDailyData(HttpServletResponse response, DownloadParam downloadParam);
+
+    Boolean importloadDailyData(Integer type, MultipartFile file);
+
+    Boolean addOrUpdateDailyData(ApsDailyDataUploadParam dailyDataUploadParam);
 }

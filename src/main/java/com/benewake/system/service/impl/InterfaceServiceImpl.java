@@ -39,40 +39,6 @@ public class InterfaceServiceImpl implements InterfaceService {
     @Autowired
     private Map<String, ApsIntfaceDataServiceBase> kingdeeServiceMap;
 
-    @Override
-    public List<Object> getMultipleVersionsData(Integer page, Integer size, Integer type) {
-        try {
-            List<ApsTableVersion> apsTableVersions = getApsTableVersionsLimit5(type);
-
-            List<VersionToChVersion> versionToChVersionArrayList = getVersionToChVersions(apsTableVersions);
-            List<Integer> tableVersionList = apsTableVersions.stream().map(ApsTableVersion::getTableVersion).collect(Collectors.toList());
-            InterfaceDataType interfaceDataType = InterfaceDataType.valueOfCode(type);
-            if (interfaceDataType == null) {
-                throw new BeneWakeException("type不正确");
-            }
-            ApsIntfaceDataServiceBase apsIntfaceDataServiceBase = kingdeeServiceMap.get(interfaceDataType.getSeviceName());
-            QueryWrapper queryWrapper = new QueryWrapper();
-            queryWrapper.orderByDesc("version");
-            queryWrapper.last("limit 1");
-            IService iService = (IService) apsIntfaceDataServiceBase;
-            Object one = iService.getOne(queryWrapper);
-            if (one != null) {
-                Field version = one.getClass().getDeclaredField("version");
-                version.setAccessible(true);
-                Integer versionIn = (Integer) version.get(one);
-                version.setAccessible(false);
-                if (!tableVersionList.contains(versionIn)) {
-                    versionToChVersionArrayList.add(new VersionToChVersion(versionIn, "即时版本"));
-                }
-            }
-
-            Integer pass = (page - 1) * size;
-            return (List<Object>) apsIntfaceDataServiceBase.selectVersionPageList(pass, size, versionToChVersionArrayList);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BeneWakeException("系统内部错误联系管理员" + this.getClass());
-        }
-    }
 
     private List<VersionToChVersion> getVersionToChVersions(List<ApsTableVersion> apsTableVersions) {
         List<VersionToChVersion> versionToChVersionArrayList = new ArrayList<>();

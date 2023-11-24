@@ -8,7 +8,7 @@
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="productionordernumber" column="productionOrderNumber" jdbcType="VARCHAR"/>
             <result property="materialcode" column="materialCode" jdbcType="VARCHAR"/>
-            <result property="materialname" column="materialName" jdbcType="VARCHAR"/>
+<!--            <result property="materialname" column="materialName" jdbcType="VARCHAR"/>-->
             <result property="burnincompletionquantity" column="burnInCompletionQuantity" jdbcType="VARCHAR"/>
             <result property="burnqualifiedcount" column="BurnQualifiedCount" jdbcType="VARCHAR"/>
             <result property="burnfixturenumber" column="BurnFixtureNumber" jdbcType="VARCHAR"/>
@@ -20,4 +20,50 @@
         materialName,burnInCompletionQuantity,BurnQualifiedCount,
         BurnFixtureNumber,version
     </sql>
+    <insert id="insertVersionIncr">
+        INSERT INTO aps_tfmini_s_calibration_tests (production_order_number, material_code,
+                                           material_name, burn_in_completion_quantity, burn_qualified_count,
+                                           burn_fixture_number, burn_fixture_id, total_number, un_burn_qualified_count,
+                                           version)
+        SELECT production_order_number,
+               material_code,
+               material_name,
+               burn_in_completion_quantity,
+               burn_qualified_count,
+               burn_fixture_number,
+               burn_fixture_id,
+               total_number,
+               un_burn_qualified_count,
+               version + 1
+        FROM `aps_tfmini_s_calibration_tests`
+        WHERE version = (
+            SELECT max(version)
+            FROM aps_tfmini_s_calibration_tests)
+    </insert>
+    
+    
+    <select id="selectPageList" resultType="com.benewake.system.entity.dto.ApsTfminiSCalibrationTestsDto">
+        SELECT
+        tests.id,production_order_number,material_code,
+        map.f_material_name as material_name,burn_in_completion_quantity,burn_qualified_count,
+        burn_fixture_number,burn_fixture_id,total_number,un_burn_qualified_count,
+        ch_version_name AS version
+        FROM
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        END AS ch_version_name
+        FROM aps_tfmini_s_calibration_tests
+        WHERE version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>
+        ) AS tests
+        LEFT JOIN
+        aps_material_name_mapping AS map ON tests.material_code = map.f_material_id
+        ORDER BY tests.version desc
+    </select>
 </mapper>

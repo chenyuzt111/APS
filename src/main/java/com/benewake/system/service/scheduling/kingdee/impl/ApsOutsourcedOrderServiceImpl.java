@@ -76,10 +76,7 @@ public class ApsOutsourcedOrderServiceImpl extends ServiceImpl<ApsOutsourcedOrde
         return apsOutsourcedOrderDtoPage;
     }
 
-    @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
-        return (List<Object>) apsOutsourcedOrderMapper.selectVersionPageList(pass, size, versionToChVersionArrayList);
-    }
+
 
     private ArrayList<ApsOutsourcedOrder> getApsOutsourcedOrders(List<KingdeeOutsourcedOrder> result, Map<String, String> mtn, Map<String, String> ftn, Map<String, String> btn) throws NoSuchFieldException, IllegalAccessException {
         ArrayList<ApsOutsourcedOrder> apsOutsourcedOrders = new ArrayList<>();

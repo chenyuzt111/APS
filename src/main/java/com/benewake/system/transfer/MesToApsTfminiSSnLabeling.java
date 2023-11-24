@@ -15,7 +15,7 @@ public class MesToApsTfminiSSnLabeling {
         ApsTfminiSSnLabeling apsTfminiSSnLabeling = new ApsTfminiSSnLabeling();
         apsTfminiSSnLabeling.setProductionOrderNumber(mesSnLabeling.getProductionOrderNumber());
         apsTfminiSSnLabeling.setMaterialCode(mesSnLabeling.getMaterialCode());
-        apsTfminiSSnLabeling.setMaterialName(mesSnLabeling.getMaterialName());
+//        apsTfminiSSnLabeling.setMaterialName(mesSnLabeling.getMaterialName());
         apsTfminiSSnLabeling.setBurnInCompletionQuantity(mesSnLabeling.getBurnInCompletionQuantity());
         apsTfminiSSnLabeling.setBurnQualifiedCount(mesSnLabeling.getBurnQualifiedCount());
         apsTfminiSSnLabeling.setUnburnQualifiedCount(mesSnLabeling.getUnBurnQualifiedCount());

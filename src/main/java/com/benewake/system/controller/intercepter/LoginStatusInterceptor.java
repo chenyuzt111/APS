@@ -6,6 +6,7 @@ import com.benewake.system.service.SysRoleService;
 import com.benewake.system.service.SysUserService;
 import com.benewake.system.utils.HostHolder;
 import com.benewake.system.utils.JwtHelper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -13,11 +14,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 
 /**
  * @author Lcs
  */
+@Slf4j
 @Component
 public class LoginStatusInterceptor implements HandlerInterceptor {
 
@@ -35,11 +39,11 @@ public class LoginStatusInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //从cookie中获取凭证
         String token = request.getHeader("token");
-        System.out.println("token:-----" + token);
-        if(token != null){
+        log.info("token:-----" + token + "----" + LocalDateTime.now());
+        if (token != null) {
             String username = JwtHelper.getUsername(token);
             // 检查凭证是否有效
-            if(username != null){
+            if (username != null) {
                 // 根据凭证查询用户
                 SysUser user = sysUserService.getUserInfoByUsername(username);
                 // 设置用户拥有的角色信息
@@ -55,7 +59,7 @@ public class LoginStatusInterceptor implements HandlerInterceptor {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         // 获取当前用户
         SysUser user = hostHolder.getUser();
-        if(null != user && modelAndView != null){
+        if (null != user && modelAndView != null) {
             modelAndView.addObject("loginUser", user);
         }
     }

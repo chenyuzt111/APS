@@ -14,7 +14,7 @@ public class MesToApsSnLabeling {
         ApsSnLabeling apsSnLabeling = new ApsSnLabeling();
         apsSnLabeling.setProductionOrderNumber(mesSnLabeling.getProductionOrderNumber());
         apsSnLabeling.setMaterialCode(mesSnLabeling.getMaterialCode());
-        apsSnLabeling.setMaterialName(mesSnLabeling.getMaterialName());
+//        apsSnLabeling..setMaterialName(mesSnLabeling.getMaterialName());
         apsSnLabeling.setBurnInCompletionQuantity(mesSnLabeling.getBurnInCompletionQuantity());
         apsSnLabeling.setBurnQualifiedCount(mesSnLabeling.getBurnQualifiedCount());
         apsSnLabeling.setTotalNumber(mesSnLabeling.getTotalNumber());

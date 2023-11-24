@@ -14,7 +14,7 @@ public class MesToApsTfminiSInstallationBoard {
         ApsTfminiSInstallationBoard apsTfminiSInstallationBoard = new ApsTfminiSInstallationBoard();
         apsTfminiSInstallationBoard.setProductionOrderNumber(mesInstallationBoard.getProductionOrderNumber());
         apsTfminiSInstallationBoard.setMaterialCode(mesInstallationBoard.getMaterialCode());
-        apsTfminiSInstallationBoard.setMaterialName(mesInstallationBoard.getMaterialName());
+//        apsTfminiSInstallationBoard.setMaterialName(mesInstallationBoard.getMaterialName());
         apsTfminiSInstallationBoard.setBurnInCompletionQuantity(mesInstallationBoard.getBurnInCompletionQuantity());
         apsTfminiSInstallationBoard.setBurnQualifiedCount(mesInstallationBoard.getBurnQualifiedCount());
         apsTfminiSInstallationBoard.setTotalNumber(mesInstallationBoard.getTotalNumber());

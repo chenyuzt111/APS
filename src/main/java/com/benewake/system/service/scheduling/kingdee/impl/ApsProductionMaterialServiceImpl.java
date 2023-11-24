@@ -71,10 +71,7 @@ public class ApsProductionMaterialServiceImpl extends ServiceImpl<ApsProductionM
         return productionMaterialPage;
     }
 
-    @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
-        return (List<Object>) apsProductionMaterialMapper.selectVersionPageList(pass, size, versionToChVersionArrayList);
-    }
+
 
     private ArrayList<ApsProductionMaterial> getApsProductionMaterials( List<KingdeeProductionMaterial> result, Map<String, String> mtn) throws NoSuchFieldException, IllegalAccessException {
         ArrayList<ApsProductionMaterial> apsProductionMaterials = new ArrayList<>();

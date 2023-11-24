@@ -14,7 +14,7 @@ public class MesToApsTfminiSPcbaBurn {
         ApsTfminiSPcbaBurn apsTfminiSPcbaBurn = new ApsTfminiSPcbaBurn();
         apsTfminiSPcbaBurn.setProductionOrderNumber(mesPcbaBurn.getProductionOrderNumber());
         apsTfminiSPcbaBurn.setMaterialCode(mesPcbaBurn.getMaterialCode());
-        apsTfminiSPcbaBurn.setMaterialName(mesPcbaBurn.getMaterialName());
+//        apsTfminiSPcbaBurn.setMaterialName(mesPcbaBurn.getMaterialName());
         apsTfminiSPcbaBurn.setBurnInCompletionQuantity(mesPcbaBurn.getBurnInCompletionQuantity());
         apsTfminiSPcbaBurn.setBurnQualifiedCount(mesPcbaBurn.getBurnQualifiedCount());
         apsTfminiSPcbaBurn.setBurnFixtureNumber(mesPcbaBurn.getBurnFixtureNumber());

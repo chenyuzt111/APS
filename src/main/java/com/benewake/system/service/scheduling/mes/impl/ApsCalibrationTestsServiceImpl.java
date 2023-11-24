@@ -3,6 +3,7 @@ package com.benewake.system.service.scheduling.mes.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsCalibrationTests;
+import com.benewake.system.entity.dto.ApsCalibrationTestsDto;
 import com.benewake.system.entity.mes.MesCalibrationTests;
 import com.benewake.system.service.scheduling.mes.ApsCalibrationTestsService;
 import com.benewake.system.mapper.ApsCalibrationTestsMapper;
@@ -39,6 +40,9 @@ public class ApsCalibrationTestsServiceImpl extends ServiceImpl<ApsCalibrationTe
 
     @Autowired
     private MesToApsCalibrationTests mesToApsCalibrationTests;
+
+    @Autowired
+    private ApsCalibrationTestsMapper calibrationTestsMapper;
 
     @Override
     public Boolean updateDataVersions() throws Exception {
@@ -116,12 +120,17 @@ public class ApsCalibrationTestsServiceImpl extends ServiceImpl<ApsCalibrationTe
         }
     }
 
+
     @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
-        return null;
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsCalibrationTestsDto> calibrationTestsDtoPage = calibrationTestsMapper.selectPageList(page, tableVersionList);
+        return calibrationTestsDtoPage;
     }
 
-
+    @Override
+    public void insertVersionIncr() {
+        calibrationTestsMapper.insertVersionIncr();
+    }
 }
 
 

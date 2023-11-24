@@ -1,7 +1,9 @@
 package com.benewake.system.service.scheduling.mes.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsSnLabeling;
+import com.benewake.system.entity.dto.ApsSnLabelingDto;
 import com.benewake.system.entity.mes.MesSnLabeling;
 import com.benewake.system.service.scheduling.mes.ApsSnLabelingService;
 import com.benewake.system.mapper.ApsSnLabelingMapper;
@@ -38,6 +40,9 @@ public class ApsSnLabelingServiceImpl extends ServiceImpl<ApsSnLabelingMapper, A
 
     @Autowired
     private MesToApsSnLabeling mesToApsSnLabeling;
+
+    @Autowired
+    private ApsSnLabelingMapper snLabelingMapper;
 
     @Override
     public Boolean updateDataVersions() throws Exception {
@@ -116,8 +121,14 @@ public class ApsSnLabelingServiceImpl extends ServiceImpl<ApsSnLabelingMapper, A
     }
 
     @Override
-    public List<Object> selectVersionPageList(Integer pass, Integer size, List versionToChVersionArrayList) {
-        return null;
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsSnLabelingDto> snLabelingDtoPage = snLabelingMapper.selectPageList(page, tableVersionList);
+        return snLabelingDtoPage;
+    }
+
+    @Override
+    public void insertVersionIncr() {
+        snLabelingMapper.insertVersionIncr();
     }
 }
 

@@ -33,10 +33,16 @@ public class ApsTfminiSPcbaVersion implements Serializable {
     private String materialCode;
 
     /**
+     *
+     */
+    @TableField(value = "burn_fixture_id")
+    private Integer burnFixtureId;
+
+    /**
      * 物料名称
      */
-    @TableField(value = "material_name")
-    private String materialName;
+//    @TableField(value = "material_name")
+//    private String materialName;
 
     /**
      * 本次分板完成数

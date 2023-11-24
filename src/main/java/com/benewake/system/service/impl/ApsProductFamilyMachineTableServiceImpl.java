@@ -78,7 +78,6 @@ public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProd
     public void downloadProcessCapacity(HttpServletResponse response, DownloadParam downloadParam) {
         try {
             ResponseUtil.setFileResp(response, "机器管理");
-
             if (downloadParam.getType() == ExcelOperationEnum.ALL_PAGES.getCode()) {
 
             }
