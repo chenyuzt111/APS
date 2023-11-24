@@ -16,6 +16,7 @@ public class kingdeeToApsOutsourcedOrder {
         apsOutsourcedOrder.setFBillType(kingdeeOutsourcedOrder.getFBillType());
         apsOutsourcedOrder.setFMaterialId(kingdeeOutsourcedOrder.getFMaterialId());
 //        apsOutsourcedOrder.setFMaterialName(kingdeeOutsourcedOrder.getFMaterialName());
+        apsOutsourcedOrder.setFLot(kingdeeOutsourcedOrder.getFLot());
         apsOutsourcedOrder.setFQty(kingdeeOutsourcedOrder.getFQty());
         apsOutsourcedOrder.setFStatus(kingdeeOutsourcedOrder.getFStatus());
         apsOutsourcedOrder.setFPickMtrlStatus(kingdeeOutsourcedOrder.getFPickMtrlStatus());

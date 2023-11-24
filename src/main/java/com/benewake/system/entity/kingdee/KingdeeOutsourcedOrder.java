@@ -2,8 +2,9 @@ package com.benewake.system.entity.kingdee;
 
 
 import lombok.Data;
+
 /*
-* 委外订单列表数据类型*/
+ * 委外订单列表数据类型*/
 @Data
 public class KingdeeOutsourcedOrder {
     //("单据编号")
@@ -12,8 +13,6 @@ public class KingdeeOutsourcedOrder {
     //("单据类型")
     private String FBillType;
 
-
-
     //("物料编码")
     private String FMaterialId;
     //("物料编码")
@@ -21,6 +20,9 @@ public class KingdeeOutsourcedOrder {
 
     //("数量")
     private String FQty;
+
+    //批号
+    private String FLot;
 
     //("业务状态")
     private String FStatus;
@@ -36,7 +38,6 @@ public class KingdeeOutsourcedOrder {
 
     //("定制物料编码")
     private String F_ora_FDZMaterialID2;
-
 
 
     // Constructors, getters, setters, and other methods...

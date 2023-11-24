@@ -21,8 +21,6 @@ import java.util.List;
 @Mapper
 public interface ApsOutsourcedOrderMapper extends BaseMapper<ApsOutsourcedOrder> {
 
-    List<ApsOutsourcedOrderMultipleVersions> selectVersionPageList(@Param("pass") Integer pass, @Param("size") Integer size,
-                                                                   @Param("versions") List<VersionToChVersion> versions);
 
     Page<ApsOutsourcedOrderDto> selectPageList(Page page,
                                                @Param("versions") List<VersionToChVersion> versions);

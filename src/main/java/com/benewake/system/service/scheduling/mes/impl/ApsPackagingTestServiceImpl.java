@@ -1,7 +1,9 @@
 package com.benewake.system.service.scheduling.mes.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsPackagingTest;
+import com.benewake.system.entity.dto.ApsPackagingTestDto;
 import com.benewake.system.entity.mes.MesPackagingTest;
 import com.benewake.system.service.scheduling.mes.ApsPackagingTestService;
 import com.benewake.system.mapper.ApsPackagingTestMapper;
@@ -39,6 +41,9 @@ public class ApsPackagingTestServiceImpl extends ServiceImpl<ApsPackagingTestMap
 
     @Autowired
     private MesToApsPackagingTest mesToApsPackagingTest;
+
+    @Autowired
+    private ApsPackagingTestMapper packagingTestMapper;
 
     @Override
     public Boolean updateDataVersions() throws Exception {
@@ -116,7 +121,16 @@ public class ApsPackagingTestServiceImpl extends ServiceImpl<ApsPackagingTestMap
         }
     }
 
+    @Override
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsPackagingTestDto> packagingTestDtoPage = packagingTestMapper.selectPageList(page, tableVersionList);
+        return packagingTestDtoPage;
+    }
 
+    @Override
+    public void insertVersionIncr() {
+        packagingTestMapper.insertVersionIncr();
+    }
 }
 
 

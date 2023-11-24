@@ -1,4 +1,4 @@
-package com.benewake.system.entity;
+package com.benewake.system.entity.dto;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -9,11 +9,11 @@ import lombok.Data;
 
 /**
  * 
- * @TableName aps_tfmini_s_packaging_test
+ * @TableName aps_packaging_test
  */
-@TableName(value ="aps_tfmini_s_packaging_test")
+@TableName(value ="aps_packaging_test")
 @Data
-public class ApsTfminiSPackagingTest implements Serializable {
+public class ApsPackagingTestDto implements Serializable {
     /**
      * 自增ID
      */
@@ -35,8 +35,8 @@ public class ApsTfminiSPackagingTest implements Serializable {
     /**
      * 物料名称
      */
-//    @TableField(value = "material_name")
-//    private String materialName;
+    @TableField(value = "material_name")
+    private String materialName;
 
     /**
      * 本次包装终检完成数
@@ -61,7 +61,7 @@ public class ApsTfminiSPackagingTest implements Serializable {
      * 版本号
      */
     @TableField(value = "version")
-    private Integer version;
+    private String version;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

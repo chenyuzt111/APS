@@ -59,9 +59,13 @@ public class SseService {
 
     public void sendMessage(String username, String message) {
         try {
-            sseEmitter.send(message);
-            sseEmitter.complete();
-            heartbeatTask.cancel(true);
+            if (sseEmitter != null) {
+                sseEmitter.send(message);
+                sseEmitter.complete();
+            }
+            if (heartbeatTask != null) {
+                heartbeatTask.cancel(true);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             log.error("username" + username + "排程发送消息失败" + message);

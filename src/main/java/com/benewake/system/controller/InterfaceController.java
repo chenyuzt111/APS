@@ -41,7 +41,6 @@ public class InterfaceController {
     private ApsDailyDataUploadService dailyDataUploadService;
 
 
-
     @ApiOperation("查询")
     @GetMapping("/getAllPage/{page}/{size}")
     public Result getAllPage(@PathVariable("page") Integer page, @PathVariable("size") Integer size, @PathParam("type") Integer type) {

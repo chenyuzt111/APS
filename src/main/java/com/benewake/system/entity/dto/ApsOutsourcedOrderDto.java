@@ -46,6 +46,12 @@ public class ApsOutsourcedOrderDto implements Serializable {
     private String fMaterialName;
 
     @ColumnWidth(10) // 数量
+    @ExcelProperty("批号")
+    @JsonProperty("lot")
+    @TableField(value = "f_lot")
+    private String fLot;
+
+    @ColumnWidth(10) // 数量
     @ExcelProperty("数量")
     @JsonProperty("qty")
     @TableField(value = "f_qty")

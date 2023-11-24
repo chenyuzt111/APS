@@ -15,7 +15,7 @@ public class MesToApsTfminiSPackagingTest {
         ApsTfminiSPackagingTest apsTfminiSPackagingTest = new ApsTfminiSPackagingTest();
         apsTfminiSPackagingTest.setProductionOrderNumber(mesPackagingTest.getProductionOrderNumber());
         apsTfminiSPackagingTest.setMaterialCode(mesPackagingTest.getMaterialCode());
-        apsTfminiSPackagingTest.setMaterialName(mesPackagingTest.getMaterialName());
+//        apsTfminiSPackagingTest.setMaterialName(mesPackagingTest.getMaterialName());
         apsTfminiSPackagingTest.setBurnInCompletionQuantity(mesPackagingTest.getBurnInCompletionQuantity());
         apsTfminiSPackagingTest.setBurnQualifiedCount(mesPackagingTest.getBurnQualifiedCount());
         apsTfminiSPackagingTest.setTotalNumber(mesPackagingTest.getTotalNumber());

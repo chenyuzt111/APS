@@ -16,7 +16,7 @@ public class MesToApsPackagingTest {
         ApsPackagingTest apsPackagingTest = new ApsPackagingTest();
         apsPackagingTest.setProductionOrderNumber(mesPackagingTest.getProductionOrderNumber());
         apsPackagingTest.setMaterialCode(mesPackagingTest.getMaterialCode());
-        apsPackagingTest.setMaterialName(mesPackagingTest.getMaterialName());
+//        apsPackagingTest.setMaterialName(mesPackagingTest.getMaterialName());
         apsPackagingTest.setBurnInCompletionQuantity(mesPackagingTest.getBurnInCompletionQuantity());
         apsPackagingTest.setBurnQualifiedCount(mesPackagingTest.getBurnQualifiedCount());
         apsPackagingTest.setTotalNumber(mesPackagingTest.getTotalNumber());

@@ -10,6 +10,7 @@
         <result property="fBillType" column="f_bill_type" jdbcType="VARCHAR"/>
         <result property="fMaterialId" column="f_material_id" jdbcType="VARCHAR"/>
         <result property="fQty" column="f_qty" jdbcType="VARCHAR"/>
+        <result property="fLot" column="f_lot" jdbcType="VARCHAR"/>
         <result property="fStatus" column="f_status" jdbcType="VARCHAR"/>
         <result property="fPickMtrlStatus" column="f_pick_mtrl_status" jdbcType="VARCHAR"/>
         <result property="fStockInQty" column="f_stock_in_qty" jdbcType="VARCHAR"/>
@@ -25,13 +26,14 @@
     </sql>
     <insert id="insertSelectVersionIncr">
         insert into aps_outsourced_order(f_bill_no, f_bill_type,
-                                         f_material_id, f_qty,
+                                         f_material_id, f_qty, f_lot,
                                          f_status, f_pick_mtrl_status, f_stock_in_qty,
                                          f_bom_id, version)
         select f_bill_no,
                f_bill_type,
                f_material_id,
                f_qty,
+               f_lot,
                f_status,
                f_pick_mtrl_status,
                f_stock_in_qty,
@@ -41,18 +43,7 @@
         where version = (select max(version) from aps_outsourced_order)
     </insert>
 
-    <select id="selectVersionPageList"
-            resultType="com.benewake.system.entity.Interface.ApsOutsourcedOrderMultipleVersions">
-        SELECT *
-        from
-        <foreach collection="versions" item="item" index="index" open="(" separator=" UNION ALL " close=")">
-            SELECT * ,#{item.chVersionName} as ch_version_name FROM aps_outsourced_order WHERE version =
-            #{item.version}
-        </foreach>
-        AS derived_table
-        ORDER BY f_lot, version DESC
-        limit #{pass},#{size};
-    </select>
+
     <select id="selectPageList" resultType="com.benewake.system.entity.dto.ApsOutsourcedOrderDto">
         SELECT
         ord.id,
@@ -61,6 +52,7 @@
         ord.f_material_id,
         map.f_material_name,
         f_qty,
+        f_lot,
         f_status,
         f_pick_mtrl_status,
         f_stock_in_qty,

@@ -3,6 +3,7 @@ package com.benewake.system.service.scheduling.mes.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsTfminiSPackagingTest;
+import com.benewake.system.entity.dto.ApsTfminiSPackagingTestDto;
 import com.benewake.system.entity.mes.MesPackagingTest;
 import com.benewake.system.service.scheduling.mes.ApsTfminiSPackagingTestService;
 import com.benewake.system.mapper.ApsTfminiSPackagingTestMapper;
@@ -19,6 +20,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -39,6 +41,9 @@ public class ApsTfminiSPackagingTestServiceImpl extends ServiceImpl<ApsTfminiSPa
 
     @Autowired
     private MesToApsTfminiSPackagingTest mesToApsTfminiSPackagingTest;
+
+    @Autowired
+    private ApsTfminiSPackagingTestMapper tfminiSPackagingTestMapper;
 
     @Override
     public Boolean updateDataVersions() throws Exception {
@@ -116,8 +121,16 @@ public class ApsTfminiSPackagingTestServiceImpl extends ServiceImpl<ApsTfminiSPa
         }
     }
 
+    @Override
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsTfminiSPackagingTestDto> tfminiSPackagingTestPage = tfminiSPackagingTestMapper.selectPageList(page, tableVersionList);
+        return tfminiSPackagingTestPage;
+    }
 
-
+    @Override
+    public void insertVersionIncr() {
+        tfminiSPackagingTestMapper.insertVersionIncr();
+    }
 }
 
 
