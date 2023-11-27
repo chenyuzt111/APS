@@ -12,8 +12,10 @@ import com.benewake.system.excel.entity.ExcelDailyDataUploadTemplate;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsDailyDataUploadService;
 import com.benewake.system.service.InterfaceService;
+import com.benewake.system.utils.ResponseUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.websocket.server.PathParam;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -73,7 +77,7 @@ public class InterfaceController {
     }
 
     @ApiOperation("导出接口数据")
-    @PostMapping("/downloadSchemeManagement")
+    @PostMapping("/downloadInterfaceDate")
     public void downloadSchemeManagement(@RequestBody DownloadParam downloadParam, @PathParam("type") Integer type, HttpServletResponse response) {
         if (downloadParam == null || downloadParam.getType() == null
                 || (downloadParam.getType() == ExcelOperationEnum.CURRENT_PAGE.getCode()
@@ -82,6 +86,30 @@ public class InterfaceController {
         }
         interfaceService.downloadProcessCapacity(response, type, downloadParam);
     }
+
+
+    @ApiOperation("下载导入模板")
+    @PostMapping("/downloadInterfaceTemplate")
+    public void downloadInterfaceTemplate(@PathParam("type") Integer type, HttpServletResponse response) {
+        interfaceService.downloadInterfaceTemplate(type ,response);
+    }
+
+    @ApiOperation("导入接口数据")
+    @PostMapping("/importInterfaceData")
+    public Result importInterfaceData(@PathParam("code") Integer code , @PathParam("type") Integer type,
+                                      @RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return Result.fail("文件为空！");
+        }
+        String[] split = Objects.requireNonNull(file.getOriginalFilename()).split("\\.");
+        if (!"xlsx".equals(split[1]) && !"xls".equals(split[1])) {
+            return Result.fail("请提供.xlsx或.xls为后缀的Excel文件");
+        }
+
+        Boolean res = interfaceService.importInterfaceData(code ,type, file);
+        return res ? Result.ok() : Result.fail();
+    }
+
 
 
     //    ---------------日别数据--------------------
@@ -143,6 +171,7 @@ public class InterfaceController {
     @PostMapping("/downloadDailyDataUploadTemplate")
     public void downloadDailyDataUploadTemplate(HttpServletResponse response) {
         try {
+            ResponseUtil.setFileResp(response , "日别数据模板");
             EasyExcel.write(response.getOutputStream(), ExcelDailyDataUploadTemplate.class)
                     .sheet("sheet1").doWrite((Collection<?>) null);
         } catch (Exception e) {

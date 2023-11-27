@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benewake.system.mapper.ApsOutRequestMapper">
+
+    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsOutRequest">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="fMaterialCode" column="f_material_code" jdbcType="VARCHAR"/>
+        <result property="fReturnDate" column="f_return_date" jdbcType="TIMESTAMP"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,f_material_code,f_return_date,version
+    </sql>
+    <insert id="insertVersionIncr">
+        INSERT INTO `aps_out_request` (f_material_code, f_return_date, version)
+        SELECT f_material_code,
+               f_return_date,
+               version + 1
+        FROM `aps_out_request`
+        WHERE version = (
+            SELECT max(version)
+            FROM `aps_out_request`
+        )
+    </insert>
+    <select id="selectPageList" resultType="com.benewake.system.entity.dto.ApsOutRequestDto">
+        SELECT
+        request.id,f_material_code,map.f_material_name as f_material_name,f_return_date,
+        ch_version_name AS version
+        FROM
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        ELSE NULL
+        END AS ch_version_name
+        FROM aps_out_request
+        WHERE version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>
+        ) AS request
+        LEFT JOIN aps_material_name_mapping AS map ON request.f_material_code = map.f_material_id
+        ORDER BY request.version desc
+    </select>
+
+
+</mapper>

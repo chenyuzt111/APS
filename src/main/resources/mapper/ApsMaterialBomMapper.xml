@@ -7,10 +7,8 @@
     <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsMaterialBom">
         <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="fMaterialId" column="f_material_id" jdbcType="VARCHAR"/>
-        <result property="fMaterialName" column="f_material_name" jdbcType="VARCHAR"/>
         <result property="fDocumentStatus" column="f_document_status" jdbcType="VARCHAR"/>
         <result property="fMaterialIdChild" column="f_material_id_child" jdbcType="VARCHAR"/>
-        <result property="fMaterialNameChild" column="f_material_name_child" jdbcType="VARCHAR"/>
         <result property="fReplaceGroupBop" column="f_replace_group_bop" jdbcType="VARCHAR"/>
         <result property="fNumerator" column="f_numerator" jdbcType="VARCHAR"/>
         <result property="fDenominator" column="f_denominator" jdbcType="VARCHAR"/>
@@ -89,7 +87,7 @@
     <insert id="insertListNotDelete">
         INSERT INTO `aps_material_bom` (
         f_material_id,
-        f_document_status,f_material_id_child,f_material_name_child,
+        f_document_status,f_material_id_child,
         f_replace_group_bop,f_numerator,f_denominator,
         f_fix_scrap_qty_lot,f_material_type,f_replace_type,
         f_scrap_rate,process,bom_version,
@@ -97,7 +95,7 @@
         )
         SELECT
         f_material_id,
-        f_document_status,f_material_id_child,f_material_name_child,
+        f_document_status,f_material_id_child,
         f_replace_group_bop,f_numerator,f_denominator,
         f_fix_scrap_qty_lot,f_material_type,f_replace_type,
         f_scrap_rate,process,bom_version, (SELECT MAX(version) + 1 FROM `aps_material_bom`)
@@ -116,7 +114,7 @@
     </insert>
     <insert id="insertSelectVersionIncr">
         INSERT INTO `aps_material_bom` (f_material_id,
-                                        f_document_status, f_material_id_child, f_material_name_child,
+                                        f_document_status, f_material_id_child,
                                         f_replace_group_bop, f_numerator, f_denominator,
                                         f_fix_scrap_qty_lot, f_material_type, f_replace_type,
                                         f_scrap_rate, process, bom_version,
@@ -124,7 +122,6 @@
         select f_material_id,
                f_document_status,
                f_material_id_child,
-               f_material_name_child,
                f_replace_group_bop,
                f_numerator,
                f_denominator,

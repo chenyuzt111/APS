@@ -1,12 +1,16 @@
 package com.benewake.system.service.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.ApsImmediatelyInventory;
+import com.benewake.system.entity.ApsOutRequest;
 import com.benewake.system.entity.ApsTableVersion;
 import com.benewake.system.entity.Interface.VersionToChVersion;
 import com.benewake.system.entity.base.InterfaceDataBase;
@@ -15,21 +19,26 @@ import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.entity.enums.TableVersionState;
 import com.benewake.system.entity.vo.DownloadParam;
 import com.benewake.system.entity.vo.PageListRestVo;
+import com.benewake.system.excel.listener.InterfaceDataListener;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.InterfaceService;
 import com.benewake.system.service.ApsIntfaceDataServiceBase;
 import com.benewake.system.utils.ResponseUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class InterfaceServiceImpl implements InterfaceService {
 
@@ -108,6 +117,7 @@ public class InterfaceServiceImpl implements InterfaceService {
             throw new BeneWakeException("系统内部错误联系管理员" + this.getClass());
         }
     }
+
 
     @Override
     public Boolean add(String request, Integer type) {
@@ -191,6 +201,35 @@ public class InterfaceServiceImpl implements InterfaceService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void downloadInterfaceTemplate(Integer type, HttpServletResponse response) {
+        InterfaceDataType interfaceDataType = InterfaceDataType.valueOfCode(type);
+        if (interfaceDataType == null) {
+            throw new BeneWakeException("type类型不存在");
+        }
+        Class importTemplate = interfaceDataType.getClasss();
+        try {
+            ResponseUtil.setFileResp(response , "接口导出模板");
+            EasyExcel.write(response.getOutputStream(), importTemplate).sheet("sheet1").doWrite((Collection<?>) null);
+        } catch (Exception e) {
+            log.error("接口导出模板下载出错 type =" + type + "-----" + e.getMessage() + "----" + LocalDateTime.now());
+        }
+    }
+
+    @Override
+    public Boolean importInterfaceData(Integer code, Integer type, MultipartFile file) {
+        try {
+            InterfaceDataType interfaceDataType = InterfaceDataType.valueOfCode(code);
+            String serviceNameOfCode =  interfaceDataType.getSeviceName();
+            ApsIntfaceDataServiceBase apsIntfaceDataServiceBase = kingdeeServiceMap.get(serviceNameOfCode);
+            EasyExcel.read(file.getInputStream() ,new InterfaceDataListener(code ,apsIntfaceDataServiceBase ,type))
+                    .sheet(0).headRowNumber(1).doRead();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     private List<InterfaceDataBase> convertRecordsToRestlt(List records, Map<Integer, String> versionToChVersions) {

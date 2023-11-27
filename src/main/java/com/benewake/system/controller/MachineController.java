@@ -5,6 +5,7 @@ import com.benewake.system.entity.ApsProductFamilyMachineTable;
 import com.benewake.system.entity.Result;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.vo.ApsProductFamilyMachineTablePageVo;
+import com.benewake.system.entity.vo.ApsProductFamilyMachineTableParam;
 import com.benewake.system.entity.vo.DownloadParam;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsProductFamilyMachineTableService;
@@ -46,15 +47,13 @@ public class MachineController {
 
     @ApiOperation("新增或修改机器管理")
     @PostMapping("/addOrUpdateApsMachineTable")
-    public Result addOrUpdateApsMachineTable(@RequestBody ApsProductFamilyMachineTable apsProductFamilyMachineTable) {
+    public Result addOrUpdateApsMachineTable(@RequestBody ApsProductFamilyMachineTableParam apsProductFamilyMachineTable) {
         if (apsProductFamilyMachineTable == null) {
             return Result.fail();
         }
         boolean res = apsProductFamilyMachineTableService.addOrUpdateApsMachineTable(apsProductFamilyMachineTable);
         return Result.ok(res);
     }
-
-
 
     @ApiOperation("导出机器管理列表")
     @PostMapping("/downloadApsMachineTable")
@@ -66,5 +65,11 @@ public class MachineController {
         }
         apsProductFamilyMachineTableService.downloadProcessCapacity(response, downloadParam);
     }
+
+
+//    @ApiOperation("下载导入模板")
+//    @PostMapping("/downloadMachineTable")
+
+
 
 }

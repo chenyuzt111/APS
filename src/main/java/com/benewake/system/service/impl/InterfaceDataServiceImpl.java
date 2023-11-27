@@ -35,7 +35,7 @@ public class InterfaceDataServiceImpl implements InterfaceDataService {
     public Boolean updateData(List<Integer> ids) {
         Map<Integer, Future> codeToFutureMap = new HashMap<>();
 //        for (Integer code : ids) {
-        ids.parallelStream().forEach(code -> {
+        ids.forEach(code -> {
             Future<Boolean> future = BenewakeExecutor.submit(() -> {
                 String serviceName = InterfaceDataType.serviceNameOfCode(code);
                 if (StringUtils.isBlank(serviceName)) {

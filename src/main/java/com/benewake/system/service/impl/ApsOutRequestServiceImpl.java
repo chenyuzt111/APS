@@ -1,8 +1,10 @@
 package com.benewake.system.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsOutRequest;
 import com.benewake.system.entity.ApsProductionOrder;
+import com.benewake.system.entity.dto.ApsOutRequestDto;
 import com.benewake.system.entity.kingdee.KingdeeOutRequest;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
 import com.benewake.system.mapper.ApsOutRequestMapper;
@@ -15,6 +17,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +37,9 @@ public class ApsOutRequestServiceImpl extends ServiceImpl<ApsOutRequestMapper, A
 
     @Autowired
     private KingdeeToApsOutRequest kingdeeToApsOutRequest;
+
+    @Autowired
+    private ApsOutRequestMapper apsOutRequestMapper;
 
 
     @Override
@@ -55,7 +61,7 @@ public class ApsOutRequestServiceImpl extends ServiceImpl<ApsOutRequestMapper, A
     }
 
 
-    private void getApsOutRequestList(Integer maxVersion, Map<String, String> mtn, ArrayList<ApsOutRequest> apsOutRequests, KingdeeOutRequest kingdeeOutRequest) {
+    private void getApsOutRequestList(Integer maxVersion, Map<String, String> mtn, ArrayList<ApsOutRequest> apsOutRequests, KingdeeOutRequest kingdeeOutRequest) throws ParseException {
         kingdeeOutRequest.setFMaterialId(mtn.get(kingdeeOutRequest.getFMaterialId()));
         ApsOutRequest apsOutRequest = kingdeeToApsOutRequest.convert(kingdeeOutRequest, maxVersion);
         apsOutRequests.add(apsOutRequest);
@@ -85,4 +91,16 @@ public class ApsOutRequestServiceImpl extends ServiceImpl<ApsOutRequestMapper, A
         List<KingdeeOutRequest> result = api.executeBillQuery(queryParam, KingdeeOutRequest.class);
         return result;
     }
+
+    @Override
+    public void insertVersionIncr() {
+        apsOutRequestMapper.insertVersionIncr();
+    }
+
+    @Override
+    public Page selectPageList(Page page, List tableVersionList) {
+        Page<ApsOutRequestDto> apsOutRequestDtoPage = apsOutRequestMapper.selectPageList(page, tableVersionList);
+        return apsOutRequestDtoPage;
+    }
 }
+
