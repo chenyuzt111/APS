@@ -30,20 +30,20 @@ public class SseService {
             sseEmitter = null;
         });
 
-        System.out.println("sse建立 ------------------------" + sseEmitter);
+        log.info("sse建立 ------------------------" + sseEmitter);
 
         heartbeatTask = executor.submit(() -> {
             while (true) {
                 try {
                     if (sseEmitter != null) {
                         sseEmitter.send("1");
-                        System.out.println(Thread.currentThread().getName() + "sse");
+                        log.info(Thread.currentThread().getName() + "SSE");
                         Thread.sleep(10000);
                     } else {
                         break;
                     }
                 } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+                    log.warn(Thread.currentThread().getName() + "SSE断开" + e.getMessage());
                     break;
                 }
             }
@@ -67,8 +67,7 @@ public class SseService {
                 heartbeatTask.cancel(true);
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            log.error("username" + username + "排程发送消息失败" + message);
+            log.error("username：" + username + "排程发送消息失败 --message：" + message + "----原因：" + e.getMessage());
         }
     }
 }

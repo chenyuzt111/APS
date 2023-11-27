@@ -78,11 +78,6 @@ public class ApsProductFamilyMachineTable implements Serializable {
     @TableField(value = "unavailable_dates")
     private String unavailableDates;
 
-    /**
-     * 不可用时间
-     */
-    @TableField(value = "unavailable_time")
-    private String unavailableTime;
 
     /**
      * 

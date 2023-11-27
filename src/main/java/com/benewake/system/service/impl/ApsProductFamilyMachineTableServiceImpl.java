@@ -1,20 +1,35 @@
 package com.benewake.system.service.impl;
 
+import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.benewake.system.controller.MachineController;
 import com.benewake.system.entity.dto.ApsProductFamilyMachineTableDto;
 import com.benewake.system.entity.ApsProductFamilyMachineTable;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.vo.ApsProductFamilyMachineTablePageVo;
+import com.benewake.system.entity.vo.ApsProductFamilyMachineTableParam;
 import com.benewake.system.entity.vo.ApsProductFamilyMachineTableVo;
 import com.benewake.system.entity.vo.DownloadParam;
+import com.benewake.system.excel.entity.ExcelProductFamilyMachineTable;
+import com.benewake.system.excel.transfer.ProductFamilyMachineTablesVoToExcel;
+import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsProductFamilyMachineTableService;
 import com.benewake.system.mapper.ApsProductFamilyMachineTableMapper;
 import com.benewake.system.utils.ResponseUtil;
+import com.benewake.system.utils.StringUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -27,22 +42,38 @@ import java.util.stream.Collectors;
 @Service
 public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProductFamilyMachineTableMapper, ApsProductFamilyMachineTable> implements ApsProductFamilyMachineTableService {
 
+
+    @Autowired
+    private ApsProductFamilyMachineTableMapper familyMachineTableMapper;
+
+    @Autowired
+    private ProductFamilyMachineTablesVoToExcel productFamilyMachineTablesVoToExcel;
     @Override
     public ApsProductFamilyMachineTablePageVo getApsMachineTable(String name, Integer page, Integer size) {
-        Page<ApsProductFamilyMachineTableDto> apsProductFamilyMachineTablePage = new Page<>();
-        apsProductFamilyMachineTablePage.setCurrent(page);
-        apsProductFamilyMachineTablePage.setSize(size);
-        Page<ApsProductFamilyMachineTableDto> tablePage = baseMapper.getPage(apsProductFamilyMachineTablePage);
+        Page<ApsProductFamilyMachineTableDto> tablePage = getApsProductFamilyMachineTableDtoPage(page, size);
+        List<ApsProductFamilyMachineTableVo> apsProductFamilyMachineTableVos = getApsProductFamilyMachineTableVos(page, size, tablePage);
+        ApsProductFamilyMachineTablePageVo apsProductFamilyMachineTablePageVo = new ApsProductFamilyMachineTablePageVo();
+        apsProductFamilyMachineTablePageVo.setPage(tablePage);
+        apsProductFamilyMachineTablePageVo.setApsProductFamilyMachineTables(apsProductFamilyMachineTableVos);
+        return apsProductFamilyMachineTablePageVo;
+    }
+
+    private List<ApsProductFamilyMachineTableVo> getApsProductFamilyMachineTableVos(Integer page, Integer size, Page<ApsProductFamilyMachineTableDto> tablePage) {
         List<ApsProductFamilyMachineTableDto> tableDtos = tablePage.getRecords();
         AtomicReference<Integer> number = new AtomicReference<>((page - 1) * size + 1);
         List<ApsProductFamilyMachineTableVo> apsProductFamilyMachineTableVos = tableDtos.stream().map(x -> {
             ApsProductFamilyMachineTableVo ApsProductFamilyMachineTableVo = productFamilyMachineTableDtoToVo(x, number.getAndSet(number.get() + 1));
             return ApsProductFamilyMachineTableVo;
         }).collect(Collectors.toList());
-        ApsProductFamilyMachineTablePageVo apsProductFamilyMachineTablePageVo = new ApsProductFamilyMachineTablePageVo();
-        apsProductFamilyMachineTablePageVo.setPage(tablePage);
-        apsProductFamilyMachineTablePageVo.setApsProductFamilyMachineTables(apsProductFamilyMachineTableVos);
-        return apsProductFamilyMachineTablePageVo;
+        return apsProductFamilyMachineTableVos;
+    }
+
+    private Page<ApsProductFamilyMachineTableDto> getApsProductFamilyMachineTableDtoPage(Integer page, Integer size) {
+        Page<ApsProductFamilyMachineTableDto> apsProductFamilyMachineTablePage = new Page<>();
+        apsProductFamilyMachineTablePage.setCurrent(page);
+        apsProductFamilyMachineTablePage.setSize(size);
+        Page<ApsProductFamilyMachineTableDto> tablePage = baseMapper.getPage(apsProductFamilyMachineTablePage);
+        return tablePage;
     }
 
     private ApsProductFamilyMachineTableVo productFamilyMachineTableDtoToVo(ApsProductFamilyMachineTableDto dto, Integer number) {
@@ -57,32 +88,69 @@ public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProd
         apsProductFamilyMachineTableVo.setFMachineConfiguration(dto.getFMachineConfiguration());
         apsProductFamilyMachineTableVo.setFWorkshop(dto.getFWorkshop());
         apsProductFamilyMachineTableVo.setAvailable(dto.getAvailable());
-        apsProductFamilyMachineTableVo.setUnavailableDates(dto.getUnavailableDates());
-        apsProductFamilyMachineTableVo.setUnavailableTime(dto.getUnavailableTime());
+        apsProductFamilyMachineTableVo.setUnavailableDates(
+                StringUtils.isNotEmpty(dto.getUnavailableDates())
+                        ? Arrays.asList(dto.getUnavailableDates().split(","))
+                        : Collections.emptyList()
+        );
         apsProductFamilyMachineTableVo.setVersion(dto.getVersion());
         return apsProductFamilyMachineTableVo;
     }
 
     @Override
-    public boolean addOrUpdateApsMachineTable(ApsProductFamilyMachineTable apsProductFamilyMachineTable) {
+    public boolean addOrUpdateApsMachineTable(ApsProductFamilyMachineTableParam apsProductFamilyMachineTable) {
         boolean res;
+        ApsProductFamilyMachineTable familyMachineTable = getMachineParamToPo(apsProductFamilyMachineTable);
         if (apsProductFamilyMachineTable.getId() == null) {
-            res = save(apsProductFamilyMachineTable);
+            res = save(familyMachineTable);
         } else {
-            res = updateById(apsProductFamilyMachineTable);
+            res = updateById(familyMachineTable);
         }
         return res;
+    }
+
+    private ApsProductFamilyMachineTable getMachineParamToPo(ApsProductFamilyMachineTableParam apsProductFamilyMachineTable) {
+        ApsProductFamilyMachineTable familyMachineTable = new ApsProductFamilyMachineTable();
+        familyMachineTable.setId(apsProductFamilyMachineTable.getId());
+        familyMachineTable.setFMachineId(apsProductFamilyMachineTable.getFMachineId());
+        familyMachineTable.setFMachineName(apsProductFamilyMachineTable.getFMachineName());
+        familyMachineTable.setFProductFamily(apsProductFamilyMachineTable.getFProductFamily());
+        familyMachineTable.setFProcessId(apsProductFamilyMachineTable.getFProcessId());
+        familyMachineTable.setFMachineConfiguration(apsProductFamilyMachineTable.getFMachineConfiguration());
+        familyMachineTable.setFWorkshop(apsProductFamilyMachineTable.getFWorkshop());
+        familyMachineTable.setAvailable(apsProductFamilyMachineTable.getAvailable());
+        List<String> unavailableDates = apsProductFamilyMachineTable.getUnavailableDates();
+        if (CollectionUtils.isNotEmpty(unavailableDates)) {
+            String unavailDate = String.join(",", unavailableDates);
+            familyMachineTable.setUnavailableDates(unavailDate);
+        }
+        return familyMachineTable;
     }
 
     @Override
     public void downloadProcessCapacity(HttpServletResponse response, DownloadParam downloadParam) {
         try {
             ResponseUtil.setFileResp(response, "机器管理");
+            ApsProductFamilyMachineTablePageVo apsMachineTable = null;
             if (downloadParam.getType() == ExcelOperationEnum.ALL_PAGES.getCode()) {
-
+                Long count = familyMachineTableMapper.selectCount(null);
+                apsMachineTable = getApsMachineTable(null, 1, Math.toIntExact(count));
+            } else {
+                apsMachineTable = getApsMachineTable(null, downloadParam.getPage(), downloadParam.getSize());
             }
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            if (apsMachineTable == null || CollectionUtils.isEmpty(apsMachineTable.getApsProductFamilyMachineTables())) {
+                throw new BeneWakeException("当前还没有机器信息");
+            }
+            List<ApsProductFamilyMachineTableVo> machineTables = apsMachineTable.getApsProductFamilyMachineTables();
+            List<ExcelProductFamilyMachineTable> excelProductFamilyMachineTables = productFamilyMachineTablesVoToExcel.convert(machineTables);
+            EasyExcel.write(response.getOutputStream(), ExcelProductFamilyMachineTable.class)
+                    .sheet("sheet1").doWrite(excelProductFamilyMachineTables);
+        } catch (Exception e) {
+            if (!(e instanceof BeneWakeException)) {
+                log.error("机器导出出错----" + LocalDateTime.now() + "----" + e.getMessage());
+                throw new BeneWakeException("机器导出出错");
+            }
+            throw new BeneWakeException(e.getMessage());
         }
     }
 }

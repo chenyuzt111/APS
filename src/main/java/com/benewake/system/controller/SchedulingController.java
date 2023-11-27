@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -63,21 +64,14 @@ public class SchedulingController {
     @PostMapping("/dataUpdate")
     public Result dataUpdate(@RequestBody List<Integer> ids) {
         long l = System.currentTimeMillis();
-        if (CollectionUtils.isEmpty(ids) || (ids.contains(-1) && ids.contains(-2))) {
+        if (CollectionUtils.isEmpty(ids)) {
             ids = InterfaceDataType.getAllIds();
-        }
-        if (ids.get(0) == -1) {
-            ids = InterfaceDataType.getErpIds();
-        }
-        if (ids.get(0) == -2) {
-            ids = InterfaceDataType.getMesIds();
         }
         interfaceDataService.updateData(ids);
         long l1 = System.currentTimeMillis();
-        log.info("数据库更新接口消耗时长" + (l1 - l) + new Date());
+        log.info("数据库更新接口消耗时长" + (l1 - l) + LocalDateTime.now());
         return Result.ok();
     }
-
 
     @ApiOperation("开始排程")
     @Scheduling(type = TableVersionState.SCHEDULING_ING)

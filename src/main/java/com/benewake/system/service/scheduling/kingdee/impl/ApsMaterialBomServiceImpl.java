@@ -247,9 +247,10 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
                 .filter(x -> x.getFChangeLabel().equals(BOMChangeType.CHANGE_AFTER.getCode()) ||
                         x.getFChangeLabel().equals(BOMChangeType.ADD.getCode()))
                 .collect(Collectors.toList());
+
         baseMapper.insertListNotDelete(deleteList);
 
-        List<KingdeeMaterialBom> addByFMaterialIdAndChild = getAddByFMaterialIdAndChild(addList);
+        List<KingdeeMaterialBom> addByFMaterialIdAndChild =  getAddByFMaterialIdAndChild(addList);
         List<ApsMaterialBom> apsMaterialBoms = null;
         if (CollectionUtils.isNotEmpty(addByFMaterialIdAndChild)) {
             List<ApsMaterialNameMapping> apsMaterialNameMappings = getApsMaterialNameMappings(addByFMaterialIdAndChild);

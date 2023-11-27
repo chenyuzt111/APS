@@ -1,5 +1,6 @@
 package com.benewake.system.entity.kingdee;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -10,8 +11,7 @@ public class KingdeeOutRequest {
 
     private String FMaterialId;
 
-
-    private Date F_ora_BackDate;
+    private String F_ora_BackDate;
 
 
 }

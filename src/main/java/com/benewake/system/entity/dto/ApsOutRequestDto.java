@@ -1,4 +1,4 @@
-package com.benewake.system.entity;
+package com.benewake.system.entity.dto;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -6,8 +6,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -16,7 +14,7 @@ import lombok.Data;
  */
 @TableName(value ="aps_out_request")
 @Data
-public class ApsOutRequest implements Serializable {
+public class ApsOutRequestDto implements Serializable {
 
 
     /**
@@ -27,26 +25,31 @@ public class ApsOutRequest implements Serializable {
     /**
      * 物料编码
      */
-    @JsonProperty("materialCode")
     @TableField(value = "f_material_code")
     private String fMaterialCode;
 
     /**
+     * 物料编码
+     */
+    @TableField(value = "f_material_name")
+    private String fMaterialName;
+
+    /**
      * 归还日期
      */
-    @JsonProperty("returnDate")
+
     @TableField(value = "f_return_date")
-    private String fReturnDate;
+    private Date fReturnDate;
 
     /**
      * 版本号
      */
-    @JsonProperty("version")
     @TableField(value = "version")
-    private Integer version;
+    private String version;
+
+
 
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
-
 }

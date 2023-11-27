@@ -83,11 +83,8 @@ public abstract class PythonBase {
                 callPythonException();
             }
         } catch (Exception e) {
-            System.out.println(processBuilder);
-            System.out.println("抛异常了");
             if (!(e instanceof BeneWakeException)) {
-                e.printStackTrace();
-                log.error("异步操作python报错" + e);
+                log.error("异步操作python报错" + e.getMessage());
                 callPythonException();
             }
             e.printStackTrace();

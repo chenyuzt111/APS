@@ -58,7 +58,7 @@ public class SchedulingPythonService extends PythonBase {
     @Override
     public void checkCode(String line) {
         System.out.println("----------arg：" + line);
-        if ("521".equals("521")) {
+        if ("521".equals(line)) {
             String username = hostHolder.getUser().getUsername();
             //通知前端成功
             //将最新版本的状态改为排程已完成
@@ -70,6 +70,7 @@ public class SchedulingPythonService extends PythonBase {
             //更新结果表的版本号
             List<ApsTableVersion> apsTableVersions = new ArrayList<>();
             resuleBaseMap.forEach((k ,v) -> {
+                //设置null值
                 Integer maxVersionAndSave = v.getMaxVersionAndSave();
                 int code = SchedulingResultType.getCodeByServiceName(k);
                 ApsTableVersion apsTableVersion = ApsTableVersion.builder()
