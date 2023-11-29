@@ -95,7 +95,7 @@ public class ApsPurchaseOrderServiceImpl extends ServiceImpl<ApsPurchaseOrderMap
         String Song = critn.get("宋雨朦");
         String Zhang = critn.get("张月");
         queryParam.setFormId("PUR_PurchaseOrder");
-        queryParam.setFieldKeys("FBillNo,FMaterialId,FMaterialName,FDeliRemainQty,FDeliveryDate_Plan");
+        queryParam.setFieldKeys("FBillNo,FMaterialId,FMaterialName,FRemainReceiveQty,FDeliveryDate_Plan");
         List<String> queryFilters = new ArrayList<>();
         queryFilters.add("FMRPTerminateStatus = 'A' and FPurchaseOrgId= '1' and FMRPCloseStatus = 'A' and FMRPFreezeStatus = 'A' and FCloseStatus = 'A' and FSupplierId != 336724 and FCancelStatus = 'A' and FDate > dateAdd(day, -365, getdate()) and FCreatorId !=" + Liu + " and FCreatorId !=" + Song + "and FCreatorId !=" + Zhang); // 业务终止=正常
 

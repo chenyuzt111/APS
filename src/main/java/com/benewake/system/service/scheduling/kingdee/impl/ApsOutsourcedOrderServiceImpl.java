@@ -68,7 +68,6 @@ public class ApsOutsourcedOrderServiceImpl extends ServiceImpl<ApsOutsourcedOrde
         return saveBatch(apsOutsourcedOrders);
     }
 
-
     @Override
     public void insertVersionIncr() {
         apsOutsourcedOrderMapper.insertSelectVersionIncr();
@@ -92,8 +91,8 @@ public class ApsOutsourcedOrderServiceImpl extends ServiceImpl<ApsOutsourcedOrde
         return fLotIdToFNumberMap;
     }
 
-    private ArrayList<ApsOutsourcedOrder> getApsOutsourcedOrders(List<KingdeeOutsourcedOrder> result, Map<String, String> mtn, Map<String, String> ftn,
-                                                                 Map<String, String> btn, Map<String, String> lotIdToFNumberMap) throws NoSuchFieldException, IllegalAccessException {
+
+    private ArrayList<ApsOutsourcedOrder> getApsOutsourcedOrders(List<KingdeeOutsourcedOrder> result, Map<String, String> mtn, Map<String, String> ftn, Map<String, String> btn, Map<String, String> lotIdToFNumberMap) throws NoSuchFieldException, IllegalAccessException {
         ArrayList<ApsOutsourcedOrder> apsOutsourcedOrders = new ArrayList<>();
 
         for (KingdeeOutsourcedOrder kingdeeOutsourcedOrder : result) {
@@ -170,7 +169,7 @@ public class ApsOutsourcedOrderServiceImpl extends ServiceImpl<ApsOutsourcedOrde
     private List<KingdeeOutsourcedOrder> getKingdeeOutsourcedOrders() throws Exception {
         QueryParam queryParam = new QueryParam();
         queryParam.setFormId("SUB_SUBREQORDER");
-        queryParam.setFieldKeys("FBillNo,FBillType,FMaterialId,FMaterialName,FQty,FLot,FStatus,FPickMtrlStatus,FStockInQty,FBomId,F_ora_FDZMaterialID2 ");
+        queryParam.setFieldKeys("FBillNo,FBillType,FMaterialId,FMaterialName,FQty,FStatus,FPickMtrlStatus,FStockInQty,FBomId,F_ora_FDZMaterialID2 ");
         // 条件筛选
         List<String> queryFilters = new ArrayList<>();
         //创建一个空的字符串列表，用于存储查询过滤条件
