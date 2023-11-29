@@ -128,7 +128,9 @@ public class ApsOutsourcedMaterialServiceImpl extends ServiceImpl<ApsOutsourcedM
         QueryParam subQueryParam = new QueryParam();
         subQueryParam.setFormId("SUB_SUBREQORDER");
         subQueryParam.setFieldKeys("FBillNo");
-        subQueryParam.setFilterString("FPickMtrlStatus = '2'");
+        List<String> queryFilters = new ArrayList<>();
+        queryFilters.add("FPickMtrlStatus = '2'");
+        subQueryParam.setFilterString(String.join(" and ", queryFilters));
         List<YourResultClassForSubQuery> subQueryResult = api.executeBillQuery(subQueryParam, YourResultClassForSubQuery.class);
 
         // 从子查询结果中提取 FBillNo 列，存储在列表中
