@@ -42,10 +42,23 @@ public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrde
     @Autowired
     private ApsProductionOrderMapper apsProductionOrderMapper;
 
+    private static Map<String, String> projectStatusMap = new HashMap<>();
+
+    // 添加映射关系
+    static {
+        projectStatusMap.put("计划", "1");
+        projectStatusMap.put("计划确认", "2");
+        projectStatusMap.put("下达", "3");
+        projectStatusMap.put("开工", "4");
+        projectStatusMap.put("完工", "5");
+        projectStatusMap.put("结案", "6");
+        projectStatusMap.put("结算", "7");
+    }
     @Override
     public Boolean updateDataVersions() throws Exception {
 
         List<KingdeeProductionOrder> result = getKingdeeProductionOrders();
+
         // 物料映射表
         Map<String, String> mtn = getMaterialIdToNameMap();
         //单据映射表
@@ -100,6 +113,7 @@ public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrde
         String originalFBillType = kingdeeProductionOrder.getFBillType();
         kingdeeProductionOrder.setFBillType(ftn.get(originalFBillType));
         kingdeeProductionOrder.setFBomId(btn.get(kingdeeProductionOrder.getFBomId()));
+        kingdeeProductionOrder.setFStatus(projectStatusMap.get(kingdeeProductionOrder.getFStatus()));
         ApsProductionOrder apsProductionOrder = kingdeeToApsProductionOrder.convert(kingdeeProductionOrder, maxVersion);
         apsProductionOrders.add(apsProductionOrder);
     }
@@ -128,6 +142,8 @@ public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrde
         return ftn;
     }
 
+
+
     private Map<String, String> getMaterialIdToNameMap() throws Exception {
         QueryParam queryParam = new QueryParam();
         queryParam.setFormId("BD_MATERIAL");
@@ -143,7 +159,7 @@ public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrde
     private List<KingdeeProductionOrder> getKingdeeProductionOrders() throws Exception {
         QueryParam queryParam = new QueryParam();
         queryParam.setFormId("PRD_MO");
-        queryParam.setFieldKeys("FStatus,FWorkshopID,FBillNo,FBillType,FMaterialId,FMaterialName,FQty,FStatus,FPickMtrlStatus,FStockInQuaAuxQty,FPlanFinishDate,FBomId,FWorkShopID");
+        queryParam.setFieldKeys("FStatus,FWorkshopID,FBillNo,FBillType,FMaterialId,FMaterialName,FQty,FStatus,FPickMtrlStatus,FStockInQuaAuxQty,FPlanFinishDate,FBomId,FWorkShopID,F_ora_FDZMaterialID2");
         // 条件筛选
         List<String> queryFilters = new ArrayList<>();
         //创建一个空的字符串列表，用于存储查询过滤条件
