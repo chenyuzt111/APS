@@ -8,6 +8,7 @@ import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.vo.*;
 import com.benewake.system.excel.entity.ExcelFinishedProductTemplate;
 import com.benewake.system.excel.entity.ExcelRawMaterialBasicDataTemplate;
+import com.benewake.system.excel.entity.ExcelSemiFinishedTemplate;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsFinishedProductBasicDataService;
 import com.benewake.system.service.ApsRawMaterialBasicDataService;
@@ -219,30 +220,30 @@ public class MaterialDataController {
     }
 
 
-//    @ApiOperation("下载半成品基础数据导入模板")
-//    @PostMapping("/finishedProductTemplate")
-//    public void finishedProductTemplate(HttpServletResponse response) {
-//        try {
-//            ResponseUtil.setFileResp(response ,"半成品基础数据导入模板");
-//            EasyExcel.write(response.getOutputStream(), ExcelFinishedProductTemplate.class).sheet("sheet1")
-//                    .registerWriteHandler(new SimpleColumnWidthStyleStrategy(12))
-//                    .doWrite((java.util.Collection<?>) null);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    @ApiOperation("导入半成品基础数据")
-//    @PostMapping("/imporFinishedProduct")
-//    public Result imporFinishedProduct(@PathParam("type") Integer type, @RequestParam("file") MultipartFile file) {
-//        if (file.isEmpty()) {
-//            return Result.fail("文件为空！");
-//        }
-//        String[] split = Objects.requireNonNull(file.getOriginalFilename()).split("\\.");
-//        if (!"xlsx".equals(split[1]) && !"xls".equals(split[1])) {
-//            return Result.fail("请提供.xlsx或.xls为后缀的Excel文件");
-//        }
-//        Boolean res = finishedProductBasicDataService.saveDataByExcel(type, file);
-//        return res ? Result.ok() : Result.fail();
-//    }
+    @ApiOperation("下载半成品基础数据导入模板")
+    @PostMapping("/semiFinishedTemplate")
+    public void semiFinishedTemplate(HttpServletResponse response) {
+        try {
+            ResponseUtil.setFileResp(response ,"半成品基础数据导入模板");
+            EasyExcel.write(response.getOutputStream(), ExcelSemiFinishedTemplate.class).sheet("sheet1")
+                    .registerWriteHandler(new SimpleColumnWidthStyleStrategy(12))
+                    .doWrite((java.util.Collection<?>) null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @ApiOperation("导入半成品基础数据")
+    @PostMapping("/imporSemiFinished")
+    public Result imporSemiFinished(@PathParam("type") Integer type, @RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return Result.fail("文件为空！");
+        }
+        String[] split = Objects.requireNonNull(file.getOriginalFilename()).split("\\.");
+        if (!"xlsx".equals(split[1]) && !"xls".equals(split[1])) {
+            return Result.fail("请提供.xlsx或.xls为后缀的Excel文件");
+        }
+        Boolean res = semiFinishedBasicDataService.saveDataByExcel(type, file);
+        return res ? Result.ok() : Result.fail();
+    }
 }

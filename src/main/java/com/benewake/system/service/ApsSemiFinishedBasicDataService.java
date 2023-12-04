@@ -6,6 +6,7 @@ import com.benewake.system.entity.vo.ApsSemiFinishedBasicDataParam;
 import com.benewake.system.entity.vo.ApsSemiFinishedBasicDataVo;
 import com.benewake.system.entity.vo.DownloadParam;
 import com.benewake.system.entity.vo.PageResultVo;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,4 +22,6 @@ public interface ApsSemiFinishedBasicDataService extends IService<ApsSemiFinishe
     boolean addOrUpdateSemiFinished(ApsSemiFinishedBasicDataParam param);
 
     void downloadSemiFinished(HttpServletResponse response, DownloadParam downloadParam);
+
+    Boolean saveDataByExcel(Integer type, MultipartFile file);
 }
