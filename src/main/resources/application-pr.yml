@@ -16,7 +16,7 @@ spring:
     username: root2
     password: EAZWSX#f0ae2f2fdE
     driver-class-name: com.mysql.cj.jdbc.Driver
-    type: com.alibaba.druid.pool.DruidDataSource
+    type: com.zaxxer.hikari.HikariDataSource
     hikari:
       maximum-pool-size: 15
       minimum-idle: 5
