@@ -1,6 +1,5 @@
 package com.benewake.system.transfer;
 
-import com.benewake.system.entity.ApsPcbaBurn;
 import com.benewake.system.entity.ApsTfminiSPcbaBurn;
 import com.benewake.system.entity.mes.MesPcbaBurn;
 import org.springframework.stereotype.Component;

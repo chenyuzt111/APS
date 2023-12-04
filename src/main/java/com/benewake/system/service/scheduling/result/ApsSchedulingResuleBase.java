@@ -5,12 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.benewake.system.entity.ApsTableVersion;
-import com.benewake.system.entity.enums.SchedulingResultType;
 import com.benewake.system.entity.enums.TableVersionState;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsTableVersionService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 

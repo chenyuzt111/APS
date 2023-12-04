@@ -10,8 +10,8 @@ import com.benewake.system.entity.kingdee.KingdeeProductionOrder;
 import com.benewake.system.entity.kingdee.transfer.FBILLTYPEIDToName;
 import com.benewake.system.entity.kingdee.transfer.FIDToNumber;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
-import com.benewake.system.service.scheduling.kingdee.ApsProductionOrderService;
 import com.benewake.system.mapper.ApsProductionOrderMapper;
+import com.benewake.system.service.scheduling.kingdee.ApsProductionOrderService;
 import com.benewake.system.transfer.KingdeeToApsProductionOrder;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
@@ -19,6 +19,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,13 +47,13 @@ public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrde
 
     // 添加映射关系
     static {
-        projectStatusMap.put("计划", "1");
-        projectStatusMap.put("计划确认", "2");
-        projectStatusMap.put("下达", "3");
-        projectStatusMap.put("开工", "4");
-        projectStatusMap.put("完工", "5");
-        projectStatusMap.put("结案", "6");
-        projectStatusMap.put("结算", "7");
+        projectStatusMap.put("1", "计划");
+        projectStatusMap.put("2", "计划确认");
+        projectStatusMap.put("3", "下达");
+        projectStatusMap.put("4", "开工");
+        projectStatusMap.put("5", "完工");
+        projectStatusMap.put("6", "结案");
+        projectStatusMap.put("7", "结算");
     }
     @Override
     public Boolean updateDataVersions() throws Exception {
@@ -92,7 +93,7 @@ public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrde
 
 
 
-    private void getApsProductionOrderList(Integer maxVersion, Map<String, String> mtn, Map<String, String> ftn, Map<String, String> btn, ArrayList<ApsProductionOrder> apsProductionOrders, KingdeeProductionOrder kingdeeProductionOrder) {
+    private void getApsProductionOrderList(Integer maxVersion, Map<String, String> mtn, Map<String, String> ftn, Map<String, String> btn, ArrayList<ApsProductionOrder> apsProductionOrders, KingdeeProductionOrder kingdeeProductionOrder) throws ParseException {
         // 获取 FStatus 的 id
         String statusId = kingdeeProductionOrder.getFStatus();
         // 使用映射 HashMap 获取状态文字

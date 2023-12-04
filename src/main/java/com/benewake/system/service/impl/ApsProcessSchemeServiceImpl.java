@@ -15,13 +15,13 @@ import com.benewake.system.excel.entity.ExcelProcessScheme;
 import com.benewake.system.excel.transfer.ProcessSchemeVoToExcelList;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.mapper.ApsProcessCapacityMapper;
+import com.benewake.system.mapper.ApsProcessSchemeMapper;
 import com.benewake.system.mapper.ApsProductFamilyProcessSchemeManagementMapper;
 import com.benewake.system.service.ApsOptimalStrategyService;
 import com.benewake.system.service.ApsProcessSchemeService;
-import com.benewake.system.mapper.ApsProcessSchemeMapper;
 import com.benewake.system.service.ApsProductFamilyProcessSchemeManagementService;
 import com.benewake.system.transfer.ApsProcessSchemeDtoToVo;
-import com.benewake.system.utils.StringUtils;
+import com.benewake.system.utils.BenewakeStringUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,8 +83,8 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
         String currentProcessScheme;
         List<String> processSchemes = apsProcessSchemeMapper.selectSchemeBycaIdandNumber(processCapacityIds, number);
         if (CollectionUtils.isNotEmpty(processSchemes)
-                && StringUtils.isNotBlank(processSchemes.get(0))) {
-            currentProcessScheme = StringUtils.incrementAndExtractLast(processSchemes);
+                && BenewakeStringUtils.isNotBlank(processSchemes.get(0))) {
+            currentProcessScheme = BenewakeStringUtils.incrementAndExtractLast(processSchemes);
         } else {
             ApsProcessCapacity apsProcessCapacity = apsProcessCapacityMapper
                     .selectOne(new LambdaQueryWrapper<ApsProcessCapacity>()
@@ -331,7 +331,7 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
     @Override
     public ApsProcessSchemeByIdListVo getProcessSchemeById(Integer id) {
         ApsProcessScheme apsProcessScheme = getById(id);
-        if (apsProcessScheme == null || StringUtils.isEmpty(apsProcessScheme.getCurrentProcessScheme())) {
+        if (apsProcessScheme == null || BenewakeStringUtils.isEmpty(apsProcessScheme.getCurrentProcessScheme())) {
             return null;
         }
         ApsProcessCapacity processCapacity = apsProcessCapacityMapper.selectById(apsProcessScheme.getProcessCapacityId());

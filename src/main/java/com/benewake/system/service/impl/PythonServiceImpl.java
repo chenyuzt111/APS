@@ -7,19 +7,17 @@ import com.benewake.system.entity.enums.TableVersionState;
 import com.benewake.system.entity.vo.SchedulingParam;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.redis.DistributedLock;
-import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.ApsIntfaceDataServiceBase;
+import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.PythonService;
+import com.benewake.system.utils.BenewakeStringUtils;
 import com.benewake.system.utils.HostHolder;
-import com.benewake.system.utils.StringUtils;
 import com.benewake.system.utils.python.PythonBase;
-import com.google.gson.Gson;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -106,7 +104,7 @@ public class PythonServiceImpl implements PythonService {
     private int getCodeByServiceName(ApsIntfaceDataServiceBase service) {
         Class<?> aClass = AopProxyUtils.ultimateTargetClass(service);
         String simpleName = aClass.getSimpleName();
-        return InterfaceDataType.getCodeByServiceName(StringUtils.toLowerCaseFirstLetter(simpleName));
+        return InterfaceDataType.getCodeByServiceName(BenewakeStringUtils.toLowerCaseFirstLetter(simpleName));
     }
 
     @Override

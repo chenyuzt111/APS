@@ -7,7 +7,6 @@ import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.service.ApsIntfaceDataServiceBase;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

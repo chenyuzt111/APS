@@ -1,7 +1,7 @@
 package com.benewake.system.mapper;
 
-import com.benewake.system.entity.ApsOptimalStrategy;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.benewake.system.entity.ApsOptimalStrategy;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

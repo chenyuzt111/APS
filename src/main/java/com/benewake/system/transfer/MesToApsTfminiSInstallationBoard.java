@@ -1,6 +1,5 @@
 package com.benewake.system.transfer;
 
-import com.benewake.system.entity.ApsInstallationBoard;
 import com.benewake.system.entity.ApsTfminiSInstallationBoard;
 import com.benewake.system.entity.mes.MesInstallationBoard;
 import org.springframework.stereotype.Component;

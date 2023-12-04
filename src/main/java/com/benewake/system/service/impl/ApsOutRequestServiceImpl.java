@@ -3,7 +3,6 @@ package com.benewake.system.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsOutRequest;
-import com.benewake.system.entity.ApsProductionOrder;
 import com.benewake.system.entity.dto.ApsOutRequestDto;
 import com.benewake.system.entity.kingdee.KingdeeOutRequest;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
@@ -12,7 +11,6 @@ import com.benewake.system.service.ApsOutRequestService;
 import com.benewake.system.transfer.KingdeeToApsOutRequest;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

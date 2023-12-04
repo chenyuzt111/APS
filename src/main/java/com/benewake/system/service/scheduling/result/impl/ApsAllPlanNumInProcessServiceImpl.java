@@ -7,17 +7,16 @@ import com.benewake.system.entity.ApsTableVersion;
 import com.benewake.system.entity.enums.SchedulingResultType;
 import com.benewake.system.entity.enums.TableVersionState;
 import com.benewake.system.exception.BeneWakeException;
+import com.benewake.system.mapper.ApsAllPlanNumInProcessMapper;
 import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.scheduling.result.ApsAllPlanNumInProcessService;
-import com.benewake.system.mapper.ApsAllPlanNumInProcessMapper;
-import com.benewake.system.utils.StringUtils;
+import com.benewake.system.utils.BenewakeStringUtils;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,13 +44,13 @@ public class ApsAllPlanNumInProcessServiceImpl extends ServiceImpl<ApsAllPlanNum
         List<ApsAllPlanNumInProcess> apsAllPlanNumInProcesses = getAll();
         apsAllPlanNumInProcesses = apsAllPlanNumInProcesses.stream().peek(x -> {
             String startTime = x.getStartTime();
-            String s = StringUtils.formatTime(startTime);
+            String s = BenewakeStringUtils.formatTime(startTime);
             x.setStartTime(s);
             String endTime = x.getEndTime();
-            String send = StringUtils.formatTime(endTime);
+            String send = BenewakeStringUtils.formatTime(endTime);
             x.setEndTime(send);
             String taskDate = x.getTaskDate();
-            String s1 = StringUtils.formatDate(taskDate);
+            String s1 = BenewakeStringUtils.formatDate(taskDate);
             x.setTaskDate(s1);
         }).collect(Collectors.toList());
         List<ApsAllPlanNumInProcess> sortedList = sortEntities(apsAllPlanNumInProcesses);

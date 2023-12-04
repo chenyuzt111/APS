@@ -1,14 +1,17 @@
 package com.benewake.system.utils;
 
 import com.benewake.system.utils.core.StrFormatter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.AntPathMatcher;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * 字符串工具类
  */
-public class StringUtils extends org.apache.commons.lang3.StringUtils {
+public class BenewakeStringUtils extends org.apache.commons.lang3.StringUtils {
     /**
      * 空字符串
      */
@@ -18,6 +21,15 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * 下划线
      */
     private static final char SEPARATOR = '_';
+
+    public static Date parse(String date ,String dateFormat) throws ParseException {
+        if (StringUtils.isEmpty(date) || StringUtils.isEmpty(dateFormat) ) {
+            return null;
+        }
+        SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+        Date parse = format.parse(date);
+        return parse;
+    }
 
     public static String formatTime(String inputTime) {
         // 切分时间字符串
@@ -47,6 +59,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
             return inputTime;  // 如果格式不正确，返回原始字符串
         }
     }
+
     /**
      * 获取参数不为空值
      *
@@ -299,17 +312,17 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      */
     public static final List<String> str2List(String str, String sep, boolean filterBlank, boolean trim) {
         List<String> list = new ArrayList<String>();
-        if (StringUtils.isEmpty(str)) {
+        if (BenewakeStringUtils.isEmpty(str)) {
             return list;
         }
 
         // 过滤空白字符串
-        if (filterBlank && StringUtils.isBlank(str)) {
+        if (filterBlank && BenewakeStringUtils.isBlank(str)) {
             return list;
         }
         String[] split = str.split(sep);
         for (String string : split) {
-            if (filterBlank && StringUtils.isBlank(string)) {
+            if (filterBlank && BenewakeStringUtils.isBlank(string)) {
                 continue;
             }
             if (trim) {
@@ -614,7 +627,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
             int numericValue = Integer.parseInt(numericPart);
             if (max < numericValue) {
                 max = numericValue;
-                maxLength =  lastIndex;
+                maxLength = lastIndex;
                 maxProcessSchemeName = processSchemeName;
             }
         }

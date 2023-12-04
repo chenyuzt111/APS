@@ -8,8 +8,8 @@ import com.benewake.system.entity.kingdee.KingdeePurchaseRequest;
 import com.benewake.system.entity.kingdee.transfer.CreateIdToName;
 import com.benewake.system.entity.kingdee.transfer.FBILLTYPEIDToName;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
-import com.benewake.system.service.scheduling.kingdee.ApsPurchaseRequestService;
 import com.benewake.system.mapper.ApsPurchaseRequestMapper;
+import com.benewake.system.service.scheduling.kingdee.ApsPurchaseRequestService;
 import com.benewake.system.transfer.KingdeeToApsPurchaseRequest;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
@@ -17,6 +17,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,7 +80,7 @@ public class ApsPurchaseRequestServiceImpl extends ServiceImpl<ApsPurchaseReques
 
 
 
-    private ArrayList<ApsPurchaseRequest> getApsPurchaseRequestArrayList(List<KingdeePurchaseRequest> kingdeePurchaseRequestList, Map<String, String> materialIdToNumberMap) throws NoSuchFieldException, IllegalAccessException {
+    private ArrayList<ApsPurchaseRequest> getApsPurchaseRequestArrayList(List<KingdeePurchaseRequest> kingdeePurchaseRequestList, Map<String, String> materialIdToNumberMap) throws NoSuchFieldException, IllegalAccessException, ParseException {
         ArrayList<ApsPurchaseRequest> apsPurchaseRequestList = new ArrayList<>();
 
         for (KingdeePurchaseRequest kingdeePurchaseRequest : kingdeePurchaseRequestList) {

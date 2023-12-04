@@ -7,7 +7,6 @@
     <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsFinishedProductBasicData">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="fMaterialCode" column="f_material_code" jdbcType="VARCHAR"/>
-            <result property="fMaterialName" column="f_material_name" jdbcType="VARCHAR"/>
             <result property="fMaterialProperty" column="f_material_property" jdbcType="VARCHAR"/>
             <result property="fMaterialGroup" column="f_material_group" jdbcType="VARCHAR"/>
             <result property="fProductType" column="f_product_type" jdbcType="VARCHAR"/>
@@ -32,4 +31,27 @@
         f_max_packaging_personnel,f_min_packaging_personnel,f_moq,
         f_mpq,f_safety_stock
     </sql>
+    <select id="selectListPage" resultType="com.benewake.system.entity.dto.ApsFinishedProductBasicDataDto">
+        SELECT
+            da.id,
+            f_material_code,
+            map.f_material_name,
+            f_material_property,
+            f_material_group,
+            f_product_type,
+            f_product_family,
+            f_packaging_method,
+            f_max_assembly_personnel,
+            f_min_assembly_personnel,
+            f_max_testing_personnel,
+            f_min_testing_personnel,
+            f_max_packaging_personnel,
+            f_min_packaging_personnel,
+            f_moq,
+            f_mpq,
+            f_safety_stock
+        FROM
+            aps_finished_product_basic_data AS da
+                LEFT JOIN aps_material_name_mapping AS map ON da.f_material_code = map.f_material_id
+    </select>
 </mapper>

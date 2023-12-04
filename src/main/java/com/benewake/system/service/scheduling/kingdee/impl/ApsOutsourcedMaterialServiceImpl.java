@@ -8,8 +8,8 @@ import com.benewake.system.entity.enums.FMaterialStatus;
 import com.benewake.system.entity.kingdee.KingdeeOutsourcedMaterial;
 import com.benewake.system.entity.kingdee.YourResultClassForSubQuery;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
-import com.benewake.system.service.scheduling.kingdee.ApsOutsourcedMaterialService;
 import com.benewake.system.mapper.ApsOutsourcedMaterialMapper;
+import com.benewake.system.service.scheduling.kingdee.ApsOutsourcedMaterialService;
 import com.benewake.system.transfer.KingdeeToApsOutsourcedMaterial;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
@@ -112,7 +112,7 @@ public class ApsOutsourcedMaterialServiceImpl extends ServiceImpl<ApsOutsourcedM
         List<String> queryFilters = new ArrayList<>();
         //创建一个空的字符串列表，用于存储查询过滤条件
         queryFilters.add("FDocumentStatus = 'C'");     // 单据状态=已审核
-        queryFilters.add("FReqStatus = '3'OR FReqStatus = '4' OR FReqStatus = '5'"); // 委外订单状态=下达
+        queryFilters.add("(FReqStatus = '3'OR FReqStatus = '4' OR FReqStatus = '5')"); // 委外订单状态=下达
         // 使用子查询结果作为条件
         if (!subReqBillNos.isEmpty()) {
             String subReqBillNosCondition = "FSubReqBillNO in (" + String.join(",", subReqBillNos) + ")";

@@ -3,17 +3,14 @@ package com.benewake.system.entity.dto;
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+
+import java.io.Serializable;
 
 @TableName(value ="aps_material_bom")
 @Data
@@ -56,39 +53,39 @@ public class ApsMaterialBomDto implements Serializable {
     @TableField(value = "f_numerator")
     @ColumnWidth(15) // 设置列宽为15
     @JsonProperty("numerator")
-    private String fNumerator;
+    private Integer fNumerator;
 
     @ExcelProperty("用量：分母")
     @TableField(value = "f_denominator")
     @ColumnWidth(15) // 设置列宽为15
     @JsonProperty("denominator")
-    private String fDenominator;
+    private Integer fDenominator;
 
-    @ExcelProperty("变动损耗率%")
+    @ExcelProperty("固定损耗")
     @TableField(value = "f_fix_scrap_qty_lot")
     @ColumnWidth(15) // 设置列宽为15
     @JsonProperty("fixScrapQtyLot")
-    private String fFixScrapQtyLot;
+    private Integer fFixScrapQtyLot;
 
-    @ExcelProperty("子项类型")
+    @ExcelProperty("变动损耗率%")
     @TableField(value = "f_scrap_rate")
     @ColumnWidth(15) // 设置列宽为15
     @JsonProperty("scrapRate")
-    private String fScrapRate;
+    private Integer fScrapRate;
 
-    @ExcelProperty("替代方案")
+    @ExcelProperty("子项类型")
     @TableField(value = "f_material_type")
     @ColumnWidth(15) // 设置列宽为15
     @JsonProperty("materialType")
     private String fMaterialType;
 
-    @ExcelProperty("项次")
+    @ExcelProperty("替代方案")
     @TableField(value = "f_replace_type")
     @ColumnWidth(15) // 设置列宽
     @JsonProperty("replaceType")// 为15
     private String fReplaceType;
 
-    @ExcelProperty("父项物料编码")
+    @ExcelProperty("项次")
     @TableField(value = "f_replace_group_bop")
     @ColumnWidth(20) // 设置列宽为20
     @JsonProperty("replaceGroupBop")

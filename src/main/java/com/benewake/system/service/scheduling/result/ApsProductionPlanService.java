@@ -1,9 +1,9 @@
 package com.benewake.system.service.scheduling.result;
 
-import com.benewake.system.entity.ApsProductionPlan;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.ApsProductionPlan;
 import com.benewake.system.entity.dto.ApsProductionPlanDto;
-import com.benewake.system.entity.vo.PageListRestVo;
+import com.benewake.system.entity.vo.PageResultVo;
 
 import java.util.List;
 import java.util.Map;
@@ -16,6 +16,6 @@ import java.util.Map;
 public interface ApsProductionPlanService extends IService<ApsProductionPlan> ,ApsSchedulingResuleBase{
     Map<String, List<ApsProductionPlan>> getProductionPlan();
 
-    PageListRestVo<ApsProductionPlanDto> getAllPage(Integer page, Integer size);
+    PageResultVo<ApsProductionPlanDto> getAllPage(Integer page, Integer size);
 
 }

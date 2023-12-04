@@ -52,7 +52,7 @@ public class ApsPurchaseRequestDto implements Serializable {
     @ExcelProperty("批准数量")
     @JsonProperty("baseUnitQty")
     @TableField(value = "f_base_unit_qty")
-    private String fBaseUnitQty;
+    private Integer fBaseUnitQty;
 
     /**
      * 到货日期

@@ -3,12 +3,12 @@ package com.benewake.system.service.scheduling.result.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsMaterialShortageAnalysis;
-import com.benewake.system.entity.enums.SchedulingResultType;
 import com.benewake.system.entity.dto.ApsMaterialShortageAnalysisDto;
-import com.benewake.system.entity.vo.PageListRestVo;
+import com.benewake.system.entity.enums.SchedulingResultType;
+import com.benewake.system.entity.vo.PageResultVo;
+import com.benewake.system.mapper.ApsMaterialShortageAnalysisMapper;
 import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.scheduling.result.ApsMaterialShortageAnalysisService;
-import com.benewake.system.mapper.ApsMaterialShortageAnalysisMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,13 +28,13 @@ public class ApsMaterialShortageAnalysisServiceImpl extends ServiceImpl<ApsMater
     private ApsMaterialShortageAnalysisMapper materialShortageAnalysisMapper;
 
     @Override
-    public PageListRestVo<ApsMaterialShortageAnalysisDto> getAllPage(Integer page, Integer size) {
+    public PageResultVo<ApsMaterialShortageAnalysisDto> getAllPage(Integer page, Integer size) {
         Integer apsTableVersion = getApsTableVersion(SchedulingResultType.APS_MATERIAL_SHORTAGE_ANALYSIS.getCode(), apsTableVersionService);
         Page<ApsMaterialShortageAnalysisDto> pageTemp = new Page<>();
         pageTemp.setSize(size);
         pageTemp.setCurrent(page);
         Page<ApsMaterialShortageAnalysisDto> productionPlanPage = materialShortageAnalysisMapper.selectPageList(pageTemp, apsTableVersion);
-        PageListRestVo<ApsMaterialShortageAnalysisDto> restVo = new PageListRestVo<>();
+        PageResultVo<ApsMaterialShortageAnalysisDto> restVo = new PageResultVo<>();
         restVo.setList(productionPlanPage.getRecords());
         restVo.setPages(productionPlanPage.getPages());
         restVo.setTotal(productionPlanPage.getTotal());

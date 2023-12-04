@@ -1,9 +1,5 @@
 package com.benewake.system.entity.enums;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.commons.lang3.StringUtils;
-
 public enum CodeEnum {
     SUCCESS("SUCCESS", "调用成功"),
     SYSTEM_ERROR("FAIL_BIZ_GLOBAL_SYSTEM_ERROR", "系统错误"),

@@ -2,8 +2,8 @@ package com.benewake.system.controller;
 
 import com.benewake.system.annotation.Log;
 import com.benewake.system.entity.Result;
-import com.benewake.system.entity.system.SysDept;
 import com.benewake.system.entity.enums.BusinessType;
+import com.benewake.system.entity.system.SysDept;
 import com.benewake.system.service.SysDeptService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

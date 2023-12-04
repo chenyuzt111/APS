@@ -3,12 +3,12 @@ package com.benewake.system.service.scheduling.result.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsSemiFinishedGoodsMaterialShortageAnalysis;
-import com.benewake.system.entity.enums.SchedulingResultType;
 import com.benewake.system.entity.dto.ApsSemiFinishedGoodsMaterialShortageAnalysisDto;
-import com.benewake.system.entity.vo.PageListRestVo;
+import com.benewake.system.entity.enums.SchedulingResultType;
+import com.benewake.system.entity.vo.PageResultVo;
+import com.benewake.system.mapper.ApsSemiFinishedGoodsMaterialShortageAnalysisMapper;
 import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.scheduling.result.ApsSemiFinishedGoodsMaterialShortageAnalysisService;
-import com.benewake.system.mapper.ApsSemiFinishedGoodsMaterialShortageAnalysisMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,13 +27,13 @@ public class ApsSemiFinishedGoodsMaterialShortageAnalysisServiceImpl extends Ser
     @Autowired
     private ApsSemiFinishedGoodsMaterialShortageAnalysisMapper semiFinishedGoodsMaterialShortageAnalysisMapper;
     @Override
-    public PageListRestVo<ApsSemiFinishedGoodsMaterialShortageAnalysisDto> getAllPage(Integer page, Integer size) {
+    public PageResultVo<ApsSemiFinishedGoodsMaterialShortageAnalysisDto> getAllPage(Integer page, Integer size) {
         Integer apsTableVersion = getApsTableVersion(SchedulingResultType.APS_SEMI_FINISHED_GOODS_MATERIAL_SHORTAGE_ANALYSIS.getCode(), apsTableVersionService);
         Page<ApsSemiFinishedGoodsMaterialShortageAnalysisDto> goodsProductionPlanPage = new Page<>();
         goodsProductionPlanPage.setSize(size);
         goodsProductionPlanPage.setCurrent(page);
         Page<ApsSemiFinishedGoodsMaterialShortageAnalysisDto> productionPlanPage = semiFinishedGoodsMaterialShortageAnalysisMapper.selectPageList(goodsProductionPlanPage, apsTableVersion);
-        PageListRestVo<ApsSemiFinishedGoodsMaterialShortageAnalysisDto> restVo = new PageListRestVo<>();
+        PageResultVo<ApsSemiFinishedGoodsMaterialShortageAnalysisDto> restVo = new PageResultVo<>();
         restVo.setList(productionPlanPage.getRecords());
         restVo.setPages(productionPlanPage.getPages());
         restVo.setTotal(productionPlanPage.getTotal());

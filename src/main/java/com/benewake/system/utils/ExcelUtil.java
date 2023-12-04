@@ -17,7 +17,7 @@ public class ExcelUtil {
                 res.append("第").append(i + 1).append("列的列名不符合条件，应改为:").append(head.get(i)).append("\n");
             }
         }
-        if (com.benewake.system.utils.StringUtils.isNotEmpty(res.toString())) {
+        if (BenewakeStringUtils.isNotEmpty(res.toString())) {
             log.warn("导入列名不正确" + res + new Date());
             throw new BeneWakeException(res.toString());
         }

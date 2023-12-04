@@ -1,13 +1,12 @@
 package com.benewake.system.controller;
 
 import com.alibaba.excel.EasyExcel;
-import com.benewake.system.entity.ApsDailyDataUpload;
 import com.benewake.system.entity.Result;
 import com.benewake.system.entity.dto.ApsDailyDataUploadDto;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.vo.ApsDailyDataUploadParam;
 import com.benewake.system.entity.vo.DownloadParam;
-import com.benewake.system.entity.vo.PageListRestVo;
+import com.benewake.system.entity.vo.PageResultVo;
 import com.benewake.system.excel.entity.ExcelDailyDataUploadTemplate;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsDailyDataUploadService;
@@ -15,7 +14,6 @@ import com.benewake.system.service.InterfaceService;
 import com.benewake.system.utils.ResponseUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.websocket.server.PathParam;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -48,7 +44,7 @@ public class InterfaceController {
     @ApiOperation("查询")
     @GetMapping("/getAllPage/{page}/{size}")
     public Result getAllPage(@PathVariable("page") Integer page, @PathVariable("size") Integer size, @PathParam("type") Integer type) {
-        PageListRestVo<Object> apsResult = interfaceService.getAllPage(page, size, type);
+        PageResultVo<Object> apsResult = interfaceService.getAllPage(page, size, type);
         return Result.ok(apsResult);
     }
 
@@ -116,8 +112,8 @@ public class InterfaceController {
     @ApiOperation("获取日别数据")
     @GetMapping("/getDailyDataList/{page}/{size}")
     public Result getDailyDataList(@PathVariable Integer page, @PathVariable Integer size) {
-        PageListRestVo<ApsDailyDataUploadDto> pageListRestVo = dailyDataUploadService.getDailyDataListPage(page, size);
-        return Result.ok(pageListRestVo);
+        PageResultVo<ApsDailyDataUploadDto> pageResultVo = dailyDataUploadService.getDailyDataListPage(page, size);
+        return Result.ok(pageResultVo);
     }
 
     @ApiOperation("增加或修改日别数据")
@@ -137,7 +133,7 @@ public class InterfaceController {
         if (CollectionUtils.isEmpty(ids)) {
             return Result.fail("id不能为null");
         }
-        Boolean res = dailyDataUploadService.removeBatchByIds(ids);
+        Boolean res = dailyDataUploadService.removeByIdList(ids);
         return res ? Result.ok() : Result.fail();
     }
 

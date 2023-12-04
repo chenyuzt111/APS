@@ -1,7 +1,7 @@
 package com.benewake.system.service;
 
-import com.benewake.system.entity.ApsTableVersion;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.ApsTableVersion;
 
 /**
 * @author ASUS

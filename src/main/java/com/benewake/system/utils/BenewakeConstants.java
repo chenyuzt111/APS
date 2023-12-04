@@ -1,10 +1,5 @@
 package com.benewake.system.utils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 /**
  * @author Lcs
  * 描 述：一些通用常量定义

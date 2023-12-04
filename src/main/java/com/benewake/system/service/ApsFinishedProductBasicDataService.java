@@ -1,7 +1,14 @@
 package com.benewake.system.service;
 
-import com.benewake.system.entity.ApsFinishedProductBasicData;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.ApsFinishedProductBasicData;
+import com.benewake.system.entity.vo.ApsFinishedProductBasicDataParam;
+import com.benewake.system.entity.vo.ApsFinishedProductBasicDataVo;
+import com.benewake.system.entity.vo.DownloadParam;
+import com.benewake.system.entity.vo.PageResultVo;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
 * @author ASUS
@@ -10,4 +17,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface ApsFinishedProductBasicDataService extends IService<ApsFinishedProductBasicData> {
 
+    PageResultVo<ApsFinishedProductBasicDataVo> getFinishedProduct(String name, Integer page, Integer size);
+
+    boolean addOrUpdateFinishedProduct(ApsFinishedProductBasicDataParam param);
+
+    void downloadFinishedProduct(HttpServletResponse response, DownloadParam downloadParam);
+
+    Boolean saveDataByExcel(Integer type, MultipartFile file);
 }

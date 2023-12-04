@@ -1,16 +1,11 @@
 package com.benewake.system.service.impl;
 
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.benewake.system.entity.ApsImmediatelyInventory;
-import com.benewake.system.entity.ApsOutRequest;
 import com.benewake.system.entity.ApsTableVersion;
 import com.benewake.system.entity.Interface.VersionToChVersion;
 import com.benewake.system.entity.base.InterfaceDataBase;
@@ -18,12 +13,12 @@ import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.entity.enums.TableVersionState;
 import com.benewake.system.entity.vo.DownloadParam;
-import com.benewake.system.entity.vo.PageListRestVo;
+import com.benewake.system.entity.vo.PageResultVo;
 import com.benewake.system.excel.listener.InterfaceDataListener;
 import com.benewake.system.exception.BeneWakeException;
+import com.benewake.system.service.ApsIntfaceDataServiceBase;
 import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.InterfaceService;
-import com.benewake.system.service.ApsIntfaceDataServiceBase;
 import com.benewake.system.utils.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -71,7 +66,7 @@ public class InterfaceServiceImpl implements InterfaceService {
     }
 
     @Override
-    public PageListRestVo<Object> getAllPage(Integer page, Integer size, Integer type) {
+    public PageResultVo<Object> getAllPage(Integer page, Integer size, Integer type) {
         try {
             List<ApsTableVersion> apsTableVersions = getApsTableVersionsLimit5(type);
             List<Integer> tableVersionList = apsTableVersions.stream()
@@ -104,14 +99,23 @@ public class InterfaceServiceImpl implements InterfaceService {
             Page<Object> objectPage = new Page<>();
             objectPage.setCurrent(page);
             objectPage.setSize(size);
+            if (CollectionUtils.isEmpty(versionToChVersionArrayList)) {
+                PageResultVo pageResultVo = new PageResultVo();
+                pageResultVo.setList(Collections.emptyList());
+                pageResultVo.setPage(page);
+                pageResultVo.setPages(0L);
+                pageResultVo.setSize(size);
+                pageResultVo.setTotal(0L);
+                return pageResultVo;
+            }
             Page resultPage = apsIntfaceDataServiceBase.selectPageList(objectPage, versionToChVersionArrayList);
-            PageListRestVo pageListRestVo = new PageListRestVo();
-            pageListRestVo.setList(resultPage.getRecords());
-            pageListRestVo.setPage(page);
-            pageListRestVo.setPages(resultPage.getPages());
-            pageListRestVo.setSize(size);
-            pageListRestVo.setTotal(resultPage.getTotal());
-            return pageListRestVo;
+            PageResultVo pageResultVo = new PageResultVo();
+            pageResultVo.setList(resultPage.getRecords());
+            pageResultVo.setPage(page);
+            pageResultVo.setPages(resultPage.getPages());
+            pageResultVo.setSize(size);
+            pageResultVo.setTotal(resultPage.getTotal());
+            return pageResultVo;
         } catch (Exception e) {
             e.printStackTrace();
             throw new BeneWakeException("系统内部错误联系管理员" + this.getClass());
@@ -186,11 +190,11 @@ public class InterfaceServiceImpl implements InterfaceService {
                 ApsIntfaceDataServiceBase apsIntfaceDataServiceBase = kingdeeServiceMap.get(interfaceDataType.getSeviceName());
                 IService iService = (IService) apsIntfaceDataServiceBase;
                 Long count = iService.getBaseMapper().selectCount(null);
-                PageListRestVo<Object> objectPageListRestVo = getAllPage(1, Math.toIntExact(count), type);
-                list = objectPageListRestVo.getList();
+                PageResultVo<Object> objectPageResultVo = getAllPage(1, Math.toIntExact(count), type);
+                list = objectPageResultVo.getList();
             } else {
-                PageListRestVo<Object> objectPageListRestVo = getAllPage(downloadParam.getPage(), downloadParam.getSize(), type);
-                list = objectPageListRestVo.getList();
+                PageResultVo<Object> objectPageResultVo = getAllPage(downloadParam.getPage(), downloadParam.getSize(), type);
+                list = objectPageResultVo.getList();
             }
             if (CollectionUtils.isNotEmpty(list)) {
                 EasyExcel.write(response.getOutputStream(), list.get(0)

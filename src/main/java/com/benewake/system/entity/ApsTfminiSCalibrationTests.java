@@ -4,8 +4,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 
@@ -24,13 +25,13 @@ public class ApsTfminiSCalibrationTests implements Serializable {
      * 生产订单编号
      */
     @TableField(value = "production_order_number")
-    private String productionordernumber;
+    private String productionOrderNumber;
 
     /**
      * 物料编码
      */
     @TableField(value = "material_code")
-    private String materialcode;
+    private String materialCode;
 
     /**
      * 物料名称
@@ -42,21 +43,23 @@ public class ApsTfminiSCalibrationTests implements Serializable {
      * 本次校准测试完成数
      */
     @TableField(value = "burn_in_completion_quantity")
-    private String burnincompletionquantity;
+    private String burnInCompletionQuantity;
 
     /**
      * 校准合格数
      */
     @TableField(value = "burn_qualified_count")
-    private String burnqualifiedcount;
+    private String burnQualifiedCount;
+
+
     @TableField(value = "un_burn_qualified_count")
-    private String unburnQualifiedCount;
+    private String unBurnQualifiedCount;
 
     /**
      * 测试工装编号
      */
     @TableField(value = "burn_fixture_number")
-    private String burnfixturenumber;
+    private String burnFixtureNumber;
 
     /**
      * 订单总数

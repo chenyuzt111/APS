@@ -38,7 +38,7 @@
                f_pick_mtrl_status,
                f_stock_in_qty,
                f_bom_id,
-               version
+               version + 1
         from aps_outsourced_order
         where version = (select max(version) from aps_outsourced_order)
     </insert>

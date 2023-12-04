@@ -1,10 +1,11 @@
 package com.benewake.system.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsDailyDataUpload;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.benewake.system.entity.dto.ApsDailyDataUploadDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Update;
 
 /**
 * @author ASUS
@@ -16,6 +17,9 @@ import org.apache.ibatis.annotations.Mapper;
 public interface ApsDailyDataUploadMapper extends BaseMapper<ApsDailyDataUpload> {
 
     Page<ApsDailyDataUploadDto> selectPageList(Page<ApsDailyDataUploadDto> uploadPage);
+
+    @Update("call insert_data_into_aps_fim_request1()")
+    void callInsertDataIntoApsFimRequest();
 }
 
 

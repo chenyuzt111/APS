@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benewake.system.mapper.ApsRawMaterialBasicDataMapper">
+
+    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsRawMaterialBasicData">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="fMaterialCode" column="f_material_code" jdbcType="VARCHAR"/>
+            <result property="fMaterialProperty" column="f_material_property" jdbcType="VARCHAR"/>
+            <result property="fMaterialGroup" column="f_material_group" jdbcType="VARCHAR"/>
+            <result property="fProcurementLeadTime" column="f_procurement_lead_time" jdbcType="VARCHAR"/>
+            <result property="fMoq" column="f_moq" jdbcType="VARCHAR"/>
+            <result property="fMpq" column="f_mpq" jdbcType="VARCHAR"/>
+            <result property="fSafetyStock" column="f_safety_stock" jdbcType="VARCHAR"/>
+            <result property="version" column="version" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,f_material_code,f_material_property,
+        f_material_group,f_procurement_lead_time,f_moq,
+        f_mpq,f_safety_stock,version
+    </sql>
+    <select id="selectListPage" resultType="com.benewake.system.entity.dto.ApsRawMaterialBasicDataDto">
+        SELECT
+            da.id,
+            f_material_code,
+            map.f_material_name,
+            f_material_property,
+            f_material_group,
+            f_procurement_lead_time,
+            f_moq,
+            f_mpq,
+            f_safety_stock,
+            version
+        FROM
+            aps_raw_material_basic_data AS da
+                LEFT JOIN aps_material_name_mapping AS map ON da.f_material_code = map.f_material_id
+    </select>
+</mapper>

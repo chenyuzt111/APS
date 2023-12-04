@@ -1,7 +1,6 @@
 package com.benewake.system.entity.enums;
 
 import com.benewake.system.entity.*;
-
 import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
@@ -61,7 +60,7 @@ public enum InterfaceDataType {
     TFMINI_S_CALIBRATION_TESTS(29, "TFmini-S-校验测试", "apsTfminiSCalibrationTestsServiceImpl", ApsTfminiSCalibrationTests.class),
     PACKAGING_TEST(30, "包装校验1", "apsPackagingTestServiceImpl", ApsPackagingTest.class),
     TFMINI_S_PACKAGING_TEST(31, "TFmini-S-包装校验", "apsTfminiSPackagingTestServiceImpl", ApsTfminiSPackagingTest.class),
-    TFMINI_S_FIXED(32, "TFmini-S-主板固定", "apsTfminiSFixedServiceImpl",ApsTfminiSFixed.class);
+    TFMINI_S_FIXED(32, "TFmini-S-主板固定", "apsTfminiSFixedServiceImpl", ApsTfminiSFixed.class);
 
 
     private int code;

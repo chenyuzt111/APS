@@ -2,11 +2,10 @@ package com.benewake.system.transfer;
 
 import com.benewake.system.entity.ApsOutRequest;
 import com.benewake.system.entity.kingdee.KingdeeOutRequest;
-
+import com.benewake.system.utils.BenewakeStringUtils;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Component
@@ -15,11 +14,11 @@ public class KingdeeToApsOutRequest {
         if (kingdeeOutRequest == null || version == null) {
             return null;
         }
+
         ApsOutRequest apsOutRequest=new ApsOutRequest();
         apsOutRequest.setFMaterialCode(kingdeeOutRequest.getFMaterialId());
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-//        Date parse = dateFormat.parse(kingdeeOutRequest.getF_ora_BackDate());
-        apsOutRequest.setFReturnDate(kingdeeOutRequest.getF_ora_BackDate());
+        Date parse = BenewakeStringUtils.parse(kingdeeOutRequest.getF_ora_BackDate(), "yyyy-MM-dd'T'HH:mm:ss");
+        apsOutRequest.setFReturnDate(parse);
         apsOutRequest.setVersion(version);
 
         return apsOutRequest;

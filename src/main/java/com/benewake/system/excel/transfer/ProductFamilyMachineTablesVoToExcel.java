@@ -1,8 +1,6 @@
 package com.benewake.system.excel.transfer;
 
-import com.benewake.system.entity.vo.ApsProcessSchemeVo;
 import com.benewake.system.entity.vo.ApsProductFamilyMachineTableVo;
-import com.benewake.system.excel.entity.ExcelProcessScheme;
 import com.benewake.system.excel.entity.ExcelProductFamilyMachineTable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
@@ -21,10 +19,10 @@ public class ProductFamilyMachineTablesVoToExcel {
         for (ApsProductFamilyMachineTableVo apsProductFamilyMachineTableVo : object) {
             ExcelProductFamilyMachineTable excelProductFamilyMachineTable = new ExcelProductFamilyMachineTable();
             excelProductFamilyMachineTable.setNumber(apsProductFamilyMachineTableVo.getNumber());
-            excelProductFamilyMachineTable.setFMachineId(apsProductFamilyMachineTableVo.getFMachineId());
+//            excelProductFamilyMachineTable.setFMachineId(apsProductFamilyMachineTableVo.getFMachineId());
             excelProductFamilyMachineTable.setFMachineName(apsProductFamilyMachineTableVo.getFMachineName());
             excelProductFamilyMachineTable.setFProductFamily(apsProductFamilyMachineTableVo.getFProductFamily());
-            excelProductFamilyMachineTable.setFProcessId(apsProductFamilyMachineTableVo.getFProcessId());
+//            excelProductFamilyMachineTable.setFProcessId(apsProductFamilyMachineTableVo.getFProcessId());
             excelProductFamilyMachineTable.setProcessName(apsProductFamilyMachineTableVo.getProcessName());
             excelProductFamilyMachineTable.setFMachineConfiguration(apsProductFamilyMachineTableVo.getFMachineConfiguration());
             excelProductFamilyMachineTable.setFWorkshop(apsProductFamilyMachineTableVo.getFWorkshop());

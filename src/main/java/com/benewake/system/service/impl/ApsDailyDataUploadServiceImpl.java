@@ -10,12 +10,12 @@ import com.benewake.system.entity.dto.ApsDailyDataUploadDto;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.vo.ApsDailyDataUploadParam;
 import com.benewake.system.entity.vo.DownloadParam;
-import com.benewake.system.entity.vo.PageListRestVo;
+import com.benewake.system.entity.vo.PageResultVo;
 import com.benewake.system.excel.entity.ExcelDailyDataUploadTemplate;
 import com.benewake.system.excel.listener.ExcelDailyDataUploadListener;
 import com.benewake.system.exception.BeneWakeException;
-import com.benewake.system.service.ApsDailyDataUploadService;
 import com.benewake.system.mapper.ApsDailyDataUploadMapper;
+import com.benewake.system.service.ApsDailyDataUploadService;
 import com.benewake.system.service.ApsProcessNamePoolService;
 import com.benewake.system.utils.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +46,7 @@ public class ApsDailyDataUploadServiceImpl extends ServiceImpl<ApsDailyDataUploa
 
 
     @Override
-    public PageListRestVo<ApsDailyDataUploadDto> getDailyDataListPage(Integer page, Integer size) {
+    public PageResultVo<ApsDailyDataUploadDto> getDailyDataListPage(Integer page, Integer size) {
         Page<ApsDailyDataUploadDto> uploadPage = new Page<>();
         uploadPage.setCurrent(page);
         uploadPage.setSize(size);
@@ -61,10 +61,10 @@ public class ApsDailyDataUploadServiceImpl extends ServiceImpl<ApsDailyDataUploa
             List<ApsDailyDataUploadDto> dataListPageList = null;
             if (downloadParam.getType() == ExcelOperationEnum.ALL_PAGES.getCode()) {
                 Long count = getBaseMapper().selectCount(null);
-                PageListRestVo<ApsDailyDataUploadDto> dailyDataListPage = getDailyDataListPage(1, Math.toIntExact(count));
+                PageResultVo<ApsDailyDataUploadDto> dailyDataListPage = getDailyDataListPage(1, Math.toIntExact(count));
                 dataListPageList = dailyDataListPage.getList();
             } else {
-                PageListRestVo<ApsDailyDataUploadDto> dailyDataListPage = getDailyDataListPage(downloadParam.getPage(), downloadParam.getSize());
+                PageResultVo<ApsDailyDataUploadDto> dailyDataListPage = getDailyDataListPage(downloadParam.getPage(), downloadParam.getSize());
                 dataListPageList = dailyDataListPage.getList();
             }
             EasyExcel.write(response.getOutputStream(), ApsDailyDataUploadDto.class).sheet("sheet1")
@@ -109,6 +109,13 @@ public class ApsDailyDataUploadServiceImpl extends ServiceImpl<ApsDailyDataUploa
         return res;
     }
 
+    @Override
+    public Boolean removeByIdList(List<Integer> ids) {
+        removeBatchByIds(ids);
+        dailyDataUploadMapper.callInsertDataIntoApsFimRequest();
+        return true;
+    }
+
     private ApsDailyDataUpload dailDataParamToPo(ApsDailyDataUploadParam dailyDataUploadParam) {
         ApsDailyDataUpload apsDailyDataUpload = new ApsDailyDataUpload();
         apsDailyDataUpload.setId(dailyDataUploadParam.getId());
@@ -123,14 +130,14 @@ public class ApsDailyDataUploadServiceImpl extends ServiceImpl<ApsDailyDataUploa
         return apsDailyDataUpload;
     }
 
-    private PageListRestVo<ApsDailyDataUploadDto> getUploadPageListRestVo(Page<ApsDailyDataUploadDto> dailyDataUploadPage) {
-        PageListRestVo<ApsDailyDataUploadDto> pageListRestVo = new PageListRestVo<>();
-        pageListRestVo.setList(dailyDataUploadPage.getRecords());
-        pageListRestVo.setSize(Math.toIntExact(dailyDataUploadPage.getSize()));
-        pageListRestVo.setPages(dailyDataUploadPage.getPages());
-        pageListRestVo.setTotal(dailyDataUploadPage.getTotal());
-        pageListRestVo.setPage(Math.toIntExact(dailyDataUploadPage.getCurrent()));
-        return pageListRestVo;
+    private PageResultVo<ApsDailyDataUploadDto> getUploadPageListRestVo(Page<ApsDailyDataUploadDto> dailyDataUploadPage) {
+        PageResultVo<ApsDailyDataUploadDto> pageResultVo = new PageResultVo<>();
+        pageResultVo.setList(dailyDataUploadPage.getRecords());
+        pageResultVo.setSize(Math.toIntExact(dailyDataUploadPage.getSize()));
+        pageResultVo.setPages(dailyDataUploadPage.getPages());
+        pageResultVo.setTotal(dailyDataUploadPage.getTotal());
+        pageResultVo.setPage(Math.toIntExact(dailyDataUploadPage.getCurrent()));
+        return pageResultVo;
     }
 }
 

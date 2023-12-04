@@ -1,6 +1,5 @@
 package com.benewake.system.config;
 
-import com.benewake.system.entity.Result;
 import com.benewake.system.security.custom.CustomMd5Password;
 import com.benewake.system.security.fillter.TokenAuthenticationFilter;
 import com.benewake.system.security.fillter.TokenLoginFilter;
@@ -19,10 +18,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Lcs

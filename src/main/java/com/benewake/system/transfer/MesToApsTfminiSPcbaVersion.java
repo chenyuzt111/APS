@@ -1,6 +1,5 @@
 package com.benewake.system.transfer;
 
-import com.benewake.system.entity.ApsPcbaVersion;
 import com.benewake.system.entity.ApsTfminiSPcbaVersion;
 import com.benewake.system.entity.mes.MesPcbaVersion;
 import org.springframework.stereotype.Component;

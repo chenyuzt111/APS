@@ -1,8 +1,6 @@
 package com.benewake.system.transfer;
 
-import com.benewake.system.entity.ApsPurchaseRequest;
 import com.benewake.system.entity.ApsReceiveNotice;
-import com.benewake.system.entity.kingdee.KingdeePurchaseRequest;
 import com.benewake.system.entity.kingdee.KingdeeReceiveNotice;
 import org.springframework.stereotype.Component;
 

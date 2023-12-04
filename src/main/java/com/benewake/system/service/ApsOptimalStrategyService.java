@@ -1,11 +1,8 @@
 package com.benewake.system.service;
 
-import com.benewake.system.entity.ApsOptimalStrategy;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.benewake.system.entity.vo.DownloadParam;
+import com.benewake.system.entity.ApsOptimalStrategy;
 import com.benewake.system.entity.vo.UpdateOptimalStrategyParam;
-
-import javax.servlet.http.HttpServletResponse;
 
 /**
 * @author ASUS

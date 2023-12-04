@@ -1,8 +1,6 @@
 package com.benewake.system.transfer;
 
-import com.benewake.system.entity.ApsImmediatelyInventory;
 import com.benewake.system.entity.dto.ApsProcessSchemeDto;
-import com.benewake.system.entity.kingdee.KingdeeImmediatelyInventory;
 import com.benewake.system.entity.vo.ApsProcessSchemeVo;
 import org.springframework.stereotype.Component;
 

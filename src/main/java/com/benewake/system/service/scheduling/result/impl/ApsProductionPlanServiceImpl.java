@@ -3,16 +3,17 @@ package com.benewake.system.service.scheduling.result.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsProductionPlan;
-import com.benewake.system.entity.enums.SchedulingResultType;
 import com.benewake.system.entity.dto.ApsProductionPlanDto;
-import com.benewake.system.entity.vo.PageListRestVo;
-import com.benewake.system.service.scheduling.result.ApsProductionPlanService;
+import com.benewake.system.entity.enums.SchedulingResultType;
+import com.benewake.system.entity.vo.PageResultVo;
 import com.benewake.system.mapper.ApsProductionPlanMapper;
 import com.benewake.system.service.ApsTableVersionService;
+import com.benewake.system.service.scheduling.result.ApsProductionPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author ASUS
@@ -62,19 +63,19 @@ public class ApsProductionPlanServiceImpl extends ServiceImpl<ApsProductionPlanM
     }
 
     @Override
-    public PageListRestVo<ApsProductionPlanDto> getAllPage(Integer page, Integer size) {
+    public PageResultVo<ApsProductionPlanDto> getAllPage(Integer page, Integer size) {
         Integer apsTableVersion = getApsTableVersion(SchedulingResultType.APS_PRODUCTION_PLAN.getCode() ,apsTableVersionService);
         Page<ApsProductionPlan> apsProductionPlanPage = new Page<>();
         apsProductionPlanPage.setSize(size);
         apsProductionPlanPage.setCurrent(page);
         Page<ApsProductionPlanDto> planPage = apsProductionPlanMapper.selectPageList(apsProductionPlanPage ,apsTableVersion);
-        PageListRestVo<ApsProductionPlanDto> apsProductionPlanPageListRestVo = new PageListRestVo<>();
-        apsProductionPlanPageListRestVo.setList(planPage.getRecords());
-        apsProductionPlanPageListRestVo.setPage(page);
-        apsProductionPlanPageListRestVo.setTotal(planPage.getTotal());
-        apsProductionPlanPageListRestVo.setPages(planPage.getPages());
-        apsProductionPlanPageListRestVo.setSize(size);
-        return apsProductionPlanPageListRestVo;
+        PageResultVo<ApsProductionPlanDto> apsProductionPlanPageResultVo = new PageResultVo<>();
+        apsProductionPlanPageResultVo.setList(planPage.getRecords());
+        apsProductionPlanPageResultVo.setPage(page);
+        apsProductionPlanPageResultVo.setTotal(planPage.getTotal());
+        apsProductionPlanPageResultVo.setPages(planPage.getPages());
+        apsProductionPlanPageResultVo.setSize(size);
+        return apsProductionPlanPageResultVo;
     }
 }
 

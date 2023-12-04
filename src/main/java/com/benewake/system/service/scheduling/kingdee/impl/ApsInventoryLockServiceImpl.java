@@ -7,8 +7,8 @@ import com.benewake.system.entity.dto.ApsInventoryLockDto;
 import com.benewake.system.entity.kingdee.KingdeeInventoryLock;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
 import com.benewake.system.entity.kingdee.transfer.fLotIdToFNumber;
-import com.benewake.system.service.scheduling.kingdee.ApsInventoryLockService;
 import com.benewake.system.mapper.ApsInventoryLockMapper;
+import com.benewake.system.service.scheduling.kingdee.ApsInventoryLockService;
 import com.benewake.system.transfer.KingdeeToApsInventoryLock;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
@@ -16,6 +16,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,7 +84,7 @@ public class ApsInventoryLockServiceImpl extends ServiceImpl<ApsInventoryLockMap
 
 
 
-    private ArrayList<ApsInventoryLock> getApsInventoryLockList(List<KingdeeInventoryLock> result, Map<String, String> materialIdToNameMap, Map<String, String> lotIdToFNumberMap) throws NoSuchFieldException, IllegalAccessException {
+    private ArrayList<ApsInventoryLock> getApsInventoryLockList(List<KingdeeInventoryLock> result, Map<String, String> materialIdToNameMap, Map<String, String> lotIdToFNumberMap) throws NoSuchFieldException, IllegalAccessException, ParseException {
         ArrayList<ApsInventoryLock> apsInventoryLockList = new ArrayList<>();
 
         for (KingdeeInventoryLock kingdeeInventoryLock : result) {

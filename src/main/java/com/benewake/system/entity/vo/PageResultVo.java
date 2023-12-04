@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class PageListRestVo<T> extends PageParam {
+public class PageResultVo<T> extends PageParam {
 
     List<T> list;
 

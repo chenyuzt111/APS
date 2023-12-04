@@ -1,8 +1,8 @@
 package com.benewake.system.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsSnLabeling;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.benewake.system.entity.dto.ApsSnLabelingDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

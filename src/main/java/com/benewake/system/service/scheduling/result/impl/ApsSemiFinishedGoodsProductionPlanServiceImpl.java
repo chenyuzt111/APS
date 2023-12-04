@@ -3,12 +3,12 @@ package com.benewake.system.service.scheduling.result.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsSemiFinishedGoodsProductionPlan;
-import com.benewake.system.entity.enums.SchedulingResultType;
 import com.benewake.system.entity.dto.ApsSemiFinishedGoodsProductionPlanDto;
-import com.benewake.system.entity.vo.PageListRestVo;
+import com.benewake.system.entity.enums.SchedulingResultType;
+import com.benewake.system.entity.vo.PageResultVo;
+import com.benewake.system.mapper.ApsSemiFinishedGoodsProductionPlanMapper;
 import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.scheduling.result.ApsSemiFinishedGoodsProductionPlanService;
-import com.benewake.system.mapper.ApsSemiFinishedGoodsProductionPlanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,13 +29,13 @@ public class ApsSemiFinishedGoodsProductionPlanServiceImpl extends ServiceImpl<A
     private ApsSemiFinishedGoodsProductionPlanMapper semiFinishedGoodsProductionPlanMapper;
 
     @Override
-    public PageListRestVo<ApsSemiFinishedGoodsProductionPlanDto> getAllPage(Integer page, Integer size) {
+    public PageResultVo<ApsSemiFinishedGoodsProductionPlanDto> getAllPage(Integer page, Integer size) {
         Integer apsTableVersion = getApsTableVersion(SchedulingResultType.APS_SEMI_FINISHED_GOODS_PRODUCTION_PLAN.getCode(), apsTableVersionService);
         Page<ApsSemiFinishedGoodsProductionPlan> goodsProductionPlanPage = new Page<>();
         goodsProductionPlanPage.setSize(size);
         goodsProductionPlanPage.setCurrent(page);
         Page<ApsSemiFinishedGoodsProductionPlanDto> productionPlanPage = semiFinishedGoodsProductionPlanMapper.selectPageList(goodsProductionPlanPage, apsTableVersion);
-        PageListRestVo<ApsSemiFinishedGoodsProductionPlanDto> restVo = new PageListRestVo<>();
+        PageResultVo<ApsSemiFinishedGoodsProductionPlanDto> restVo = new PageResultVo<>();
         restVo.setList(productionPlanPage.getRecords());
         restVo.setPages(productionPlanPage.getPages());
         restVo.setTotal(productionPlanPage.getTotal());

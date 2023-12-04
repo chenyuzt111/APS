@@ -14,15 +14,16 @@ import com.benewake.system.entity.kingdee.KingdeeMaterialBom;
 import com.benewake.system.entity.kingdee.transfer.FMaterialIdToSub;
 import com.benewake.system.entity.kingdee.transfer.MaterialBomChange;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
+import com.benewake.system.mapper.ApsMaterialBomMapper;
 import com.benewake.system.mapper.ApsMaterialProcessMappingMapper;
 import com.benewake.system.mapper.ApsTableUpdateDateMapper;
 import com.benewake.system.service.ApsMaterialProcessMappingService;
 import com.benewake.system.service.scheduling.kingdee.ApsMaterialBomService;
-import com.benewake.system.mapper.ApsMaterialBomMapper;
 import com.benewake.system.service.scheduling.kingdee.ApsMaterialNameMappingService;
 import com.benewake.system.transfer.KingdeeToApsMaterialBom;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,7 @@ import java.util.stream.Collectors;
  * @description 针对表【aps_material_bom】的数据库操作Service实现
  * @createDate 2023-10-18 15:10:19
  */
+@Slf4j
 @Service
 public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper, ApsMaterialBom>
         implements ApsMaterialBomService {
@@ -224,6 +226,7 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
 
     @Override
     public Page selectPageList(Page page, List tableVersionList) {
+        tableVersionList = Collections.singletonList(tableVersionList.get(tableVersionList.size() - 1));
         Page<ApsMaterialBomDto> materialBomDtoPage = apsMaterialBomMapper.selectPageList(page, tableVersionList);
         return materialBomDtoPage;
     }
@@ -247,7 +250,7 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
                 .filter(x -> x.getFChangeLabel().equals(BOMChangeType.CHANGE_AFTER.getCode()) ||
                         x.getFChangeLabel().equals(BOMChangeType.ADD.getCode()))
                 .collect(Collectors.toList());
-
+        log.info("删除size=" + deleteList.size());
         baseMapper.insertListNotDelete(deleteList);
 
         List<KingdeeMaterialBom> addByFMaterialIdAndChild =  getAddByFMaterialIdAndChild(addList);

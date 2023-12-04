@@ -1,9 +1,7 @@
 package com.benewake.system.service;
 
-import com.benewake.system.entity.ApsOutRequest;
-import com.benewake.system.service.ApsIntfaceDataServiceBase;
-
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.ApsOutRequest;
 
 /**
  * @author DELL

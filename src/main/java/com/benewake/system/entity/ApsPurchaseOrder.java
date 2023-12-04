@@ -1,13 +1,15 @@
 package com.benewake.system.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+
+import java.io.Serializable;
+import java.util.Date;
 
 @TableName(value ="aps_purchase_order")
 @Data
@@ -34,7 +36,7 @@ public class ApsPurchaseOrder implements Serializable {
 
     @JsonProperty("deliveryDate")
     @TableField(value = "f_delivery_date")
-    private String fDeliveryDate;
+    private Date fDeliveryDate;
 
     @TableField(value = "version")
     private Integer version;

@@ -1,7 +1,7 @@
 package com.benewake.system.service;
 
 import com.benewake.system.entity.vo.DownloadParam;
-import com.benewake.system.entity.vo.PageListRestVo;
+import com.benewake.system.entity.vo.PageResultVo;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface InterfaceService {
 
-    PageListRestVo<Object> getAllPage(Integer page, Integer size, Integer type);
+    PageResultVo<Object> getAllPage(Integer page, Integer size, Integer type);
 
     Boolean add(String request, Integer type);
 

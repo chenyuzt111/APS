@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsTfminiSFixed;
 import com.benewake.system.entity.dto.ApsTfminiSFixedDto;
-import com.benewake.system.entity.dto.ApsTfminiSInstallationBoardDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

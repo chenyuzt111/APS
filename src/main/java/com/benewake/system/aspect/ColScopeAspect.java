@@ -6,10 +6,8 @@ import com.benewake.system.entity.system.ApsCol;
 import com.benewake.system.entity.system.SysRole;
 import com.benewake.system.entity.system.SysUser;
 import com.benewake.system.service.ApsColService;
-import com.benewake.system.service.SysRoleService;
-import com.benewake.system.service.SysUserService;
+import com.benewake.system.utils.BenewakeStringUtils;
 import com.benewake.system.utils.HostHolder;
-import com.benewake.system.utils.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -97,7 +95,7 @@ public class ColScopeAspect {
         //获取方法中的参数
         Object params = point.getArgs()[0];
         //检查方法中的参数是否为空，或者参数是否是BaseEntity类型
-        if (StringUtils.isNotNull(params) && params instanceof BaseEntity)
+        if (BenewakeStringUtils.isNotNull(params) && params instanceof BaseEntity)
         {
             //将方法参数强制转换为BaseEntity类型一边出读取其中的属性和方法
             BaseEntity baseEntity = (BaseEntity) params;

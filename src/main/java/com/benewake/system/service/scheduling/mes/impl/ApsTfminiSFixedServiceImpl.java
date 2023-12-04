@@ -2,22 +2,16 @@ package com.benewake.system.service.scheduling.mes.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.benewake.system.entity.ApsPcbaBurn;
 import com.benewake.system.entity.ApsTfminiSFixed;
-import com.benewake.system.entity.dto.ApsPcbaBurnDto;
 import com.benewake.system.entity.dto.ApsTfminiSFixedDto;
-import com.benewake.system.entity.mes.MesPcbaBurn;
 import com.benewake.system.entity.mes.MesTfminiSFixed;
-import com.benewake.system.mapper.ApsPcbaBurnMapper;
 import com.benewake.system.mapper.ApsTfminiSFixedMapper;
 import com.benewake.system.service.scheduling.mes.ApsTfminiSFixedService;
-import com.benewake.system.transfer.MesToApsPcbaBurn;
 import com.benewake.system.transfer.MesToApsTfminiSFixed;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
