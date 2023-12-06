@@ -141,6 +141,9 @@ public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProd
         if (CollectionUtils.isNotEmpty(unavailableDates)) {
             String unavailDate = String.join(",", unavailableDates);
             familyMachineTable.setUnavailableDates(unavailDate);
+            log.warn("不可用事件！！！！" + unavailDate);
+        } else {
+            familyMachineTable.setUnavailableDates("");
         }
         return familyMachineTable;
     }

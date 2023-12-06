@@ -45,7 +45,7 @@ public class MaterialDataController {
     @GetMapping("/getRawMaterialBasic/{page}/{size}")
     public Result getMaterialBasicData(@RequestParam(required = false) String name, @PathVariable Integer page, @PathVariable Integer size) {
         PageResultVo<ApsRawMaterialBasicDataVo> apsRawMaterialBasicDataVo =
-                rawMaterialBasicDataService.getRawMaterial(name, page ,size);
+                rawMaterialBasicDataService.getRawMaterial(name, page, size);
         return Result.ok(apsRawMaterialBasicDataVo);
     }
 
@@ -56,7 +56,7 @@ public class MaterialDataController {
         if (param == null) {
             return Result.fail("添加或修改对象不能为null");
         }
-        boolean res  = rawMaterialBasicDataService.addOrUpdateRawMaterial(param);
+        boolean res = rawMaterialBasicDataService.addOrUpdateRawMaterial(param);
         return res ? Result.ok() : Result.fail();
     }
 
@@ -66,7 +66,7 @@ public class MaterialDataController {
         if (CollectionUtils.isEmpty(ids)) {
             return Result.fail("ids不能为null");
         }
-        boolean res  = rawMaterialBasicDataService.removeBatchByIds(ids);
+        boolean res = rawMaterialBasicDataService.removeBatchByIds(ids);
         return res ? Result.ok() : Result.fail();
     }
 
@@ -86,7 +86,7 @@ public class MaterialDataController {
     @PostMapping("/rawMaterialTemplate")
     public void rawMaterialTemplate(HttpServletResponse response) {
         try {
-            ResponseUtil.setFileResp(response ,"原材料基础数据导入模板");
+            ResponseUtil.setFileResp(response, "原材料基础数据导入模板");
             EasyExcel.write(response.getOutputStream(), ExcelRawMaterialBasicDataTemplate.class).sheet("sheet1")
                     .registerWriteHandler(new SimpleColumnWidthStyleStrategy(12))
                     .doWrite((java.util.Collection<?>) null);
@@ -114,7 +114,7 @@ public class MaterialDataController {
     @GetMapping("/getFinishedProduct/{page}/{size}")
     public Result getFinishedProduct(@RequestParam(required = false) String name, @PathVariable Integer page, @PathVariable Integer size) {
         PageResultVo<ApsFinishedProductBasicDataVo> finishedProduct =
-                finishedProductBasicDataService.getFinishedProduct(name, page ,size);
+                finishedProductBasicDataService.getFinishedProduct(name, page, size);
         return Result.ok(finishedProduct);
     }
 
@@ -125,7 +125,7 @@ public class MaterialDataController {
         if (param == null) {
             return Result.fail("添加或修改对象不能为null");
         }
-        boolean res  = finishedProductBasicDataService.addOrUpdateFinishedProduct(param);
+        boolean res = finishedProductBasicDataService.addOrUpdateFinishedProduct(param);
         return res ? Result.ok() : Result.fail();
     }
 
@@ -135,7 +135,7 @@ public class MaterialDataController {
         if (CollectionUtils.isEmpty(ids)) {
             return Result.fail("ids不能为null");
         }
-        boolean res  = finishedProductBasicDataService.removeBatchByIds(ids);
+        boolean res = finishedProductBasicDataService.removeBatchByIds(ids);
         return res ? Result.ok() : Result.fail();
     }
 
@@ -155,7 +155,7 @@ public class MaterialDataController {
     @PostMapping("/finishedProductTemplate")
     public void finishedProductTemplate(HttpServletResponse response) {
         try {
-            ResponseUtil.setFileResp(response ,"成品基础数据导入模板");
+            ResponseUtil.setFileResp(response, "成品基础数据导入模板");
             EasyExcel.write(response.getOutputStream(), ExcelFinishedProductTemplate.class).sheet("sheet1")
                     .registerWriteHandler(new SimpleColumnWidthStyleStrategy(12))
                     .doWrite((java.util.Collection<?>) null);
@@ -178,12 +178,12 @@ public class MaterialDataController {
         return res ? Result.ok() : Result.fail();
     }
 
-//    semiFinishedBasicDataService
+    //    semiFinishedBasicDataService
     @ApiOperation("查询半成品基础数据")
     @GetMapping("/getSemiFinished/{page}/{size}")
     public Result getSemiFinished(@RequestParam(required = false) String name, @PathVariable Integer page, @PathVariable Integer size) {
         PageResultVo<ApsSemiFinishedBasicDataVo> semiFinished =
-                semiFinishedBasicDataService.getSemiFinished(name, page ,size);
+                semiFinishedBasicDataService.getSemiFinished(name, page, size);
         return Result.ok(semiFinished);
     }
 
@@ -194,7 +194,7 @@ public class MaterialDataController {
         if (param == null) {
             return Result.fail("添加或修改对象不能为null");
         }
-        boolean res  = semiFinishedBasicDataService.addOrUpdateSemiFinished(param);
+        boolean res = semiFinishedBasicDataService.addOrUpdateSemiFinished(param);
         return res ? Result.ok() : Result.fail();
     }
 
@@ -204,7 +204,7 @@ public class MaterialDataController {
         if (CollectionUtils.isEmpty(ids)) {
             return Result.fail("ids不能为null");
         }
-        boolean res  = semiFinishedBasicDataService.removeBatchByIds(ids);
+        boolean res = semiFinishedBasicDataService.removeBatchByIds(ids);
         return res ? Result.ok() : Result.fail();
     }
 
@@ -224,7 +224,7 @@ public class MaterialDataController {
     @PostMapping("/semiFinishedTemplate")
     public void semiFinishedTemplate(HttpServletResponse response) {
         try {
-            ResponseUtil.setFileResp(response ,"半成品基础数据导入模板");
+            ResponseUtil.setFileResp(response, "半成品基础数据导入模板");
             EasyExcel.write(response.getOutputStream(), ExcelSemiFinishedTemplate.class).sheet("sheet1")
                     .registerWriteHandler(new SimpleColumnWidthStyleStrategy(12))
                     .doWrite((java.util.Collection<?>) null);

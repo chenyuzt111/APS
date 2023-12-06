@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benewake.system.mapper.ApsTimeSheetMapper">
+
+    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsTimeSheet">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="attendanceTimeRange" column="attendance_time_range" jdbcType="VARCHAR"/>
+            <result property="lunchBreakTimeRange" column="lunch_break_time_range" jdbcType="VARCHAR"/>
+            <result property="dinnerTimeRange" column="dinner_time_range" jdbcType="VARCHAR"/>
+            <result property="morningMeetingTimeRange" column="morning_meeting_time_range" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,attendance_time_range,lunch_break_time_range,
+        dinner_time_range,morning_meeting_time_range
+    </sql>
+</mapper>

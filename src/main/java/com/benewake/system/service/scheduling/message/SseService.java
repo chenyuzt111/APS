@@ -66,7 +66,7 @@ public class SseService {
             if (heartbeatTask != null) {
                 heartbeatTask.cancel(true);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("username：" + username + "排程发送消息失败 --message：" + message + "----原因：" + e.getMessage());
         }
     }

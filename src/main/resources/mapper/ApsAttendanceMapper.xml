@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benewake.system.mapper.ApsAttendanceMapper">
+
+    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsAttendance">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="employeeName" column="employee_name" jdbcType="VARCHAR"/>
+        <result property="date" column="date" jdbcType="DATE"/>
+        <result property="dayOfWeek" column="day_of_week" jdbcType="VARCHAR"/>
+        <result property="isWorkday" column="is_workday" jdbcType="TINYINT"/>
+        <result property="leaveTimeRange" column="leave_time_range" jdbcType="VARCHAR"/>
+        <result property="effectiveAttendanceTimeRange" column="effective_attendance_time_range" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,employee_name,date,
+        day_of_week,is_workday,leave_time_range,
+        effective_attendance_time_range
+    </sql>
+    <select id="getAttendancePage" resultType="com.benewake.system.entity.vo.ApsAttendanceVo">
+        SELECT att.id,
+               employee_name,
+               date,
+               day_of_week,
+               is_workday,
+               attendance_time_range,
+               lunch_break_time_range,
+               dinner_time_range,
+               morning_meeting_time_range,
+               leave_time_range,
+               effective_attendance_time_range
+        FROM aps_attendance AS att
+                 LEFT JOIN aps_time_sheet AS sh ON 1 = 1
+    </select>
+</mapper>

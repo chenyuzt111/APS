@@ -87,12 +87,12 @@ public class InterfaceController {
     @ApiOperation("下载导入模板")
     @PostMapping("/downloadInterfaceTemplate")
     public void downloadInterfaceTemplate(@PathParam("type") Integer type, HttpServletResponse response) {
-        interfaceService.downloadInterfaceTemplate(type ,response);
+        interfaceService.downloadInterfaceTemplate(type, response);
     }
 
     @ApiOperation("导入接口数据")
     @PostMapping("/importInterfaceData")
-    public Result importInterfaceData(@PathParam("code") Integer code , @PathParam("type") Integer type,
+    public Result importInterfaceData(@PathParam("code") Integer code, @PathParam("type") Integer type,
                                       @RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
             return Result.fail("文件为空！");
@@ -102,11 +102,18 @@ public class InterfaceController {
             return Result.fail("请提供.xlsx或.xls为后缀的Excel文件");
         }
 
-        Boolean res = interfaceService.importInterfaceData(code ,type, file);
+        Boolean res = interfaceService.importInterfaceData(code, type, file);
         return res ? Result.ok() : Result.fail();
     }
 
 
+    // -----------------MES集合---------------------
+//    @ApiOperation("获取日别数据")
+//    @GetMapping("/getMesList/{page}/{size}")
+//    public Result getMesList(@PathVariable Integer page, @PathVariable Integer size) {
+//        Result result = interfaceService.getMesList(page, size);
+//        return result;
+//    }
 
     //    ---------------日别数据--------------------
     @ApiOperation("获取日别数据")
@@ -167,7 +174,7 @@ public class InterfaceController {
     @PostMapping("/downloadDailyDataUploadTemplate")
     public void downloadDailyDataUploadTemplate(HttpServletResponse response) {
         try {
-            ResponseUtil.setFileResp(response , "日别数据模板");
+            ResponseUtil.setFileResp(response, "日别数据模板");
             EasyExcel.write(response.getOutputStream(), ExcelDailyDataUploadTemplate.class)
                     .sheet("sheet1").doWrite((Collection<?>) null);
         } catch (Exception e) {
