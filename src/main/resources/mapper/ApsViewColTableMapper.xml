@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benewake.system.mapper.ApsViewColTableMapper">
+
+    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsViewColTable">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="viewId" column="view_id" jdbcType="BIGINT"/>
+        <result property="colId" column="col_id" jdbcType="BIGINT"/>
+        <result property="valueOperator" column="value_operator" jdbcType="VARCHAR"/>
+        <result property="colValue" column="col_value" jdbcType="VARCHAR"/>
+        <result property="colSeq" column="col_seq" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,view_id,col_id,
+        value_operator,col_value,col_seq
+    </sql>
+    <select id="getViewColByViewId" resultType="com.benewake.system.entity.ViewColumnDto">
+        SELECT vcol.id,
+        view_id,
+        col_id,
+        ch_col_name,
+        en_col_name,
+        vo_col_name,
+        value_operator,
+        col_value,
+        col_seq
+        FROM `aps_view_col_table` AS vcol
+        LEFT JOIN aps_column_table AS col ON vcol.col_id = col.id
+        WHERE vcol.view_id = #{viewId}
+        <if test="colIds != null and colIds.size() > 0">
+            AND vcol.col_id IN
+            <foreach collection="colIds" item="colId" open="(" separator="," close=")">
+                #{colId}
+            </foreach>
+        </if>
+    </select>
+</mapper>

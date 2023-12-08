@@ -1,6 +1,8 @@
 package com.benewake.system.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsProductionPlan;
 import com.benewake.system.entity.dto.ApsProductionPlanDto;
@@ -17,7 +19,10 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface ApsProductionPlanMapper extends BaseMapper<ApsProductionPlan> {
 
-    Page<ApsProductionPlanDto> selectPageList(Page<ApsProductionPlan> apsProductionPlanPage, @Param("apsTableVersion") Integer apsTableVersion);
+    Page<ApsProductionPlanDto> selectPageList(Page<Object> apsProductionPlanPage, @Param("apsTableVersion") Integer apsTableVersion);
+
+    Page<Object> queryPageList(Page<Object> apsProductionPlanPage,
+                                             @Param(Constants.WRAPPER) QueryWrapper<Object> queryWrapper);
 }
 
 

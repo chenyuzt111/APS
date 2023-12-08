@@ -5,17 +5,17 @@
 <mapper namespace="com.benewake.system.mapper.ApsSemiFinishedGoodsMaterialShortageAnalysisMapper">
 
     <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsSemiFinishedGoodsMaterialShortageAnalysis">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="fTaskId" column="f_task_id" jdbcType="VARCHAR"/>
-            <result property="fParentCode" column="f_parent_code" jdbcType="VARCHAR"/>
-            <result property="fParentName" column="f_parent_name" jdbcType="VARCHAR"/>
-            <result property="fProcess" column="f_process" jdbcType="VARCHAR"/>
-            <result property="fSemiCode" column="f_semi_code" jdbcType="VARCHAR"/>
-            <result property="fSemiQty" column="f_semi_qty" jdbcType="VARCHAR"/>
-            <result property="fSubCode" column="f_sub_code" jdbcType="VARCHAR"/>
-            <result property="fSubQty" column="f_sub_qty" jdbcType="VARCHAR"/>
-            <result property="fSubDeliveryTime" column="f_sub_delivery_time" jdbcType="VARCHAR"/>
-            <result property="version" column="version" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="fTaskId" column="f_task_id" jdbcType="VARCHAR"/>
+        <result property="fParentCode" column="f_parent_code" jdbcType="VARCHAR"/>
+        <result property="fParentName" column="f_parent_name" jdbcType="VARCHAR"/>
+        <result property="fProcess" column="f_process" jdbcType="VARCHAR"/>
+        <result property="fSemiCode" column="f_semi_code" jdbcType="VARCHAR"/>
+        <result property="fSemiQty" column="f_semi_qty" jdbcType="VARCHAR"/>
+        <result property="fSubCode" column="f_sub_code" jdbcType="VARCHAR"/>
+        <result property="fSubQty" column="f_sub_qty" jdbcType="VARCHAR"/>
+        <result property="fSubDeliveryTime" column="f_sub_delivery_time" jdbcType="VARCHAR"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -26,24 +26,42 @@
     </sql>
     <select id="selectPageList"
             resultType="com.benewake.system.entity.dto.ApsSemiFinishedGoodsMaterialShortageAnalysisDto">
-        SELECT
-            an.id,
-            f_task_id,
-            f_parent_code,
-            map.f_material_name as f_parent_name,
-            f_process,
-            f_semi_code,
-            map1.f_material_name as f_semi_name,
-            f_semi_qty,
-            f_sub_code,
-            map2.f_material_name as f_sub_code,
-            f_sub_qty,
-            f_sub_delivery_time
-        FROM
-            aps_semi_finished_goods_material_shortage_analysis AS an
-                LEFT JOIN aps_material_name_mapping AS map ON an.f_parent_code = map.f_material_id
-                LEFT JOIN aps_material_name_mapping AS map1 ON an.f_semi_code = map1.f_material_id
-                LEFT JOIN aps_material_name_mapping AS map2 ON an.f_sub_code = map2.f_material_id
+        SELECT an.id,
+               f_task_id,
+               f_parent_code,
+               map.f_material_name  as f_parent_name,
+               f_process,
+               f_semi_code,
+               map1.f_material_name as f_semi_name,
+               f_semi_qty,
+               f_sub_code,
+               map2.f_material_name as f_sub_code,
+               f_sub_qty,
+               f_sub_delivery_time
+        FROM aps_semi_finished_goods_material_shortage_analysis AS an
+                 LEFT JOIN aps_material_name_mapping AS map ON an.f_parent_code = map.f_material_id
+                 LEFT JOIN aps_material_name_mapping AS map1 ON an.f_semi_code = map1.f_material_id
+                 LEFT JOIN aps_material_name_mapping AS map2 ON an.f_sub_code = map2.f_material_id
         where version = #{apsTableVersion}
+    </select>
+    <select id="queryPageList"
+            resultType="com.benewake.system.entity.dto.ApsSemiFinishedGoodsMaterialShortageAnalysisDto">
+        SELECT an.id,
+               f_task_id,
+               f_parent_code,
+               map.f_material_name  as f_parent_name,
+               f_process,
+               f_semi_code,
+               map1.f_material_name as f_semi_name,
+               f_semi_qty,
+               f_sub_code,
+               map2.f_material_name as f_sub_name,
+               f_sub_qty,
+               f_sub_delivery_time
+        FROM aps_semi_finished_goods_material_shortage_analysis AS an
+                 LEFT JOIN aps_material_name_mapping AS map ON an.f_parent_code = map.f_material_id
+                 LEFT JOIN aps_material_name_mapping AS map1 ON an.f_semi_code = map1.f_material_id
+                 LEFT JOIN aps_material_name_mapping AS map2 ON an.f_sub_code = map2.f_material_id
+            ${ew.customSqlSegment}
     </select>
 </mapper>
