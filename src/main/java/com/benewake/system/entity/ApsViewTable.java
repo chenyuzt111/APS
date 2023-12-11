@@ -40,6 +40,12 @@ public class ApsViewTable implements Serializable {
     @TableField(value = "table_id")
     private Integer tableId;
 
+    /**
+     *
+     */
+    @TableField(value = "is_default")
+    private Boolean isDefault;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

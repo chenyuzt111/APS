@@ -11,4 +11,5 @@ public class ViewParam {
     Long viewId;
     String viewName;
     List<ViewColParam> cols;
+    Boolean isDefault;
 }

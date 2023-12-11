@@ -4,9 +4,7 @@ import com.alibaba.excel.EasyExcel;
 import com.benewake.system.entity.Result;
 import com.benewake.system.entity.dto.ApsDailyDataUploadDto;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
-import com.benewake.system.entity.vo.ApsDailyDataUploadParam;
-import com.benewake.system.entity.vo.DownloadParam;
-import com.benewake.system.entity.vo.PageResultVo;
+import com.benewake.system.entity.vo.*;
 import com.benewake.system.excel.entity.ExcelDailyDataUploadTemplate;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsDailyDataUploadService;
@@ -45,6 +43,14 @@ public class InterfaceController {
     @GetMapping("/getAllPage/{page}/{size}")
     public Result getAllPage(@PathVariable("page") Integer page, @PathVariable("size") Integer size, @PathParam("type") Integer type) {
         PageResultVo<Object> apsResult = interfaceService.getAllPage(page, size, type);
+        return Result.ok(apsResult);
+    }
+
+    @ApiOperation("查询筛选")
+    @PostMapping("/getPageFiltrate/{page}/{size}")
+    public Result getPageFiltrate(@PathVariable("page") Integer page, @PathVariable("size") Integer size, @PathParam("type") Integer type
+            , @RequestBody(required = false) QueryViewParams queryViewParams) {
+        ResultColPageVo<Object> apsResult = interfaceService.getPageFiltrate(page, size, type ,queryViewParams);
         return Result.ok(apsResult);
     }
 

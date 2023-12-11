@@ -118,7 +118,7 @@ public class ApsOutsourcedOrderServiceImpl extends ServiceImpl<ApsOutsourcedOrde
             kingdeeOutsourcedOrder.setFBomId(btn.get(kingdeeOutsourcedOrder.getFBomId()));
             String originalFBillType = kingdeeOutsourcedOrder.getFBillType();
             kingdeeOutsourcedOrder.setFBillType(ftn.get(originalFBillType));
-            kingdeeOutsourcedOrder.setF_ora_FDZMaterialID2(mtn.get(kingdeeOutsourcedOrder.getF_ora_FDZMaterialID2()));
+            kingdeeOutsourcedOrder.setF_ora_FDZMaterialID2(kingdeeOutsourcedOrder.getF_ora_FDZMaterialID2());
             String fLot = kingdeeOutsourcedOrder.getFLot();
             kingdeeOutsourcedOrder.setFLot(lotIdToFNumberMap.getOrDefault(fLot ,fLot + "映射表内不存在----"));
             ApsOutsourcedOrder apsOutsourcedOrder = kingdeeToApsOutsourcedOrder.convert(kingdeeOutsourcedOrder, maxVersion);
@@ -169,7 +169,7 @@ public class ApsOutsourcedOrderServiceImpl extends ServiceImpl<ApsOutsourcedOrde
     private List<KingdeeOutsourcedOrder> getKingdeeOutsourcedOrders() throws Exception {
         QueryParam queryParam = new QueryParam();
         queryParam.setFormId("SUB_SUBREQORDER");
-        queryParam.setFieldKeys("FBillNo,FBillType,FMaterialId,FMaterialName,FQty,FStatus,FPickMtrlStatus,FStockInQty,FBomId,F_ora_FDZMaterialID2 ");
+        queryParam.setFieldKeys("FBillNo,FBillType,FMaterialId,FMaterialName,FQty,FLot,FStatus,FPickMtrlStatus,FStockInQty,FBomId,F_ora_FDZMaterialID2");
         // 条件筛选
         List<String> queryFilters = new ArrayList<>();
         //创建一个空的字符串列表，用于存储查询过滤条件

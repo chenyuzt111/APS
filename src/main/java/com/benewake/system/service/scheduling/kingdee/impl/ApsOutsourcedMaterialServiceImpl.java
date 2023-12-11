@@ -6,7 +6,7 @@ import com.benewake.system.entity.ApsOutsourcedMaterial;
 import com.benewake.system.entity.dto.ApsOutsourcedMaterialDto;
 import com.benewake.system.entity.enums.FMaterialStatus;
 import com.benewake.system.entity.kingdee.KingdeeOutsourcedMaterial;
-import com.benewake.system.entity.kingdee.YourResultClassForSubQuery;
+import com.benewake.system.entity.kingdee.SubQuery;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
 import com.benewake.system.mapper.ApsOutsourcedMaterialMapper;
 import com.benewake.system.service.scheduling.kingdee.ApsOutsourcedMaterialService;
@@ -72,7 +72,6 @@ public class ApsOutsourcedMaterialServiceImpl extends ServiceImpl<ApsOutsourcedM
     }
 
 
-
     private ArrayList<ApsOutsourcedMaterial> transferKingdeeToApsOutsourcedMaterial(List<KingdeeOutsourcedMaterial> kingdeeOutsourcedMaterials, Map<String, String> materialIdToNameMap) throws NoSuchFieldException, IllegalAccessException {
         ArrayList<ApsOutsourcedMaterial> apsOutsourcedMaterials = new ArrayList<>();
 
@@ -131,11 +130,11 @@ public class ApsOutsourcedMaterialServiceImpl extends ServiceImpl<ApsOutsourcedM
         List<String> queryFilters = new ArrayList<>();
         queryFilters.add("FPickMtrlStatus = '2'");
         subQueryParam.setFilterString(String.join(" and ", queryFilters));
-        List<YourResultClassForSubQuery> subQueryResult = api.executeBillQuery(subQueryParam, YourResultClassForSubQuery.class);
+        List<SubQuery> subQueryResult = api.executeBillQuery(subQueryParam, SubQuery.class);
 
         // 从子查询结果中提取 FBillNo 列，存储在列表中
         List<String> subReqBillNos = new ArrayList<>();
-        for (YourResultClassForSubQuery subQueryRow : subQueryResult) {
+        for (SubQuery subQueryRow : subQueryResult) {
             String subReqBillNo = subQueryRow.getFBillNo(); // 获取子查询结果中的数据
             subReqBillNos.add("'" + subReqBillNo + "'"); // 添加到列表，并添加单引号以进行比较
         }

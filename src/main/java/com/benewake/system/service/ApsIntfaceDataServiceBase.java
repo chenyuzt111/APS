@@ -3,6 +3,7 @@ package com.benewake.system.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.Interface.VersionToChVersion;
 import com.benewake.system.exception.BeneWakeException;
 
 import java.lang.reflect.Field;
@@ -50,5 +51,9 @@ public interface ApsIntfaceDataServiceBase<T> {
 
     default void insertVersionIncr() {
         return;
+    }
+
+    default Page selectPageLists(Page<Object> objectPage, List<VersionToChVersion> versionToChVersionArrayList, QueryWrapper<Object> wrapper){
+        throw new BeneWakeException("该表不能通过该方式查询");
     }
 }

@@ -2,6 +2,8 @@ package com.benewake.system.service;
 
 import com.benewake.system.entity.vo.DownloadParam;
 import com.benewake.system.entity.vo.PageResultVo;
+import com.benewake.system.entity.vo.QueryViewParams;
+import com.benewake.system.entity.vo.ResultColPageVo;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -22,4 +24,6 @@ public interface InterfaceService {
     void downloadInterfaceTemplate(Integer type, HttpServletResponse response);
 
     Boolean importInterfaceData(Integer code, Integer type, MultipartFile file);
+
+    ResultColPageVo<Object> getPageFiltrate(Integer page, Integer size, Integer type, QueryViewParams queryViewParams);
 }

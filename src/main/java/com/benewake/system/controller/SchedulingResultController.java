@@ -98,10 +98,18 @@ public class SchedulingResultController {
         return Result.ok(res);
     }
 
-    @ApiOperation("FIM需求优先级")
-    @GetMapping("/getFimPriority/{page}/{size}")
-    public Result getFimPriority(@PathVariable Integer page, @PathVariable Integer size) {
-        PageResultVo<ApsFimPriorityDto> res = apsFimPriorityService.getAllPage(page, size);
+//    @ApiOperation("FIM需求优先级")
+//    @GetMapping("/getFimPriority/{page}/{size}")
+//    public Result getFimPriority(@PathVariable Integer page, @PathVariable Integer size) {
+//        PageResultVo<ApsFimPriorityDto> res = apsFimPriorityService.getAllPage(page, size);
+//        return Result.ok(res);
+//    }
+
+
+    @ApiOperation("FIM需求优先级筛选")
+    @GetMapping("/getFimPriorityFiltrate/{page}/{size}")
+    public Result getFimPriorityFiltrate(@PathVariable Integer page, @PathVariable Integer size, @RequestBody(required = false) QueryViewParams queryViewParams) {
+        ResultColPageVo<Object> res = apsFimPriorityService.getFimPriorityFiltrate(page, size ,queryViewParams);
         return Result.ok(res);
     }
 

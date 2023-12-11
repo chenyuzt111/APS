@@ -7,8 +7,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsFimPriority;
 import com.benewake.system.entity.dto.ApsFimPriorityDto;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
+import com.benewake.system.entity.enums.SchedulingResultType;
 import com.benewake.system.entity.vo.DownloadParam;
 import com.benewake.system.entity.vo.PageResultVo;
+import com.benewake.system.entity.vo.QueryViewParams;
+import com.benewake.system.entity.vo.ResultColPageVo;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.mapper.ApsFimPriorityMapper;
 import com.benewake.system.service.ApsTableVersionService;
@@ -73,8 +76,10 @@ public class ApsFimPriorityServiceImpl extends ServiceImpl<ApsFimPriorityMapper,
             throw new BeneWakeException("fim需求优先级导出失败");
         }
     }
+
+    @Override
+    public ResultColPageVo<Object> getFimPriorityFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
+        return commonFiltrate(page, size, SchedulingResultType.APS_FIM_PRIORITY, queryViewParams, (page1, queryWrapper) ->
+                apsFimPriorityMapper.getFimPriorityFiltrate(page1, queryWrapper));
+    }
 }
-
-
-
-

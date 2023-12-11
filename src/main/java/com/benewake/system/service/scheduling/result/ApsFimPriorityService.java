@@ -5,6 +5,8 @@ import com.benewake.system.entity.ApsFimPriority;
 import com.benewake.system.entity.dto.ApsFimPriorityDto;
 import com.benewake.system.entity.vo.DownloadParam;
 import com.benewake.system.entity.vo.PageResultVo;
+import com.benewake.system.entity.vo.QueryViewParams;
+import com.benewake.system.entity.vo.ResultColPageVo;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,4 +20,6 @@ public interface ApsFimPriorityService extends IService<ApsFimPriority> ,ApsSche
     PageResultVo<ApsFimPriorityDto> getAllPage(Integer page, Integer size);
 
     void downloadFimRequest(HttpServletResponse response, DownloadParam downloadParam);
+
+    ResultColPageVo<Object> getFimPriorityFiltrate(Integer page, Integer size, QueryViewParams queryViewParams);
 }

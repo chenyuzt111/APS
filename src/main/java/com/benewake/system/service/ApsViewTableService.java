@@ -3,6 +3,7 @@ package com.benewake.system.service;
 import com.benewake.system.entity.ApsViewTable;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.benewake.system.entity.vo.ViewParam;
+import com.benewake.system.entity.vo.ViewTableListVo;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 */
 public interface ApsViewTableService extends IService<ApsViewTable> {
 
-    List<ApsViewTable> getViews(Integer tableId);
+    ViewTableListVo getViews(Integer tableId);
 
     Boolean saveView(ViewParam viewParam);
 }

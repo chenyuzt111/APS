@@ -6,6 +6,7 @@ import com.benewake.system.entity.ApsViewColTable;
 import com.benewake.system.entity.ApsViewTable;
 import com.benewake.system.entity.Result;
 import com.benewake.system.entity.vo.ViewParam;
+import com.benewake.system.entity.vo.ViewTableListVo;
 import com.benewake.system.service.ApsColumnTableService;
 import com.benewake.system.service.ApsViewColTableService;
 import com.benewake.system.service.ApsViewTableService;
@@ -33,7 +34,7 @@ public class FiltrateController {
     @ApiOperation("查询视图")
     @GetMapping("/getViews/{tableId}")
     public Result getViews(@PathVariable("tableId") Integer tableId) {
-        List<ApsViewTable> viewTables = viewTableService.getViews(tableId);
+        ViewTableListVo viewTables = viewTableService.getViews(tableId);
         return Result.ok(viewTables);
     }
 

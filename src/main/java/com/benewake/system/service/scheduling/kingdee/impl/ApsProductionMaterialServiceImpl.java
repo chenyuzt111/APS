@@ -6,7 +6,7 @@ import com.benewake.system.entity.ApsProductionMaterial;
 import com.benewake.system.entity.dto.ApsProductionMaterialDto;
 import com.benewake.system.entity.enums.FMaterialStatus;
 import com.benewake.system.entity.kingdee.KingdeeProductionMaterial;
-import com.benewake.system.entity.kingdee.YourResultClassForSubQuery;
+import com.benewake.system.entity.kingdee.SubQuery;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
 import com.benewake.system.mapper.ApsProductionMaterialMapper;
 import com.benewake.system.service.scheduling.kingdee.ApsProductionMaterialService;
@@ -45,7 +45,7 @@ public class ApsProductionMaterialServiceImpl extends ServiceImpl<ApsProductionM
     @Override
     public Boolean updateDataVersions() throws Exception {
         maxVersion = this.getMaxVersionIncr();
-        List<YourResultClassForSubQuery> subMoQueryResult = getYourResultClassForSubQueries();
+        List<SubQuery> subMoQueryResult = getYourResultClassForSubQueries();
         // 从子查询结果中提取 FBillNo 列，存储在列表中
         List<KingdeeProductionMaterial> result = getProUses(subMoQueryResult);
         // 物料映射表
@@ -104,9 +104,9 @@ public class ApsProductionMaterialServiceImpl extends ServiceImpl<ApsProductionM
         return mtn;
     }
 
-    private List<KingdeeProductionMaterial> getProUses(List<YourResultClassForSubQuery> subMoQueryResult) throws Exception {
+    private List<KingdeeProductionMaterial> getProUses(List<SubQuery> subMoQueryResult) throws Exception {
         List<String> subMoBillNos = new ArrayList<>();
-        for (YourResultClassForSubQuery subQueryRow : subMoQueryResult) {
+        for (SubQuery subQueryRow : subMoQueryResult) {
             String subMoBillNo = subQueryRow.getFBillNo(); // 获取子查询结果中的数据
             subMoBillNos.add("'" + subMoBillNo + "'"); // 添加到列表，并添加单引号以进行比较
         }
@@ -133,13 +133,13 @@ public class ApsProductionMaterialServiceImpl extends ServiceImpl<ApsProductionM
         return result;
     }
 
-    private List<YourResultClassForSubQuery> getYourResultClassForSubQueries() throws Exception {
+    private List<SubQuery> getYourResultClassForSubQueries() throws Exception {
         //子查询中取出FBillNo 列
         QueryParam subQueryParam = new QueryParam();
         subQueryParam.setFormId("PRD_MO");
         subQueryParam.setFieldKeys("FBillNo");
         subQueryParam.setFilterString("FPickMtrlStatus = '2'");
-        List<YourResultClassForSubQuery> subMoQueryResult = api.executeBillQuery(subQueryParam, YourResultClassForSubQuery.class);
+        List<SubQuery> subMoQueryResult = api.executeBillQuery(subQueryParam, SubQuery.class);
         return subMoQueryResult;
     }
 }

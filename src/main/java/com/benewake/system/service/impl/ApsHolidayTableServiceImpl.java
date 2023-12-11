@@ -35,14 +35,19 @@ public class ApsHolidayTableServiceImpl extends ServiceImpl<ApsHolidayTableMappe
 
     @Override
     public void updateHoliday() {
-        LocalDate currentDate = LocalDate.now();
-        // 获取当前年份
-        int currentYear = currentDate.getYear();
-        // 获取下一年的年份
-        int nextYear = currentYear + 1;
-        updateHolidayByYear(currentYear);
-        updateHolidayByYear(nextYear);
-        init();
+        try {
+            LocalDate currentDate = LocalDate.now();
+            // 获取当前年份
+            int currentYear = currentDate.getYear();
+            // 获取下一年的年份
+            int nextYear = currentYear + 1;
+            updateHolidayByYear(currentYear);
+            updateHolidayByYear(nextYear);
+            init();
+        } catch (Exception e) {
+            log.error("节假日第三方调用接口超时");
+        }
+
     }
 
     private void init() {

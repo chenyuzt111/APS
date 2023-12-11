@@ -11,6 +11,10 @@ public class ColumnVo {
     private Integer id;
 
 
+    @TableField(value = "col_id")
+    private Integer colId;
+
+
     @TableField(value = "ch_col_name")
     private String chColName;
 

@@ -95,8 +95,8 @@ public interface ApsSchedulingResuleBase {
     default ResultColPageVo<Object> commonFiltrate(Integer page, Integer size, SchedulingResultType schedulingResultType, QueryViewParams queryViewParams,
                                                    BiFunction<Page<Object>, QueryWrapper<Object>, Page<Object>> function) {
 
-        Long viewId = queryViewParams.getViewId();
-        List<ViewColParam> cols = queryViewParams.getCols();
+        Long viewId = queryViewParams != null ? queryViewParams.getViewId() : null;
+        List<ViewColParam> cols = queryViewParams != null ? queryViewParams.getCols() : null;
         Integer apsTableVersion = getApsTableVersion(schedulingResultType.getCode(), getTableVersionService());
         // 构造查询条件 根据列后面的值 构造queryWrapper
         // 如果列是null 那么 就有可能 是视图或者 全部页
@@ -151,7 +151,8 @@ public interface ApsSchedulingResuleBase {
     default List<ColumnVo> buildColumnVos(List<ViewColumnDto> viewColTables) {
         return viewColTables.stream().map(x -> {
             ColumnVo columnVo = new ColumnVo();
-            columnVo.setId(Math.toIntExact(x.getColId()));
+            columnVo.setId(Math.toIntExact(x.getId()));
+            columnVo.setColId(Math.toIntExact(x.getColId()));
             columnVo.setChColName(x.getChColName());
             columnVo.setVoColName(x.getVoColName());
             columnVo.setValueOperator(x.getValueOperator());
