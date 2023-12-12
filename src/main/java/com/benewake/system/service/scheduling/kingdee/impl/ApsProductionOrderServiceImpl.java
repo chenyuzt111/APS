@@ -1,21 +1,17 @@
 package com.benewake.system.service.scheduling.kingdee.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.benewake.system.entity.ApsProductionOrder;
+import com.benewake.system.entity.ApsOrder;
 import com.benewake.system.entity.dto.ApsProductionOrderDto;
 import com.benewake.system.entity.enums.FPickMtrlStatusEnum;
 import com.benewake.system.entity.enums.FStatusEnum;
 import com.benewake.system.entity.kingdee.KingdeeProductionOrder;
-import com.benewake.system.entity.kingdee.transfer.FBILLTYPEIDToName;
-import com.benewake.system.entity.kingdee.transfer.FIDToNumber;
-import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
 import com.benewake.system.mapper.ApsProductionOrderMapper;
+import com.benewake.system.service.scheduling.kingdee.ApsOrderBaseService;
 import com.benewake.system.service.scheduling.kingdee.ApsProductionOrderService;
-import com.benewake.system.transfer.KingdeeToApsProductionOrder;
+import com.benewake.system.transfer.ProductionKingdeeToApsOrder;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,69 +27,35 @@ import java.util.Map;
  * @createDate 2023-10-07 18:22:11
  */
 @Service
-public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrderMapper, ApsProductionOrder>
+public class ApsProductionOrderServiceImpl extends ApsOrderBaseService
         implements ApsProductionOrderService {
 
     @Autowired
     private K3CloudApi api;
 
     @Autowired
-    private KingdeeToApsProductionOrder kingdeeToApsProductionOrder;
+    private ProductionKingdeeToApsOrder productionKingdeeToApsOrder;
 
-    @Autowired
-    private ApsProductionOrderMapper apsProductionOrderMapper;
-
-    private static Map<String, String> projectStatusMap = new HashMap<>();
-
-    // 添加映射关系
-    static {
-        projectStatusMap.put("1", "计划");
-        projectStatusMap.put("2", "计划确认");
-        projectStatusMap.put("3", "下达");
-        projectStatusMap.put("4", "开工");
-        projectStatusMap.put("5", "完工");
-        projectStatusMap.put("6", "结案");
-        projectStatusMap.put("7", "结算");
-    }
     @Override
-    public Boolean updateDataVersions() throws Exception {
-
+    public List<ApsOrder> getKingdeeDates() throws Exception {
         List<KingdeeProductionOrder> result = getKingdeeProductionOrders();
 
         // 物料映射表
         Map<String, String> mtn = getMaterialIdToNameMap();
         //单据映射表
-        Map<String, String> ftn = getFBILLTYPEIDToNameMap();
+        Map<String, String> ftn = getBillTypeIdToNameMap();
         //BOM版本号映射表
         Map<String, String> btn = getFIDToNumberMap();
 
-        ArrayList<ApsProductionOrder> apsProductionOrders = new ArrayList<>();
-        Integer maxVersion = this.getMaxVersionIncr();
+        List<ApsOrder> apsOrders = new ArrayList<>();
         for (KingdeeProductionOrder kingdeeProductionOrder : result) {
-            getApsProductionOrderList(maxVersion, mtn, ftn, btn, apsProductionOrders, kingdeeProductionOrder);
+            getApsProductionOrderList(mtn, ftn, btn, apsOrders, kingdeeProductionOrder);
         }
-        if (CollectionUtils.isEmpty(apsProductionOrders)) {
-            ApsProductionOrder apsProductionOrder = new ApsProductionOrder();
-            apsProductionOrder.setVersion(maxVersion);
-            return save(apsProductionOrder);
-        }
-        return saveBatch(apsProductionOrders);
+
+        return apsOrders;
     }
 
-    @Override
-    public void insertVersionIncr() {
-        apsProductionOrderMapper.insertSelectVersionIncr();
-    }
-
-    @Override
-    public Page selectPageList(Page page, List tableVersionList) {
-        Page<ApsProductionOrderDto> apsProductionOrderDtoPage = apsProductionOrderMapper.selectPageList(page, tableVersionList);
-        return apsProductionOrderDtoPage;
-    }
-
-
-
-    private void getApsProductionOrderList(Integer maxVersion, Map<String, String> mtn, Map<String, String> ftn, Map<String, String> btn, ArrayList<ApsProductionOrder> apsProductionOrders, KingdeeProductionOrder kingdeeProductionOrder) throws ParseException {
+    private void getApsProductionOrderList(Map<String, String> mtn, Map<String, String> ftn, Map<String, String> btn, List<ApsOrder> apsProductionOrders, KingdeeProductionOrder kingdeeProductionOrder) throws ParseException {
         // 获取 FStatus 的 id
         String statusId = kingdeeProductionOrder.getFStatus();
         // 使用映射 HashMap 获取状态文字
@@ -115,47 +77,10 @@ public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrde
         kingdeeProductionOrder.setFBillType(ftn.get(originalFBillType));
         kingdeeProductionOrder.setFBomId(btn.get(kingdeeProductionOrder.getFBomId()));
         kingdeeProductionOrder.setFStatus(projectStatusMap.get(kingdeeProductionOrder.getFStatus()));
-        ApsProductionOrder apsProductionOrder = kingdeeToApsProductionOrder.convert(kingdeeProductionOrder, maxVersion);
-        apsProductionOrders.add(apsProductionOrder);
+        ApsOrder apsOrder = productionKingdeeToApsOrder.convert(kingdeeProductionOrder);
+        apsProductionOrders.add(apsOrder);
     }
 
-    private Map<String, String> getFIDToNumberMap() throws Exception {
-        QueryParam queryParam = new QueryParam();
-        queryParam.setFormId("ENG_BOM");//设置查询参数的表单ID为BD_MATERIAL
-        queryParam.setFieldKeys("FID,FNumber");
-        List<FIDToNumber> bidToName = api.executeBillQuery(queryParam, FIDToNumber.class);//调用api的executeBillQuery方法进行查询queryParam，并且传入查询参数和目标数据类型MaterialIdToName.class，返回的数据将被转换为MaterialIdToName类型的对象列表，其实是一种映射关系
-        Map<String, String> btn = new HashMap<>();
-        bidToName.forEach(c -> {//遍历midtoname列表并且对列表中的数据做括号内的操作
-            btn.put(c.getFID(), c.getFNumber());//将物料的id作为键，物料编号作为值，将键值对添加到映射表中
-        });
-        return btn;
-    }
-
-    private Map<String, String> getFBILLTYPEIDToNameMap() throws Exception {
-        QueryParam queryParam = new QueryParam();
-        queryParam.setFormId("BOS_BillType");//设置查询参数的表单ID为BD_MATERIAL
-        queryParam.setFieldKeys("FBILLTYPEID,FName");
-        List<FBILLTYPEIDToName> fidToName = api.executeBillQuery(queryParam, FBILLTYPEIDToName.class);//调用api的executeBillQuery方法进行查询queryParam，并且传入查询参数和目标数据类型MaterialIdToName.class，返回的数据将被转换为MaterialIdToName类型的对象列表，其实是一种映射关系
-        Map<String, String> ftn = new HashMap<>();
-        fidToName.forEach(c -> {//遍历midtoname列表并且对列表中的数据做括号内的操作
-            ftn.put(c.getFBILLTYPEID(), c.getFName());//将物料的id作为键，物料编号作为值，将键值对添加到映射表中
-        });
-        return ftn;
-    }
-
-
-
-    private Map<String, String> getMaterialIdToNameMap() throws Exception {
-        QueryParam queryParam = new QueryParam();
-        queryParam.setFormId("BD_MATERIAL");
-        queryParam.setFieldKeys("FMaterialId,FNumber");
-        List<MaterialIdToName> midToName = api.executeBillQuery(queryParam, MaterialIdToName.class);
-        Map<String, String> mtn = new HashMap<>();
-        midToName.forEach(c -> {
-            mtn.put(c.getFMaterialId(), c.getFNumber());
-        });
-        return mtn;
-    }
 
     private List<KingdeeProductionOrder> getKingdeeProductionOrders() throws Exception {
         QueryParam queryParam = new QueryParam();
@@ -175,6 +100,8 @@ public class ApsProductionOrderServiceImpl extends ServiceImpl<ApsProductionOrde
         List<KingdeeProductionOrder> result = api.executeBillQuery(queryParam, KingdeeProductionOrder.class);
         return result;
     }
+
+
 }
 
 

@@ -2,6 +2,7 @@ package com.benewake.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsViewColTable;
 import com.benewake.system.entity.ApsViewTable;
@@ -57,6 +58,7 @@ public class ApsViewTableServiceImpl extends ServiceImpl<ApsViewTableMapper, Aps
         viewTables.forEach(x -> {
             if (x.getIsDefault()) {
                 viewTableListVo.setDefaultViewId(x.getViewId());
+                viewTableListVo.setDefaultViewName(x.getViewName());
             }
             ViewTableVo viewTableVo = new ViewTableVo();
             viewTableVo.setViewId(x.getViewId());
@@ -75,34 +77,81 @@ public class ApsViewTableServiceImpl extends ServiceImpl<ApsViewTableMapper, Aps
         String userName = hostHolder.getUser().getUsername();
 
         ApsViewTable viewTable = buildView(viewParam);
-        if (viewTable.getIsDefault() != null && viewTable.getIsDefault()) {
+
+        if (Boolean.TRUE.equals(viewTable.getIsDefault())) {
             viewTableMapper.update(null, new LambdaUpdateWrapper<ApsViewTable>()
                     .eq(ApsViewTable::getTableId, viewParam.getTableId())
                     .eq(ApsViewTable::getUserName, userName)
                     .eq(ApsViewTable::getIsDefault, true)
                     .set(ApsViewTable::getIsDefault, false));
         }
+
         if (viewParam.getViewId() == null) {
-            verifyParam(viewParam, userName);
-            save(viewTable);
-            //需要save 回填viewTable Id
-            List<ApsViewColTable> viewColTables = buildViewCols(viewParam, viewTable.getViewId());
-            return viewColTableService.saveBatch(viewColTables);
-        } else {
-            if (StringUtils.isEmpty(viewParam.getViewName())) {
-                //保存筛选
-                List<ApsViewColTable> viewColTables = buildViewCols(viewParam, viewTable.getViewId());
-                return viewColTableService.updateBatchById(viewColTables);
-            } else {
-                verifyParam(viewParam, userName);
-                //修改视图列
-                List<ApsViewColTable> viewColTables = buildViewCols(viewParam, viewTable.getViewId());
-                viewColTableService.remove(new LambdaQueryWrapper<ApsViewColTable>()
-                        .eq(ApsViewColTable::getViewId, viewTable.getViewId()));
-                viewColTableService.saveBatch(viewColTables);
-                return updateById(viewTable);
-            }
+            //首次保存
+            verifyParamAndSave(viewParam, userName, viewTable);
+            Integer viewId = viewTable.getViewId();
+            return viewColTableService.saveBatch(buildViewCols(viewParam, viewId));
         }
+
+        if (StringUtils.isEmpty(viewParam.getViewName())) {
+            //筛选页面
+            Integer viewId = viewTable.getViewId();
+            return CollectionUtils.isEmpty(viewParam.getCols())
+                    ? viewColTableService.update(buildEmptyColsUpdateWrapper(viewId))
+                    : viewColTableService.updateBatchById(buildViewCols(viewParam, viewId));
+        }
+        Integer viewId = viewTable.getViewId();
+        return handleExistingView(viewParam, userName, viewId);
+    }
+
+    private void verifyParamAndSave(ViewParam viewParam, String userName, ApsViewTable viewTable) {
+        verifyParam(viewParam, userName);
+        save(viewTable);
+    }
+
+    private Boolean handleExistingView(ViewParam viewParam, String userName, Integer viewId) {
+        //修改视图
+        ApsViewTable apsViewTable = viewTableMapper.selectById(viewId);
+        LambdaUpdateWrapper<ApsViewTable> viewTableLambdaUpdateWrapper = new LambdaUpdateWrapper<ApsViewTable>()
+                .eq(ApsViewTable::getViewId, viewId)
+                .eq(ApsViewTable::getUserName, userName);
+        if (!apsViewTable.getViewName().equals(viewParam.getViewName())) {
+            verifyParam(viewParam, userName);
+            viewTableLambdaUpdateWrapper
+                    .set(ApsViewTable::getViewName, viewParam.getViewName());
+        }
+        viewTableLambdaUpdateWrapper
+                .set(ApsViewTable::getIsDefault, viewParam.getIsDefault());
+        update(viewTableLambdaUpdateWrapper);
+        //全量更新
+        List<ApsViewColTable> viewColTableList = viewColTableService.list(new LambdaQueryWrapper<ApsViewColTable>()
+                .eq(ApsViewColTable::getViewId, viewId));
+        List<ApsViewColTable> viewColTables = buildViewCols(viewParam, viewId);
+        // 找出要添加的元素
+        List<ApsViewColTable> toAdd = viewColTables.stream()
+                .filter(colTable -> viewColTableList.stream().noneMatch(table -> table.getColId().equals(colTable.getColId())))
+                .map(x -> {
+                    ApsViewColTable apsViewColTable = new ApsViewColTable();
+                    apsViewColTable.setViewId(viewId);
+                    apsViewColTable.setColId(x.getColId());
+                    return apsViewColTable;
+                }).collect(Collectors.toList());
+        // 找出要删除的元素
+        List<Integer> deleteId = viewColTableList.stream()
+                .filter(table -> viewColTables.stream().noneMatch(colTable -> colTable.getColId().equals(table.getColId())))
+                .map(ApsViewColTable::getId)
+                .collect(Collectors.toList());
+
+        viewColTableService.removeBatchByIds(deleteId);
+        viewColTableService.saveBatch(toAdd);
+        return true;
+    }
+
+    private LambdaUpdateWrapper<ApsViewColTable> buildEmptyColsUpdateWrapper(Integer viewId) {
+        return new LambdaUpdateWrapper<ApsViewColTable>()
+                .eq(ApsViewColTable::getViewId, viewId)
+                .set(ApsViewColTable::getColValue, null)
+                .set(ApsViewColTable::getValueOperator, null);
     }
 
     private void verifyParam(ViewParam viewParam, String userName) {

@@ -1,6 +1,8 @@
 package com.benewake.system.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsFimPriority;
 import com.benewake.system.entity.dto.ApsFimPriorityDto;
@@ -17,6 +19,8 @@ import org.apache.ibatis.annotations.Param;
 public interface ApsFimPriorityMapper extends BaseMapper<ApsFimPriority> {
 
     Page<ApsFimPriorityDto> selectPageList(Page<ApsFimPriorityDto> apsFimPriorityPage, @Param("apsTableVersion") Integer apsTableVersion);
+
+    Page<Object> getFimPriorityFiltrate(Page<Object> page1, @Param(Constants.WRAPPER) QueryWrapper<Object> queryWrapper);
 }
 
 
