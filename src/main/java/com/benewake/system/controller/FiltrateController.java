@@ -41,7 +41,7 @@ public class FiltrateController {
     @ApiOperation("保存或修改视图")
     @PostMapping("/saveView")
     public Result saveView(@RequestBody ViewParam viewParam) {
-        if (viewParam == null || viewParam.getTableId() == null || CollectionUtils.isEmpty(viewParam.getCols())) {
+        if (viewParam == null || viewParam.getTableId() == null) {
             return Result.fail();
         }
         Boolean res = viewTableService.saveView(viewParam);

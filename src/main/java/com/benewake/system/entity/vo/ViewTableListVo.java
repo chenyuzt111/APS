@@ -11,4 +11,6 @@ public class ViewTableListVo {
 
     private Integer defaultViewId;
 
+    private String defaultViewName;
+
 }
