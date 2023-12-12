@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
 * @author ASUS
@@ -112,7 +113,7 @@ public class ApsOutsourcedMaterialServiceImpl extends ServiceImpl<ApsOutsourcedM
         List<String> queryFilters = new ArrayList<>();
         //创建一个空的字符串列表，用于存储查询过滤条件
         queryFilters.add("FDocumentStatus = 'C'");     // 单据状态=已审核
-        queryFilters.add("FReqStatus = '3'OR FReqStatus = '4' OR FReqStatus = '5'"); // 委外订单状态=下达
+        queryFilters.add("(FReqStatus = '3'OR FReqStatus = '4' OR FReqStatus = '5')"); // 委外订单状态=下达
         // 使用子查询结果作为条件
         if (!subReqBillNos.isEmpty()) {
             String subReqBillNosCondition = "FSubReqBillNO in (" + String.join(",", subReqBillNos) + ")";

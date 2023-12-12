@@ -12,6 +12,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -90,7 +91,7 @@ public class ApsInstallationBoardServiceImpl extends ServiceImpl<ApsInstallation
                                 int id = Integer.parseInt(value.get("queId").getAsString());
                                 try {
                                     Field field = MesInstallationBoard.getClass().getDeclaredField(excelFieldName);
-                                    field.setAccessible(true);
+                                                    field.setAccessible(true);
                                     // 如果字段是BurnQualifiedCount并且还没有设置过，设置字段
                                     if (excelFieldName.equals("BurnQualifiedCount")) {
                                         if (id == 84934591) {
@@ -135,6 +136,8 @@ public class ApsInstallationBoardServiceImpl extends ServiceImpl<ApsInstallation
     public void insertVersionIncr() {
         installationBoardMapper.insertVersionIncr();
     }
+
+
 }
 
 

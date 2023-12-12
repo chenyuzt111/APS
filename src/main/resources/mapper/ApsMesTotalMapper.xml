@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benewake.system.mapper.ApsMesTotalMapper">
+
+    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsMesTotal">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="productionOrderNumber" column="production_order_number" jdbcType="VARCHAR"/>
+            <result property="materialCode" column="material_code" jdbcType="VARCHAR"/>
+            <result property="materialName" column="material_name" jdbcType="VARCHAR"/>
+            <result property="totalNumber" column="total_number" jdbcType="VARCHAR"/>
+            <result property="burnInCompletionQuantity" column="burn_in_completion_quantity" jdbcType="VARCHAR"/>
+            <result property="burnQualifiedCount" column="burn_qualified_count" jdbcType="VARCHAR"/>
+            <result property="unBurnQualifiedCount" column="un_burn_qualified_count" jdbcType="VARCHAR"/>
+            <result property="burnFixtureNumber" column="burn_fixture_number" jdbcType="VARCHAR"/>
+            <result property="burnFixtureId" column="burn_fixture_id" jdbcType="INTEGER"/>
+            <result property="process" column="process" jdbcType="VARCHAR"/>
+            <result property="workpiece" column="workpiece" jdbcType="VARCHAR"/>
+            <result property="version" column="version" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,production_order_number,material_code,
+        material_name,total_number,burn_in_completion_quantity,
+        burn_qualified_count,un_burn_qualified_count,burn_fixture_number,
+        burn_fixture_id,process,workpiece,
+        version
+    </sql>
+
+    <insert id="insertVersionIncr">
+        INSERT INTO aps_mes_total (production_order_number, material_code,
+                                        burn_in_completion_quantity, burn_qualified_count,
+                                        total_number, un_burn_qualified_count, process, workpiece, version)
+        SELECT production_order_number,
+               material_code,
+               burn_in_completion_quantity,
+               burn_qualified_count,
+               total_number,
+               un_burn_qualified_count,
+               process,
+               workpiece,
+               version + 1
+        FROM `aps_mes_total`
+        WHERE version = (
+            SELECT max(version)
+            FROM aps_mes_total)
+    </insert>
+
+    <select id="selectPageList" resultType="com.benewake.system.entity.dto.ApsMesTotalDto">
+        SELECT
+        total.id,production_order_number,material_code,
+        map.f_material_name as material_name,total_number,burn_in_completion_quantity,
+        burn_qualified_count,un_burn_qualified_count,burn_fixture_number,
+        burn_fixture_id,process,
+        workpiece,
+        ch_version_name AS version
+        FROM
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        END AS ch_version_name
+        FROM aps_mes_total
+        WHERE version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>
+        ) AS total
+        LEFT JOIN
+        aps_material_name_mapping AS map ON total.material_code = map.f_material_id
+        ORDER BY total.version desc
+    </select>
+</mapper>

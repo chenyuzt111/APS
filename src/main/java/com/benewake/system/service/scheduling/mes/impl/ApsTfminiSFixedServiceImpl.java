@@ -82,7 +82,6 @@ public class ApsTfminiSFixedServiceImpl extends ServiceImpl<ApsTfminiSFixedMappe
                 fieldMapping.put("安装不合格数", "UnBurnQualifiedCount");
                 fieldMapping.put("物料编码", "materialCode");
                 fieldMapping.put("物料名称", "materialName");
-                fieldMapping.put("用料清单编号", "BurnFixtureNumber");
                 fieldMapping.put("订单总数", "totalNumber");
                 // 使用Gson解析JSON
                 // 使用Gson解析JSON

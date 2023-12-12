@@ -8,13 +8,18 @@ import com.kingdee.bos.webapi.sdk.K3CloudApi;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
+/*接口数据类的父类*/
 public interface ApsIntfaceDataServiceBase<T> {
 
     String accessToken = "a08dd535-f367-4797-a185-1b57435dcdd1"; // 替换为实际的accessToken
 
+    //更新数据版本
     Boolean updateDataVersions() throws Exception;
 
+
+    //接口数据类中都有获取最大版本号的方法
     default Integer getMaxVersionIncr() {
         try {
             QueryWrapper<Object> objectQueryWrapper = new QueryWrapper<>();

@@ -13,7 +13,7 @@
         <result property="burnQualifiedCount" column="burn_qualified_count" jdbcType="VARCHAR"/>
         <result property="version" column="version" jdbcType="INTEGER"/>
         <result property="totalNumber" column="total_number" jdbcType="VARCHAR"/>
-        <result property="unBurnQualifiedCount" column="un_burn_qualified_count" jdbcType="VARCHAR"/>
+        <result property="unburnQualifiedCount" column="un_burn_qualified_count" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
