@@ -1,7 +1,7 @@
 package com.benewake.system.mapper;
 
-import com.benewake.system.entity.ApsProcessNamePool;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.benewake.system.entity.ApsProcessNamePool;
 
 /**
 * @author ASUS

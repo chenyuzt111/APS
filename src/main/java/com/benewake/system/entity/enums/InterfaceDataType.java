@@ -85,6 +85,21 @@ public enum InterfaceDataType {
         return ids;
     }
 
+    public static List<Integer> getErpIds() {
+        ArrayList<Integer> ids = new ArrayList<>();
+        for (int i = 1; i <= MATERIAL_BOM.getCode(); i++) {
+            ids.add(i);
+        }
+        return ids;
+    }
+
+    public static List<Integer> getMesIds() {
+        ArrayList<Integer> ids = new ArrayList<>();
+        for (int i = PCBA_BURN.getCode(); i <= TFMINI_S_PACKAGING_TEST.getCode(); i++) {
+            ids.add(i);
+        }
+        return ids;
+    }
 
     public String getSeviceName() {
         return seviceName;

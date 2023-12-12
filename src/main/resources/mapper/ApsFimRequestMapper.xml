@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benewake.system.mapper.ApsFimRequestMapper">
+
+    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsFimRequest">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="fDocumentNumber" column="f_document_number" jdbcType="VARCHAR"/>
+        <result property="fCreator" column="f_creator" jdbcType="VARCHAR"/>
+        <result property="fMaterialCode" column="f_material_code" jdbcType="VARCHAR"/>
+        <!--            <result property="fMaterialName" column="f_material_name" jdbcType="VARCHAR"/>-->
+        <result property="fCustomerName" column="f_customer_name" jdbcType="VARCHAR"/>
+        <result property="fSalesperson" column="f_salesperson" jdbcType="VARCHAR"/>
+        <result property="fQuantity" column="f_quantity" jdbcType="VARCHAR"/>
+        <result property="fExpectedDeliveryDate" column="f_expected_delivery_date" jdbcType="DATE"/>
+        <result property="fDocumentType" column="f_document_type" jdbcType="VARCHAR"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,f_document_number,f_creator,
+        f_material_code,f_material_name,f_customer_name,
+        f_salesperson,f_quantity,f_expected_delivery_date,
+        f_document_type,version
+    </sql>
+    <select id="getFimRequestPage" resultType="com.benewake.system.entity.vo.ApsFimRequestVo">
+        SELECT req.id,
+               f_document_number,
+               f_creator,
+               f_material_code,
+               map.f_material_name,
+               f_customer_name,
+               f_salesperson,
+               f_quantity,
+               f_expected_delivery_date,
+               f_document_type
+        FROM `aps_fim_request` AS req
+                 LEFT JOIN aps_material_name_mapping AS map ON req.f_material_code = map.f_material_id
+    </select>
+</mapper>

@@ -4,8 +4,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 
@@ -49,8 +50,10 @@ public class ApsPackagingTest implements Serializable {
      */
     @TableField(value = "burn_qualified_count")
     private String burnQualifiedCount;
+
+
     @TableField(value = "un_burn_qualified_count")
-    private String unburnQualifiedCount;
+    private String unBurnQualifiedCount;
     /**
      * 订单总数
      */

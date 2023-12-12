@@ -1,10 +1,11 @@
 package com.benewake.system.service;
 
-import com.benewake.system.entity.ApsProductFamilyMachineTable;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.ApsProductFamilyMachineTable;
 import com.benewake.system.entity.vo.ApsProductFamilyMachineTablePageVo;
 import com.benewake.system.entity.vo.ApsProductFamilyMachineTableParam;
 import com.benewake.system.entity.vo.DownloadParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,4 +21,6 @@ public interface ApsProductFamilyMachineTableService extends IService<ApsProduct
     boolean addOrUpdateApsMachineTable(ApsProductFamilyMachineTableParam apsProductFamilyMachineTable);
 
     void downloadProcessCapacity(HttpServletResponse response, DownloadParam downloadParam);
+
+    Boolean saveDataByExcel(Integer type, MultipartFile file);
 }

@@ -1,13 +1,15 @@
 package com.benewake.system.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+
+import java.io.Serializable;
+import java.util.Date;
 
 @TableName(value ="aps_inventory_lock")
 @Data
@@ -22,7 +24,7 @@ public class ApsInventoryLock implements Serializable {
 
     @JsonProperty("expiryDate")
     @TableField(value = "f_expiry_date")
-    private String fExpiryDate;
+    private Date fExpiryDate;
 
     @JsonProperty("lockQty")
     @TableField(value = "f_lock_qty")

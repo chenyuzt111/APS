@@ -1,9 +1,7 @@
 package com.benewake.system.transfer;
 
 import com.benewake.system.entity.ApsPackagingTest;
-import com.benewake.system.entity.ApsPcbaBurn;
 import com.benewake.system.entity.mes.MesPackagingTest;
-import com.benewake.system.entity.mes.MesPcbaBurn;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,7 +18,7 @@ public class MesToApsPackagingTest {
         apsPackagingTest.setBurnInCompletionQuantity(mesPackagingTest.getBurnInCompletionQuantity());
         apsPackagingTest.setBurnQualifiedCount(mesPackagingTest.getBurnQualifiedCount());
         apsPackagingTest.setTotalNumber(mesPackagingTest.getTotalNumber());
-        apsPackagingTest.setUnburnQualifiedCount(mesPackagingTest.getUnBurnQualifiedCount());
+        apsPackagingTest.setUnBurnQualifiedCount(mesPackagingTest.getUnBurnQualifiedCount());
         apsPackagingTest.setVersion(version);
 
         return apsPackagingTest;

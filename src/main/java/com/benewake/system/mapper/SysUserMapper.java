@@ -5,7 +5,6 @@ import com.benewake.system.entity.system.SysRole;
 import com.benewake.system.entity.system.SysUser;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 import java.util.Map;

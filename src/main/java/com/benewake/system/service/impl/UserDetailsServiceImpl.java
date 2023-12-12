@@ -1,7 +1,7 @@
 package com.benewake.system.service.impl;
 
-import com.benewake.system.security.custom.CustomUser;
 import com.benewake.system.entity.system.SysUser;
+import com.benewake.system.security.custom.CustomUser;
 import com.benewake.system.service.SysMenuService;
 import com.benewake.system.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;

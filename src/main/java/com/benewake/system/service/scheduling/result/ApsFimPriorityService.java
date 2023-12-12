@@ -1,9 +1,14 @@
 package com.benewake.system.service.scheduling.result;
 
-import com.benewake.system.entity.ApsFimPriority;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.ApsFimPriority;
 import com.benewake.system.entity.dto.ApsFimPriorityDto;
-import com.benewake.system.entity.vo.PageListRestVo;
+import com.benewake.system.entity.vo.DownloadParam;
+import com.benewake.system.entity.vo.PageResultVo;
+import com.benewake.system.entity.vo.QueryViewParams;
+import com.benewake.system.entity.vo.ResultColPageVo;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
 * @author ASUS
@@ -12,5 +17,9 @@ import com.benewake.system.entity.vo.PageListRestVo;
 */
 public interface ApsFimPriorityService extends IService<ApsFimPriority> ,ApsSchedulingResuleBase{
 
-    PageListRestVo<ApsFimPriorityDto> getAllPage(Integer page, Integer size);
+    PageResultVo<ApsFimPriorityDto> getAllPage(Integer page, Integer size);
+
+    void downloadFimRequest(HttpServletResponse response, DownloadParam downloadParam);
+
+    ResultColPageVo<Object> getFimPriorityFiltrate(Integer page, Integer size, QueryViewParams queryViewParams);
 }

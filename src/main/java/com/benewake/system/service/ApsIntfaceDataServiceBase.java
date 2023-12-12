@@ -3,23 +3,22 @@ package com.benewake.system.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.Interface.VersionToChVersion;
 import com.benewake.system.exception.BeneWakeException;
-import com.kingdee.bos.webapi.sdk.K3CloudApi;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*接口数据类的父类*/
 public interface ApsIntfaceDataServiceBase<T> {
 
     String accessToken = "a08dd535-f367-4797-a185-1b57435dcdd1"; // 替换为实际的accessToken
 
-    //更新数据版本
+    Map map = new HashMap();
+
     Boolean updateDataVersions() throws Exception;
 
-
-    //接口数据类中都有获取最大版本号的方法
     default Integer getMaxVersionIncr() {
         try {
             QueryWrapper<Object> objectQueryWrapper = new QueryWrapper<>();
@@ -52,5 +51,9 @@ public interface ApsIntfaceDataServiceBase<T> {
 
     default void insertVersionIncr() {
         return;
+    }
+
+    default Page selectPageLists(Page<Object> objectPage, List<VersionToChVersion> versionToChVersionArrayList, QueryWrapper<Object> wrapper){
+        throw new BeneWakeException("该表不能通过该方式查询");
     }
 }

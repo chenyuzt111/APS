@@ -1,16 +1,17 @@
 package com.benewake.system.service.scheduling.kingdee.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.benewake.system.entity.dto.ApsImmediatelyInventoryDto;
-import com.benewake.system.entity.kingdee.KingdeeInventoryLock;
-import com.benewake.system.entity.kingdee.transfer.fLotIdToFNumber;
-import com.benewake.system.transfer.KingdeeToApsImmediatelyInventory;
 import com.benewake.system.entity.ApsImmediatelyInventory;
+import com.benewake.system.entity.dto.ApsImmediatelyInventoryDto;
 import com.benewake.system.entity.kingdee.KingdeeImmediatelyInventory;
+import com.benewake.system.entity.kingdee.KingdeeInventoryLock;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
-import com.benewake.system.service.scheduling.kingdee.ApsImmediatelyInventoryService;
+import com.benewake.system.entity.kingdee.transfer.fLotIdToFNumber;
 import com.benewake.system.mapper.ApsImmediatelyInventoryMapper;
+import com.benewake.system.service.scheduling.kingdee.ApsImmediatelyInventoryService;
+import com.benewake.system.transfer.KingdeeToApsImmediatelyInventory;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
 import org.apache.commons.collections4.CollectionUtils;
@@ -44,6 +45,11 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
         Page<ApsImmediatelyInventoryDto> immediatelyInventoryPage = apsImmediatelyInventoryMapper
                 .selectPageList(objectPage, tableVersionList);
         return immediatelyInventoryPage;
+    }
+
+    @Override
+    public Page selectPageLists(Page page, List versionToChVersionArrayList, QueryWrapper wrapper) {
+        return apsImmediatelyInventoryMapper.selectPageLists(page, versionToChVersionArrayList, wrapper);
     }
 
     @Override
@@ -95,10 +101,7 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
         QueryParam queryParamLock = new QueryParam();
         queryParamLock.setFormId("STK_LockStock");
         queryParamLock.setFieldKeys("FMaterialId,FEXPIRYDATE,FLockQty,FLot");
-
         List<KingdeeInventoryLock> locks = api.executeBillQuery(queryParamLock, KingdeeInventoryLock.class);
-
-
         for (KingdeeImmediatelyInventory kingdeeImmediatelyInventory : result) {
             String materialId = kingdeeImmediatelyInventory.getFMaterialId();
             String lot = kingdeeImmediatelyInventory.getFLot();

@@ -16,7 +16,7 @@ public class KingdeePurchaseOrder {
 
     private String FMaterialName;
     //("剩余收料数量")
-    private String FDeliRemainQty;
+    private String FRemainReceiveQty;
     //("交货日期")
     private String FDeliveryDate_Plan;
 

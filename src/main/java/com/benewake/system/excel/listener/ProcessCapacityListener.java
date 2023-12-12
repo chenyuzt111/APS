@@ -12,8 +12,8 @@ import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsFinishedProductBasicDataService;
 import com.benewake.system.service.ApsProcessCapacityService;
 import com.benewake.system.service.ApsProcessNamePoolService;
+import com.benewake.system.utils.BenewakeStringUtils;
 import com.benewake.system.utils.ExcelUtil;
-import com.benewake.system.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -71,12 +71,12 @@ public class ProcessCapacityListener extends AnalysisEventListener<ExcelProcessC
 
     private ApsProcessCapacity createApsProcessCapacity(ExcelProcessCapacityTemplate data, int rowIndex) {
         ApsProcessCapacity apsProcessCapacity = new ApsProcessCapacity();
-        if (StringUtils.isEmpty(data.getBelongingProcess())) {
+        if (BenewakeStringUtils.isEmpty(data.getBelongingProcess())) {
             errorMassage.append("第").append(rowIndex).append("行所属工序不能为空、");
             return null;
         }
 
-        if (StringUtils.isEmpty(data.getProductFamily())) {
+        if (BenewakeStringUtils.isEmpty(data.getProductFamily())) {
             errorMassage.append("第").append(rowIndex).append("行产品族不能为空、");
             return null;
         }
@@ -97,7 +97,7 @@ public class ProcessCapacityListener extends AnalysisEventListener<ExcelProcessC
         apsProcessCapacity.setProductFamily(data.getProductFamily());
         apsProcessCapacity.setPackagingMethod(data.getPackagingMethod());
         apsProcessCapacity.setSwitchTime(data.getSwitchTime());
-        if (StringUtils.isNotEmpty(data.getStandardTime())) {
+        if (BenewakeStringUtils.isNotEmpty(data.getStandardTime())) {
             apsProcessCapacity.setStandardTime(new BigDecimal(data.getStandardTime()));
         }
         apsProcessCapacity.setMaxPersonnel(data.getMaxPersonnel());
@@ -106,10 +106,10 @@ public class ProcessCapacityListener extends AnalysisEventListener<ExcelProcessC
     }
 
     private void handleAfterAnalysed() {
-        if (StringUtils.isNotEmpty(errorMassage.toString())) {
+        if (BenewakeStringUtils.isNotEmpty(errorMassage.toString())) {
             throw new BeneWakeException(errorMassage.toString());
         }
-        if (StringUtils.isNotEmpty(processNameError.toString())) {
+        if (BenewakeStringUtils.isNotEmpty(processNameError.toString())) {
             throw new BeneWakeException(processNameError.append("在工序命名池中不存在！").toString());
         }
 

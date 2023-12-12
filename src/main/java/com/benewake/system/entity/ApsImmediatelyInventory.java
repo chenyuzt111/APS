@@ -4,11 +4,11 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  *
@@ -70,7 +70,7 @@ public class ApsImmediatelyInventory implements Serializable {
      */
     @JsonProperty("expiryDate") // 使用@JsonProperty注解修改属性名
     @TableField(value = "f_expiry_date")
-    private String fExpiryDate;
+    private Date fExpiryDate;
 
     /**
      * 版本号

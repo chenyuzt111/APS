@@ -1,9 +1,11 @@
 package com.benewake.system.service.scheduling.result;
 
-import com.benewake.system.entity.ApsSemiFinishedGoodsMaterialShortageAnalysis;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.ApsSemiFinishedGoodsMaterialShortageAnalysis;
 import com.benewake.system.entity.dto.ApsSemiFinishedGoodsMaterialShortageAnalysisDto;
-import com.benewake.system.entity.vo.PageListRestVo;
+import com.benewake.system.entity.vo.PageResultVo;
+import com.benewake.system.entity.vo.QueryViewParams;
+import com.benewake.system.entity.vo.ResultColPageVo;
 
 /**
 * @author ASUS
@@ -12,5 +14,7 @@ import com.benewake.system.entity.vo.PageListRestVo;
 */
 public interface ApsSemiFinishedGoodsMaterialShortageAnalysisService extends IService<ApsSemiFinishedGoodsMaterialShortageAnalysis> ,ApsSchedulingResuleBase{
 
-    PageListRestVo<ApsSemiFinishedGoodsMaterialShortageAnalysisDto> getAllPage(Integer page, Integer size);
+    PageResultVo<ApsSemiFinishedGoodsMaterialShortageAnalysisDto> getAllPage(Integer page, Integer size);
+
+    ResultColPageVo<Object> semiMaterialShortageFiltrate(Integer page, Integer size , QueryViewParams queryViewParams);
 }

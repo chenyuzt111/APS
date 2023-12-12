@@ -2,12 +2,16 @@ package com.benewake.system.transfer;
 
 import com.benewake.system.entity.ApsProductionOrder;
 import com.benewake.system.entity.kingdee.KingdeeProductionOrder;
+import com.benewake.system.utils.BenewakeStringUtils;
 import org.springframework.stereotype.Component;
+
+import java.text.ParseException;
+import java.util.Date;
 
 @Component
 public class KingdeeToApsProductionOrder {
 
-    public ApsProductionOrder convert(KingdeeProductionOrder kingdeeProductionOrder , Integer version) {
+    public ApsProductionOrder convert(KingdeeProductionOrder kingdeeProductionOrder , Integer version) throws ParseException {
         if (kingdeeProductionOrder == null || version == null) {
             return null;
         }
@@ -22,7 +26,8 @@ public class KingdeeToApsProductionOrder {
         apsProductionOrder.setFStockInQuaAuxQty(kingdeeProductionOrder.getFStockInQuaAuxQty());
         apsProductionOrder.setFBomId(kingdeeProductionOrder.getFBomId());
         apsProductionOrder.setFMaterialName(kingdeeProductionOrder.getFMaterialName());
-        apsProductionOrder.setPlannedCompletionTime(kingdeeProductionOrder.getFPlanFinishDate());
+        Date parse = BenewakeStringUtils.parse(kingdeeProductionOrder.getFPlanFinishDate(), "yyyy-MM-dd'T'HH:mm:ss");
+        apsProductionOrder.setPlannedCompletionTime(parse);
         apsProductionOrder.setFDzMaterialName(kingdeeProductionOrder.getF_ora_FDZMaterialID2());
         apsProductionOrder.setVersion(version);
 

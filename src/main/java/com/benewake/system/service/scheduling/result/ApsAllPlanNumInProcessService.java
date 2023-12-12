@@ -1,7 +1,7 @@
 package com.benewake.system.service.scheduling.result;
 
-import com.benewake.system.entity.ApsAllPlanNumInProcess;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.ApsAllPlanNumInProcess;
 import com.benewake.system.service.scheduling.result.impl.ApsAllPlanNumInProcessServiceImpl;
 
 import java.util.List;

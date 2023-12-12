@@ -5,8 +5,8 @@ import com.benewake.system.entity.base.BaseEntity;
 import com.benewake.system.entity.system.SysRole;
 import com.benewake.system.entity.system.SysUser;
 import com.benewake.system.service.SysRoleService;
+import com.benewake.system.utils.BenewakeStringUtils;
 import com.benewake.system.utils.HostHolder;
-import com.benewake.system.utils.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -104,28 +104,28 @@ public class DataScopeAspect
             else if (DATA_SCOPE_CUSTOM.equals(dataScope))
             {
                 // 自定义权限
-                sqlString.append(StringUtils.format(
+                sqlString.append(BenewakeStringUtils.format(
                         " OR {}.id IN ( SELECT dept_id FROM sys_role_dept WHERE role_id = {} ) ", deptAlias,
                         role.getId()));
             }
             else if (DATA_SCOPE_DEPT.equals(dataScope))
             {
                 // 部门权限
-                sqlString.append(StringUtils.format(" OR {}.id = {} ", deptAlias, user.getDeptId()));
+                sqlString.append(BenewakeStringUtils.format(" OR {}.id = {} ", deptAlias, user.getDeptId()));
             }
             else if (DATA_SCOPE_DEPT_AND_CHILD.equals(dataScope))
             {
                 // 部门及以下权限
-                sqlString.append(StringUtils.format(
+                sqlString.append(BenewakeStringUtils.format(
                         " OR {}.id IN ( SELECT id FROM sys_dept WHERE id = {} or find_in_set( {} , ancestors ) )",
                         deptAlias, user.getDeptId(), user.getDeptId()));
             }
             else if (DATA_SCOPE_SELF.equals(dataScope))
             {
                 // 仅本人权限
-                if (StringUtils.isNotBlank(userAlias))
+                if (BenewakeStringUtils.isNotBlank(userAlias))
                 {
-                    sqlString.append(StringUtils.format(" OR {}.id = {} ", userAlias, user.getId()));
+                    sqlString.append(BenewakeStringUtils.format(" OR {}.id = {} ", userAlias, user.getId()));
                 }
                 else
                 {
@@ -136,11 +136,11 @@ public class DataScopeAspect
         }
 
         //如果sqlString不为空的话说明有数据权限需要配置添加到sql查询中
-        if (StringUtils.isNotBlank(sqlString.toString()))
+        if (BenewakeStringUtils.isNotBlank(sqlString.toString()))
         {
 
             Object params = joinPoint.getArgs()[0];
-            if (StringUtils.isNotNull(params) && params instanceof BaseEntity)
+            if (BenewakeStringUtils.isNotNull(params) && params instanceof BaseEntity)
             {
                 //切点对象转化为baseEntity对象
                 BaseEntity baseEntity = (BaseEntity) params;

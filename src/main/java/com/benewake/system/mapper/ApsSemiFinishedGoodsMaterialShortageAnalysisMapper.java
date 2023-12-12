@@ -1,8 +1,10 @@
 package com.benewake.system.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsSemiFinishedGoodsMaterialShortageAnalysis;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.benewake.system.entity.dto.ApsSemiFinishedGoodsMaterialShortageAnalysisDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -17,6 +19,8 @@ import org.apache.ibatis.annotations.Param;
 public interface ApsSemiFinishedGoodsMaterialShortageAnalysisMapper extends BaseMapper<ApsSemiFinishedGoodsMaterialShortageAnalysis> {
 
     Page<ApsSemiFinishedGoodsMaterialShortageAnalysisDto> selectPageList(Page<ApsSemiFinishedGoodsMaterialShortageAnalysisDto> goodsProductionPlanPage, @Param("apsTableVersion") Integer apsTableVersion);
+
+    Page<Object> queryPageList(Page<Object> pageTemp, @Param(Constants.WRAPPER) QueryWrapper<Object> queryWrapper);
 }
 
 

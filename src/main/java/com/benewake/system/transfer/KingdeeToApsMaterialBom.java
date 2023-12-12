@@ -1,9 +1,7 @@
 package com.benewake.system.transfer;
 
 import com.benewake.system.entity.ApsMaterialBom;
-import com.benewake.system.entity.ApsOutsourcedMaterial;
 import com.benewake.system.entity.kingdee.KingdeeMaterialBom;
-import com.benewake.system.entity.kingdee.KingdeeOutsourcedMaterial;
 import org.springframework.stereotype.Component;
 
 @Component

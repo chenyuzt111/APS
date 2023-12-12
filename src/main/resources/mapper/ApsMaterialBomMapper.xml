@@ -55,12 +55,12 @@
         bom.f_material_id_child,
         map1.f_material_name AS f_material_name_child,
         f_replace_group_bop,
-        f_numerator,
-        f_denominator,
-        f_fix_scrap_qty_lot,
+        NULLIF(f_numerator, 0) AS f_numerator,
+        NULLIF(f_denominator, 0) AS f_denominator,
+        NULLIF(f_fix_scrap_qty_lot, 0) AS f_fix_scrap_qty_lot,
+        NULLIF(f_scrap_rate, 0) AS f_scrap_rate,
         f_material_type,
         f_replace_type,
-        f_scrap_rate,
         process,
         bom_version,
         ch_version_name AS version
@@ -98,12 +98,12 @@
         f_document_status,f_material_id_child,
         f_replace_group_bop,f_numerator,f_denominator,
         f_fix_scrap_qty_lot,f_material_type,f_replace_type,
-        f_scrap_rate,process,bom_version, (SELECT MAX(version) + 1 FROM `aps_material_bom`)
+        f_scrap_rate,process,bom_version, version + 1
         FROM `aps_material_bom`
         WHERE
         -- 根据您的条件生成查询条件，注意使用了删除列表的条件
         <if test="deleteList != null and deleteList.size() > 0">
-            (
+            NOT (
             <foreach collection="deleteList" item="item" index="index" open="" separator=" OR " close="">
                 (f_material_id = #{item.FParentMaterialId} AND f_material_id_child = #{item.FMATERIALIDCHILD})
             </foreach>

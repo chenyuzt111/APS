@@ -1,7 +1,7 @@
 package com.benewake.system.service.scheduling.mes;
 
-import com.benewake.system.entity.ApsTfminiSPcbaBurn;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.ApsTfminiSPcbaBurn;
 import com.benewake.system.service.ApsIntfaceDataServiceBase;
 
 /**

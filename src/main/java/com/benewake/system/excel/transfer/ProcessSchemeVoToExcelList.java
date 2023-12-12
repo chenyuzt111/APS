@@ -1,8 +1,6 @@
 package com.benewake.system.excel.transfer;
 
-import com.benewake.system.entity.ApsProcessNamePool;
 import com.benewake.system.entity.vo.ApsProcessSchemeVo;
-import com.benewake.system.excel.entity.ExcelProcessNamePool;
 import com.benewake.system.excel.entity.ExcelProcessScheme;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;

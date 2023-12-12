@@ -11,7 +11,6 @@ import com.benewake.system.mapper.SysMenuMapper;
 import com.benewake.system.mapper.SysRoleMenuMapper;
 import com.benewake.system.service.SysMenuService;
 import com.benewake.system.utils.RouterHelper;
-import com.benewake.system.utils.StringUtils;
 import com.benewake.system.utils.TreeHelper;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;

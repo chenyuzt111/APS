@@ -7,8 +7,8 @@ import com.benewake.system.entity.dto.ApsPurchaseOrderDto;
 import com.benewake.system.entity.kingdee.KingdeePurchaseOrder;
 import com.benewake.system.entity.kingdee.transfer.CreateIdToName;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
-import com.benewake.system.service.scheduling.kingdee.ApsPurchaseOrderService;
 import com.benewake.system.mapper.ApsPurchaseOrderMapper;
+import com.benewake.system.service.scheduling.kingdee.ApsPurchaseOrderService;
 import com.benewake.system.transfer.KingdeeToApsPurchaseOrder;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
@@ -16,7 +16,10 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author ASUS

@@ -1,7 +1,6 @@
 package com.benewake.system.excel.transfer;
 
 import com.benewake.system.entity.dto.ApsProcessCapacityDto;
-import com.benewake.system.entity.vo.ApsProcessCapacityVo;
 import com.benewake.system.excel.entity.ExcelProcessCapacity;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;

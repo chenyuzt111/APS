@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsTfminiSPackagingTest;
 import com.benewake.system.entity.dto.ApsTfminiSPackagingTestDto;
 import com.benewake.system.entity.mes.MesPackagingTest;
-import com.benewake.system.service.scheduling.mes.ApsTfminiSPackagingTestService;
 import com.benewake.system.mapper.ApsTfminiSPackagingTestMapper;
+import com.benewake.system.service.scheduling.mes.ApsTfminiSPackagingTestService;
 import com.benewake.system.transfer.MesToApsTfminiSPackagingTest;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -20,7 +20,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

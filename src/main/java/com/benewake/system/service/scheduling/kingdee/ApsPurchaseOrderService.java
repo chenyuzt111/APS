@@ -1,7 +1,7 @@
 package com.benewake.system.service.scheduling.kingdee;
 
-import com.benewake.system.entity.ApsPurchaseOrder;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.ApsPurchaseOrder;
 import com.benewake.system.service.ApsIntfaceDataServiceBase;
 
 /**

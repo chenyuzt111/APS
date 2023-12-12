@@ -3,11 +3,10 @@ package com.benewake.system.excel.entity;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.baomidou.mybatisplus.annotation.TableField;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-
-import lombok.Data;
 
 /**
  * 

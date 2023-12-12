@@ -1,8 +1,7 @@
 package com.benewake.system.service.scheduling.kingdee;
 
-import com.benewake.system.entity.ApsMaterialNameMapping;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.benewake.system.service.ApsIntfaceDataServiceBase;
+import com.benewake.system.entity.ApsMaterialNameMapping;
 
 /**
 * @author ASUS

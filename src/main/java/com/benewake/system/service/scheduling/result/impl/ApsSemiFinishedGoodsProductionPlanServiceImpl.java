@@ -2,40 +2,67 @@ package com.benewake.system.service.scheduling.result.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.benewake.system.entity.ApsSemiFinishedGoodsProductionPlan;
-import com.benewake.system.entity.enums.SchedulingResultType;
+import com.benewake.system.entity.*;
 import com.benewake.system.entity.dto.ApsSemiFinishedGoodsProductionPlanDto;
-import com.benewake.system.entity.vo.PageListRestVo;
+import com.benewake.system.entity.enums.SchedulingResultType;
+import com.benewake.system.entity.vo.PageResultVo;
+import com.benewake.system.entity.vo.QueryViewParams;
+import com.benewake.system.entity.vo.ResultColPageVo;
+import com.benewake.system.mapper.ApsColumnTableMapper;
+import com.benewake.system.mapper.ApsSemiFinishedGoodsProductionPlanMapper;
+import com.benewake.system.mapper.ApsViewColTableMapper;
 import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.scheduling.result.ApsSemiFinishedGoodsProductionPlanService;
-import com.benewake.system.mapper.ApsSemiFinishedGoodsProductionPlanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
-* @author ASUS
-* @description 针对表【aps_semi_finished_goods_production_plan】的数据库操作Service实现
-* @createDate 2023-11-02 11:38:43
-*/
+ * @author ASUS
+ * @description 针对表【aps_semi_finished_goods_production_plan】的数据库操作Service实现
+ * @createDate 2023-11-02 11:38:43
+ */
 @Service
 public class ApsSemiFinishedGoodsProductionPlanServiceImpl extends ServiceImpl<ApsSemiFinishedGoodsProductionPlanMapper, ApsSemiFinishedGoodsProductionPlan>
-    implements ApsSemiFinishedGoodsProductionPlanService{
+        implements ApsSemiFinishedGoodsProductionPlanService {
 
 
     @Autowired
     private ApsTableVersionService apsTableVersionService;
 
     @Autowired
-    private ApsSemiFinishedGoodsProductionPlanMapper semiFinishedGoodsProductionPlanMapper;
+    private ApsSemiFinishedGoodsProductionPlanMapper semiFGoodProductionPlanMapper;
+
+
+    @Autowired
+    private ApsViewColTableMapper viewColTableMapper;
+
+    @Autowired
+    private ApsColumnTableMapper columnTableMapper;
 
     @Override
-    public PageListRestVo<ApsSemiFinishedGoodsProductionPlanDto> getAllPage(Integer page, Integer size) {
+    public ApsTableVersionService getTableVersionService() {
+        return apsTableVersionService;
+    }
+
+    @Override
+    public ApsViewColTableMapper getViewColTableMapper() {
+        return viewColTableMapper;
+    }
+
+    @Override
+    public ApsColumnTableMapper getColumnTableMapper() {
+        return columnTableMapper;
+    }
+
+
+    @Override
+    public PageResultVo<ApsSemiFinishedGoodsProductionPlanDto> getAllPage(Integer page, Integer size) {
         Integer apsTableVersion = getApsTableVersion(SchedulingResultType.APS_SEMI_FINISHED_GOODS_PRODUCTION_PLAN.getCode(), apsTableVersionService);
         Page<ApsSemiFinishedGoodsProductionPlan> goodsProductionPlanPage = new Page<>();
         goodsProductionPlanPage.setSize(size);
         goodsProductionPlanPage.setCurrent(page);
-        Page<ApsSemiFinishedGoodsProductionPlanDto> productionPlanPage = semiFinishedGoodsProductionPlanMapper.selectPageList(goodsProductionPlanPage, apsTableVersion);
-        PageListRestVo<ApsSemiFinishedGoodsProductionPlanDto> restVo = new PageListRestVo<>();
+        Page<ApsSemiFinishedGoodsProductionPlanDto> productionPlanPage = semiFGoodProductionPlanMapper.selectPageList(goodsProductionPlanPage, apsTableVersion);
+        PageResultVo<ApsSemiFinishedGoodsProductionPlanDto> restVo = new PageResultVo<>();
         restVo.setList(productionPlanPage.getRecords());
         restVo.setPages(productionPlanPage.getPages());
         restVo.setTotal(productionPlanPage.getTotal());
@@ -43,7 +70,16 @@ public class ApsSemiFinishedGoodsProductionPlanServiceImpl extends ServiceImpl<A
         restVo.setSize(size);
         return restVo;
     }
+
+    @Override
+    public ResultColPageVo<Object> semiFinishedGoodsFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
+        return commonFiltrate(page, size, SchedulingResultType.APS_SEMI_FINISHED_GOODS_PRODUCTION_PLAN, queryViewParams,
+                (objectPage, objectQueryWrapper) ->
+                        semiFGoodProductionPlanMapper.queryPageList(objectPage, objectQueryWrapper));
+    }
+
 }
+
 
 
 

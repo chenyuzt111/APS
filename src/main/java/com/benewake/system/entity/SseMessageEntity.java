@@ -1,8 +1,5 @@
 package com.benewake.system.entity;
 
-import io.swagger.models.auth.In;
-import lombok.Data;
-
 import java.util.Date;
 
 public class SseMessageEntity {

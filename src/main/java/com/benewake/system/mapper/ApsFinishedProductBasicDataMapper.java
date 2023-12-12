@@ -1,7 +1,10 @@
 package com.benewake.system.mapper;
 
-import com.benewake.system.entity.ApsFinishedProductBasicData;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.benewake.system.entity.ApsFinishedProductBasicData;
+import com.benewake.system.entity.dto.ApsFinishedProductBasicDataDto;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
 * @author ASUS
@@ -9,8 +12,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2023-10-20 11:27:46
 * @Entity com.benewake.system.entity.ApsFinishedProductBasicData
 */
+@Mapper
 public interface ApsFinishedProductBasicDataMapper extends BaseMapper<ApsFinishedProductBasicData> {
 
+    Page<ApsFinishedProductBasicDataDto> selectListPage(Page<ApsFinishedProductBasicDataDto> productBasicDataDtoPage);
 }
 
 

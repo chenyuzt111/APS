@@ -1,9 +1,7 @@
 package com.benewake.system.transfer;
 
 import com.benewake.system.entity.ApsInstallationBoard;
-import com.benewake.system.entity.ApsPcbaBurn;
 import com.benewake.system.entity.mes.MesInstallationBoard;
-import com.benewake.system.entity.mes.MesPcbaBurn;
 import org.springframework.stereotype.Component;
 
 @Component

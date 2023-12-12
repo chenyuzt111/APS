@@ -3,31 +3,31 @@ package com.benewake.system.service.impl;
 import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.benewake.system.controller.MachineController;
-import com.benewake.system.entity.dto.ApsProductFamilyMachineTableDto;
 import com.benewake.system.entity.ApsProductFamilyMachineTable;
+import com.benewake.system.entity.dto.ApsProductFamilyMachineTableDto;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.vo.ApsProductFamilyMachineTablePageVo;
 import com.benewake.system.entity.vo.ApsProductFamilyMachineTableParam;
 import com.benewake.system.entity.vo.ApsProductFamilyMachineTableVo;
 import com.benewake.system.entity.vo.DownloadParam;
+import com.benewake.system.excel.entity.ExcelMachineTableTemplate;
 import com.benewake.system.excel.entity.ExcelProductFamilyMachineTable;
+import com.benewake.system.excel.listener.MachineTableListener;
 import com.benewake.system.excel.transfer.ProductFamilyMachineTablesVoToExcel;
 import com.benewake.system.exception.BeneWakeException;
-import com.benewake.system.service.ApsProductFamilyMachineTableService;
 import com.benewake.system.mapper.ApsProductFamilyMachineTableMapper;
+import com.benewake.system.service.ApsProcessNamePoolService;
+import com.benewake.system.service.ApsProductFamilyMachineTableService;
 import com.benewake.system.utils.ResponseUtil;
-import com.benewake.system.utils.StringUtils;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -48,8 +48,15 @@ public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProd
 
     @Autowired
     private ProductFamilyMachineTablesVoToExcel productFamilyMachineTablesVoToExcel;
+
+    @Autowired
+    private ApsProcessNamePoolService processNamePoolService;
+
+    private LocalDateTime currentTime = null;
+
     @Override
     public ApsProductFamilyMachineTablePageVo getApsMachineTable(String name, Integer page, Integer size) {
+        currentTime = LocalDateTime.now();
         Page<ApsProductFamilyMachineTableDto> tablePage = getApsProductFamilyMachineTableDtoPage(page, size);
         List<ApsProductFamilyMachineTableVo> apsProductFamilyMachineTableVos = getApsProductFamilyMachineTableVos(page, size, tablePage);
         ApsProductFamilyMachineTablePageVo apsProductFamilyMachineTablePageVo = new ApsProductFamilyMachineTablePageVo();
@@ -87,15 +94,26 @@ public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProd
         apsProductFamilyMachineTableVo.setProcessName(dto.getProcessName());
         apsProductFamilyMachineTableVo.setFMachineConfiguration(dto.getFMachineConfiguration());
         apsProductFamilyMachineTableVo.setFWorkshop(dto.getFWorkshop());
-        apsProductFamilyMachineTableVo.setAvailable(dto.getAvailable());
-        apsProductFamilyMachineTableVo.setUnavailableDates(
-                StringUtils.isNotEmpty(dto.getUnavailableDates())
-                        ? Arrays.asList(dto.getUnavailableDates().split(","))
-                        : Collections.emptyList()
-        );
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        if (StringUtils.isEmpty(dto.getUnavailableDates())) {
+            apsProductFamilyMachineTableVo.setUnavailableDates(Collections.emptyList());
+            apsProductFamilyMachineTableVo.setAvailable("是");
+        } else {
+            List<String> list = Arrays.asList(dto.getUnavailableDates().split("\\s*,\\s*"));
+            apsProductFamilyMachineTableVo.setUnavailableDates(list);
+
+            LocalDateTime currentTime = LocalDateTime.now();
+            boolean isInAnyRange = list.stream()
+                    .map(range -> range.split(" to "))
+                    .anyMatch(parts -> currentTime.isAfter(LocalDateTime.parse(parts[0], formatter))
+                            && currentTime.isBefore(LocalDateTime.parse(parts[1], formatter)));
+            apsProductFamilyMachineTableVo.setAvailable(isInAnyRange ? "否" : "是");
+        }
+
         apsProductFamilyMachineTableVo.setVersion(dto.getVersion());
         return apsProductFamilyMachineTableVo;
     }
+
 
     @Override
     public boolean addOrUpdateApsMachineTable(ApsProductFamilyMachineTableParam apsProductFamilyMachineTable) {
@@ -123,6 +141,9 @@ public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProd
         if (CollectionUtils.isNotEmpty(unavailableDates)) {
             String unavailDate = String.join(",", unavailableDates);
             familyMachineTable.setUnavailableDates(unavailDate);
+            log.warn("不可用事件！！！！" + unavailDate);
+        } else {
+            familyMachineTable.setUnavailableDates("");
         }
         return familyMachineTable;
     }
@@ -152,6 +173,19 @@ public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProd
             }
             throw new BeneWakeException(e.getMessage());
         }
+    }
+
+    @Override
+    public Boolean saveDataByExcel(Integer type, MultipartFile file) {
+        try {
+            EasyExcel.read(file.getInputStream(), ExcelMachineTableTemplate.class,
+                            new MachineTableListener(this, processNamePoolService, type))
+                    .sheet().headRowNumber(1).doRead();
+        } catch (Exception e) {
+            log.error("保存机器表出错" + e.getMessage());
+            return false;
+        }
+        return true;
     }
 }
 

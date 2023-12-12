@@ -1,9 +1,7 @@
 package com.benewake.system.transfer;
 
 import com.benewake.system.entity.ApsCalibrationTests;
-import com.benewake.system.entity.ApsPcbaBurn;
 import com.benewake.system.entity.mes.MesCalibrationTests;
-import com.benewake.system.entity.mes.MesPcbaBurn;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,13 +12,13 @@ public class MesToApsCalibrationTests {
             return null;
         }
         ApsCalibrationTests apsCalibrationTests = new ApsCalibrationTests();
-        apsCalibrationTests.setProductionordernumber(mesCalibrationTests.getProductionOrderNumber());
-        apsCalibrationTests.setMaterialcode(mesCalibrationTests.getMaterialCode());
+        apsCalibrationTests.setProductionOrderNumber(mesCalibrationTests.getProductionOrderNumber());
+        apsCalibrationTests.setMaterialCode(mesCalibrationTests.getMaterialCode());
 //        apsCalibrationTests.setMaterialname(mesCalibrationTests.getMaterialName());
-        apsCalibrationTests.setBurnincompletionquantity(mesCalibrationTests.getBurnInCompletionQuantity());
-        apsCalibrationTests.setBurnqualifiedcount(mesCalibrationTests.getBurnQualifiedCount());
-        apsCalibrationTests.setUnburnQualifiedCount(mesCalibrationTests.getUnBurnQualifiedCount());
-        apsCalibrationTests.setBurnfixturenumber(mesCalibrationTests.getBurnFixtureNumber());
+        apsCalibrationTests.setBurnInCompletionQuantity(mesCalibrationTests.getBurnInCompletionQuantity());
+        apsCalibrationTests.setBurnQualifiedCount(mesCalibrationTests.getBurnQualifiedCount());
+        apsCalibrationTests.setUnBurnQualifiedCount(mesCalibrationTests.getUnBurnQualifiedCount());
+        apsCalibrationTests.setBurnFixtureNumber(mesCalibrationTests.getBurnFixtureNumber());
         apsCalibrationTests.setTotalNumber(mesCalibrationTests.getTotalNumber());
         apsCalibrationTests.setVersion(version);
 

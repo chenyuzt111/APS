@@ -1,12 +1,15 @@
 package com.benewake.system.entity.dto;
-import com.alibaba.fastjson.annotation.JSONField;
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  *
@@ -25,12 +28,14 @@ public class ApsOutRequestDto implements Serializable {
     /**
      * 物料编码
      */
+    @JsonProperty("materialCode")
     @TableField(value = "f_material_code")
     private String fMaterialCode;
 
     /**
      * 物料编码
      */
+    @JsonProperty("materialName")
     @TableField(value = "f_material_name")
     private String fMaterialName;
 
@@ -38,6 +43,8 @@ public class ApsOutRequestDto implements Serializable {
      * 归还日期
      */
 
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8") // 指定日期格式
+    @JsonProperty("returnDate")
     @TableField(value = "f_return_date")
     private Date fReturnDate;
 

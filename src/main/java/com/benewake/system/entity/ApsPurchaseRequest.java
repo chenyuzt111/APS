@@ -4,10 +4,11 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 
@@ -47,7 +48,7 @@ public class ApsPurchaseRequest implements Serializable {
      */
     @JsonProperty("arrivalDate")
     @TableField(value = "f_arrival_date")
-    private String fArrivalDate;
+    private Date fArrivalDate;
 
     /**
      * 版本号

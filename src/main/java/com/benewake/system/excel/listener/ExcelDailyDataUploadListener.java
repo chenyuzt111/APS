@@ -10,11 +10,15 @@ import com.benewake.system.excel.entity.ExcelDailyDataUploadTemplate;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsDailyDataUploadService;
 import com.benewake.system.service.ApsProcessNamePoolService;
+import com.benewake.system.utils.BenewakeStringUtils;
 import com.benewake.system.utils.ExcelUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -59,7 +63,7 @@ public class ExcelDailyDataUploadListener extends AnalysisEventListener<ExcelDai
     }
 
     private void handleAfterAnalysed() {
-        if (com.benewake.system.utils.StringUtils.isNotEmpty(processNameError.toString())) {
+        if (BenewakeStringUtils.isNotEmpty(processNameError.toString())) {
             throw new BeneWakeException(processNameError.append("在工序命名池中不存在！").toString());
         }
 

@@ -1,9 +1,13 @@
 package com.benewake.system.service.scheduling.result;
 
-import com.benewake.system.entity.ApsSemiFinishedGoodsProductionPlan;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.benewake.system.entity.ApsSemiFinishedGoodsProductionPlan;
 import com.benewake.system.entity.dto.ApsSemiFinishedGoodsProductionPlanDto;
-import com.benewake.system.entity.vo.PageListRestVo;
+import com.benewake.system.entity.vo.PageResultVo;
+import com.benewake.system.entity.vo.QueryViewParams;
+import com.benewake.system.entity.vo.ResultColPageVo;
+import com.benewake.system.service.ApsTableVersionService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
 * @author ASUS
@@ -12,5 +16,8 @@ import com.benewake.system.entity.vo.PageListRestVo;
 */
 public interface ApsSemiFinishedGoodsProductionPlanService extends IService<ApsSemiFinishedGoodsProductionPlan> ,ApsSchedulingResuleBase{
 
-    PageListRestVo<ApsSemiFinishedGoodsProductionPlanDto> getAllPage(Integer page, Integer size);
+    PageResultVo<ApsSemiFinishedGoodsProductionPlanDto> getAllPage(Integer page, Integer size);
+
+    ResultColPageVo<Object> semiFinishedGoodsFiltrate(Integer page, Integer size, QueryViewParams queryViewParams);
+
 }

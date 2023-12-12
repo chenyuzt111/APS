@@ -1,6 +1,5 @@
 package com.benewake.system.utils.threadpool;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import java.util.concurrent.*;

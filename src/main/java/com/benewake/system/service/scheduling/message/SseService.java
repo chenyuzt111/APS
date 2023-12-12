@@ -1,14 +1,14 @@
 package com.benewake.system.service.scheduling.message;
 
-import com.benewake.system.utils.HostHolder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.annotation.PreDestroy;
 import java.io.IOException;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Slf4j
 @Service
@@ -73,7 +73,7 @@ public class SseService {
             if (heartbeatTask != null) {
                 heartbeatTask.cancel(true);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("username：" + username + "排程发送消息失败 --message：" + message + "----原因：" + e.getMessage());
         }
     }

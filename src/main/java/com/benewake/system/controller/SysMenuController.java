@@ -2,10 +2,10 @@ package com.benewake.system.controller;
 
 import com.benewake.system.annotation.Log;
 import com.benewake.system.entity.Result;
+import com.benewake.system.entity.enums.BusinessType;
 import com.benewake.system.entity.system.SysMenu;
 import com.benewake.system.entity.system.SysRole;
 import com.benewake.system.entity.vo.AssginMenuVo;
-import com.benewake.system.entity.enums.BusinessType;
 import com.benewake.system.service.SysMenuService;
 import com.benewake.system.utils.HostHolder;
 import io.swagger.annotations.Api;

@@ -2,9 +2,7 @@ package com.benewake.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.benewake.system.entity.ApsImmediatelyInventory;
 import com.benewake.system.entity.ApsOutsourcedMaterial;
-import com.benewake.system.entity.Interface.ApsInventoryLockMultipleVersions;
 import com.benewake.system.entity.Interface.ApsOutsourcedMaterialMultipleVersions;
 import com.benewake.system.entity.Interface.VersionToChVersion;
 import com.benewake.system.entity.dto.ApsOutsourcedMaterialDto;

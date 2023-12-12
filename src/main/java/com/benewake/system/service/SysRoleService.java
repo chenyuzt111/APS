@@ -1,7 +1,6 @@
 package com.benewake.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.benewake.system.entity.system.ApsCol;
 import com.benewake.system.entity.system.SysRole;
 import com.benewake.system.entity.system.SysUser;
 import com.benewake.system.entity.vo.AssginRoleVo;

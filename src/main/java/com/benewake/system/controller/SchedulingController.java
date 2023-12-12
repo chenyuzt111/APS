@@ -6,7 +6,9 @@ import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.entity.enums.TableVersionState;
 import com.benewake.system.entity.vo.SchedulingParam;
 import com.benewake.system.redis.DistributedLock;
-import com.benewake.system.service.*;
+import com.benewake.system.service.ApsFileService;
+import com.benewake.system.service.InterfaceDataService;
+import com.benewake.system.service.PythonService;
 import com.benewake.system.utils.HostHolder;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,11 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 

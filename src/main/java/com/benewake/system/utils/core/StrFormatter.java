@@ -1,6 +1,6 @@
 package com.benewake.system.utils.core;
 
-import com.benewake.system.utils.StringUtils;
+import com.benewake.system.utils.BenewakeStringUtils;
 
 /**
  * 字符串格式化
@@ -29,7 +29,7 @@ public class StrFormatter
      */
     public static String format(final String strPattern, final Object... argArray)
     {
-        if (StringUtils.isEmpty(strPattern) || StringUtils.isEmpty(argArray))
+        if (BenewakeStringUtils.isEmpty(strPattern) || BenewakeStringUtils.isEmpty(argArray))
         {
             return strPattern;
         }

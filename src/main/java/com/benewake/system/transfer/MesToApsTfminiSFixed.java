@@ -1,8 +1,6 @@
 package com.benewake.system.transfer;
 
 import com.benewake.system.entity.ApsTfminiSFixed;
-import com.benewake.system.entity.ApsTfminiSPcbaBurn;
-import com.benewake.system.entity.mes.MesPcbaBurn;
 import com.benewake.system.entity.mes.MesTfminiSFixed;
 import org.springframework.stereotype.Component;
 

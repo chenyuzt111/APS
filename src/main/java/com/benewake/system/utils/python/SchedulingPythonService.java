@@ -2,20 +2,17 @@ package com.benewake.system.utils.python;
 
 
 import com.alibaba.fastjson2.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.benewake.system.entity.ApsProductionPlan;
-import com.benewake.system.entity.ApsSemiFinishedGoodsMaterialShortageAnalysis;
 import com.benewake.system.entity.ApsTableVersion;
 import com.benewake.system.entity.SseMessageEntity;
 import com.benewake.system.entity.enums.SchedulingResultType;
 import com.benewake.system.entity.enums.TableVersionState;
 import com.benewake.system.redis.DistributedLock;
-import com.benewake.system.service.scheduling.result.ApsProductionPlanService;
 import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.scheduling.message.SseService;
+import com.benewake.system.service.scheduling.result.ApsProductionPlanService;
 import com.benewake.system.service.scheduling.result.ApsSchedulingResuleBase;
 import com.benewake.system.utils.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
