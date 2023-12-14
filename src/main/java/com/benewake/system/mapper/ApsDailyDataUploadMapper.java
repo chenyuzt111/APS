@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsDailyDataUpload;
 import com.benewake.system.entity.dto.ApsDailyDataUploadDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 
 /**
@@ -18,8 +19,8 @@ public interface ApsDailyDataUploadMapper extends BaseMapper<ApsDailyDataUpload>
 
     Page<ApsDailyDataUploadDto> selectPageList(Page<ApsDailyDataUploadDto> uploadPage);
 
-    @Update("call insert_data_into_aps_fim_request1()")
-    void callInsertDataIntoApsFimRequest();
+    @Update("CALL insert_data_into_aps_fim_request1(#{a, jdbcType=INTEGER, mode=IN})")
+     void callInsertDataIntoApsFimRequest(@Param("a") int a);
 }
 
 

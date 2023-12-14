@@ -6,6 +6,7 @@ import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.entity.enums.TableVersionState;
 import com.benewake.system.entity.vo.SchedulingParam;
 import com.benewake.system.redis.DistributedLock;
+import com.benewake.system.service.ApsDailyDataUploadService;
 import com.benewake.system.service.ApsFileService;
 import com.benewake.system.service.InterfaceDataService;
 import com.benewake.system.service.PythonService;
@@ -46,6 +47,9 @@ public class SchedulingController {
 
     @Autowired
     private PythonService pythonService;
+
+    @Autowired
+    private ApsDailyDataUploadService apsDailyDataUploadService;
 
     @Autowired
     private DistributedLock distributedLock;
@@ -97,6 +101,7 @@ public class SchedulingController {
     @Scheduling(type = TableVersionState.SCHEDULING_ING)
     @PostMapping("/oneKeyScheduling")
     public Result oneKeyScheduling(@RequestBody SchedulingParam schedulingParam) {
+        apsDailyDataUploadService.callInsertDataIntoApsFimRequest(schedulingParam.getYg_delta());
         interfaceDataService.updateData(InterfaceDataType.getAllIds());
         pythonService.integrityChecker();
         pythonService.startScheduling(schedulingParam);
@@ -115,10 +120,13 @@ public class SchedulingController {
     @ApiOperation("获取排程界面的所有权")
     @PostMapping("/getPageLock")
     public Result getPageLock() {
+//        获取排程用户锁，成功的话返回ok
         if (distributedLock.acquireLock(SCHEDULING_USER_LOCK_KEY, hostHolder.getUser().getUsername())) {
             return Result.ok();
         } else {
+//            如果排程用户锁已被占用，则从redis中获取当前持有锁的用户名
             String username = redisTemplate.opsForValue().get(SCHEDULING_USER_LOCK_KEY);
+//       如果当前用户已经有了排程用户锁说明其正在使用界面，这时续期排程用户锁
             if(Objects.equals(username, hostHolder.getUser().getUsername())) {
                 distributedLock.startLockRenewalTask(SCHEDULING_USER_LOCK_KEY);
                 return Result.ok();
@@ -144,6 +152,7 @@ public class SchedulingController {
     public Result closeLock() {
         String username = hostHolder.getUser().getUsername();
         String redisUsername = redisTemplate.opsForValue().get(SCHEDULING_USER_LOCK_KEY);
+//        如果redis中获取到的锁的用户名与当前用户名相同有权力关锁
         if (username.equals(redisUsername)) {
             distributedLock.releaseLock(SCHEDULING_USER_LOCK_KEY ,username);
             return Result.ok();

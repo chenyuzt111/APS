@@ -112,7 +112,7 @@ public class ApsDailyDataUploadServiceImpl extends ServiceImpl<ApsDailyDataUploa
     @Override
     public Boolean removeByIdList(List<Integer> ids) {
         removeBatchByIds(ids);
-        dailyDataUploadMapper.callInsertDataIntoApsFimRequest();
+
         return true;
     }
 
@@ -138,6 +138,11 @@ public class ApsDailyDataUploadServiceImpl extends ServiceImpl<ApsDailyDataUploa
         pageResultVo.setTotal(dailyDataUploadPage.getTotal());
         pageResultVo.setPage(Math.toIntExact(dailyDataUploadPage.getCurrent()));
         return pageResultVo;
+    }
+
+
+    public void callInsertDataIntoApsFimRequest(int a) {
+        ApsDailyDataUploadMapper.callInsertDataIntoApsFimRequest(a);
     }
 }
 
