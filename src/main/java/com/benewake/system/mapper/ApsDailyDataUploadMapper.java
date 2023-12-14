@@ -20,7 +20,7 @@ public interface ApsDailyDataUploadMapper extends BaseMapper<ApsDailyDataUpload>
     Page<ApsDailyDataUploadDto> selectPageList(Page<ApsDailyDataUploadDto> uploadPage);
 
     @Update("CALL insert_data_into_aps_fim_request1(#{a, jdbcType=INTEGER, mode=IN})")
-     void callInsertDataIntoApsFimRequest(@Param("a") int a);
+    void callInsertDataIntoApsFimRequest(@Param("a") int a);
 }
 
 

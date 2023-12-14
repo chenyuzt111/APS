@@ -141,8 +141,9 @@ public class ApsDailyDataUploadServiceImpl extends ServiceImpl<ApsDailyDataUploa
     }
 
 
-    public void callInsertDataIntoApsFimRequest(int a) {
-        ApsDailyDataUploadMapper.callInsertDataIntoApsFimRequest(a);
+    @Override
+    public void InsertDataIntoApsFimRequest(int a) {
+        dailyDataUploadMapper.callInsertDataIntoApsFimRequest(a);
     }
 }
 

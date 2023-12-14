@@ -28,5 +28,5 @@ public interface ApsDailyDataUploadService extends IService<ApsDailyDataUpload> 
 
     Boolean removeByIdList(List<Integer> ids);
 
-    void callInsertDataIntoApsFimRequest(int a);
+    void InsertDataIntoApsFimRequest(int a);
 }

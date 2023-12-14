@@ -101,7 +101,7 @@ public class SchedulingController {
     @Scheduling(type = TableVersionState.SCHEDULING_ING)
     @PostMapping("/oneKeyScheduling")
     public Result oneKeyScheduling(@RequestBody SchedulingParam schedulingParam) {
-        apsDailyDataUploadService.callInsertDataIntoApsFimRequest(schedulingParam.getYg_delta());
+        apsDailyDataUploadService.InsertDataIntoApsFimRequest(schedulingParam.getYg_delta());
         interfaceDataService.updateData(InterfaceDataType.getAllIds());
         pythonService.integrityChecker();
         pythonService.startScheduling(schedulingParam);
