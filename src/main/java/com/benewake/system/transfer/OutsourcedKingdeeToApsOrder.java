@@ -14,7 +14,6 @@ public class OutsourcedKingdeeToApsOrder {
         ApsOrder apsOrder = new ApsOrder();
         apsOrder.setBillNo(kingdeeOutsourcedOrder.getFBillNo());
         apsOrder.setBillType(kingdeeOutsourcedOrder.getFBillType());
-        apsOrder.setBillTypeId(kingdeeOutsourcedOrder.getFBillType());
         apsOrder.setMaterialId(kingdeeOutsourcedOrder.getFMaterialId());
         apsOrder.setQty(kingdeeOutsourcedOrder.getFQty());
         apsOrder.setStatus(kingdeeOutsourcedOrder.getFStatus());

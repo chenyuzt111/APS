@@ -16,5 +16,4 @@ public interface ApsSemiFinishedGoodsMaterialShortageAnalysisService extends ISe
 
     PageResultVo<ApsSemiFinishedGoodsMaterialShortageAnalysisDto> getAllPage(Integer page, Integer size);
 
-    ResultColPageVo<Object> semiMaterialShortageFiltrate(Integer page, Integer size , QueryViewParams queryViewParams);
 }

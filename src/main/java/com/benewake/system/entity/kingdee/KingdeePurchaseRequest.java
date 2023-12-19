@@ -7,6 +7,11 @@ public class KingdeePurchaseRequest {
 
     /**
      *
+    @ExcelProperty("单据编号")
+     */
+    private String FBillNo;
+    /**
+     *
     @ExcelProperty("物料编码")
      */
     private String FMaterialId;

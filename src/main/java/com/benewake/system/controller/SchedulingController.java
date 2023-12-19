@@ -61,7 +61,6 @@ public class SchedulingController {
     private StringRedisTemplate redisTemplate;
 
 
-
     @Autowired
     private ApsFileService apsFileService;
 
@@ -120,14 +119,14 @@ public class SchedulingController {
     @ApiOperation("获取排程界面的所有权")
     @PostMapping("/getPageLock")
     public Result getPageLock() {
-//        获取排程用户锁，成功的话返回ok
+        //获取排程用户锁，成功的话返回ok
         if (distributedLock.acquireLock(SCHEDULING_USER_LOCK_KEY, hostHolder.getUser().getUsername())) {
             return Result.ok();
         } else {
-//            如果排程用户锁已被占用，则从redis中获取当前持有锁的用户名
+            //如果排程用户锁已被占用，则从redis中获取当前持有锁的用户名
             String username = redisTemplate.opsForValue().get(SCHEDULING_USER_LOCK_KEY);
-//       如果当前用户已经有了排程用户锁说明其正在使用界面，这时续期排程用户锁
-            if(Objects.equals(username, hostHolder.getUser().getUsername())) {
+            //如果当前用户已经有了排程用户锁说明其正在使用界面，这时续期排程用户锁
+            if (Objects.equals(username, hostHolder.getUser().getUsername())) {
                 distributedLock.startLockRenewalTask(SCHEDULING_USER_LOCK_KEY);
                 return Result.ok();
             }
@@ -154,7 +153,7 @@ public class SchedulingController {
         String redisUsername = redisTemplate.opsForValue().get(SCHEDULING_USER_LOCK_KEY);
 //        如果redis中获取到的锁的用户名与当前用户名相同有权力关锁
         if (username.equals(redisUsername)) {
-            distributedLock.releaseLock(SCHEDULING_USER_LOCK_KEY ,username);
+            distributedLock.releaseLock(SCHEDULING_USER_LOCK_KEY, username);
             return Result.ok();
         }
         return Result.fail();

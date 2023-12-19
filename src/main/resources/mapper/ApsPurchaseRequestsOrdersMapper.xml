@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benewake.system.mapper.ApsPurchaseRequestsOrdersMapper">
+
+    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsPurchaseRequestsOrders">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="materialId" column="material_id" jdbcType="VARCHAR"/>
+        <result property="materialName" column="material_name" jdbcType="VARCHAR"/>
+        <result property="baseUnitQty" column="base_unit_qty" jdbcType="VARCHAR"/>
+        <result property="arrivalDate" column="arrival_date" jdbcType="TIMESTAMP"/>
+        <result property="formName" column="form_name" jdbcType="VARCHAR"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="apsPurchaseRequestsOrdersDtoResultMap"
+               type="com.benewake.system.entity.dto.ApsPurchaseRequestsOrdersDto">
+        <id property="id" column="id"/>
+        <result property="billNo" column="bill_no"/>
+        <result property="materialId" column="material_id"/>
+        <result property="materialName" column="material_name"/>
+        <result property="baseUnitQty" column="base_unit_qty"/>
+        <result property="arrivalDate" column="arrival_date"/>
+        <result property="formName" column="form_name"/>
+        <result property="chVersion" column="ch_version_name"/>
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+        id,bill_no,material_id,material_name,
+        base_unit_qty,arrival_date,form_name,
+        version
+    </sql>
+    <insert id="insertVersionIncr">
+        INSERT INTO aps_purchase_requests_orders (bill_no,material_id, material_name, base_unit_qty, arrival_date, form_name,
+                                                  version)
+        SELECT bill_no,
+               material_id,
+               material_name,
+               base_unit_qty,
+               arrival_date,
+               form_name,
+               version + 1
+        FROM aps_purchase_requests_orders
+        WHERE version = (SELECT MAX(version) FROM aps_purchase_requests_orders);
+    </insert>
+    <select id="selectPageLists" resultMap="apsPurchaseRequestsOrdersDtoResultMap">
+        SELECT
+        ord.id,bill_no,ord.material_id,map.f_material_name as material_name,
+        base_unit_qty,arrival_date,form_name,
+        ch_version_name
+        FROM
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        END AS ch_version_name
+        FROM aps_purchase_requests_orders
+        WHERE (version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>)
+        ) AS ord
+        LEFT JOIN
+        aps_material_name_mapping AS map ON ord.material_id = map.f_material_id
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
+    <select id="searchLike" resultMap="apsPurchaseRequestsOrdersDtoResultMap">
+        SELECT
+        distinct ${ew.sqlSelect}
+        FROM
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        END AS ch_version_name
+        FROM aps_purchase_requests_orders
+        WHERE (version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>)
+        ) AS ord
+        LEFT JOIN
+        aps_material_name_mapping AS map ON ord.material_id = map.f_material_id
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
+</mapper>

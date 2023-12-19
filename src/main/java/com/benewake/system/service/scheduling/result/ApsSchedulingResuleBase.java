@@ -3,11 +3,9 @@ package com.benewake.system.service.scheduling.result;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.benewake.system.entity.*;
-import com.benewake.system.entity.dto.ApsProductionPlanDto;
 import com.benewake.system.entity.enums.SchedulingResultType;
 import com.benewake.system.entity.enums.TableVersionState;
 import com.benewake.system.entity.vo.QueryViewParams;
@@ -25,13 +23,20 @@ import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.benewake.system.utils.BenewakeStringUtils.removeAs;
+import static org.apache.commons.lang3.StringUtils.indexOf;
 
 public interface ApsSchedulingResuleBase {
 
     QueryStrategyFactory queryStrategyFactory = new QueryStrategyFactory();
+
+    default ResultColPageVo<Object> getResultFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
+        throw new BeneWakeException("当前表不能使用该查询");
+    }
 
     default Integer getApsTableVersion(Integer code, ApsTableVersionService apsTableVersionService) {
         LambdaQueryWrapper<ApsTableVersion> apsTableVersionLambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -94,14 +99,14 @@ public interface ApsSchedulingResuleBase {
 
     default ResultColPageVo<Object> commonFiltrate(Integer page, Integer size, SchedulingResultType schedulingResultType, QueryViewParams queryViewParams,
                                                    BiFunction<Page<Object>, QueryWrapper<Object>, Page<Object>> function) {
-
         Long viewId = queryViewParams != null ? queryViewParams.getViewId() : null;
         List<ViewColParam> cols = queryViewParams != null ? queryViewParams.getCols() : null;
         Integer apsTableVersion = getApsTableVersion(schedulingResultType.getCode(), getTableVersionService());
         // 构造查询条件 根据列后面的值 构造queryWrapper
         // 如果列是null 那么 就有可能 是视图或者 全部页
-        if (CollectionUtils.isEmpty(cols)) {
+        if (cols == null) {
             List<ColumnVo> columnVos = Collections.emptyList();
+            List<SortVo> sortVos = Collections.emptyList();
             QueryWrapper<Object> queryWrapper = new QueryWrapper<>().eq("version", apsTableVersion);
             // 如果是视图拼装视图自带的筛选条件
             if (viewId != null) {
@@ -109,42 +114,69 @@ public interface ApsSchedulingResuleBase {
                 queryWrapper = buildQueryWrapper(viewColTables, apsTableVersion);
                 // 构造返回给前端的列
                 columnVos = buildColumnVos(viewColTables);
+                sortVos = buildSortVos(viewColTables);
             }
             // 构造分页查询条件
             Page<Object> apsProductionPlanPage = buildPage(page, size);
             Page<Object> planPage = function.apply(apsProductionPlanPage, queryWrapper);
-            return buildResultColPageVo(columnVos, planPage);
+            return buildResultColPageVo(columnVos, sortVos, planPage);
         } else {
             // 如果列不是null 那么他有可能是视图 或者全部页 不管是视图还是全部页 都去拼sql
-            List<Integer> colIds = cols.stream().map(ViewColParam::getColId).collect(Collectors.toList());
-            List<ApsColumnTable> columnTables = getColumnTableMapper().selectBatchIds(colIds);
-            Map<Integer, ViewColParam> colIdMap = cols.stream()
-                    .collect(Collectors.toMap(ViewColParam::getColId, x -> x, (existing, replacement) -> existing));
-            Map<Integer, ApsColumnTable> colIdToEnName = columnTables.stream()
-                    .collect(Collectors.toMap(ApsColumnTable::getId, x -> x, (existing, replacement) -> existing));
-            QueryWrapper<Object> queryWrapper = buildQueryWrapper(colIdMap, colIdToEnName, apsTableVersion);
+            List<Integer> colIds = cols.stream().map(ViewColParam::getColId).filter(Objects::nonNull).collect(Collectors.toList());
+            List<ApsColumnTable> columnTables;
+            QueryWrapper<Object> queryWrapper = new QueryWrapper<>().eq("version", apsTableVersion);
+            if (CollectionUtils.isNotEmpty(colIds)) {
+                columnTables = getColumnTableMapper().selectBatchIds(colIds);
+                Map<Integer, List<ViewColParam>> colIdMap = cols.stream()
+                        .filter(viewColParam -> viewColParam.getColId() != null)
+                        .collect(Collectors.groupingBy(ViewColParam::getColId));
+                Map<Integer, ApsColumnTable> colIdToEnName = columnTables.stream()
+                        .collect(Collectors.toMap(ApsColumnTable::getId, x -> x, (existing, replacement) -> existing));
+                queryWrapper = buildQueryWrapper(colIdMap, colIdToEnName, apsTableVersion);
+            }
+
             // 构造分页查询条件
             Page<Object> apsProductionPlanPage = buildPage(page, size);
             Page<Object> planPage = function.apply(apsProductionPlanPage, queryWrapper);
             // 如果是点击查询 就不需要回填搜素框
-            return buildResultColPageVo(Collections.emptyList(), planPage);
+            return buildResultColPageVo(Collections.emptyList(), Collections.emptyList(), planPage);
         }
+    }
+
+    default List<SortVo> buildSortVos(List<ViewColumnDto> viewColTables) {
+        return viewColTables.stream().filter(x -> {
+            String valueOperator = x.getValueOperator();
+            return StringUtils.isNotEmpty(valueOperator) &&
+                    (valueOperator.equals("ascending") || (valueOperator.equals("descending")));
+        }).map(x -> {
+                    SortVo sortVo = new SortVo();
+                    sortVo.setId(Math.toIntExact(x.getId()));
+                    sortVo.setColId(Math.toIntExact(x.getColId()));
+                    sortVo.setChColName(x.getChColName());
+                    sortVo.setVoColName(x.getVoColName());
+                    sortVo.setValueOperator(x.getValueOperator());
+                    sortVo.setColValue(x.getColValue());
+                    sortVo.setColSeq(x.getColSeq());
+                    return sortVo;
+                }
+        ).collect(Collectors.toList());
     }
 
     default QueryWrapper<Object> buildQueryWrapper(List<ViewColumnDto> viewColTables, Integer apsTableVersion) {
         QueryWrapper<Object> queryWrapper = new QueryWrapper<>().eq("version", apsTableVersion);
-
+        StringBuilder selectCol = new StringBuilder();
         for (ViewColumnDto viewColTable : viewColTables) {
             String valueOperator = viewColTable.getValueOperator();
             String enColName = viewColTable.getEnColName();
             String colValue = viewColTable.getColValue();
-
-            if (StringUtils.isNotEmpty(valueOperator)) {
+            selectCol.append(",").append(enColName);
+            if (StringUtils.isNotEmpty(valueOperator) && StringUtils.isNotEmpty(enColName)) {
                 queryStrategyFactory.getStrategy(valueOperator)
-                        .apply(queryWrapper, enColName, colValue);
+                        .apply(queryWrapper, removeAs(enColName), colValue);
             }
         }
 
+        queryWrapper.select(selectCol.toString());
         return queryWrapper;
     }
 
@@ -155,27 +187,33 @@ public interface ApsSchedulingResuleBase {
             columnVo.setColId(Math.toIntExact(x.getColId()));
             columnVo.setChColName(x.getChColName());
             columnVo.setVoColName(x.getVoColName());
-            columnVo.setValueOperator(x.getValueOperator());
-            columnVo.setColValue(x.getColValue());
+            String valueOperator = x.getValueOperator();
+            if (valueOperator != null && (valueOperator.equals("ascending") || valueOperator.equals("descending"))) {
+                columnVo.setValueOperator(null);
+                columnVo.setColValue(null);
+            } else {
+                columnVo.setValueOperator(x.getValueOperator());
+                columnVo.setColValue(x.getColValue());
+            }
             columnVo.setColSeq(x.getColSeq());
             return columnVo;
         }).collect(Collectors.toList());
     }
 
-    default QueryWrapper<Object> buildQueryWrapper(Map<Integer, ViewColParam> colIdMap, Map<Integer, ApsColumnTable> colIdToEnName, Integer apsTableVersion) {
+    default QueryWrapper<Object> buildQueryWrapper(Map<Integer, List<ViewColParam>> colIdMap, Map<Integer, ApsColumnTable> colIdToEnName, Integer apsTableVersion) {
         QueryWrapper<Object> queryWrapper = new QueryWrapper<>().eq("version", apsTableVersion);
-        for (Map.Entry<Integer, ViewColParam> colParamEntry : colIdMap.entrySet()) {
-            ViewColParam colParam = colParamEntry.getValue();
-            Integer colId = colParam.getColId();
-            ApsColumnTable apsColumnTable = colIdToEnName.get(colId);
-            String enColName = apsColumnTable.getEnColName();
-            String valueOperator = colParam.getValueOperator();
-            String colValue = colParam.getColValue();
-            if (StringUtils.isNotEmpty(valueOperator)) {
-                queryStrategyFactory.getStrategy(valueOperator)
-                        .apply(queryWrapper, enColName, colValue);
-            }
-        }
+        colIdMap.forEach((colId, viewColParams) ->
+                viewColParams.forEach(viewColParam -> {
+                    ApsColumnTable apsColumnTable = colIdToEnName.get(colId);
+                    String enColName = apsColumnTable.getEnColName();
+                    String valueOperator = viewColParam.getValueOperator();
+                    String colValue = viewColParam.getColValue();
+
+                    if (StringUtils.isNotEmpty(valueOperator)) {
+                        queryStrategyFactory.getStrategy(valueOperator)
+                                .apply(queryWrapper, removeAs(enColName), colValue);
+                    }
+                }));
         return queryWrapper;
     }
 
@@ -186,9 +224,10 @@ public interface ApsSchedulingResuleBase {
         return apsProductionPlanPage;
     }
 
-    default ResultColPageVo<Object> buildResultColPageVo(List<ColumnVo> columnVos, Page<Object> planPage) {
+    default ResultColPageVo<Object> buildResultColPageVo(List<ColumnVo> columnVos, List<SortVo> sortVos, Page<Object> planPage) {
         ResultColPageVo<Object> productionPlanDtoResultColPageVo = new ResultColPageVo<>();
         productionPlanDtoResultColPageVo.setList(planPage.getRecords());
+        productionPlanDtoResultColPageVo.setSort(sortVos);
         productionPlanDtoResultColPageVo.setColumnTables(columnVos);
         productionPlanDtoResultColPageVo.setPage(Math.toIntExact(planPage.getCurrent()));
         productionPlanDtoResultColPageVo.setSize(Math.toIntExact(planPage.getSize()));
@@ -197,4 +236,7 @@ public interface ApsSchedulingResuleBase {
         return productionPlanDtoResultColPageVo;
     }
 
+    default List<Object> searchLike(QueryWrapper<Object> queryWrapper) {
+        throw new BeneWakeException("当前表不能使用该功能");
+    }
 }

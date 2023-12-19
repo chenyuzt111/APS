@@ -46,7 +46,7 @@ public class ApsRawMaterialBasicDataServiceImpl extends ServiceImpl<ApsRawMateri
 
     @Override
     public PageResultVo<ApsRawMaterialBasicDataVo> getRawMaterial(String name, Integer page, Integer size) {
-        Page<ApsRawMaterialBasicDataDto> materialBasicDataVoPage = new Page<ApsRawMaterialBasicDataDto>().setCurrent(page).setSize(size);
+        Page<ApsRawMaterialBasicDataDto> materialBasicDataVoPage = new Page<>(page, size);
         Page<ApsRawMaterialBasicDataDto> voPage = rawMaterialBasicDataMapper.selectListPage(materialBasicDataVoPage);
         PageResultVo<ApsRawMaterialBasicDataVo> voPageResultVo = buildPageListRestVo(voPage);
         return voPageResultVo;
@@ -65,7 +65,7 @@ public class ApsRawMaterialBasicDataServiceImpl extends ServiceImpl<ApsRawMateri
     @Override
     public void downloadRawMaterial(HttpServletResponse response, DownloadParam downloadParam) {
         try {
-            ResponseUtil.setFileResp(response ,"原材料数据导出");
+            ResponseUtil.setFileResp(response, "原材料数据导出");
             PageResultVo<ApsRawMaterialBasicDataVo> rawMaterial = null;
             if (downloadParam.getType() == ExcelOperationEnum.ALL_PAGES.getCode()) {
                 long size = this.count(null);
@@ -74,7 +74,7 @@ public class ApsRawMaterialBasicDataServiceImpl extends ServiceImpl<ApsRawMateri
                 rawMaterial = getRawMaterial(null, downloadParam.getPage(), downloadParam.getSize());
             }
             List<ApsRawMaterialBasicDataVo> list = rawMaterial.getList();
-            EasyExcel.write(response.getOutputStream() ,ApsRawMaterialBasicDataVo.class)
+            EasyExcel.write(response.getOutputStream(), ApsRawMaterialBasicDataVo.class)
                     .sheet("sheet1").registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
                     .doWrite(list);
         } catch (Exception e) {
@@ -86,8 +86,8 @@ public class ApsRawMaterialBasicDataServiceImpl extends ServiceImpl<ApsRawMateri
     @Override
     public Boolean saveDataByExcel(Integer type, MultipartFile file) {
         try {
-            EasyExcel.read(file.getInputStream() , ExcelRawMaterialBasicDataTemplate.class
-                            ,new RawMaterialListener(excelRawMaterialToPo ,type ,this))
+            EasyExcel.read(file.getInputStream(), ExcelRawMaterialBasicDataTemplate.class
+                            , new RawMaterialListener(excelRawMaterialToPo, type, this))
                     .sheet().headRowNumber(1).doRead();
         } catch (Exception e) {
             if (!(e instanceof BeneWakeException)) {

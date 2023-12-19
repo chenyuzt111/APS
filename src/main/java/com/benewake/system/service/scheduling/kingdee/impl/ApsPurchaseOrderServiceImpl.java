@@ -3,12 +3,14 @@ package com.benewake.system.service.scheduling.kingdee.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsPurchaseOrder;
+import com.benewake.system.entity.ApsPurchaseRequestsOrders;
 import com.benewake.system.entity.dto.ApsPurchaseOrderDto;
 import com.benewake.system.entity.kingdee.KingdeePurchaseOrder;
 import com.benewake.system.entity.kingdee.transfer.CreateIdToName;
 import com.benewake.system.entity.kingdee.transfer.MaterialIdToName;
 import com.benewake.system.mapper.ApsPurchaseOrderMapper;
 import com.benewake.system.service.scheduling.kingdee.ApsPurchaseOrderService;
+import com.benewake.system.service.scheduling.kingdee.ApsPurchaseRequestsOrdersBaseService;
 import com.benewake.system.transfer.KingdeeToApsPurchaseOrder;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
@@ -27,63 +29,13 @@ import java.util.Map;
  * @createDate 2023-10-26 13:58:33
  */
 @Service
-public class ApsPurchaseOrderServiceImpl extends ServiceImpl<ApsPurchaseOrderMapper, ApsPurchaseOrder>
-        implements ApsPurchaseOrderService {
+public class ApsPurchaseOrderServiceImpl extends ApsPurchaseRequestsOrdersBaseService implements ApsPurchaseOrderService {
 
     @Autowired
     private K3CloudApi api;
 
     @Autowired
     private KingdeeToApsPurchaseOrder kingdeeToApsPurchaseOrder;
-
-    @Autowired
-    private ApsPurchaseOrderMapper apsPurchaseOrderMapper;
-
-    @Override
-    public Boolean updateDataVersions() throws Exception {
-        Integer maxVersionIncr = this.getMaxVersionIncr();
-        List<KingdeePurchaseOrder> result = getKingdeePurchaseOrders();
-        // 物料映射表
-        Map<String, String> materialIdToNumber = getMaterialIdToNumber();
-        //转换
-        List<ApsPurchaseOrder> apsPurchaseOrders = new ArrayList<>();
-        for (KingdeePurchaseOrder kingdeePurchaseOrder : result) {
-            // 信息替换
-            kingdeePurchaseOrder.setFMaterialId(materialIdToNumber.get(kingdeePurchaseOrder.getFMaterialId()));
-            ApsPurchaseOrder apsPurchaseOrder = kingdeeToApsPurchaseOrder.convert(kingdeePurchaseOrder, maxVersionIncr);
-            apsPurchaseOrders.add(apsPurchaseOrder);
-        }
-        if (CollectionUtils.isEmpty(apsPurchaseOrders)) {
-            ApsPurchaseOrder apsPurchaseOrder = new ApsPurchaseOrder();
-            apsPurchaseOrder.setVersion(maxVersionIncr);
-            return save(apsPurchaseOrder);
-        }
-        return saveBatch(apsPurchaseOrders);
-    }
-
-    @Override
-    public void insertVersionIncr() {
-        apsPurchaseOrderMapper.insertSelectVersionIncr();
-    }
-
-    @Override
-    public Page selectPageList(Page page, List tableVersionList) {
-        Page<ApsPurchaseOrderDto> apsPurchaseOrderDtoPage = apsPurchaseOrderMapper.selectPageList(page, tableVersionList);
-        return apsPurchaseOrderDtoPage;
-    }
-
-    private Map<String, String> getMaterialIdToNumber() throws Exception {
-        QueryParam queryParam;
-        queryParam = new QueryParam();
-        queryParam.setFormId("BD_MATERIAL");
-        queryParam.setFieldKeys("FMaterialId,FNumber");
-        List<MaterialIdToName> midToName = api.executeBillQuery(queryParam, MaterialIdToName.class);
-        Map<String, String> mtn = new HashMap<>();
-        midToName.forEach(c -> {
-            mtn.put(c.getFMaterialId(), c.getFNumber());
-        });
-        return mtn;
-    }
 
     private List<KingdeePurchaseOrder> getKingdeePurchaseOrders() throws Exception {
         QueryParam queryParam = new QueryParam();
@@ -107,6 +59,26 @@ public class ApsPurchaseOrderServiceImpl extends ServiceImpl<ApsPurchaseOrderMap
         return result;
     }
 
+    @Override
+    public String getServiceName() {
+        return "采购订单列表";
+    }
+
+    @Override
+    public List<ApsPurchaseRequestsOrders> getKingdeeDates() throws Exception {
+        List<KingdeePurchaseOrder> result = getKingdeePurchaseOrders();
+        // 物料映射表
+        Map<String, String> materialIdToNumber = getMaterialIdToNumberMap();
+        //转换
+        List<ApsPurchaseRequestsOrders> apsPurchaseOrders = new ArrayList<>();
+        for (KingdeePurchaseOrder kingdeePurchaseOrder : result) {
+            // 信息替换
+            kingdeePurchaseOrder.setFMaterialId(materialIdToNumber.get(kingdeePurchaseOrder.getFMaterialId()));
+            ApsPurchaseRequestsOrders apsPurchaseOrder = kingdeeToApsPurchaseOrder.convert(kingdeePurchaseOrder);
+            apsPurchaseOrders.add(apsPurchaseOrder);
+        }
+        return apsPurchaseOrders;
+    }
 }
 
 

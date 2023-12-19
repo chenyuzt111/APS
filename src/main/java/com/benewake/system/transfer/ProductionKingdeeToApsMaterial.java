@@ -1,7 +1,6 @@
 package com.benewake.system.transfer;
 
 import com.benewake.system.entity.ApsMaterial;
-import com.benewake.system.entity.ApsProductionMaterial;
 import com.benewake.system.entity.kingdee.KingdeeProductionMaterial;
 import org.springframework.stereotype.Component;
 
@@ -13,14 +12,14 @@ public class ProductionKingdeeToApsMaterial {
             return null;
         }
         ApsMaterial apsMaterial = new ApsMaterial();
-        apsMaterial.setFMaterialId(kingdeeProductionMaterial.getFMaterialID());
-        apsMaterial.setFSubReqBillNo(kingdeeProductionMaterial.getFMOBillNO());
-        apsMaterial.setFMaterialId2(kingdeeProductionMaterial.getFMaterialID2());
-        apsMaterial.setFMaterialType(kingdeeProductionMaterial.getFMaterialType());
-        apsMaterial.setFMustQty(kingdeeProductionMaterial.getFMustQty());
-        apsMaterial.setFPickedQty(kingdeeProductionMaterial.getFPickedQty());
-        apsMaterial.setFGoodReturnQty(kingdeeProductionMaterial.getFGoodReturnQty());
-        apsMaterial.setFProcessDefectReturnQty(kingdeeProductionMaterial.getFProcessDefectReturnQty());
+        apsMaterial.setMaterialId(kingdeeProductionMaterial.getFMaterialID());
+        apsMaterial.setSubReqBillNo(kingdeeProductionMaterial.getFMOBillNO());
+        apsMaterial.setMaterialId2(kingdeeProductionMaterial.getFMaterialID2());
+        apsMaterial.setMaterialType(kingdeeProductionMaterial.getFMaterialType());
+        apsMaterial.setMustQty(kingdeeProductionMaterial.getFMustQty());
+        apsMaterial.setPickedQty(kingdeeProductionMaterial.getFPickedQty());
+        apsMaterial.setGoodReturnQty(kingdeeProductionMaterial.getFGoodReturnQty());
+        apsMaterial.setProcessDefectReturnQty(kingdeeProductionMaterial.getFProcessDefectReturnQty());
         apsMaterial.setFormName("生产用料清单列表");
         apsMaterial.setVersion(null);
 

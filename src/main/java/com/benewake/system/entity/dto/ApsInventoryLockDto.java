@@ -26,40 +26,28 @@ public class ApsInventoryLockDto implements Serializable {
 
     @ColumnWidth(20) 
     @ExcelProperty("物料编码")
-    @JsonProperty("materialId")
-    @TableField(value = "f_material_id")
-    private String fMaterialId;
+    private String materialId;
 
     @ColumnWidth(34)
     @ExcelProperty("物料名称")
-    @JsonProperty("materialName")
-    @TableField(value = "f_material_name")
-    private String fMaterialName;
+    private String materialName;
 
     @ColumnWidth(20) 
     @ExcelProperty("到期日")
-    @JsonProperty("expiryDate")
-    @TableField(value = "f_expiry_date")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8") // 指定日期格式
-    private Date fExpiryDate;
+    private Date expiryDate;
 
     @ColumnWidth(15) 
     @ExcelProperty("锁库数量")
-    @JsonProperty("lockQty")
-    @TableField(value = "f_lock_qty")
-    private Integer fLockQty;
+    private Integer lockQty;
 
     @ColumnWidth(20) 
     @ExcelProperty("批号")
-    @JsonProperty("lot")
-    @TableField(value = "f_lot")
-    private String fLot;
+    private String lot;
 
     @ColumnWidth(15) 
     @ExcelProperty("版本号")
-    @JsonProperty("chVersion")
-    @TableField(value = "version")
-    private String version;
+    private String chVersion;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

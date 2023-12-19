@@ -1,9 +1,10 @@
 package com.benewake.system.service;
 
-import com.benewake.system.entity.vo.DownloadParam;
+import com.benewake.system.entity.vo.DownloadViewParams;
 import com.benewake.system.entity.vo.PageResultVo;
 import com.benewake.system.entity.vo.QueryViewParams;
 import com.benewake.system.entity.vo.ResultColPageVo;
+import com.benewake.system.entity.vo.baseParam.SearchLikeParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -19,11 +20,13 @@ public interface InterfaceService {
 
     Boolean delete(List<Integer> ids, Integer type);
 
-    void downloadProcessCapacity(HttpServletResponse response, Integer type, DownloadParam downloadParam);
+    void downloadInterfaceDate(HttpServletResponse response, DownloadViewParams downloadParam);
 
     void downloadInterfaceTemplate(Integer type, HttpServletResponse response);
 
     Boolean importInterfaceData(Integer code, Integer type, MultipartFile file);
 
-    ResultColPageVo<Object> getPageFiltrate(Integer page, Integer size, Integer type, QueryViewParams queryViewParams);
+    ResultColPageVo<Object> getPageFiltrate(Integer page, Integer size, QueryViewParams queryViewParams);
+
+    List<Object> searchLike(SearchLikeParam searchLikeParam);
 }

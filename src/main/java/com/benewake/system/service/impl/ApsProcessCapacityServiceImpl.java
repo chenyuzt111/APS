@@ -2,15 +2,14 @@ package com.benewake.system.service.impl;
 
 import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.*;
 import com.benewake.system.entity.dto.ApsProcessCapacityDto;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
-import com.benewake.system.entity.vo.ApsProcessCapacityListVo;
-import com.benewake.system.entity.vo.ApsProcessCapacityVo;
-import com.benewake.system.entity.vo.DownloadParam;
+import com.benewake.system.entity.vo.*;
 import com.benewake.system.excel.entity.ExcelProcessCapacity;
 import com.benewake.system.excel.entity.ExcelProcessCapacityTemplate;
 import com.benewake.system.excel.listener.ProcessCapacityListener;
@@ -283,6 +282,22 @@ public class ApsProcessCapacityServiceImpl extends ServiceImpl<ApsProcessCapacit
         return true;
     }
 
+
+    @Override
+    public Page selectPageLists(Page<Object> page, QueryWrapper<Object> wrapper) {
+        Page<ApsProcessCapacityDto> dtoPage = apsProcessCapacityMapper.selectPageList(page ,wrapper);
+        List<ApsProcessCapacityVo> apsProcessCapacityVos = getApsProcessCapacityVos(dtoPage);
+        return buildApsProcessCapacityVoPage(dtoPage, apsProcessCapacityVos);
+    }
+
+    private Page<ApsProcessCapacityVo> buildApsProcessCapacityVoPage(Page<ApsProcessCapacityDto> dtoPage, List<ApsProcessCapacityVo> apsProcessCapacityVos) {
+        Page<ApsProcessCapacityVo> processCapacityVoPage = new Page<>();
+        processCapacityVoPage.setRecords(apsProcessCapacityVos);
+        processCapacityVoPage.setTotal(dtoPage.getTotal());
+        processCapacityVoPage.setSize(dtoPage.getSize());
+        processCapacityVoPage.setCurrent(dtoPage.getCurrent());
+        return processCapacityVoPage;
+    }
 }
 
 

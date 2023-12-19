@@ -20,76 +20,52 @@ public class ApsMaterialBomDto implements Serializable {
     private Integer id;
 
     @ExcelProperty("父项物料编码")
-    @TableField(value = "f_material_id")
-    @JsonProperty("materialId")
     @ColumnWidth(20) // 设置列宽为20
-    private String fMaterialId;
+    private String materialId;
 
     @ExcelProperty("父项物料名称")
-    @TableField(value = "f_material_name")
     @ColumnWidth(30) // 设置列宽为30
-    @JsonProperty("materialName")
-    private String fMaterialName;
+    private String materialName;
 
     @ExcelProperty("数据状态")
-    @TableField(value = "f_document_status")
     @ColumnWidth(15) // 设置列宽为15
-    @JsonProperty("documentStatus")
-    private String fDocumentStatus;
+    private String documentStatus;
 
     @ExcelProperty("子项物料编码")
-    @TableField(value = "f_material_id_child")
     @ColumnWidth(20) // 设置列宽为20
-    @JsonProperty("materialIdChild")
-    private String fMaterialIdChild;
+    private String materialIdChild;
 
     @ExcelProperty("子项物料名称")
-    @TableField(value = "f_material_name_child")
     @ColumnWidth(30) // 设置列宽为30
-    @JsonProperty("materialNameChild")
-    private String fMaterialNameChild;
+    private String materialNameChild;
 
     @ExcelProperty("用量：分子")
-    @TableField(value = "f_numerator")
     @ColumnWidth(15) // 设置列宽为15
-    @JsonProperty("numerator")
-    private Integer fNumerator;
+    private Integer numerator;
 
     @ExcelProperty("用量：分母")
-    @TableField(value = "f_denominator")
     @ColumnWidth(15) // 设置列宽为15
-    @JsonProperty("denominator")
-    private Integer fDenominator;
+    private Integer denominator;
 
     @ExcelProperty("固定损耗")
-    @TableField(value = "f_fix_scrap_qty_lot")
     @ColumnWidth(15) // 设置列宽为15
-    @JsonProperty("fixScrapQtyLot")
-    private Integer fFixScrapQtyLot;
+    private Integer fixScrapQtyLot;
 
     @ExcelProperty("变动损耗率%")
-    @TableField(value = "f_scrap_rate")
     @ColumnWidth(15) // 设置列宽为15
-    @JsonProperty("scrapRate")
-    private Integer fScrapRate;
+    private Integer scrapRate;
 
     @ExcelProperty("子项类型")
-    @TableField(value = "f_material_type")
     @ColumnWidth(15) // 设置列宽为15
-    @JsonProperty("materialType")
-    private String fMaterialType;
+    private String materialType;
 
     @ExcelProperty("替代方案")
-    @TableField(value = "f_replace_type")
     @ColumnWidth(15) // 设置列宽
-    @JsonProperty("replaceType")// 为15
-    private String fReplaceType;
+    private String replaceType;
 
     @ExcelProperty("项次")
-    @TableField(value = "f_replace_group_bop")
     @ColumnWidth(20) // 设置列宽为20
-    @JsonProperty("replaceGroupBop")
-    private String fReplaceGroupBop;
+    private String replaceGroupBop;
 
     @ExcelProperty("工序")
     @TableField(value = "process")
@@ -102,10 +78,8 @@ public class ApsMaterialBomDto implements Serializable {
     private String bomVersion;
 
     @ExcelProperty("版本号")
-    @TableField(value = "version")
     @ColumnWidth(15) // 设置列宽为15
-    @JsonProperty("chVersion")
-    private String version;
+    private String chVersion;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

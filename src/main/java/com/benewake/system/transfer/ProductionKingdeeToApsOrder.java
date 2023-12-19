@@ -20,7 +20,6 @@ public class ProductionKingdeeToApsOrder {
         ApsOrder apsOrder = new ApsOrder();
         apsOrder.setBillNo(kingdeeProductionOrder.getFBillNo());
         apsOrder.setBillType(kingdeeProductionOrder.getFBillType());
-        apsOrder.setBillTypeId(kingdeeProductionOrder.getFBillType());
         apsOrder.setMaterialId(kingdeeProductionOrder.getFMaterialId());
         apsOrder.setQty(kingdeeProductionOrder.getFQty());
         apsOrder.setStatus(kingdeeProductionOrder.getFStatus());

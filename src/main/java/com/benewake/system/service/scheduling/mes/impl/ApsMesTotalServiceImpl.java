@@ -1,12 +1,14 @@
 package com.benewake.system.service.scheduling.mes.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsMesTotal;
-import com.benewake.system.entity.dto.ApsPackagingTestDto;
+import com.benewake.system.entity.ApsProcessNamePool;
 import com.benewake.system.entity.mes.MesTotal;
 import com.benewake.system.service.ApsIntfaceDataServiceBase;
-import com.benewake.system.service.ApsMesIntfaceDataServiceBase;
+import com.benewake.system.service.ApsProcessNamePoolService;
+import com.benewake.system.service.scheduling.mes.ApsMesTotalService;
 import com.benewake.system.transfer.MesToApsMesTotal;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -33,33 +35,51 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.benewake.system.service.ApsMesIntfaceDataServiceBase.accessToken;
 
 /**
-* @author DELL
-* @description 针对表【aps_mes_total】的数据库操作Service实现
-* @createDate 2023-12-11 13:52:23
-*/
+ * @author DELL
+ * @description 针对表【aps_mes_total】的数据库操作Service实现
+ * @createDate 2023-12-11 13:52:23
+ */
 @Service
 @Component
 public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMesTotal>
-    implements ApsIntfaceDataServiceBase {
+        implements ApsMesTotalService {
 
     @Autowired
     private MesToApsMesTotal mesToApsMesTotal;
 
     @Autowired
-    private ApsMesTotalMapper apsMesTotalMapper;
+    private ApsMesTotalMapper mesTotalMapper;
 
 
     private List<ApsMesTotal> apsMesTotals = null;
 
+    private Integer maxVersionIncr;
+    
 
-    private List<ApsMesTotal> updateDataVersions( String app, Map<String, String> fieldmapping, int qualifiedCountId, int unqualifiedCountId) throws Exception {
+    @Override
+    public Page selectPageList(Page page, List tableVersionList) {
+        return mesTotalMapper.selectPageList(page, tableVersionList);
+    }
 
-        Integer maxVersionIncr = this.getMaxVersionIncr();
+    @Override
+    public void insertVersionIncr() {
+        mesTotalMapper.insertVersionIncr();
+    }
+
+    @Override
+    public Page selectPageLists(Page page, List versionToChVersionArrayList, QueryWrapper wrapper) {
+        return mesTotalMapper.selectPageLists(page, versionToChVersionArrayList, wrapper);
+    }
+
+    @Override
+    public List searchLike(List versionToChVersionArrayList, QueryWrapper queryWrapper) {
+        return mesTotalMapper.searchLike(versionToChVersionArrayList, queryWrapper);
+    }
+
+    private List<ApsMesTotal> updateDataVersions(String app, Map<String, String> fieldmapping, int qualifiedCountId, int unqualifiedCountId) throws Exception {
         String baseUrl = "http://ql.benewake.com//openApi";
-
         // 创建请求体 JSON 字符串
         String requestBody = "{\"pageSize\": 10000, \"pageNum\": 1}";
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -95,18 +115,19 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
                                 try {
                                     Field field = MesTotal.getClass().getDeclaredField(excelFieldName);
                                     field.setAccessible(true);
-                                    // 如果字段是BurnQualifiedCount并且还没有设置过，设置字段
+                                    // 如果字段是burnQualifiedCount并且还没有设置过，设置字段
                                     if (excelFieldName.equals("burnQualifiedCount")) {
                                         if (id == qualifiedCountId) {
                                             field.set(MesTotal, dataValue);
                                         }
-                                    }else if (excelFieldName.equals("unBurnQualifiedCount")){
+                                    } else if (excelFieldName.equals("unBurnQualifiedCount")) {
                                         if (id == unqualifiedCountId) {
                                             field.set(MesTotal, dataValue);
                                         }
                                     } else {
                                         field.set(MesTotal, dataValue);
                                     }
+                                    field.setAccessible(false);
                                 } catch (NoSuchFieldException | IllegalAccessException e) {
                                     // 处理反射异常，如字段不存在或访问权限问题
                                     e.printStackTrace();
@@ -116,7 +137,7 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
                     }
                     // 将pcshaolu对象添加到数据列表
                     dataList.add(MesTotal);
-                    apsMesTotals  = new ArrayList<>();
+                    apsMesTotals = new ArrayList<>();
                     for (MesTotal mesTotal : dataList) {
                         ApsMesTotal apsMesTotal = mesToApsMesTotal.convert(mesTotal, maxVersionIncr);
                         apsMesTotals.add(apsMesTotal);
@@ -130,8 +151,6 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
     }
 
 
-
-
     public void LunaBurn() throws Exception {
         Map<String, String> fieldMapping = new HashMap<>();
         fieldMapping.put("生产订单编号", "productionOrderNumber");
@@ -142,10 +161,10 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("烧录工装编号", "burnFixtureNumber");
         fieldMapping.put("订单总数", "totalNumber");
-        List<ApsMesTotal> burn = updateDataVersions("63df52b8",fieldMapping,84934807,84934806);
-        for (ApsMesTotal apsMesTotal:burn){
+        List<ApsMesTotal> burn = updateDataVersions("63df52b8", fieldMapping, 84934807, 84934806);
+        for (ApsMesTotal apsMesTotal : burn) {
             apsMesTotal.setWorkpiece("tf-luna");
-            apsMesTotal.setProcess(125);
+            apsMesTotal.setProcess("主板程序烧录");
         }
         apsMesTotals.addAll(burn);
     }
@@ -160,10 +179,10 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("分板治具编号", "burnFixtureNumber");
         fieldMapping.put("订单总数", "totalNumber");
-        List<ApsMesTotal> version = updateDataVersions("e51262a3",fieldMapping,84935179,84935178);
-        for (ApsMesTotal apsMesTotal:version){
+        List<ApsMesTotal> version = updateDataVersions("e51262a3", fieldMapping, 84935179, 84935178);
+        for (ApsMesTotal apsMesTotal : version) {
             apsMesTotal.setWorkpiece("tf-luna");
-            apsMesTotal.setProcess(127);
+            apsMesTotal.setProcess("主板分板");
         }
         apsMesTotals.addAll(version);
     }
@@ -172,15 +191,15 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         Map<String, String> fieldMapping = new HashMap<>();
         fieldMapping.put("生产订单编号", "productionOrderNumber");
         fieldMapping.put("本次安装完成数", "burnInCompletionQuantity");
-        fieldMapping.put("安装合格数", "BurnQualifiedCount");
-        fieldMapping.put("安装不合格数", "UnBurnQualifiedCount");
+        fieldMapping.put("安装合格数", "burnQualifiedCount");
+        fieldMapping.put("安装不合格数", "unBurnQualifiedCount");
         fieldMapping.put("物料编码", "materialCode");
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("订单总数", "totalNumber");
-        List<ApsMesTotal> installationBoard = updateDataVersions("949664af",fieldMapping,84934591,84934590);
-        for (ApsMesTotal apsMesTotal:installationBoard){
+        List<ApsMesTotal> installationBoard = updateDataVersions("949664af", fieldMapping, 84934591, 84934590);
+        for (ApsMesTotal apsMesTotal : installationBoard) {
             apsMesTotal.setWorkpiece("tf-luna");
-            apsMesTotal.setProcess(124);
+            apsMesTotal.setProcess("主板安装");
         }
         apsMesTotals.addAll(installationBoard);
     }
@@ -189,15 +208,15 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         Map<String, String> fieldMapping = new HashMap<>();
         fieldMapping.put("生产订单编号", "productionOrderNumber");
         fieldMapping.put("本次安装完成数", "burnInCompletionQuantity");
-        fieldMapping.put("安装合格数", "BurnQualifiedCount");
-        fieldMapping.put("安装不合格数", "UnBurnQualifiedCount");
+        fieldMapping.put("安装合格数", "burnQualifiedCount");
+        fieldMapping.put("安装不合格数", "unBurnQualifiedCount");
         fieldMapping.put("物料编码", "materialCode");
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("订单总数", "totalNumber");
-        List<ApsMesTotal> fixed = updateDataVersions("bb6daa5b",fieldMapping,84950527,84950526);
-        for (ApsMesTotal apsMesTotal:fixed){
+        List<ApsMesTotal> fixed = updateDataVersions("bb6daa5b", fieldMapping, 84950527, 84950526);
+        for (ApsMesTotal apsMesTotal : fixed) {
             apsMesTotal.setWorkpiece("tf-luna");
-            apsMesTotal.setProcess(128);
+            apsMesTotal.setProcess("主板固定");
         }
         apsMesTotals.addAll(fixed);
     }
@@ -211,10 +230,10 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         fieldMapping.put("物料编码 ", "materialCode");
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("订单总数", "totalNumber");
-        List<ApsMesTotal> snlabeling = updateDataVersions("c51847c9",fieldMapping,84935594,84935542);
-        for (ApsMesTotal apsMesTotal:snlabeling){
+        List<ApsMesTotal> snlabeling = updateDataVersions("c51847c9", fieldMapping, 84935594, 84935542);
+        for (ApsMesTotal apsMesTotal : snlabeling) {
             apsMesTotal.setWorkpiece("tf-luna");
-            apsMesTotal.setProcess(123);
+            apsMesTotal.setProcess("粘贴SN标签");
         }
         apsMesTotals.addAll(snlabeling);
     }
@@ -229,10 +248,10 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("测试工装编号", "burnFixtureNumber");
         fieldMapping.put("订单总数", "totalNumber");
-        List<ApsMesTotal> calibration = updateDataVersions("5dfb9e96",fieldMapping,84935387,84935386);
-        for (ApsMesTotal apsMesTotal:calibration){
+        List<ApsMesTotal> calibration = updateDataVersions("5dfb9e96", fieldMapping, 84935387, 84935386);
+        for (ApsMesTotal apsMesTotal : calibration) {
             apsMesTotal.setWorkpiece("tf-luna");
-            apsMesTotal.setProcess(120);
+            apsMesTotal.setProcess("校准测试");
         }
         apsMesTotals.addAll(calibration);
     }
@@ -246,10 +265,10 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         fieldMapping.put("物料编码", "materialCode");
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("订单总数", "totalNumber");
-        List<ApsMesTotal> packaging = updateDataVersions("a5cd51b0",fieldMapping,84935951,84935950);
-        for (ApsMesTotal apsMesTotal:packaging){
+        List<ApsMesTotal> packaging = updateDataVersions("a5cd51b0", fieldMapping, 84935951, 84935950);
+        for (ApsMesTotal apsMesTotal : packaging) {
             apsMesTotal.setWorkpiece("tf-luna");
-            apsMesTotal.setProcess(82);
+            apsMesTotal.setProcess("包装");
         }
         apsMesTotals.addAll(packaging);
     }
@@ -264,10 +283,10 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("烧录工装编号", "burnFixtureNumber");
         fieldMapping.put("订单总数", "totalNumber");
-        List<ApsMesTotal> burn = updateDataVersions("7a174007",fieldMapping,84939165,84939164);
-        for (ApsMesTotal apsMesTotal:burn){
+        List<ApsMesTotal> burn = updateDataVersions("7a174007", fieldMapping, 84939165, 84939164);
+        for (ApsMesTotal apsMesTotal : burn) {
             apsMesTotal.setWorkpiece("tfmini-s");
-            apsMesTotal.setProcess(125);
+            apsMesTotal.setProcess("主板程序烧录");
         }
         apsMesTotals.addAll(burn);
     }
@@ -282,10 +301,10 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("分板治具编号", "burnFixtureNumber");
         fieldMapping.put("订单总数", "totalNumber");
-        List<ApsMesTotal> version = updateDataVersions("5d052c6c",fieldMapping,84939374,84939373);
-        for (ApsMesTotal apsMesTotal:version){
+        List<ApsMesTotal> version = updateDataVersions("5d052c6c", fieldMapping, 84939374, 84939373);
+        for (ApsMesTotal apsMesTotal : version) {
             apsMesTotal.setWorkpiece("tfmini-s");
-            apsMesTotal.setProcess(127);
+            apsMesTotal.setProcess("主板分板");
         }
         apsMesTotals.addAll(version);
     }
@@ -299,10 +318,10 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         fieldMapping.put("物料编码", "materialCode");
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("订单总数", "totalNumber");
-        List<ApsMesTotal> installationBoard = updateDataVersions("057d7fe7",fieldMapping,84939594,84939593);
-        for (ApsMesTotal apsMesTotal:installationBoard){
+        List<ApsMesTotal> installationBoard = updateDataVersions("057d7fe7", fieldMapping, 84939594, 84939593);
+        for (ApsMesTotal apsMesTotal : installationBoard) {
             apsMesTotal.setWorkpiece("tfmini-s");
-            apsMesTotal.setProcess(124);
+            apsMesTotal.setProcess("主板安装");
         }
         apsMesTotals.addAll(installationBoard);
     }
@@ -311,18 +330,19 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         Map<String, String> fieldMapping = new HashMap<>();
         fieldMapping.put("生产订单编号", "productionOrderNumber");
         fieldMapping.put("本次安装完成数", "burnInCompletionQuantity");
-        fieldMapping.put("安装合格数", "BurnQualifiedCount");
-        fieldMapping.put("安装不合格数", "UnBurnQualifiedCount");
+        fieldMapping.put("安装合格数", "burnQualifiedCount");
+        fieldMapping.put("安装不合格数", "unBurnQualifiedCount");
         fieldMapping.put("物料编码", "materialCode");
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("订单总数", "totalNumber");
-        List<ApsMesTotal> fixed = updateDataVersions("530edc56",fieldMapping,84950991,84950990);
-        for (ApsMesTotal apsMesTotal:fixed){
+        List<ApsMesTotal> fixed = updateDataVersions("530edc56", fieldMapping, 84950991, 84950990);
+        for (ApsMesTotal apsMesTotal : fixed) {
             apsMesTotal.setWorkpiece("tfmini-s");
-            apsMesTotal.setProcess(128);
+            apsMesTotal.setProcess("主板固定");
         }
         apsMesTotals.addAll(fixed);
     }
+
     public void SSnLabeling() throws Exception {
         Map<String, String> fieldMapping = new HashMap<>();
         fieldMapping.put("生产订单编号", "productionOrderNumber");
@@ -332,10 +352,10 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         fieldMapping.put("物料编码 ", "materialCode");
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("订单总数", "totalNumber");
-        List<ApsMesTotal> snlabeling = updateDataVersions("180a18b0",fieldMapping,84939793,84939792);
-        for (ApsMesTotal apsMesTotal:snlabeling){
+        List<ApsMesTotal> snlabeling = updateDataVersions("180a18b0", fieldMapping, 84939793, 84939792);
+        for (ApsMesTotal apsMesTotal : snlabeling) {
             apsMesTotal.setWorkpiece("tfmini-s");
-            apsMesTotal.setProcess(123);
+            apsMesTotal.setProcess("粘贴SN标签");
         }
         apsMesTotals.addAll(snlabeling);
     }
@@ -350,10 +370,10 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("测试工装编号", "burnFixtureNumber");
         fieldMapping.put("订单总数", "totalNumber");
-        List<ApsMesTotal> calibration = updateDataVersions("3552e2a8",fieldMapping,84939999,84939998);
-        for (ApsMesTotal apsMesTotal:calibration){
+        List<ApsMesTotal> calibration = updateDataVersions("3552e2a8", fieldMapping, 84939999, 84939998);
+        for (ApsMesTotal apsMesTotal : calibration) {
             apsMesTotal.setWorkpiece("tfmini-s");
-            apsMesTotal.setProcess(120);
+            apsMesTotal.setProcess("校准测试");
         }
         apsMesTotals.addAll(calibration);
     }
@@ -367,10 +387,10 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         fieldMapping.put("物料编码", "materialCode");
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("订单总数", "totalNumber");
-        List<ApsMesTotal> packaging = updateDataVersions("0a3352f6",fieldMapping,84940223,84940222);
-        for (ApsMesTotal apsMesTotal:packaging){
+        List<ApsMesTotal> packaging = updateDataVersions("0a3352f6", fieldMapping, 84940223, 84940222);
+        for (ApsMesTotal apsMesTotal : packaging) {
             apsMesTotal.setWorkpiece("tfmini-s");
-            apsMesTotal.setProcess(82);
+            apsMesTotal.setProcess("包装");
         }
         apsMesTotals.addAll(packaging);
     }
@@ -388,7 +408,7 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         List<ApsMesTotal> plusBurn = updateDataVersions("5ec2995c", fieldMapping, 84946614, 84946544);
         for (ApsMesTotal apsMesTotal : plusBurn) {
             apsMesTotal.setWorkpiece("tfmini-plus");
-            apsMesTotal.setProcess(125);
+            apsMesTotal.setProcess("主板程序烧录");
         }
         apsMesTotals.addAll(plusBurn);
     }
@@ -406,7 +426,7 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         List<ApsMesTotal> plusVersion = updateDataVersions("e48e6720", fieldMapping, 84946836, 84946835);
         for (ApsMesTotal apsMesTotal : plusVersion) {
             apsMesTotal.setWorkpiece("tfmini-plus");
-            apsMesTotal.setProcess(127);
+            apsMesTotal.setProcess("主板分板");
         }
         apsMesTotals.addAll(plusVersion);
     }
@@ -423,7 +443,7 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         List<ApsMesTotal> plusInstallationBoard = updateDataVersions("6f3d5384", fieldMapping, 84947068, 84947067);
         for (ApsMesTotal apsMesTotal : plusInstallationBoard) {
             apsMesTotal.setWorkpiece("tfmini-plus");
-            apsMesTotal.setProcess(124);
+            apsMesTotal.setProcess("主板安装");
         }
         apsMesTotals.addAll(plusInstallationBoard);
     }
@@ -432,18 +452,19 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         Map<String, String> fieldMapping = new HashMap<>();
         fieldMapping.put("生产订单编号", "productionOrderNumber");
         fieldMapping.put("本次安装完成数", "burnInCompletionQuantity");
-        fieldMapping.put("安装合格数", "BurnQualifiedCount");
-        fieldMapping.put("安装不合格数", "UnBurnQualifiedCount");
+        fieldMapping.put("安装合格数", "burnQualifiedCount");
+        fieldMapping.put("安装不合格数", "unBurnQualifiedCount");
         fieldMapping.put("物料编码", "materialCode");
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("订单总数", "totalNumber");
-        List<ApsMesTotal> fixed = updateDataVersions("40932f7f",fieldMapping,84951220,84951219);
-        for (ApsMesTotal apsMesTotal:fixed){
+        List<ApsMesTotal> fixed = updateDataVersions("40932f7f", fieldMapping, 84951220, 84951219);
+        for (ApsMesTotal apsMesTotal : fixed) {
             apsMesTotal.setWorkpiece("tfmini-plus");
-            apsMesTotal.setProcess(128);
+            apsMesTotal.setProcess("主板固定");
         }
         apsMesTotals.addAll(fixed);
     }
+
     public void PlusSnLabeling() throws Exception {
         Map<String, String> fieldMapping = new HashMap<>();
         fieldMapping.put("生产订单编号", "productionOrderNumber");
@@ -456,7 +477,7 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         List<ApsMesTotal> plusSnLabeling = updateDataVersions("6ce0b9f3", fieldMapping, 84947282, 84947281);
         for (ApsMesTotal apsMesTotal : plusSnLabeling) {
             apsMesTotal.setWorkpiece("tfmini-plus");
-            apsMesTotal.setProcess(123);
+            apsMesTotal.setProcess("粘贴SN标签");
         }
         apsMesTotals.addAll(plusSnLabeling);
     }
@@ -474,7 +495,7 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         List<ApsMesTotal> ultrasonicWelding = updateDataVersions("d65fa0be", fieldMapping, 84947985, 84947984);
         for (ApsMesTotal apsMesTotal : ultrasonicWelding) {
             apsMesTotal.setWorkpiece("tfmini-plus");
-            apsMesTotal.setProcess(84);
+            apsMesTotal.setProcess("超声波焊接");
         }
         apsMesTotals.addAll(ultrasonicWelding);
     }
@@ -491,7 +512,7 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         List<ApsMesTotal> shellWiring = updateDataVersions("c2c89bcd", fieldMapping, 84951454, 84951453);
         for (ApsMesTotal apsMesTotal : shellWiring) {
             apsMesTotal.setWorkpiece("tfmini-plus");
-            apsMesTotal.setProcess(96);
+            apsMesTotal.setProcess("后壳穿线");
         }
         apsMesTotals.addAll(shellWiring);
     }
@@ -508,7 +529,7 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         List<ApsMesTotal> shellGluing = updateDataVersions("805f21e8", fieldMapping, 84948447, 84948446);
         for (ApsMesTotal apsMesTotal : shellGluing) {
             apsMesTotal.setWorkpiece("tfmini-plus");
-            apsMesTotal.setProcess(97);
+            apsMesTotal.setProcess("后壳点胶");
         }
         apsMesTotals.addAll(shellGluing);
     }
@@ -522,10 +543,10 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         fieldMapping.put("物料编码 ", "materialCode");
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("订单总数", "totalNumber");
-        List<ApsMesTotal> terminalConnection = updateDataVersions("7a017004", fieldMapping, 84948216 , 84948215);
+        List<ApsMesTotal> terminalConnection = updateDataVersions("7a017004", fieldMapping, 84948216, 84948215);
         for (ApsMesTotal apsMesTotal : terminalConnection) {
             apsMesTotal.setWorkpiece("tfmini-plus");
-            apsMesTotal.setProcess(107);
+            apsMesTotal.setProcess("连接端子");
         }
         apsMesTotals.addAll(terminalConnection);
     }
@@ -544,7 +565,7 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         List<ApsMesTotal> plusCalibration = updateDataVersions("33152cc3", fieldMapping, 84947501, 84947500);
         for (ApsMesTotal apsMesTotal : plusCalibration) {
             apsMesTotal.setWorkpiece("tfmini-plus");
-            apsMesTotal.setProcess(120);
+            apsMesTotal.setProcess("校准测试");
         }
         apsMesTotals.addAll(plusCalibration);
     }
@@ -562,7 +583,7 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         List<ApsMesTotal> spotTesting = updateDataVersions("2d3f8543", fieldMapping, 84949387, 84949386);
         for (ApsMesTotal apsMesTotal : spotTesting) {
             apsMesTotal.setWorkpiece("tfmini-plus");
-            apsMesTotal.setProcess(85);
+            apsMesTotal.setProcess("定点测试");
         }
         apsMesTotals.addAll(spotTesting);
     }
@@ -576,10 +597,10 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         fieldMapping.put("物料编码", "materialCode");
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("订单总数", "totalNumber");
-        List<ApsMesTotal> plusPackagingTest = updateDataVersions("b3464dcd",fieldMapping,84947740,84947739);
+        List<ApsMesTotal> plusPackagingTest = updateDataVersions("b3464dcd", fieldMapping, 84947740, 84947739);
         for (ApsMesTotal apsMesTotal : plusPackagingTest) {
             apsMesTotal.setWorkpiece("tfmini-plus");
-            apsMesTotal.setProcess(82);
+            apsMesTotal.setProcess("包装");
         }
         apsMesTotals.addAll(plusPackagingTest);
     }
@@ -593,13 +614,15 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         List<ApsMesTotal> unFinished = apsMesTotals.stream()
                 .filter(apsMesTotal -> apsMesTotal.getBurnInCompletionQuantity() == null)
                 .collect(Collectors.toList());
-        return  unFinished;
+        return unFinished;
 
     }
+
     @Override
     public Boolean updateDataVersions() throws Exception {
         apsMesTotals = new ArrayList<>();
-        List<ApsMesTotal> unFinished= unFinish();
+        maxVersionIncr = this.getMaxVersionIncr();
+        List<ApsMesTotal> unFinished = unFinish();
         SBurn();
         SVersion();
         SSnLabeling();
@@ -623,8 +646,8 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         PlusSnLabeling();
         PlusTerminalConnection();
         PlusShellWiring();
-//mes中只保留未完成的订单
-        apsMesTotals=apsMesTotals.stream()
+        //mes中只保留未完成的订单
+        apsMesTotals = apsMesTotals.stream()
                 .filter(record -> unFinished.stream()
                         .anyMatch(unFinishedRecord ->
                                 record.getProductionOrderNumber().equals(unFinishedRecord.getProductionOrderNumber())

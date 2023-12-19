@@ -11,6 +11,14 @@
         <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
 
+    <resultMap id="apsOutRequestDtoResultMap" type="com.benewake.system.entity.dto.ApsOutRequestDto">
+        <id property="id" column="id"/>
+        <result property="materialCode" column="f_material_code"/>
+        <result property="materialName" column="f_material_name"/>
+        <result property="returnDate" column="f_return_date"/>
+        <result property="chVersion" column="ch_version_name"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
         id,f_material_code,f_return_date,version
     </sql>
@@ -25,10 +33,10 @@
             FROM `aps_out_request`
         )
     </insert>
-    <select id="selectPageList" resultType="com.benewake.system.entity.dto.ApsOutRequestDto">
+    <select id="selectPageList" resultMap="apsOutRequestDtoResultMap">
         SELECT
         request.id,f_material_code,map.f_material_name as f_material_name,f_return_date,
-        ch_version_name AS version
+        ch_version_name
         FROM
         (
         SELECT *,
@@ -46,6 +54,53 @@
         ) AS request
         LEFT JOIN aps_material_name_mapping AS map ON request.f_material_code = map.f_material_id
         ORDER BY request.version desc
+    </select>
+    <select id="selectPageLists" resultMap="apsOutRequestDtoResultMap">
+        SELECT
+        request.id,f_material_code,map.f_material_name as f_material_name,f_return_date,
+        ch_version_name
+        FROM
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        ELSE NULL
+        END AS ch_version_name
+        FROM aps_out_request
+        WHERE version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>
+        ) AS request
+        LEFT JOIN aps_material_name_mapping AS map ON request.f_material_code = map.f_material_id
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
+    <select id="searchLike" resultMap="apsOutRequestDtoResultMap">
+        SELECT
+        ${ew.sqlSelect}
+        FROM
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        ELSE NULL
+        END AS ch_version_name
+        FROM aps_out_request
+        WHERE version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>
+        ) AS request
+        LEFT JOIN aps_material_name_mapping AS map ON request.f_material_code = map.f_material_id
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
     </select>
 
 

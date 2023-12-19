@@ -9,6 +9,8 @@ import com.benewake.system.entity.dto.ApsSemiFinishedGoodsMaterialShortageAnalys
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
 * @author ASUS
 * @description 针对表【aps_semi_finished_goods_material_shortage_analysis】的数据库操作Mapper
@@ -21,6 +23,8 @@ public interface ApsSemiFinishedGoodsMaterialShortageAnalysisMapper extends Base
     Page<ApsSemiFinishedGoodsMaterialShortageAnalysisDto> selectPageList(Page<ApsSemiFinishedGoodsMaterialShortageAnalysisDto> goodsProductionPlanPage, @Param("apsTableVersion") Integer apsTableVersion);
 
     Page<Object> queryPageList(Page<Object> pageTemp, @Param(Constants.WRAPPER) QueryWrapper<Object> queryWrapper);
+
+    List<Object> searchLike(@Param(Constants.WRAPPER)QueryWrapper<Object> queryWrapper);
 }
 
 

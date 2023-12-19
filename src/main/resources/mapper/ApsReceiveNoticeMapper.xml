@@ -22,6 +22,19 @@
         f_csn_receive_base_qty,f_in_stock_qty,version
     </sql>
 
+    <resultMap id="apsReceiveNoticeDtoResultMap" type="com.benewake.system.entity.dto.ApsReceiveNoticeDto">
+        <id property="id" column="id"/>
+        <result property="billNo" column="f_bill_no"/>
+        <result property="materialId" column="f_material_id"/>
+        <result property="materialName" column="f_material_name"/>
+        <result property="mustQty" column="f_must_qty"/>
+        <result property="checkQty" column="f_check_qty"/>
+        <result property="receiveQty" column="f_receive_qty"/>
+        <result property="csnReceiveBaseQty" column="f_csn_receive_base_qty"/>
+        <result property="inStockQty" column="f_in_stock_qty"/>
+        <result property="chVersion" column="ch_version_name"/>
+    </resultMap>
+
     <insert id="insertSelectVersionIncr">
         insert into aps_receive_notice(f_bill_no, f_material_id,
                                        f_must_qty, f_check_qty, f_receive_qty,
@@ -50,7 +63,7 @@
         ORDER BY f_lot, version DESC
         limit #{pass},#{size};
     </select>
-    <select id="selectPageList" resultType="com.benewake.system.entity.dto.ApsReceiveNoticeDto">
+    <select id="selectPageList" resultMap="apsReceiveNoticeDtoResultMap">
         SELECT
         noti.id,
         f_bill_no,
@@ -61,7 +74,7 @@
         f_receive_qty,
         f_csn_receive_base_qty,
         f_in_stock_qty,
-        ch_version_name AS version
+        ch_version_name
         FROM
         (
         SELECT *,
@@ -79,6 +92,62 @@
         ) AS noti
         LEFT JOIN aps_material_name_mapping AS map ON noti.f_material_id = map.f_material_id
         ORDER BY noti.version desc,f_bill_no desc
+    </select>
+
+    <select id="selectPageLists" resultMap="apsReceiveNoticeDtoResultMap">
+        SELECT
+        noti.id,
+        f_bill_no,
+        noti.f_material_id,
+        map.f_material_name,
+        f_must_qty,
+        f_check_qty,
+        f_receive_qty,
+        f_csn_receive_base_qty,
+        f_in_stock_qty,
+        ch_version_name
+        FROM
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        ELSE NULL
+        END AS ch_version_name
+        FROM aps_receive_notice
+        WHERE version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>
+        ) AS noti
+        LEFT JOIN aps_material_name_mapping AS map ON noti.f_material_id = map.f_material_id
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
+    <select id="searchLike" resultMap="apsReceiveNoticeDtoResultMap">
+        SELECT
+        distinct ${ew.sqlSelect}
+        FROM
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        ELSE NULL
+        END AS ch_version_name
+        FROM aps_receive_notice
+        WHERE version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>
+        ) AS noti
+        LEFT JOIN aps_material_name_mapping AS map ON noti.f_material_id = map.f_material_id
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
     </select>
 
 </mapper>

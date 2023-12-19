@@ -18,17 +18,20 @@
         value_operator,col_value,col_seq
     </sql>
     <select id="getViewColByViewId" resultType="com.benewake.system.entity.ViewColumnDto">
-        SELECT vcol.id,
+        SELECT
+        vcol.id,
         view_id,
         col_id,
         ch_col_name,
         en_col_name,
         vo_col_name,
-        value_operator,
-        col_value,
-        col_seq
-        FROM `aps_view_col_table` AS vcol
+        con.value_operator,
+        con.col_value,
+        con.col_seq
+        FROM
+        `aps_view_col_table` AS vcol
         LEFT JOIN aps_column_table AS col ON vcol.col_id = col.id
+        left join aps_condition_table as con on vcol.id = con.view_col_id
         WHERE vcol.view_id = #{viewId}
         <if test="colIds != null and colIds.size() > 0">
             AND vcol.col_id IN
@@ -37,4 +40,5 @@
             </foreach>
         </if>
     </select>
+
 </mapper>

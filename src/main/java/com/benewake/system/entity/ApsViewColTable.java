@@ -32,23 +32,23 @@ public class ApsViewColTable implements Serializable {
     @TableField(value = "col_id")
     private Integer colId;
 
-    /**
-     * 
-     */
-    @TableField(value = "value_operator")
-    private String valueOperator;
-
-    /**
-     * 
-     */
-    @TableField(value = "col_value")
-    private String colValue;
-
-    /**
-     * 
-     */
-    @TableField(value = "col_seq")
-    private Integer colSeq;
+//    /**
+//     *
+//     */
+//    @TableField(value = "value_operator")
+//    private String valueOperator;
+//
+//    /**
+//     *
+//     */
+//    @TableField(value = "col_value")
+//    private String colValue;
+//
+//    /**
+//     *
+//     */
+//    @TableField(value = "col_seq")
+//    private Integer colSeq;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

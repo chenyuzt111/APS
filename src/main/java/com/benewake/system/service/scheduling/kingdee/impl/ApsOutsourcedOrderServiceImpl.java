@@ -36,6 +36,11 @@ public class ApsOutsourcedOrderServiceImpl extends ApsOrderBaseService implement
     private OutsourcedKingdeeToApsOrder outsourcedKingdeeToApsOrder;
 
     @Override
+    public String getServiceName() {
+        return "委外订单列表";
+    }
+
+    @Override
     public List<ApsOrder> getKingdeeDates() throws Exception {
         List<KingdeeOutsourcedOrder> result = getKingdeeOutsourcedOrders();
         // 物料映射表

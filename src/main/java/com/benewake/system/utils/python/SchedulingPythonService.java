@@ -11,10 +11,12 @@ import com.benewake.system.entity.enums.SchedulingResultType;
 import com.benewake.system.entity.enums.TableVersionState;
 import com.benewake.system.redis.DistributedLock;
 import com.benewake.system.service.ApsTableVersionService;
+import com.benewake.system.service.feishu.FeiShuService;
 import com.benewake.system.service.scheduling.message.SseService;
 import com.benewake.system.service.scheduling.result.ApsProductionPlanService;
 import com.benewake.system.service.scheduling.result.ApsSchedulingResuleBase;
 import com.benewake.system.utils.HostHolder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -27,6 +29,7 @@ import java.util.Map;
 import static com.benewake.system.redis.SchedulingLockKey.SCHEDULING_DATA_LOCK_KEY;
 
 
+@Slf4j
 @Component
 public class SchedulingPythonService extends PythonBase {
 
@@ -52,9 +55,12 @@ public class SchedulingPythonService extends PythonBase {
     @Autowired
     private Map<String , ApsSchedulingResuleBase> resuleBaseMap;
 
+    @Autowired
+    private FeiShuService feiShuService;
+
     @Override
     public void checkCode(String line) {
-        System.out.println("----------arg：" + line);
+        log.info("排程调用python反参：" + line);
         if ("521".equals(line)) {
             String username = hostHolder.getUser().getUsername();
             //通知前端成功
@@ -82,13 +88,16 @@ public class SchedulingPythonService extends PythonBase {
             //插入结果表的版本
             apsTableVersionService.saveBatch(apsTableVersions);
             distributedLock.releaseLock(SCHEDULING_DATA_LOCK_KEY, TableVersionState.SCHEDULING_ING.getDescription());
+//            feiShuService.sendMessage();
             sendMessage(username ,"排程已完成 快去查看吧~~" , "success");
+            feiShuService.sendMessage("排程已完成 快去查看吧~~");
         } else if ("520".equals(line)) {
             deleteVersionIsNull();
             String username = hostHolder.getUser().getUsername();
             setErrorState();
             distributedLock.releaseLock(SCHEDULING_DATA_LOCK_KEY, TableVersionState.SCHEDULING_ING.getDescription());
             sendMessage(username ,"排程失败了 联系一下管理员" , "error");
+            feiShuService.sendMessage("排程失败了 联系一下管理员");
         }
     }
 
@@ -113,6 +122,7 @@ public class SchedulingPythonService extends PythonBase {
     @Override
     void callPythonException() {
         sendMessage(hostHolder.getUser().getUsername() ,"排程失败了 联系一下管理员~~" , "error");
+        feiShuService.sendMessage("排程失败了 联系一下管理员~~");
         setErrorState();
         deleteVersionIsNull();
         distributedLock.releaseLock(SCHEDULING_DATA_LOCK_KEY, TableVersionState.SCHEDULING_ING.getDescription());

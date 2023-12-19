@@ -27,6 +27,10 @@ public class SysUser extends BaseEntity {
 	@TableField("password")
 	private String password;
 
+	@ApiModelProperty(value = "邮箱")
+	@TableField("email")
+	private String email;
+
 	@ApiModelProperty(value = "部门id")
 	@TableField("dept_id")
 	private String deptId;

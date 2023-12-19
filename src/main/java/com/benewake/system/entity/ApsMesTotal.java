@@ -69,7 +69,7 @@ public  class ApsMesTotal implements Serializable {
     /**
      * 工序
      */
-    private int process;
+    private String process;
 
     /**
      * 工件

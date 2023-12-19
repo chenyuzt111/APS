@@ -12,7 +12,7 @@ import java.util.List;
 * @description 针对表【aps_process_scheme】的数据库操作Service
 * @createDate 2023-10-21 17:38:05
 */
-public interface ApsProcessSchemeService extends IService<ApsProcessScheme> {
+public interface ApsProcessSchemeService extends IService<ApsProcessScheme> ,ApsMasterDataBaseService{
 
     String saveProcessScheme(ApsProcessSchemeParams apsProcessSchemeParam);
 

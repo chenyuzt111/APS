@@ -1,6 +1,7 @@
 package com.benewake.system.service.scheduling.kingdee.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsMaterialBom;
@@ -229,6 +230,16 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
         tableVersionList = Collections.singletonList(tableVersionList.get(tableVersionList.size() - 1));
         Page<ApsMaterialBomDto> materialBomDtoPage = apsMaterialBomMapper.selectPageList(page, tableVersionList);
         return materialBomDtoPage;
+    }
+
+    @Override
+    public Page selectPageLists(Page page, List versionToChVersionArrayList, QueryWrapper wrapper) {
+        return apsMaterialBomMapper.selectPageLists(page, versionToChVersionArrayList, wrapper);
+    }
+
+    @Override
+    public List searchLike(List versionToChVersionArrayList, QueryWrapper queryWrapper) {
+        return apsMaterialBomMapper.searchLike(versionToChVersionArrayList, queryWrapper);
     }
 
     @Transactional(rollbackFor = Exception.class)

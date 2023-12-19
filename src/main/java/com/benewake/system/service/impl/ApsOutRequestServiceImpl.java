@@ -1,5 +1,6 @@
 package com.benewake.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsOutRequest;
@@ -88,6 +89,16 @@ public class ApsOutRequestServiceImpl extends ServiceImpl<ApsOutRequestMapper, A
 
         List<KingdeeOutRequest> result = api.executeBillQuery(queryParam, KingdeeOutRequest.class);
         return result;
+    }
+
+    @Override
+    public Page selectPageLists(Page page, List versionToChVersionArrayList, QueryWrapper wrapper) {
+        return apsOutRequestMapper.selectPageLists(page, versionToChVersionArrayList, wrapper);
+    }
+
+    @Override
+    public List searchLike(List versionToChVersionArrayList, QueryWrapper queryWrapper) {
+        return apsOutRequestMapper.searchLike(versionToChVersionArrayList, queryWrapper);
     }
 
     @Override

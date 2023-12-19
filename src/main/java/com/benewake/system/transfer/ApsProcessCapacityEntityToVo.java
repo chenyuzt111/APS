@@ -11,6 +11,7 @@ public class ApsProcessCapacityEntityToVo {
         apsProcessCapacityVo.setId(object.getId());
         apsProcessCapacityVo.setBelongingProcess(object.getBelongingProcess());
         apsProcessCapacityVo.setProcessId(object.getProcessId());
+        apsProcessCapacityVo.setConcurrencyCount(object.getConcurrencyCount());
         apsProcessCapacityVo.setProcessName(object.getProcessName());
         apsProcessCapacityVo.setProcessNumber(object.getProcessNumber());
         apsProcessCapacityVo.setProductFamily(object.getProductFamily());

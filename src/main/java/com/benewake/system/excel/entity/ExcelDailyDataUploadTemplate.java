@@ -56,9 +56,9 @@ public class ExcelDailyDataUploadTemplate implements Serializable {
     /**
      *
      */
-    @ColumnWidth(20)
-    @ExcelProperty("产能(秒/台/人)")
-    private Integer capacityPsPuPp;
+//    @ColumnWidth(20)
+//    @ExcelProperty("产能(秒/台/人)")
+//    private Integer capacityPsPuPp;
 
     /**
      *
@@ -70,9 +70,9 @@ public class ExcelDailyDataUploadTemplate implements Serializable {
     /**
      *
      */
-    @ColumnWidth(12)
-    @ExcelProperty("剩余产能")
-    private Integer remainingCapacity;
+//    @ColumnWidth(12)
+//    @ExcelProperty("剩余产能")
+//    private Integer remainingCapacity;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

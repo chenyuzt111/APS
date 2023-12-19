@@ -6,9 +6,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class DateUtils {
 //    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -22,5 +25,65 @@ public class DateUtils {
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
         return dayOfWeek.getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.CHINA);
+    }
+
+    public static List<String> subtractTimeRanges(TimeRange baseTimeRange, List<String> additionalTimeRanges) {
+        List<String> remainingTimeRanges = new ArrayList<>();
+        remainingTimeRanges.add(baseTimeRange.toString());
+
+        for (String additionalTimeRange : additionalTimeRanges) {
+            List<String> newRemainingTimeRanges = new ArrayList<>();
+
+            for (String remainingTimeRange : remainingTimeRanges) {
+                TimeRange remaining = new TimeRange(remainingTimeRange);
+                TimeRange additional = new TimeRange(additionalTimeRange);
+
+                if (additional.getStart().isBefore(remaining.getEnd()) && additional.getEnd().isAfter(remaining.getStart())) {
+                    // 如果后续时间段与初始时间段有交集，则更新剩余时间段
+                    if (additional.getStart().isAfter(remaining.getStart())) {
+                        newRemainingTimeRanges.add(remaining.getStart() + "-" + additional.getStart());
+                    }
+                    if (additional.getEnd().isBefore(remaining.getEnd())) {
+                        newRemainingTimeRanges.add(additional.getEnd() + "-" + remaining.getEnd());
+                    }
+                } else {
+                    // 如果无交集，则保留原始剩余时间段
+                    newRemainingTimeRanges.add(remainingTimeRange);
+                }
+            }
+
+            remainingTimeRanges = newRemainingTimeRanges;
+        }
+
+        return remainingTimeRanges;
+    }
+
+    // 时间段类
+    public static class TimeRange {
+        private LocalTime start;
+        private LocalTime end;
+
+        // 构造函数，接受格式为"HH:mm-HH:mm"的字符串
+        public TimeRange(String range) {
+            String[] parts = range.split("-");
+            this.start = LocalTime.parse(parts[0]);
+            this.end = LocalTime.parse(parts[1]);
+        }
+
+        // 获取开始时间
+        public LocalTime getStart() {
+            return start;
+        }
+
+        // 获取结束时间
+        public LocalTime getEnd() {
+            return end;
+        }
+
+        // 将时间段对象转为字符串
+        @Override
+        public String toString() {
+            return start + "-" + end;
+        }
     }
 }

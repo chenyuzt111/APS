@@ -10,6 +10,8 @@ import com.benewake.system.entity.dto.ApsSemiFinishedGoodsProductionPlanDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * @author ASUS
  * @description 针对表【aps_semi_finished_goods_production_plan】的数据库操作Mapper
@@ -23,6 +25,8 @@ public interface ApsSemiFinishedGoodsProductionPlanMapper extends BaseMapper<Aps
 
     Page<Object> queryPageList(Page<Object> apsProductionPlanPage,
                                              @Param(Constants.WRAPPER) QueryWrapper<Object> queryWrapper);
+
+    List<Object> searchLike(@Param(Constants.WRAPPER)QueryWrapper<Object> objectQueryWrapper);
 }
 
 

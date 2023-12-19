@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 * @description 针对表【aps_process_name_pool】的数据库操作Service
 * @createDate 2023-10-20 09:20:16
 */
-public interface ApsProcessNamePoolService extends IService<ApsProcessNamePool> {
+public interface ApsProcessNamePoolService extends IService<ApsProcessNamePool> ,ApsMasterDataBaseService {
 
     Boolean addOrUpdateProcess(ApsProcessNamePool apsProcessNamePool);
 

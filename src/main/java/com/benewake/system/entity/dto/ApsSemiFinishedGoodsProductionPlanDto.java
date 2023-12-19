@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 
@@ -25,29 +26,29 @@ public class ApsSemiFinishedGoodsProductionPlanDto implements Serializable {
      * 
      */
     @TableField(value = "f_material_code")
-    private String fMaterialCode;
+    private String fmaterialCode;
 
 
     @TableField(value = "f_material_name")
-    private String fMaterialName;
+    private String fmaterialName;
 
     /**
      * 
      */
     @TableField(value = "f_quantity")
-    private String fQuantity;
+    private String fquantity;
 
     /**
      * 
      */
     @TableField(value = "f_start_time")
-    private String fStartTime;
+    private Date fstartTime;
 
     /**
      * 
      */
     @TableField(value = "f_required_delivery_time")
-    private String fRequiredDeliveryTime;
+    private Date frequiredDeliveryTime;
 
 
     @TableField(exist = false)

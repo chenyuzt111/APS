@@ -2,6 +2,7 @@ package com.benewake.system.service.scheduling.result.impl;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsFimPriority;
@@ -13,7 +14,9 @@ import com.benewake.system.entity.vo.PageResultVo;
 import com.benewake.system.entity.vo.QueryViewParams;
 import com.benewake.system.entity.vo.ResultColPageVo;
 import com.benewake.system.exception.BeneWakeException;
+import com.benewake.system.mapper.ApsColumnTableMapper;
 import com.benewake.system.mapper.ApsFimPriorityMapper;
+import com.benewake.system.mapper.ApsViewColTableMapper;
 import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.scheduling.result.ApsFimPriorityService;
 import com.benewake.system.utils.ResponseUtil;
@@ -39,6 +42,27 @@ public class ApsFimPriorityServiceImpl extends ServiceImpl<ApsFimPriorityMapper,
 
     @Autowired
     private ApsFimPriorityMapper apsFimPriorityMapper;
+
+    @Autowired
+    private ApsViewColTableMapper apsViewColTableMapper;
+
+    @Autowired
+    private ApsColumnTableMapper apsColumnTableMapper;
+
+    @Override
+    public ApsTableVersionService getTableVersionService() {
+        return apsTableVersionService;
+    }
+
+    @Override
+    public ApsViewColTableMapper getViewColTableMapper() {
+        return apsViewColTableMapper;
+    }
+
+    @Override
+    public ApsColumnTableMapper getColumnTableMapper() {
+        return apsColumnTableMapper;
+    }
 
     @Override
     public PageResultVo<ApsFimPriorityDto> getAllPage(Integer page, Integer size) {
@@ -78,8 +102,15 @@ public class ApsFimPriorityServiceImpl extends ServiceImpl<ApsFimPriorityMapper,
     }
 
     @Override
-    public ResultColPageVo<Object> getFimPriorityFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
+    public ResultColPageVo<Object> getResultFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
         return commonFiltrate(page, size, SchedulingResultType.APS_FIM_PRIORITY, queryViewParams, (page1, queryWrapper) ->
                 apsFimPriorityMapper.getFimPriorityFiltrate(page1, queryWrapper));
+    }
+
+    @Override
+    public List<Object> searchLike(QueryWrapper<Object> queryWrapper) {
+        Integer version = getApsTableVersion(APS_FIM_PRIORITY.getCode(), apsTableVersionService);
+        queryWrapper.eq("version", version);
+        return apsFimPriorityMapper.searchLike(queryWrapper);
     }
 }

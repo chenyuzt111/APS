@@ -15,6 +15,20 @@
         <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
 
+    <resultMap id="ApsImmediatelyInventoryDtoResultMap"
+               type="com.benewake.system.entity.dto.ApsImmediatelyInventoryDto">
+        <id property="id" column="id"/>
+        <result property="materialId" column="f_material_id"/>
+        <result property="materialName" column="f_material_name"/>
+        <result property="stockName" column="f_stock_name"/>
+        <result property="baseQty" column="f_base_qty"/>
+        <result property="avbQty" column="f_avb_qty"/>
+        <result property="lot" column="f_lot"/>
+        <result property="expiryDate" column="f_expiry_date"/>
+        <result property="chVersion" column="ch_version_name"/>
+    </resultMap>
+
+
     <sql id="Base_Column_List">
         id,f_material_id,f_stock_name,
         f_base_qty,f_avb_qty,f_lot,
@@ -69,17 +83,17 @@
     <!--        LEFT JOIN aps_material_name_mapping AS map ON inv.f_material_id = map.f_material_id-->
     <!--    </select>    -->
     <select id="selectPageList"
-            resultType="com.benewake.system.entity.dto.ApsImmediatelyInventoryDto">
+            resultMap="ApsImmediatelyInventoryDtoResultMap">
         SELECT
         inv.id,
-        inv.f_material_id,
-        map.f_material_name,
-        f_stock_name,
-        f_base_qty,
-        f_avb_qty,
-        f_lot,
-        f_expiry_date,
-        ch_version_name AS version
+        inv.f_material_id ,
+        map.f_material_name ,
+        f_stock_name ,
+        f_base_qty ,
+        f_avb_qty ,
+        f_lot ,
+        f_expiry_date ,
+        ch_version_name
         FROM
         (
         SELECT *,
@@ -99,17 +113,17 @@
         ORDER BY inv.version desc
     </select>
     <select id="selectPageLists"
-            resultType="com.benewake.system.entity.dto.ApsImmediatelyInventoryDto">
+            resultMap="ApsImmediatelyInventoryDtoResultMap">
         SELECT
         inv.id,
-        inv.f_material_id,
-        map.f_material_name,
-        f_stock_name,
-        f_base_qty,
-        f_avb_qty,
-        f_lot,
-        f_expiry_date,
-        ch_version_name AS version
+        inv.f_material_id ,
+        map.f_material_name ,
+        f_stock_name ,
+        f_base_qty ,
+        f_avb_qty ,
+        f_lot ,
+        f_expiry_date ,
+        ch_version_name
         FROM
         (
         SELECT *,
@@ -129,7 +143,30 @@
         <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
             ${ew.customSqlSegment}
         </if>
-        ORDER BY inv.version desc
+    </select>
+    <select id="searchLike"
+            resultMap="ApsImmediatelyInventoryDtoResultMap">
+        select
+        distinct ${ew.sqlSelect}
+        from
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        END AS ch_version_name
+        FROM aps_immediately_inventory
+        WHERE (version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>)
+        ) AS inv
+        LEFT JOIN
+        aps_material_name_mapping AS map ON inv.f_material_id = map.f_material_id
+        <if test="ew!= null and ew.sqlSegment!= null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
     </select>
 
 </mapper>

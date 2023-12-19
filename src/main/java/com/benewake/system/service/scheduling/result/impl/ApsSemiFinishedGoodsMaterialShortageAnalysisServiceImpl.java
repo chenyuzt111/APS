@@ -1,5 +1,6 @@
 package com.benewake.system.service.scheduling.result.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsSemiFinishedGoodsMaterialShortageAnalysis;
@@ -15,6 +16,8 @@ import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.scheduling.result.ApsSemiFinishedGoodsMaterialShortageAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author ASUS
@@ -69,9 +72,16 @@ public class ApsSemiFinishedGoodsMaterialShortageAnalysisServiceImpl extends Ser
     }
 
     @Override
-    public ResultColPageVo<Object> semiMaterialShortageFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
+    public ResultColPageVo<Object> getResultFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
         return commonFiltrate(page, size, SchedulingResultType.APS_SEMI_FINISHED_GOODS_MATERIAL_SHORTAGE_ANALYSIS, queryViewParams
                 , (pageTemp, queryWrapper) -> semiFinishedGoodsMaterialShortageAnalysisMapper.queryPageList(pageTemp, queryWrapper));
+    }
+
+    @Override
+    public List<Object> searchLike(QueryWrapper<Object> queryWrapper) {
+        Integer version = getApsTableVersion(SchedulingResultType.APS_SEMI_FINISHED_GOODS_MATERIAL_SHORTAGE_ANALYSIS.getCode(), apsTableVersionService);
+        queryWrapper.eq("version" ,version);
+        return semiFinishedGoodsMaterialShortageAnalysisMapper.searchLike(queryWrapper);
     }
 }
 

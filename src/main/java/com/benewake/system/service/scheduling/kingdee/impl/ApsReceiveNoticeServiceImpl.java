@@ -1,5 +1,6 @@
 package com.benewake.system.service.scheduling.kingdee.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsReceiveNotice;
@@ -73,6 +74,15 @@ public class ApsReceiveNoticeServiceImpl extends ServiceImpl<ApsReceiveNoticeMap
         return receiveNoticeDtoPage;
     }
 
+    @Override
+    public Page selectPageLists(Page page, List versionToChVersionArrayList, QueryWrapper wrapper) {
+        return apsReceiveNoticeMapper.selectPageLists(page, versionToChVersionArrayList, wrapper);
+    }
+
+    @Override
+    public List searchLike(List versionToChVersionArrayList, QueryWrapper queryWrapper) {
+        return apsReceiveNoticeMapper.searchLike(versionToChVersionArrayList, queryWrapper);
+    }
 
     private ArrayList<ApsReceiveNotice> getApsReceiveNoticeList(List<KingdeeReceiveNotice> result, Map<String, String> materialIdToNameMap) throws NoSuchFieldException, IllegalAccessException {
         ArrayList<ApsReceiveNotice> apsReceiveNoticeList = new ArrayList<>();

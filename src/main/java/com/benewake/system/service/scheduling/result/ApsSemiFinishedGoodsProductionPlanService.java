@@ -6,8 +6,6 @@ import com.benewake.system.entity.dto.ApsSemiFinishedGoodsProductionPlanDto;
 import com.benewake.system.entity.vo.PageResultVo;
 import com.benewake.system.entity.vo.QueryViewParams;
 import com.benewake.system.entity.vo.ResultColPageVo;
-import com.benewake.system.service.ApsTableVersionService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
 * @author ASUS
@@ -17,7 +15,5 @@ import org.springframework.beans.factory.annotation.Autowired;
 public interface ApsSemiFinishedGoodsProductionPlanService extends IService<ApsSemiFinishedGoodsProductionPlan> ,ApsSchedulingResuleBase{
 
     PageResultVo<ApsSemiFinishedGoodsProductionPlanDto> getAllPage(Integer page, Integer size);
-
-    ResultColPageVo<Object> semiFinishedGoodsFiltrate(Integer page, Integer size, QueryViewParams queryViewParams);
 
 }

@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -17,6 +19,8 @@ import java.util.Date;
 @TableName(value ="aps_table_version")
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ApsTableVersion implements Serializable {
     /**
      * 主键 ID

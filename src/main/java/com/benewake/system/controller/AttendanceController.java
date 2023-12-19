@@ -37,7 +37,6 @@ public class AttendanceController {
     @Autowired
     private ApsHolidayTableService holidayTableService;
 
-
     @ApiOperation("获取出勤管理")
     @GetMapping("/list/{page}/{size}")
     public Result getAttendanceManList(@PathVariable("page") Integer page, @PathVariable("size") Integer size) {

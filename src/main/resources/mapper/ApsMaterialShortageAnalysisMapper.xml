@@ -20,6 +20,20 @@
         f_parent_material_name,f_process,f_sub_material_code,
         f_sub_material_quantity,f_sub_material_delivery_time,version
     </sql>
+    <resultMap id="ApsMaterialShortageAnalysisDtoResultMap"
+               type="com.benewake.system.entity.dto.ApsMaterialShortageAnalysisDto">
+        <id property="id" column="id"/>
+        <result property="ftaskId" column="f_task_id"/>
+        <result property="fparentMaterialCode" column="f_parent_material_code"/>
+        <result property="fparentMaterialName" column="f_parent_material_name"/>
+        <result property="fprocess" column="f_process"/>
+        <result property="fsubMaterialCode" column="f_sub_material_code"/>
+        <result property="fsubMaterialName" column="f_sub_material_name"/>
+        <result property="fsubMaterialQuantity" column="f_sub_material_quantity"/>
+        <result property="fsubMaterialDeliveryTime" column="f_sub_material_delivery_time"/>
+    </resultMap>
+
+
     <select id="selectPageList" resultType="com.benewake.system.entity.dto.ApsMaterialShortageAnalysisDto">
         SELECT an.id,
                f_task_id,
@@ -45,6 +59,13 @@
                map1.f_material_name as f_sub_material_name,
                f_sub_material_quantity,
                f_sub_material_delivery_time
+        FROM aps_material_shortage_analysis AS an
+                 LEFT JOIN aps_material_name_mapping AS map ON an.f_parent_material_code = map.f_material_id
+                 LEFT JOIN aps_material_name_mapping AS map1 ON an.f_sub_material_code = map1.f_material_id
+            ${ew.customSqlSegment}
+    </select>
+    <select id="searchLike" resultMap="ApsMaterialShortageAnalysisDtoResultMap">
+        SELECT DISTINCT ${ew.sqlSelect}
         FROM aps_material_shortage_analysis AS an
                  LEFT JOIN aps_material_name_mapping AS map ON an.f_parent_material_code = map.f_material_id
                  LEFT JOIN aps_material_name_mapping AS map1 ON an.f_sub_material_code = map1.f_material_id

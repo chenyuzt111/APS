@@ -1,10 +1,13 @@
 package com.benewake.system.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsProcessCapacity;
 import com.benewake.system.entity.dto.ApsProcessCapacityDto;
 import com.benewake.system.entity.vo.ApsProcessCapacityVo;
+import com.benewake.system.entity.vo.QueryViewParams;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,6 +27,9 @@ public interface ApsProcessCapacityMapper extends BaseMapper<ApsProcessCapacity>
     List<ApsProcessCapacityVo> selectProcessCapacitysByproductFamily(@Param("productFamily") String productFamily);
 
     List<ApsProcessCapacityDto> selectAllDtos();
+
+    Page<ApsProcessCapacityDto> selectPageList(Page<Object> capacityDtoPage,
+                                               @Param(Constants.WRAPPER) QueryWrapper<Object> wrapper);
 }
 
 

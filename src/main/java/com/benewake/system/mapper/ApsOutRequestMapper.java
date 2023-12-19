@@ -1,7 +1,9 @@
 package com.benewake.system.mapper;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsOutRequest;
 import com.benewake.system.entity.dto.ApsOutRequestDto;
@@ -22,4 +24,11 @@ public interface ApsOutRequestMapper extends BaseMapper<ApsOutRequest> {
     void insertVersionIncr();
 
     Page<ApsOutRequestDto> selectPageList(Page page, @Param("versions") List tableVersionList);
+
+    Page<ApsOutRequestDto> selectPageLists(Page page,
+                                           @Param("versions") List versionToChVersionArrayList,
+                                           @Param(Constants.WRAPPER) QueryWrapper wrapper);
+
+    List<ApsOutRequestDto> searchLike(@Param("versions") List versionToChVersionArrayList,
+                                      @Param(Constants.WRAPPER) QueryWrapper wrapper);
 }

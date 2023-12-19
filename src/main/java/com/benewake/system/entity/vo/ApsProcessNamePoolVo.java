@@ -22,7 +22,7 @@ public class ApsProcessNamePoolVo implements Serializable {
     private Integer id;
 
 
-    private Integer number;
+    private Long number;
 
     /**
      * 

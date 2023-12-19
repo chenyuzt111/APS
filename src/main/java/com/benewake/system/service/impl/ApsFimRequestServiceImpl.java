@@ -40,9 +40,6 @@ public class ApsFimRequestServiceImpl extends ServiceImpl<ApsFimRequestMapper, A
     private ApsFimRequestMapper fimRequestMapper;
 
     @Autowired
-    private HostHolder hostHolder;
-
-    @Autowired
     private FimRequestVoTiExcelList fimRequestVoTiExcelList;
 
     @Override
@@ -50,9 +47,9 @@ public class ApsFimRequestServiceImpl extends ServiceImpl<ApsFimRequestMapper, A
         Page<ApsFimRequestVo> pageParam = new Page<>();
         pageParam.setSize(size);
         pageParam.setCurrent(page);
+
         Page<ApsFimRequestVo> fimRequestVoPage = fimRequestMapper.getFimRequestPage(pageParam);
-        PageResultVo<ApsFimRequestVo> pageResultVo = buildPageListVo(fimRequestVoPage);
-        return pageResultVo;
+        return buildPageListVo(fimRequestVoPage);
     }
 
     @Override

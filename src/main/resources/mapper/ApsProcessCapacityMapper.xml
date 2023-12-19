@@ -30,6 +30,7 @@
                process_number,
                product_family,
                packaging_method,
+               concurrency_count,
                standard_time,
                switch_time,
                max_personnel,
@@ -49,6 +50,7 @@
                process_number,
                product_family,
                packaging_method,
+               concurrency_count,
                switch_time,
                standard_time,
                max_personnel,
@@ -69,6 +71,7 @@
                product_family,
                packaging_method,
                standard_time,
+               concurrency_count,
                switch_time,
                max_personnel,
                min_personnel
@@ -76,5 +79,24 @@
                  LEFT JOIN aps_process_name_pool AS ce ON pro.process_id = ce.id
         ORDER BY pro.product_family,
                  pro.process_number
+    </select>
+    <select id="selectPageList" resultType="com.benewake.system.entity.dto.ApsProcessCapacityDto">
+        SELECT pro.id,
+        belonging_process,
+        pro.process_id,
+        process_name,
+        process_number,
+        product_family,
+        concurrency_count,
+        packaging_method,
+        standard_time,
+        switch_time,
+        max_personnel,
+        min_personnel
+        FROM `aps_process_capacity` AS pro
+        LEFT JOIN aps_process_name_pool AS ce ON pro.process_id = ce.id
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
     </select>
 </mapper>

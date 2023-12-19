@@ -21,6 +21,25 @@
         <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
 
+    <resultMap id="apsMaterialBomDtoResultMap" type="com.benewake.system.entity.dto.ApsMaterialBomDto">
+        <id property="id" column="id"/>
+        <result property="materialId" column="f_material_id"/>
+        <result property="materialName" column="f_material_name"/>
+        <result property="documentStatus" column="f_document_status"/>
+        <result property="materialIdChild" column="f_material_id_child"/>
+        <result property="materialNameChild" column="f_material_name_child"/>
+        <result property="replaceGroupBop" column="f_replace_group_bop"/>
+        <result property="numerator" column="f_numerator"/>
+        <result property="denominator" column="f_denominator"/>
+        <result property="fixScrapQtyLot" column="f_fix_scrap_qty_lot"/>
+        <result property="scrapRate" column="f_scrap_rate"/>
+        <result property="materialType" column="f_material_type"/>
+        <result property="replaceType" column="f_replace_type"/>
+        <result property="process" column="process"/>
+        <result property="bomVersion" column="bom_version"/>
+        <result property="chVersion" column="ch_version_name"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
         id,f_material_id,f_material_name,
         f_document_status,f_material_id_child,f_material_name_child,
@@ -46,7 +65,8 @@
         FROM `aps_material_bom`
         )
     </select>
-    <select id="selectPageList" resultType="com.benewake.system.entity.dto.ApsMaterialBomDto">
+    <select id="selectPageList"
+            resultMap="apsMaterialBomDtoResultMap">
         SELECT
         bom.id,
         bom.f_material_id,
@@ -63,7 +83,7 @@
         f_replace_type,
         process,
         bom_version,
-        ch_version_name AS version
+        ch_version_name
         FROM
         (
         SELECT *,
@@ -82,6 +102,72 @@
         LEFT JOIN aps_material_name_mapping AS map ON bom.f_material_id = map.f_material_id
         LEFT JOIN aps_material_name_mapping AS map1 ON bom.f_material_id_child = map1.f_material_id
         ORDER BY bom.version desc
+    </select>
+
+    <select id="selectPageLists"
+            resultMap="apsMaterialBomDtoResultMap">
+        SELECT
+        bom.id,
+        bom.f_material_id,
+        map.f_material_name,
+        f_document_status,
+        bom.f_material_id_child,
+        map1.f_material_name AS f_material_name_child,
+        f_replace_group_bop,
+        NULLIF(f_numerator, 0) AS f_numerator,
+        NULLIF(f_denominator, 0) AS f_denominator,
+        NULLIF(f_fix_scrap_qty_lot, 0) AS f_fix_scrap_qty_lot,
+        NULLIF(f_scrap_rate, 0) AS f_scrap_rate,
+        f_material_type,
+        f_replace_type,
+        process,
+        bom_version,
+        ch_version_name
+        FROM
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        ELSE NULL
+        END AS ch_version_name
+        FROM aps_material_bom
+        WHERE version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>
+        ) AS bom
+        LEFT JOIN aps_material_name_mapping AS map ON bom.f_material_id = map.f_material_id
+        LEFT JOIN aps_material_name_mapping AS map1 ON bom.f_material_id_child = map1.f_material_id
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
+
+    <select id="searchLike" resultMap="apsMaterialBomDtoResultMap">
+        select
+        distinct ${ew.sqlSelect}
+        FROM
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        ELSE NULL
+        END AS ch_version_name
+        FROM aps_material_bom
+        WHERE version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>
+        ) AS bom
+        LEFT JOIN aps_material_name_mapping AS map ON bom.f_material_id = map.f_material_id
+        LEFT JOIN aps_material_name_mapping AS map1 ON bom.f_material_id_child = map1.f_material_id
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
     </select>
 
     <insert id="insertListNotDelete">
@@ -112,6 +198,7 @@
         version = (SELECT MAX(version) FROM `aps_material_bom`);
 
     </insert>
+
     <insert id="insertSelectVersionIncr">
         INSERT INTO `aps_material_bom` (f_material_id,
                                         f_document_status, f_material_id_child,

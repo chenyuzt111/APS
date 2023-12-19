@@ -38,6 +38,9 @@ public class ApsProcessCapacityParam implements Serializable {
      */
     private String productFamily;
 
+
+    private Integer concurrencyCount;
+
     /**
      * 包装方式
      */

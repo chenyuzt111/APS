@@ -8,14 +8,15 @@ import java.math.BigDecimal;
 @Data
 public class ProcessSchemeManagementVo {
 
-    private Integer manId;
-
     private Integer id;
+
     /**
      * 产品族
      */
     @TableField(value = "product_family")
     private String productFamily;
+
+    private Integer curId;
 
     private String currentProcessScheme;
 

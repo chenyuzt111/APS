@@ -9,6 +9,6 @@ import com.benewake.system.service.ApsIntfaceDataServiceBase;
 * @description 针对表【aps_purchase_order】的数据库操作Service
 * @createDate 2023-10-26 13:58:33
 */
-public interface ApsPurchaseOrderService extends IService<ApsPurchaseOrder> , ApsIntfaceDataServiceBase {
+public interface ApsPurchaseOrderService{
 
 }

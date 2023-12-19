@@ -5,27 +5,150 @@
 <mapper namespace="com.benewake.system.mapper.ApsMaterialMapper">
 
     <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsMaterial">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="fMaterialId" column="f_material_id" jdbcType="VARCHAR"/>
-            <result property="fMaterialName" column="f_material_name" jdbcType="VARCHAR"/>
-            <result property="fSubReqBillNo" column="f_sub_req_bill_no" jdbcType="VARCHAR"/>
-            <result property="fMaterialId2" column="f_material_id2" jdbcType="VARCHAR"/>
-            <result property="fMaterialName2" column="f_material_name2" jdbcType="VARCHAR"/>
-            <result property="fMaterialType" column="f_material_type" jdbcType="VARCHAR"/>
-            <result property="fMustQty" column="f_must_qty" jdbcType="VARCHAR"/>
-            <result property="fPickedQty" column="f_picked_qty" jdbcType="VARCHAR"/>
-            <result property="fGoodReturnQty" column="f_good_return_qty" jdbcType="VARCHAR"/>
-            <result property="fProcessDefectReturnQty" column="f_process_defect_return_qty" jdbcType="VARCHAR"/>
-            <result property="fDzmaterialId" column="f_dzmaterial_id" jdbcType="VARCHAR"/>
-            <result property="formName" column="form_name" jdbcType="VARCHAR"/>
-            <result property="version" column="version" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="materialId" column="material_id" jdbcType="VARCHAR"/>
+        <result property="materialName" column="material_name" jdbcType="VARCHAR"/>
+        <result property="subReqBillNo" column="sub_req_bill_no" jdbcType="VARCHAR"/>
+        <result property="materialId2" column="material_id2" jdbcType="VARCHAR"/>
+        <result property="materialName2" column="material_name2" jdbcType="VARCHAR"/>
+        <result property="materialType" column="material_type" jdbcType="VARCHAR"/>
+        <result property="mustQty" column="must_qty" jdbcType="VARCHAR"/>
+        <result property="pickedQty" column="picked_qty" jdbcType="VARCHAR"/>
+        <result property="goodReturnQty" column="good_return_qty" jdbcType="VARCHAR"/>
+        <result property="processDefectReturnQty" column="process_defect_return_qty" jdbcType="VARCHAR"/>
+        <result property="dzmaterialId" column="dzmaterial_id" jdbcType="VARCHAR"/>
+        <result property="formName" column="form_name" jdbcType="VARCHAR"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
 
+    <!-- 在你的映射文件中 -->
+    <resultMap id="apsMaterialDtoResultMap" type="com.benewake.system.entity.dto.ApsMaterialDto">
+        <id property="id" column="id"/>
+        <result property="materialId" column="material_id"/>
+        <result property="materialName" column="material_name"/>
+        <result property="subReqBillNo" column="sub_req_bill_no"/>
+        <result property="materialId2" column="material_id2"/>
+        <result property="materialName2" column="material_name2"/>
+        <result property="materialType" column="material_type"/>
+        <result property="mustQty" column="must_qty"/>
+        <result property="pickedQty" column="picked_qty"/>
+        <result property="goodReturnQty" column="good_return_qty"/>
+        <result property="processDefectReturnQty" column="process_defect_return_qty"/>
+        <result property="dzmaterialId" column="dzmaterial_id"/>
+        <result property="formName" column="form_name"/>
+        <result property="chVersion" column="ch_version_name"/>
+    </resultMap>
+
+
     <sql id="Base_Column_List">
-        id,f_material_id,f_material_name,
-        f_sub_req_bill_no,f_material_id2,f_material_name2,
-        f_material_type,f_must_qty,f_picked_qty,
-        f_good_return_qty,f_process_defect_return_qty,f_dzmaterial_id,
+        id,material_id,material_name,
+        sub_req_bill_no,material_id2,material_name2,
+        material_type,must_qty,picked_qty,
+        good_return_qty,process_defect_return_qty,dzmaterial_id,
         form_name,version
     </sql>
+    <insert id="insertVersionIncr">
+        INSERT INTO aps_material (material_id, material_name, sub_req_bill_no,
+                                  material_id2, material_name2, material_type,
+                                  must_qty, picked_qty, good_return_qty,
+                                  process_defect_return_qty, dzmaterial_id, form_name, version)
+        SELECT material_id,
+               material_name,
+               sub_req_bill_no,
+               material_id2,
+               material_name2,
+               material_type,
+               must_qty,
+               picked_qty,
+               good_return_qty,
+               process_defect_return_qty,
+               dzmaterial_id,
+               form_name,
+               version + 1
+        FROM aps_material
+        WHERE version = (SELECT MAX(version) FROM aps_material);
+    </insert>
+    <select id="selectPageLists"
+            resultMap="apsMaterialDtoResultMap">
+        SELECT
+        material.id,material.material_id,map.f_material_name as material_name,
+        sub_req_bill_no,material.material_id2,map1.f_material_name as material_name2,
+        material_type,must_qty,picked_qty,
+        good_return_qty,process_defect_return_qty,dzmaterial_id,
+        form_name,
+        ch_version_name
+        FROM
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        END AS ch_version_name
+        FROM aps_material
+        WHERE (version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>)
+        ) AS material
+        LEFT JOIN
+        aps_material_name_mapping AS map ON material.material_id = map.f_material_id
+        LEFT JOIN
+        aps_material_name_mapping AS map1 ON material.material_id2 = map1.f_material_id
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
+    <select id="selectPageList"
+            resultMap="apsMaterialDtoResultMap">
+        SELECT
+        material.id,material.material_id,map.f_material_name as material_name,
+        sub_req_bill_no,material.material_id2,map1.f_material_name as material_name2,
+        material_type,must_qty,picked_qty,
+        good_return_qty,process_defect_return_qty,dzmaterial_id,
+        form_name,
+        ch_version_name
+        FROM
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        END AS ch_version_name
+        FROM aps_material
+        WHERE (version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>)
+        ) AS material
+        LEFT JOIN
+        aps_material_name_mapping AS map ON material.material_id = map.f_material_id
+        LEFT JOIN aps_material_name_mapping AS map1 ON material.material_id2 = map1.f_material_id
+        ORDER BY material.version desc
+    </select>
+    <select id="searchLike" resultMap="apsMaterialDtoResultMap">
+        SELECT
+        distinct ${ew.sqlSelect}
+        FROM
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        END AS ch_version_name
+        FROM aps_material
+        WHERE (version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>)
+        ) AS material
+        LEFT JOIN
+        aps_material_name_mapping AS map ON material.material_id = map.f_material_id
+        LEFT JOIN aps_material_name_mapping AS map1 ON material.material_id2 = map1.f_material_id
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
 </mapper>

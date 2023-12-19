@@ -31,6 +31,7 @@ public class InterfaceDataRinseTask {
     @Autowired
     private ApsTableVersionService apsTableVersionService;
 
+    //todo 剩余aps_table_version表需要同一清洗
     //每天0点0分0秒定时执行
     @Scheduled(cron = "0 0 0 * * ?")
     public void cleanTasks() {

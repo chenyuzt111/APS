@@ -7,6 +7,7 @@ import com.benewake.system.entity.ApsMaterial;
 import com.benewake.system.service.ApsMaterialService;
 import com.benewake.system.mapper.ApsMaterialMapper;
 import com.benewake.system.service.scheduling.kingdee.ApsMaterialBaseService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +19,17 @@ import java.util.List;
 * @description 针对表【aps_material】的数据库操作Service实现
 * @createDate 2023-12-11 18:04:36
 */
+@Slf4j
 @Service
 public class ApsMaterialServiceImpl extends ServiceImpl<ApsMaterialMapper, ApsMaterial>
     implements ApsMaterialService {
 
     @Autowired
     private List<ApsMaterialBaseService> baseMaterialServices;
+
+    @Autowired
+    private ApsMaterialMapper apsMaterialMapper;
+
     @Override
     public Boolean updateDataVersions() throws Exception {
         Integer maxVersionIncr = getMaxVersionIncr();
@@ -40,17 +46,26 @@ public class ApsMaterialServiceImpl extends ServiceImpl<ApsMaterialMapper, ApsMa
 
     @Override
     public void insertVersionIncr() {
-        ApsMaterialService.super.insertVersionIncr();
-    }
-
-    @Override
-    public Page selectPageLists(Page page, List versionToChVersionArrayList, QueryWrapper wrapper) {
-        return ApsMaterialService.super.selectPageLists(page, versionToChVersionArrayList, wrapper);
+        apsMaterialMapper.insertVersionIncr();
     }
 
     @Override
     public Page selectPageList(Page page, List tableVersionList) {
-        return ApsMaterialService.super.selectPageList(page, tableVersionList);
+        return apsMaterialMapper.selectPageList(page, tableVersionList);
+    }
+
+    @Override
+    public Page selectPageLists(Page page, List versionToChVersionArrayList, QueryWrapper wrapper) {
+        long l = System.currentTimeMillis();
+        Page page1 = apsMaterialMapper.selectPageLists(page, versionToChVersionArrayList, wrapper);
+        long l1 = System.currentTimeMillis();
+        log.info("sql查询耗时：" + (l1 - l));
+        return page1;
+    }
+
+    @Override
+    public List searchLike(List versionToChVersionArrayList, QueryWrapper queryWrapper) {
+        return apsMaterialMapper.searchLike(versionToChVersionArrayList, queryWrapper);
     }
 }
 

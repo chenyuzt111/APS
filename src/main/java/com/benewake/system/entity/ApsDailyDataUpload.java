@@ -72,8 +72,8 @@ public class ApsDailyDataUpload implements Serializable {
     /**
      * 
      */
-    @TableField(value = "version")
-    private Integer version;
+//    @TableField(value = "version")
+//    private Integer version;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

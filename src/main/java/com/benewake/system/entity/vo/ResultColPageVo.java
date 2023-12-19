@@ -1,6 +1,7 @@
 package com.benewake.system.entity.vo;
 
 import com.benewake.system.entity.ColumnVo;
+import com.benewake.system.entity.SortVo;
 import com.benewake.system.entity.vo.baseParam.PageParam;
 import lombok.Data;
 
@@ -11,4 +12,6 @@ public class ResultColPageVo<T> extends PageParam {
     private List<T> list;
 
     private List<ColumnVo> columnTables;
+
+    private List<SortVo> sort;
 }

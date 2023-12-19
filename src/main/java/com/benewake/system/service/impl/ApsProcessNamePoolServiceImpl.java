@@ -2,13 +2,12 @@ package com.benewake.system.service.impl;
 
 import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsProcessNamePool;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
-import com.benewake.system.entity.vo.ApsProcessNamePoolPageVo;
-import com.benewake.system.entity.vo.ApsProcessNamePoolVo;
-import com.benewake.system.entity.vo.DownloadParam;
+import com.benewake.system.entity.vo.*;
 import com.benewake.system.excel.entity.ExcelProcessNamePool;
 import com.benewake.system.excel.entity.ExcelProcessNamePoolTemplate;
 import com.benewake.system.excel.listener.ProcessPoolListener;
@@ -25,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -40,6 +40,9 @@ public class ApsProcessNamePoolServiceImpl extends ServiceImpl<ApsProcessNamePoo
 
     @Autowired
     private ProcessNamePoolDtoToExcelList processNamePoolDtoToExcelList;
+
+    @Autowired
+    private ApsProcessNamePoolMapper processNamePoolMapper;
 
     @Override
     public Boolean addOrUpdateProcess(ApsProcessNamePool apsProcessNamePool) {
@@ -73,7 +76,7 @@ public class ApsProcessNamePoolServiceImpl extends ServiceImpl<ApsProcessNamePoo
             ApsProcessNamePoolVo apsProcessNamePoolVo = new ApsProcessNamePoolVo();
             apsProcessNamePoolVo.setProcessName(x.getProcessName());
             apsProcessNamePoolVo.setId(x.getId());
-            apsProcessNamePoolVo.setNumber(number.getAndSet(number.get() + 1));
+//            apsProcessNamePoolVo.setNumber(number.getAndSet(number.get() + 1));
             return apsProcessNamePoolVo;
         }).collect(Collectors.toList());
         apsProcessNamePoolPageVo.setApsProcessNamePools(processNamePools);
@@ -113,7 +116,7 @@ public class ApsProcessNamePoolServiceImpl extends ServiceImpl<ApsProcessNamePoo
     public Boolean saveDataByExcel(Integer type, MultipartFile file) {
         try {
             EasyExcel.read(file.getInputStream(),
-                    ExcelProcessNamePoolTemplate.class, new ProcessPoolListener(this ,type))
+                            ExcelProcessNamePoolTemplate.class, new ProcessPoolListener(this, type))
                     .sheet().headRowNumber(1).doRead();
         } catch (Exception e) {
             log.error("工序与产能导入失败" + e.getMessage());
@@ -122,6 +125,17 @@ public class ApsProcessNamePoolServiceImpl extends ServiceImpl<ApsProcessNamePoo
         return true;
     }
 
+    @Override
+    public Page selectPageLists(Page<Object> page, QueryWrapper<Object> wrapper) {
+        Page<ApsProcessNamePoolVo> processNames = processNamePoolMapper.selectPages(page, wrapper);
+        long size = page.getSize();
+        long current = page.getCurrent();
+        AtomicLong number = new AtomicLong((current - 1) * size + 1);
+        processNames.getRecords().forEach(x -> {
+            x.setNumber(number.getAndIncrement());
+        });
+        return processNames;
+    }
 }
 
 

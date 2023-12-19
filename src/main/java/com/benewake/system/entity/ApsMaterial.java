@@ -23,68 +23,68 @@ public class ApsMaterial implements Serializable {
     /**
      * 产品编码
      */
-    @TableField(value = "f_material_id")
-    private String fMaterialId;
+    @TableField(value = "material_id")
+    private String materialId;
 
     /**
      * 物料名称
      */
-    @TableField(value = "f_material_name")
-    private String fMaterialName;
+    @TableField(value = "material_name")
+    private String materialName;
 
     /**
      * 委外订单编号
      */
-    @TableField(value = "f_sub_req_bill_no")
-    private String fSubReqBillNo;
+    @TableField(value = "sub_req_bill_no")
+    private String subReqBillNo;
 
     /**
      * 子项物料编码
      */
-    @TableField(value = "f_material_id2")
-    private String fMaterialId2;
+    @TableField(value = "material_id2")
+    private String materialId2;
 
     /**
      * 子项物料名称
      */
-    @TableField(value = "f_material_name2")
-    private String fMaterialName2;
+    @TableField(value = "material_name2")
+    private String materialName2;
 
     /**
      * 子项类型
      */
-    @TableField(value = "f_material_type")
-    private String fMaterialType;
+    @TableField(value = "material_type")
+    private String materialType;
 
     /**
      * 应发数量
      */
-    @TableField(value = "f_must_qty")
-    private String fMustQty;
+    @TableField(value = "must_qty")
+    private String mustQty;
 
     /**
      * 已领数量
      */
-    @TableField(value = "f_picked_qty")
-    private String fPickedQty;
+    @TableField(value = "picked_qty")
+    private String pickedQty;
 
     /**
      * 良品退料数量
      */
-    @TableField(value = "f_good_return_qty")
-    private String fGoodReturnQty;
+    @TableField(value = "good_return_qty")
+    private String goodReturnQty;
 
     /**
      * 作业不良退料数量
      */
-    @TableField(value = "f_process_defect_return_qty")
-    private String fProcessDefectReturnQty;
+    @TableField(value = "process_defect_return_qty")
+    private String processDefectReturnQty;
 
     /**
      * 定制物料编码
      */
-    @TableField(value = "f_dzmaterial_id")
-    private String fDzmaterialId;
+    @TableField(value = "dzmaterial_id")
+    private String dzmaterialId;
 
     /**
      * 表单名称

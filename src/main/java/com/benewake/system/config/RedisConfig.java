@@ -21,7 +21,7 @@ public class RedisConfig {
     @Bean(name = "redisTemplate")
     @Primary
     public RedisTemplate<String, Object> redisTemplate(
-        @Autowired RedisConnectionFactory connectionFactory) {
+            @Autowired RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
@@ -30,7 +30,7 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedissonClient redissonClient(){
+    public RedissonClient redissonClient() {
         Config config = new Config();
         //生产
 //        config.useSingleServer()

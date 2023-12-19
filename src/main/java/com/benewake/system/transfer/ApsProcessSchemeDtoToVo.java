@@ -30,11 +30,7 @@ public class ApsProcessSchemeDtoToVo {
         if (object.getState() == null) {
             return apsProcessSchemeVo;
         }
-        if (object.getState()) {
-            apsProcessSchemeVo.setState("有效");
-        } else {
-            apsProcessSchemeVo.setState("无效");
-        }
+        apsProcessSchemeVo.setState(object.getState() ? "有效" : "无效");
 
         return apsProcessSchemeVo;
     }

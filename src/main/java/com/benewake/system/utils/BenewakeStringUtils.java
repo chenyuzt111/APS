@@ -22,6 +22,11 @@ public class BenewakeStringUtils extends org.apache.commons.lang3.StringUtils {
      */
     private static final char SEPARATOR = '_';
 
+    public static String removeAs(String input) {
+        // 使用正则表达式将 "AS" 及其后面的部分替换为空字符串
+        return input.replaceAll("(?i)\\s+as\\s+.*$", "");
+    }
+
     public static Date parse(String date ,String dateFormat) throws ParseException {
         if (StringUtils.isEmpty(date) || StringUtils.isEmpty(dateFormat) ) {
             return null;

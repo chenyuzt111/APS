@@ -1,13 +1,11 @@
 package com.benewake.system.service.scheduling.result;
 
-import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.benewake.system.entity.ApsMaterialShortageAnalysis;
 import com.benewake.system.entity.dto.ApsMaterialShortageAnalysisDto;
 import com.benewake.system.entity.vo.PageResultVo;
 import com.benewake.system.entity.vo.QueryViewParams;
 import com.benewake.system.entity.vo.ResultColPageVo;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * @author ASUS
@@ -18,5 +16,4 @@ public interface ApsMaterialShortageAnalysisService extends IService<ApsMaterial
 
     PageResultVo<ApsMaterialShortageAnalysisDto> getAllPage(Integer page, Integer size);
 
-    ResultColPageVo<Object> materialShortageAnalysisFiltrate(Integer page, Integer size, QueryViewParams queryViewParams);
 }

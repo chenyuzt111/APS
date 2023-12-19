@@ -224,7 +224,7 @@ public class ProcessController {
     @PostMapping("/proceeNameTemplate")
     public void proceeNameTemplate(HttpServletResponse response) {
         try {
-            ResponseUtil.setFileResp(response ,"工序命名池导入模板");
+            ResponseUtil.setFileResp(response, "工序命名池导入模板");
             EasyExcel.write(response.getOutputStream(), ExcelProcessNamePoolTemplate.class).sheet("sheet1")
                     .doWrite((java.util.Collection<?>) null);
         } catch (IOException e) {
@@ -262,7 +262,7 @@ public class ProcessController {
     @PostMapping("/processCapacityTemplate")
     public void processCapacityTemplate(HttpServletResponse response) {
         try {
-            ResponseUtil.setFileResp(response ,"工序与产能导入模板");
+            ResponseUtil.setFileResp(response, "工序与产能导入模板");
             EasyExcel.write(response.getOutputStream(), ExcelProcessCapacityTemplate.class).sheet("sheet1")
                     .doWrite((java.util.Collection<?>) null);
         } catch (IOException e) {

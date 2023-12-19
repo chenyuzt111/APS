@@ -5,14 +5,20 @@
 <mapper namespace="com.benewake.system.mapper.ApsViewTableMapper">
 
     <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsViewTable">
-            <id property="viewId" column="view_id" jdbcType="BIGINT"/>
-            <result property="userId" column="user_id" jdbcType="BIGINT"/>
-            <result property="viewName" column="view_name" jdbcType="VARCHAR"/>
-            <result property="tableId" column="table_id" jdbcType="BIGINT"/>
+        <id property="viewId" column="view_id" jdbcType="BIGINT"/>
+        <result property="userName" column="user_name" jdbcType="BIGINT"/>
+        <result property="viewName" column="view_name" jdbcType="VARCHAR"/>
+        <result property="tableId" column="table_id" jdbcType="BIGINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         view_id,user_id,view_name,
         table_id
     </sql>
+    <select id="selectColNameByViewId" resultType="java.lang.String">
+        SELECT vo_col_name
+        FROM aps_view_col_table AS vi
+                 LEFT JOIN aps_column_table AS col ON vi.col_id = col.id
+        WHERE view_id = #{viewId}
+    </select>
 </mapper>

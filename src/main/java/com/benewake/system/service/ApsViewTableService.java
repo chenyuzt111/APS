@@ -17,4 +17,6 @@ public interface ApsViewTableService extends IService<ApsViewTable> {
     ViewTableListVo getViews(Integer tableId);
 
     Boolean saveView(ViewParam viewParam);
+
+    List<String> selectColNameByViewId(Long viewId);
 }

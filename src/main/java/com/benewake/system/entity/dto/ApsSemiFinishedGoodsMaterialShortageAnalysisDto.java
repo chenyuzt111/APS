@@ -25,65 +25,65 @@ public class ApsSemiFinishedGoodsMaterialShortageAnalysisDto implements Serializ
      * 
      */
     @TableField(value = "f_task_id")
-    private String fTaskId;
+    private String ftaskId;
 
     /**
      * 
      */
     @TableField(value = "f_parent_code")
-    private String fParentCode;
+    private String fparentCode;
 
     /**
      * 
      */
     @TableField(value = "f_parent_name")
-    private String fParentName;
+    private String fparentName;
 
     /**
      * 
      */
     @TableField(value = "f_process")
-    private String fProcess;
+    private String fprocess;
 
     /**
      * 
      */
     @TableField(value = "f_semi_code")
-    private String fSemiCode;
+    private String fsemiCode;
     /**
      *
      */
     @TableField(value = "f_semi_name")
-    private String fSemiName;
+    private String fsemiName;
 
     /**
      * 
      */
     @TableField(value = "f_semi_qty")
-    private String fSemiQty;
+    private String fsemiQty;
 
     /**
      * 
      */
     @TableField(value = "f_sub_code")
-    private String fSubCode;
+    private String fsubCode;
     /**
      *
      */
     @TableField(value = "f_sub_name")
-    private String fSubName;
+    private String fsubName;
 
     /**
      * 
      */
     @TableField(value = "f_sub_qty")
-    private String fSubQty;
+    private String fsubQty;
 
     /**
      * 
      */
     @TableField(value = "f_sub_delivery_time")
-    private String fSubDeliveryTime;
+    private String fsubDeliveryTime;
 
 
     @TableField(exist = false)

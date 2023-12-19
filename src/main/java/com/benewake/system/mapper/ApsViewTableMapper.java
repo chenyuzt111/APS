@@ -3,6 +3,9 @@ package com.benewake.system.mapper;
 import com.benewake.system.entity.ApsViewTable;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author ASUS
@@ -13,6 +16,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ApsViewTableMapper extends BaseMapper<ApsViewTable> {
 
+    List<String> selectColNameByViewId(@Param("viewId") Long viewId);
 }
 
 

@@ -80,7 +80,7 @@ public  class ApsMesTotalDto implements Serializable {
     /**
      * 版本号
      */
-    private Integer version;
+    private String chVersion;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

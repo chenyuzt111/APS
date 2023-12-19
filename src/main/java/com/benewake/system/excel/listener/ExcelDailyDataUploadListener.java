@@ -88,9 +88,9 @@ public class ExcelDailyDataUploadListener extends AnalysisEventListener<ExcelDai
         apsDailyDataUpload.setFMaterialCode(data.getMaterialCode());
         apsDailyDataUpload.setFTotalQuantity(String.valueOf(data.getTotalQuantity()));
         apsDailyDataUpload.setFCompletedQuantity(String.valueOf(data.getCompletedQuantity()));
-        apsDailyDataUpload.setFCapacityPsPuPp(String.valueOf(data.getCapacityPsPuPp()));
+//        apsDailyDataUpload.setFCapacityPsPuPp(String.valueOf(data.getCapacityPsPuPp()));
         apsDailyDataUpload.setFRemainingQuantity(String.valueOf(data.getRemainingQuantity()));
-        apsDailyDataUpload.setFRemainingCapacity(String.valueOf(data.getRemainingCapacity()));
+//        apsDailyDataUpload.setFRemainingCapacity(String.valueOf(data.getRemainingCapacity()));
         return apsDailyDataUpload;
     }
 

@@ -1,5 +1,6 @@
 package com.benewake.system.service.scheduling.kingdee.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsInventoryLock;
@@ -82,7 +83,15 @@ public class ApsInventoryLockServiceImpl extends ServiceImpl<ApsInventoryLockMap
         return apsInventoryLockDtoPage;
     }
 
+    @Override
+    public List searchLike(List versionToChVersionArrayList, QueryWrapper queryWrapper) {
+        return apsInventoryLockMapper.searchLike(versionToChVersionArrayList, queryWrapper);
+    }
 
+    @Override
+    public Page selectPageLists(Page page, List versionToChVersionArrayList, QueryWrapper wrapper) {
+        return apsInventoryLockMapper.selectPageLists(page, versionToChVersionArrayList, wrapper);
+    }
 
     private ArrayList<ApsInventoryLock> getApsInventoryLockList(List<KingdeeInventoryLock> result, Map<String, String> materialIdToNameMap, Map<String, String> lotIdToFNumberMap) throws NoSuchFieldException, IllegalAccessException, ParseException {
         ArrayList<ApsInventoryLock> apsInventoryLockList = new ArrayList<>();

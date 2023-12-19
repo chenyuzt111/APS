@@ -22,6 +22,7 @@ public abstract class ApsOrderBaseService {
 
     protected static final Map<String, String> projectStatusMap = new HashMap<>();
 
+
     // 添加映射关系
     static {
         projectStatusMap.put("1", "计划");
@@ -33,6 +34,7 @@ public abstract class ApsOrderBaseService {
         projectStatusMap.put("7", "结算");
     }
 
+    public abstract String getServiceName();
     public abstract List<ApsOrder> getKingdeeDates() throws Exception;
 
     protected Map<String, String> getFIDToNumberMap() throws Exception {

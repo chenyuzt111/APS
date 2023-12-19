@@ -3,6 +3,7 @@ package com.benewake.system.mapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsAttendance;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.benewake.system.entity.dto.ApsAttendanceDto;
 import com.benewake.system.entity.vo.ApsAttendanceVo;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -15,7 +16,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ApsAttendanceMapper extends BaseMapper<ApsAttendance> {
 
-    Page<ApsAttendanceVo> getAttendancePage(Page<ApsAttendanceVo> apsAttendanceVoPage);
+    Page<ApsAttendanceDto> getAttendancePage(Page<ApsAttendanceDto> apsAttendanceVoPage);
 }
 
 

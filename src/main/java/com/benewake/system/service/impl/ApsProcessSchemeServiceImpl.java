@@ -2,6 +2,7 @@ package com.benewake.system.service.impl;
 
 import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsOptimalStrategy;
@@ -422,95 +423,25 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
             throw new BeneWakeException(e.getMessage());
         }
     }
-//    @Override
-//    @Transactional(rollbackFor = Exception.class)
-//    public String updateProcessScheme(List<ApsProcessSchemeParam> apsProcessSchemeParam) {
-//        String productFamily = apsProcessSchemeParam.get(0).getProductFamily();
-//        List<ApsProcessScheme> apsProcessSchemes = apsProcessSchemeParam.stream().map(x -> {
-//            ApsProcessScheme apsProcessScheme = new ApsProcessScheme();
-//            apsProcessScheme.setId(x.getId());
-//            apsProcessScheme.setEmployeeName(x.getEmployeeName());
-//            return apsProcessScheme;
-//        }).collect(Collectors.toList());
-//
-//        long size = apsProcessSchemeParam.stream().map(ApsProcessSchemeParam::getEmployeeName).distinct().count();
-//        LambdaQueryWrapper<ApsProcessScheme> apsProcessSchemeLambdaQueryWrapper = new LambdaQueryWrapper<>();
-//        apsProcessSchemeLambdaQueryWrapper.eq(ApsProcessScheme::getId, apsProcessSchemeParam.get(0).getId());
-//        ApsProcessScheme one = getOne(apsProcessSchemeLambdaQueryWrapper);
-//        if (one == null) {
-//            throw new BeneWakeException("当前数据有问题");
-//        }
-//        Integer number = one.getNumber();
-//        if (size != number) {
-//            throw new BeneWakeException("请按照输入人数分组");
-//        }
-//        //todo 重新计算最优
-//        Integer id = apsProcessSchemeParam.get(0).getId();
-//        ApsProcessScheme processScheme = getById(id);
-//        String currentProcessScheme = processScheme.getCurrentProcessScheme();
-//        LambdaQueryWrapper<ApsProductFamilyProcessSchemeManagement> apsProductFamilyProcessSchemeManagementLambdaQueryWrapper = new LambdaQueryWrapper<>();
-//        apsProductFamilyProcessSchemeManagementLambdaQueryWrapper.eq(ApsProductFamilyProcessSchemeManagement::getCurProcessSchemeName, currentProcessScheme);
-//        ApsProductFamilyProcessSchemeManagement curApsProductMana = apsProductFamilyProcessSchemeManagementService.getOne(apsProductFamilyProcessSchemeManagementLambdaQueryWrapper);
-//        String optimalProcessSchemeName = curApsProductMana.getOptimalProcessSchemeName();
-//        List<ApsProcessSchemeDto> apsProcessSchemeDtoListOptimal = apsProcessSchemeMapper.selectProcessSchemeBycurrentProcessScheme(optimalProcessSchemeName);
-//
-//        //最优每个员工的map和工时和
-//        Map<String, BigDecimal> employeeStandardTimeSumMap = apsProcessSchemeDtoListOptimal.stream()
-//                .collect(Collectors.groupingBy(
-//                        ApsProcessSchemeDto::getEmployeeName,
-//                        Collectors.reducing(BigDecimal.ZERO, ApsProcessSchemeDto::getStandardTime, BigDecimal::add)
-//                ));
-//        //最优的员工最大工时
-//        BigDecimal maxStandardTimeValue = employeeStandardTimeSumMap.values().stream()
-//                .max(BigDecimal::compareTo).get();
-//        //最优工时的和
-//        BigDecimal sumOfStandardTimeOptimal = apsProcessSchemeDtoListOptimal.stream()
-//                .map(ApsProcessSchemeDto::getStandardTime)
-//                .reduce(BigDecimal.ZERO, BigDecimal::add);
-//        //更新的产线平衡率
-//        BigDecimal productionLineBalanceRateOptimal = sumOfStandardTimeOptimal
-//                .divide(maxStandardTimeValue.multiply(new BigDecimal(apsProcessSchemeDtoListOptimal.get(0).getNumber())), 8, RoundingMode.HALF_UP);
-//        //---------------------
-//        //更新每个员工的map和工时和
-//        Map<String, BigDecimal> employeeStandardTimeSum = apsProcessSchemeParam.stream()
-//                .collect(Collectors.groupingBy(
-//                        ApsProcessSchemeParam::getEmployeeName,
-//                        Collectors.reducing(BigDecimal.ZERO, ApsProcessSchemeParam::getStandardTime, BigDecimal::add)
-//                ));
-//        BigDecimal maxStandardTime = employeeStandardTimeSum.values().stream()
-//                .max(BigDecimal::compareTo).get();
-//        BigDecimal sumOfStandardTime = apsProcessSchemeDtoListOptimal.stream()
-//                .map(ApsProcessSchemeDto::getStandardTime)
-//                .reduce(BigDecimal.ZERO, BigDecimal::add);
-//        BigDecimal productionLineBalanceRate = sumOfStandardTimeOptimal
-//                .divide(sumOfStandardTime.multiply(new BigDecimal(apsProcessSchemeDtoListOptimal.get(0).getNumber())), 8, RoundingMode.HALF_UP);
-//
-//        LambdaQueryWrapper<ApsOptimalStrategy> apsOptimalStrategyLambdaQueryWrapper = new LambdaQueryWrapper<>();
-//        apsOptimalStrategyLambdaQueryWrapper.eq(ApsOptimalStrategy::getProductFamily, productFamily)
-//                .eq(ApsOptimalStrategy::getNumber, number);
-//        ApsOptimalStrategy apsOptimalStrategyServiceOne = apsOptimalStrategyService.getOne(apsOptimalStrategyLambdaQueryWrapper);
-//        Integer strategy = apsOptimalStrategyServiceOne.getStrategy();
-//        LambdaUpdateWrapper<ApsProductFamilyProcessSchemeManagement> apsProductFamilyProcessSchemeManagementLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
-//        apsProductFamilyProcessSchemeManagementLambdaUpdateWrapper.eq(ApsProductFamilyProcessSchemeManagement::getOptimalProcessSchemeName, optimalProcessSchemeName)
-//                .set(ApsProductFamilyProcessSchemeManagement::getOptimalProcessSchemeName, currentProcessScheme);
-//        if (strategy == 2) {
-//            if (productionLineBalanceRateOptimal.compareTo(productionLineBalanceRate) > 0) {
-//                apsProductFamilyProcessSchemeManagementService.update(apsProductFamilyProcessSchemeManagementLambdaUpdateWrapper);
-//            }
-//        } else {
-//            if (maxStandardTimeValue.compareTo(maxStandardTime) < 0) {
-//                apsProductFamilyProcessSchemeManagementService.update(apsProductFamilyProcessSchemeManagementLambdaUpdateWrapper);
-//            }
-//        }
-//
-//        Integer processId = apsProcessSchemeParam.get(0).getId();
-//        ApsProcessScheme apsProcessScheme = apsProcessSchemeMapper.selectById(processId);
-//        saveProducSchemeManagement(apsProcessSchemeParam, number, apsProcessScheme.getCurrentProcessScheme());
-//        if (updateBatchById(apsProcessSchemes)) {
-//            return apsProcessSchemes.get(0).getCurrentProcessScheme();
-//        }
-//        return null;
-//    }
+
+    @Override
+    public Page selectPageLists(Page<Object> page, QueryWrapper<Object> wrapper) {
+        Page<ApsProcessSchemeDto> apsProcessSchemeVoList = apsProcessSchemeMapper.selectPages(page ,wrapper);
+        List<ApsProcessSchemeDto> records = apsProcessSchemeVoList.getRecords();
+        List<ApsProcessSchemeVo> apsProcessSchemeVos = records.stream().map(x -> apsProcessSchemeDtoToVo.convert(x))
+                .collect(Collectors.toList());
+
+        return buildApsProcessSchemeVoPage(apsProcessSchemeVoList, apsProcessSchemeVos);
+    }
+
+    private Page<ApsProcessSchemeVo> buildApsProcessSchemeVoPage(Page<ApsProcessSchemeDto> apsProcessSchemeVoList, List<ApsProcessSchemeVo> apsProcessSchemeVos) {
+        Page<ApsProcessSchemeVo> objectPage = new Page<>();
+        objectPage.setRecords(apsProcessSchemeVos);
+        objectPage.setTotal(apsProcessSchemeVoList.getTotal());
+        objectPage.setSize(apsProcessSchemeVoList.getSize());
+        objectPage.setCurrent(apsProcessSchemeVoList.getCurrent());
+        return objectPage;
+    }
 }
 
 

@@ -2,10 +2,12 @@ package com.benewake.system.service.impl;
 
 import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsProcessScheme;
 import com.benewake.system.entity.ApsProductFamilyProcessSchemeManagement;
+import com.benewake.system.entity.dto.ProcessSchemeManagementDto;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.vo.*;
 import com.benewake.system.excel.entity.ExcelSchemeManagement;
@@ -40,7 +42,7 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
         implements ApsProductFamilyProcessSchemeManagementService {
 
     @Autowired
-    private ApsProductFamilyProcessSchemeManagementMapper processSchemeManagementPage;
+    private ApsProductFamilyProcessSchemeManagementMapper processSchemeManagementMapper;
 
     @Autowired
     private ApsProcessCapacityMapper apsProcessCapacityMapper;
@@ -54,6 +56,7 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
     @Autowired
     private ProcessSchemeManaDtoToExcel processSchemeManaDtoToExcel;
 
+
     @Override
     public ProcessSchemeManagementVoPage getProcessSchemeManagement(Integer pageNum, Integer size) {
         //取出当前的
@@ -63,7 +66,7 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
         LambdaQueryWrapper<ApsProductFamilyProcessSchemeManagement> managementLambdaQueryWrapper = new LambdaQueryWrapper<ApsProductFamilyProcessSchemeManagement>()
                 .orderByDesc(ApsProductFamilyProcessSchemeManagement::getCurProcessSchemeName);
         //查出所有的
-        Page<ApsProductFamilyProcessSchemeManagement> page = processSchemeManagementPage
+        Page<ApsProductFamilyProcessSchemeManagement> page = processSchemeManagementMapper
                 .selectPage(familyProcessSchemeManagementPage, managementLambdaQueryWrapper);
         List<ApsProductFamilyProcessSchemeManagement> records = page.getRecords();
         List<String> curList = records.stream().map(ApsProductFamilyProcessSchemeManagement::getCurProcessSchemeName).distinct().collect(Collectors.toList());
@@ -111,8 +114,8 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
         if (record.getProductionLineBalanceRate() != null) {
             processSchemeManagementVo.setProductionLineBalanceRate(record.getProductionLineBalanceRate().multiply(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP) + "%");
         }
-        processSchemeManagementVo.setManId(record.getId());
-        processSchemeManagementVo.setId(curId);
+        processSchemeManagementVo.setId(record.getId());
+        processSchemeManagementVo.setCurId(curId);
         processSchemeManagementVo.setCurrentProcessScheme(record.getCurProcessSchemeName());
         processSchemeManagementVo.setOptimalId(opId);
         processSchemeManagementVo.setOptimalProcessPlan(record.getOptimalProcessSchemeName());
@@ -147,7 +150,7 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
         apsProductFamilyProcessSchemeManagementLambdaQueryWrapper.eq(ApsProductFamilyProcessSchemeManagement::getProductFamily, productFamily)
                 .eq(ApsProductFamilyProcessSchemeManagement::getNumber, number);
         List<ApsProductFamilyProcessSchemeManagement> apsProductFamilyProcessSchemeManagements =
-                processSchemeManagementPage.selectList(apsProductFamilyProcessSchemeManagementLambdaQueryWrapper);
+                processSchemeManagementMapper.selectList(apsProductFamilyProcessSchemeManagementLambdaQueryWrapper);
         List<String> curProcessSchemeNameList = apsProductFamilyProcessSchemeManagements.stream().map(ApsProductFamilyProcessSchemeManagement::getCurProcessSchemeName).collect(Collectors.toList());
         List<ProcessSchemeEntity> processSchemeEntityList = apsProcessSchemeMapper.selectEmployeeTime(curProcessSchemeNameList);
         Map<String, List<ProcessSchemeEntity>> processSchemeMap = processSchemeEntityList.stream()
@@ -214,6 +217,19 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
         productFamilyProcessSchemeManagement.setCompletionTime(multiply);
         productFamilyProcessSchemeManagement.setReleasableStaffCount((int) releasableStaffCount);
         productFamilyProcessSchemeManagement.setTotalReleaseTime(differenceSum.doubleValue());
+    }
+
+    @Override
+    public Page selectPageLists(Page<Object> page, QueryWrapper<Object> wrapper) {
+        Page<ProcessSchemeManagementDto> res = processSchemeManagementMapper.selectPages(page,wrapper);
+
+        ProcessSchemeManagementVo processSchemeManagementVo = schemeManagementDtoToVo(res.getRecords());
+        return res;
+    }
+
+    private ProcessSchemeManagementVo schemeManagementDtoToVo(List<ProcessSchemeManagementDto> records) {
+        ProcessSchemeManagementVo processSchemeManagementVo = new ProcessSchemeManagementVo();
+        return processSchemeManagementVo;
     }
 }
 

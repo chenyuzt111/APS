@@ -5,6 +5,7 @@ import com.benewake.system.entity.Result;
 import com.benewake.system.entity.dto.ApsDailyDataUploadDto;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.vo.*;
+import com.benewake.system.entity.vo.baseParam.SearchLikeParam;
 import com.benewake.system.excel.entity.ExcelDailyDataUploadTemplate;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsDailyDataUploadService;
@@ -48,9 +49,9 @@ public class InterfaceController {
 
     @ApiOperation("查询筛选")
     @PostMapping("/getPageFiltrate/{page}/{size}")
-    public Result getPageFiltrate(@PathVariable("page") Integer page, @PathVariable("size") Integer size, @PathParam("type") Integer type
-            , @RequestBody(required = false) QueryViewParams queryViewParams) {
-        ResultColPageVo<Object> apsResult = interfaceService.getPageFiltrate(page, size, type ,queryViewParams);
+    public Result getPageFiltrate(@PathVariable("page") Integer page, @PathVariable("size") Integer size,
+                                  @RequestBody(required = false) QueryViewParams queryViewParams) {
+        ResultColPageVo<Object> apsResult = interfaceService.getPageFiltrate(page, size, queryViewParams);
         return Result.ok(apsResult);
     }
 
@@ -78,15 +79,22 @@ public class InterfaceController {
         return res ? Result.ok() : Result.fail();
     }
 
+    @ApiOperation("自动补全")
+    @PostMapping("/searchLike")
+    public Result searchLike(@RequestBody SearchLikeParam searchLikeParam) {
+        List<Object> res = interfaceService.searchLike(searchLikeParam);
+        return Result.ok(res);
+    }
+
     @ApiOperation("导出接口数据")
     @PostMapping("/downloadInterfaceDate")
-    public void downloadSchemeManagement(@RequestBody DownloadParam downloadParam, @PathParam("type") Integer type, HttpServletResponse response) {
-        if (downloadParam == null || downloadParam.getType() == null
+    public void downloadSchemeManagement(@RequestBody DownloadViewParams downloadParam, HttpServletResponse response) {
+        if (downloadParam == null || downloadParam.getTableId() == null || downloadParam.getType() == null
                 || (downloadParam.getType() == ExcelOperationEnum.CURRENT_PAGE.getCode()
                 && (downloadParam.getPage() == null || downloadParam.getSize() == null))) {
             throw new BeneWakeException("数据不正确");
         }
-        interfaceService.downloadProcessCapacity(response, type, downloadParam);
+        interfaceService.downloadInterfaceDate(response, downloadParam);
     }
 
 
@@ -122,11 +130,26 @@ public class InterfaceController {
 //    }
 
     //    ---------------日别数据--------------------
+//    @ApiOperation("获取日别数据")
+//    @GetMapping("/getDailyDataList/{page}/{size}")
+//    public Result getDailyDataList(@PathVariable Integer page, @PathVariable Integer size) {
+//        PageResultVo<ApsDailyDataUploadDto> pageResultVo = dailyDataUploadService.getDailyDataListPage(page, size);
+//        return Result.ok(pageResultVo);
+//    }
+
     @ApiOperation("获取日别数据")
-    @GetMapping("/getDailyDataList/{page}/{size}")
-    public Result getDailyDataList(@PathVariable Integer page, @PathVariable Integer size) {
-        PageResultVo<ApsDailyDataUploadDto> pageResultVo = dailyDataUploadService.getDailyDataListPage(page, size);
+    @PostMapping("/getDailyDataFilter/{page}/{size}")
+    public Result getDailyDataFilter(@PathVariable Integer page, @PathVariable Integer size,
+                                     @RequestBody(required = false) QueryViewParams queryViewParams) {
+        ResultColPageVo<ApsDailyDataUploadDto> pageResultVo = dailyDataUploadService.getDailyDataFilter(page, size, queryViewParams);
         return Result.ok(pageResultVo);
+    }
+
+    @ApiOperation("自动补全")
+    @PostMapping("/dailyDatasearchLike")
+    public Result dailyDatasearchLike(@RequestBody SearchLikeParam searchLikeParam) {
+        List<Object> res = dailyDataUploadService.searchLike(searchLikeParam);
+        return Result.ok(res);
     }
 
     @ApiOperation("增加或修改日别数据")
@@ -152,7 +175,7 @@ public class InterfaceController {
 
     @ApiOperation("导出日别数据")
     @PostMapping("/downloadDailyData")
-    public void downloadDailyData(@RequestBody DownloadParam downloadParam, HttpServletResponse response) {
+    public void downloadDailyData(@RequestBody DownloadViewParams downloadParam, HttpServletResponse response) {
         if (downloadParam == null || downloadParam.getType() == null
                 || (downloadParam.getType() == ExcelOperationEnum.CURRENT_PAGE.getCode()
                 && (downloadParam.getPage() == null || downloadParam.getSize() == null))) {

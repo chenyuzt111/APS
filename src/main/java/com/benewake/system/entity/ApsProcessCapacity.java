@@ -47,6 +47,12 @@ public class ApsProcessCapacity implements Serializable {
     private Integer processNumber;
 
     /**
+     * 序号
+     */
+    @TableField(value = "concurrency_count")
+    private Integer concurrencyCount;
+
+    /**
      * 产品族
      */
     @TableField(value = "product_family")

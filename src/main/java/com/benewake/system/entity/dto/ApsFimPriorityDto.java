@@ -29,75 +29,55 @@ public class ApsFimPriorityDto implements Serializable {
      * 
      */
     @ExcelProperty("生产ID")
-    @TableField(value = "f_production_id")
-    @JsonProperty("productionId")
-    private String fProductionId;
+    private String productionId;
 
     /**
      * 
      */
     @ExcelProperty("任务来源ID")
-    @TableField(value = "f_task_source_id")
-    @JsonProperty("taskSourceId")
-    private String fTaskSourceId;
+    private String taskSourceId;
 
     /**
      * 
      */
     @ExcelProperty("物料编码")
-    @TableField(value = "f_material_code")
-    @JsonProperty("mterialCode")
-    private String fMaterialCode;
+    private String mterialCode;
 
     /**
      * 
      */
     @ExcelProperty("物料名称")
-    @TableField(value = "f_material_name")
-    @JsonProperty("materialName")
-    private String fMaterialName;
+    private String materialName;
 
     /**
      * 
      */
     @ExcelProperty("需补货数量")
-    @TableField(value = "f_replenishment_quantity")
-    @JsonProperty("replenishmentQuantity")
-    private String fReplenishmentQuantity;
+    private String replenishmentQuantity;
 
     /**
      * 
      */
     @ExcelProperty("预计开始时间")
-    @TableField(value = "f_expected_start_time")
-    @JsonProperty("expectedStartTime")
-    private String fExpectedStartTime;
+    private String expectedStartTime;
 
     /**
      * 
      */
     @ExcelProperty("需入库时间")
-    @TableField(value = "f_required_delivery_time")
-    @JsonProperty("requiredDeliveryTime")
-    private String fRequiredDeliveryTime;
+    private String requiredDeliveryTime;
 
     /**
      * 
      */
     @ExcelProperty("优先级")
-    @TableField(value = "f_priority")
-    @JsonProperty("priority")
-    private String fPriority;
+    private String priority;
 
     /**
      * 
      */
     @ExcelProperty("所包含销售订单")
-    @TableField(value = "f_contained_sales_orders")
-    @JsonProperty("containedSalesOrders")
-    private String fContainedSalesOrders;
-
-
+    private String containedSalesOrders;
 
     @ExcelIgnore
     @TableField(exist = false)

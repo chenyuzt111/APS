@@ -21,5 +21,5 @@ public interface ApsFimPriorityService extends IService<ApsFimPriority> ,ApsSche
 
     void downloadFimRequest(HttpServletResponse response, DownloadParam downloadParam);
 
-    ResultColPageVo<Object> getFimPriorityFiltrate(Integer page, Integer size, QueryViewParams queryViewParams);
+
 }

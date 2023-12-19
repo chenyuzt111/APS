@@ -9,6 +9,8 @@ import com.benewake.system.entity.dto.ApsMaterialShortageAnalysisDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * @author ASUS
  * @description 针对表【aps_material_shortage_analysis】的数据库操作Mapper
@@ -21,6 +23,8 @@ public interface ApsMaterialShortageAnalysisMapper extends BaseMapper<ApsMateria
     Page<ApsMaterialShortageAnalysisDto> selectPageList(Page<ApsMaterialShortageAnalysisDto> pageTemp, @Param("apsTableVersion") Integer apsTableVersion);
 
     Page<Object> queryPageList(Page<Object> pageTemp, @Param(Constants.WRAPPER) QueryWrapper<Object> queryWrapper);
+
+    List<Object> searchLike(@Param(Constants.WRAPPER)QueryWrapper<Object> queryWrapper);
 }
 
 

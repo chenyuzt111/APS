@@ -1,6 +1,8 @@
 package com.benewake.system.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsReceiveNotice;
 import com.benewake.system.entity.Interface.ApsReceiveNoticeMultipleVersions;
@@ -12,11 +14,11 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
-* @author ASUS
-* @description 针对表【aps_receive_notice】的数据库操作Mapper
-* @createDate 2023-10-08 10:45:23
-* @Entity com.benewake.system.entity.ApsReceiveNotice
-*/
+ * @author ASUS
+ * @description 针对表【aps_receive_notice】的数据库操作Mapper
+ * @createDate 2023-10-08 10:45:23
+ * @Entity com.benewake.system.entity.ApsReceiveNotice
+ */
 
 @Mapper
 public interface ApsReceiveNoticeMapper extends BaseMapper<ApsReceiveNotice> {
@@ -27,6 +29,13 @@ public interface ApsReceiveNoticeMapper extends BaseMapper<ApsReceiveNotice> {
                                              @Param("versions") List<VersionToChVersion> versions);
 
     void insertSelectVersionIncr();
+
+    Page<ApsReceiveNoticeDto> selectPageLists(Page page,
+                                              @Param("versions") List versionToChVersionArrayList,
+                                              @Param(Constants.WRAPPER) QueryWrapper wrapper);
+
+    List<ApsReceiveNoticeDto> searchLike(@Param("versions") List versionToChVersionArrayList,
+                                         @Param(Constants.WRAPPER) QueryWrapper wrapper);
 }
 
 

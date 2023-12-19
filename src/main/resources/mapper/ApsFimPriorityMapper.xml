@@ -16,14 +16,25 @@
         <result property="fContainedSalesOrders" column="f_contained_sales_orders" jdbcType="VARCHAR"/>
         <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
-
+    <resultMap id="ApsFimPriorityDtoResultMap" type="com.benewake.system.entity.dto.ApsFimPriorityDto">
+        <id property="id" column="id"/>
+        <result property="productionId" column="f_production_id"/>
+        <result property="taskSourceId" column="f_task_source_id"/>
+        <result property="mterialCode" column="f_material_code"/>
+        <result property="materialName" column="materialName"/>
+        <result property="replenishmentQuantity" column="f_replenishment_quantity"/>
+        <result property="expectedStartTime" column="f_expected_start_time"/>
+        <result property="requiredDeliveryTime" column="f_required_delivery_time"/>
+        <result property="priority" column="f_priority"/>
+        <result property="containedSalesOrders" column="f_contained_sales_orders"/>
+    </resultMap>
     <sql id="Base_Column_List">
         id,f_production_id,f_task_source_id,
         f_material_code,f_material_name,f_replenishment_quantity,
         f_expected_start_time,f_required_delivery_time,f_priority,
         f_contained_sales_orders,version
     </sql>
-    <select id="selectPageList" resultType="com.benewake.system.entity.dto.ApsFimPriorityDto">
+    <select id="selectPageList" resultMap="ApsFimPriorityDtoResultMap">
         SELECT pri.id,
                f_production_id,
                f_task_source_id,
@@ -39,18 +50,24 @@
                  LEFT JOIN aps_material_name_mapping AS map ON pri.f_material_code = map.f_material_id
         where version = #{apsTableVersion}
     </select>
-    <select id="getFimPriorityFiltrate" resultType="com.benewake.system.entity.dto.ApsFimPriorityDto">
+    <select id="getFimPriorityFiltrate" resultMap="ApsFimPriorityDtoResultMap">
         SELECT pri.id,
                f_production_id,
                f_task_source_id,
                f_material_code,
-               map.f_material_name,
+               map.f_material_name as f_material_name,
                f_replenishment_quantity,
                f_expected_start_time,
                f_required_delivery_time,
                f_priority,
                f_contained_sales_orders,
                version
+        FROM aps_fim_priority AS pri
+                 LEFT JOIN aps_material_name_mapping AS map ON pri.f_material_code = map.f_material_id
+            ${ew.customSqlSegment}
+    </select>
+    <select id="searchLike" resultMap="ApsFimPriorityDtoResultMap">
+        SELECT DISTINCT ${ew.sqlSelect}
         FROM aps_fim_priority AS pri
                  LEFT JOIN aps_material_name_mapping AS map ON pri.f_material_code = map.f_material_id
             ${ew.customSqlSegment}

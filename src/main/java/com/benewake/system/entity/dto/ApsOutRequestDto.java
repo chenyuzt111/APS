@@ -28,31 +28,24 @@ public class ApsOutRequestDto implements Serializable {
     /**
      * 物料编码
      */
-    @JsonProperty("materialCode")
-    @TableField(value = "f_material_code")
-    private String fMaterialCode;
+    private String materialCode;
 
     /**
      * 物料编码
      */
-    @JsonProperty("materialName")
-    @TableField(value = "f_material_name")
-    private String fMaterialName;
+    private String materialName;
 
     /**
      * 归还日期
      */
 
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8") // 指定日期格式
-    @JsonProperty("returnDate")
-    @TableField(value = "f_return_date")
-    private Date fReturnDate;
+    private Date returnDate;
 
     /**
      * 版本号
      */
-    @TableField(value = "version")
-    private String version;
+    private String chVersion;
 
 
 

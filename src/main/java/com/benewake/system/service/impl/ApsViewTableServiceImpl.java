@@ -2,8 +2,8 @@ package com.benewake.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.benewake.system.entity.ApsConditionTable;
 import com.benewake.system.entity.ApsViewColTable;
 import com.benewake.system.entity.ApsViewTable;
 import com.benewake.system.entity.vo.ViewColParam;
@@ -11,6 +11,7 @@ import com.benewake.system.entity.vo.ViewParam;
 import com.benewake.system.entity.vo.ViewTableListVo;
 import com.benewake.system.entity.vo.ViewTableVo;
 import com.benewake.system.exception.BeneWakeException;
+import com.benewake.system.service.ApsConditionTableService;
 import com.benewake.system.service.ApsViewColTableService;
 import com.benewake.system.service.ApsViewTableService;
 import com.benewake.system.mapper.ApsViewTableMapper;
@@ -22,7 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -41,6 +44,9 @@ public class ApsViewTableServiceImpl extends ServiceImpl<ApsViewTableMapper, Aps
 
     @Autowired
     private HostHolder hostHolder;
+
+    @Autowired
+    private ApsConditionTableService conditionTableService;
 
     @Override
     public ViewTableListVo getViews(Integer tableId) {
@@ -94,15 +100,41 @@ public class ApsViewTableServiceImpl extends ServiceImpl<ApsViewTableMapper, Aps
         }
 
         if (StringUtils.isEmpty(viewParam.getViewName())) {
+            List<ViewColParam> cols = viewParam.getCols();
+            List<Integer> viewColIds = viewColTableService.list(new LambdaQueryWrapper<ApsViewColTable>()
+                            .eq(ApsViewColTable::getViewId, viewParam.getViewId())
+                            .select(ApsViewColTable::getId)).stream()
+                    .map(ApsViewColTable::getId)
+                    .collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(viewColIds)) {
+                conditionTableService.remove(new LambdaQueryWrapper<ApsConditionTable>()
+                        .in(ApsConditionTable::getViewColId, viewColIds));
+            }
+            if (CollectionUtils.isEmpty(cols)) {
+                return true;
+            }
             //筛选页面
-            Integer viewId = viewTable.getViewId();
-            return CollectionUtils.isEmpty(viewParam.getCols())
-                    ? viewColTableService.update(buildEmptyColsUpdateWrapper(viewId))
-                    : viewColTableService.updateBatchById(buildViewCols(viewParam, viewId));
+            ArrayList<ApsConditionTable> conditionTables = new ArrayList<>();
+            for (ViewColParam col : cols) {
+                ApsConditionTable conditionTable = new ApsConditionTable();
+                conditionTable.setViewColId(col.getId());
+                conditionTable.setValueOperator(col.getValueOperator());
+                conditionTable.setColValue(col.getColValue());
+                conditionTable.setColSeq(col.getColSeq());
+                conditionTables.add(conditionTable);
+            }
+            conditionTableService.saveBatch(conditionTables);
+            return true;
         }
         Integer viewId = viewTable.getViewId();
         return handleExistingView(viewParam, userName, viewId);
     }
+
+    @Override
+    public List<String> selectColNameByViewId(Long viewId) {
+        return viewTableMapper.selectColNameByViewId(viewId);
+    }
+
 
     private void verifyParamAndSave(ViewParam viewParam, String userName, ApsViewTable viewTable) {
         verifyParam(viewParam, userName);
@@ -147,12 +179,6 @@ public class ApsViewTableServiceImpl extends ServiceImpl<ApsViewTableMapper, Aps
         return true;
     }
 
-    private LambdaUpdateWrapper<ApsViewColTable> buildEmptyColsUpdateWrapper(Integer viewId) {
-        return new LambdaUpdateWrapper<ApsViewColTable>()
-                .eq(ApsViewColTable::getViewId, viewId)
-                .set(ApsViewColTable::getColValue, null)
-                .set(ApsViewColTable::getValueOperator, null);
-    }
 
     private void verifyParam(ViewParam viewParam, String userName) {
         String viewName = viewParam.getViewName();
@@ -162,7 +188,8 @@ public class ApsViewTableServiceImpl extends ServiceImpl<ApsViewTableMapper, Aps
         List<ApsViewTable> viewTables = viewTableMapper
                 .selectList(new LambdaQueryWrapper<ApsViewTable>()
                         .eq(ApsViewTable::getViewName, viewName)
-                        .eq(ApsViewTable::getUserName, userName));
+                        .eq(ApsViewTable::getUserName, userName)
+                        .eq(ApsViewTable::getTableId, viewParam.getTableId()));
         if (CollectionUtils.isNotEmpty(viewTables)) {
             throw new BeneWakeException("视图名称冲突");
         }
@@ -175,12 +202,13 @@ public class ApsViewTableServiceImpl extends ServiceImpl<ApsViewTableMapper, Aps
             viewColTable.setId(x.getId());
             viewColTable.setViewId(viewId);
             viewColTable.setColId(x.getColId());
-            viewColTable.setValueOperator(x.getValueOperator());
-            viewColTable.setColValue(x.getColValue());
-            viewColTable.setColSeq(x.getColSeq());
+//            viewColTable.setValueOperator(x.getValueOperator());
+//            viewColTable.setColValue(x.getColValue());
+//            viewColTable.setColSeq(x.getColSeq());
             return viewColTable;
         }).collect(Collectors.toList());
     }
+
 
     private ApsViewTable buildView(ViewParam viewParam) {
         String userName = hostHolder.getUser().getUsername();

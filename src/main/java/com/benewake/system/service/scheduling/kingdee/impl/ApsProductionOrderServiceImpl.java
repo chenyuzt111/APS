@@ -37,6 +37,11 @@ public class ApsProductionOrderServiceImpl extends ApsOrderBaseService
     private ProductionKingdeeToApsOrder productionKingdeeToApsOrder;
 
     @Override
+    public String getServiceName() {
+        return "生产订单列表";
+    }
+
+    @Override
     public List<ApsOrder> getKingdeeDates() throws Exception {
         List<KingdeeProductionOrder> result = getKingdeeProductionOrders();
 

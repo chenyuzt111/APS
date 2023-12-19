@@ -17,8 +17,10 @@ public class QueryStrategyFactory {
         strategyMap.put("ne", new NotEqualStrategy());
         strategyMap.put("lt", new LessThanStrategy());
         strategyMap.put("le", new LessThanOrEqualStrategy());
-        strategyMap.put("isnull", new IsNullStrategy());
+        strategyMap.put("null", new IsNullStrategy());
         strategyMap.put("notnull", new IsNotNullStrategy());
+        strategyMap.put("ascending", new AscStrategy());
+        strategyMap.put("descending", new DescStrategy());
     }
 
     public QueryStrategy getStrategy(String valueOperator) {

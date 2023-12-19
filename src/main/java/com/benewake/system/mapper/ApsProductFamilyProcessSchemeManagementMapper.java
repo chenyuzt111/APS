@@ -1,9 +1,14 @@
 package com.benewake.system.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsProductFamilyProcessSchemeManagement;
+import com.benewake.system.entity.dto.ProcessSchemeManagementDto;
 import com.benewake.system.entity.vo.ProcessSchemeManagementVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -16,7 +21,7 @@ import java.util.List;
 @Mapper
 public interface ApsProductFamilyProcessSchemeManagementMapper extends BaseMapper<ApsProductFamilyProcessSchemeManagement> {
 
-    List<ProcessSchemeManagementVo> selectAllPage(Integer pass, Integer size);
+    Page<ProcessSchemeManagementDto> selectPages(Page<Object> page, @Param(Constants.WRAPPER) QueryWrapper<Object> wrapper);
 }
 
 

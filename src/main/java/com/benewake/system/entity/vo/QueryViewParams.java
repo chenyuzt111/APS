@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class QueryViewParams {
-    Long tableId;
+    Integer tableId;
     Long viewId;
     List<ViewColParam> cols;
 }

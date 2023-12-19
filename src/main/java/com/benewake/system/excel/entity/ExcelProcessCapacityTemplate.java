@@ -48,6 +48,13 @@ public class ExcelProcessCapacityTemplate implements Serializable {
     private String processName;
 
     /**
+     * 工序id
+     */
+    @ColumnWidth(19)
+    @ExcelProperty("并行数量")
+    private Integer concurrencyCount;
+
+    /**
      * 标准工时
      */
     @ColumnWidth(12)

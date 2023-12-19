@@ -36,6 +36,10 @@ public class ApsProcessCapacityVo implements Serializable {
      * 序号
      */
     private Integer processNumber;
+    /**
+     * 序号
+     */
+    private Integer concurrencyCount;
 
     /**
      * 产品族

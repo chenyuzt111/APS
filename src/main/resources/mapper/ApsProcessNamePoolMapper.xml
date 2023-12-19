@@ -5,11 +5,18 @@
 <mapper namespace="com.benewake.system.mapper.ApsProcessNamePoolMapper">
 
     <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsProcessNamePool">
-            <id property="processId" column="process_id" jdbcType="INTEGER"/>
-            <result property="processName" column="process_name" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="processName" column="process_name" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        process_id,process_name
+        id,process_name
     </sql>
+    <select id="selectPages" resultType="com.benewake.system.entity.vo.ApsProcessNamePoolVo">
+        select *
+        from aps_process_name_pool
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
 </mapper>

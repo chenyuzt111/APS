@@ -15,6 +15,7 @@ import com.benewake.system.mapper.ApsProductionPlanMapper;
 import com.benewake.system.mapper.ApsViewColTableMapper;
 import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.scheduling.result.ApsProductionPlanService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
  * @description 针对表【aps_production_plan】的数据库操作Service实现
  * @createDate 2023-10-23 16:40:42
  */
+@Slf4j
 @Service
 public class ApsProductionPlanServiceImpl extends ServiceImpl<ApsProductionPlanMapper, ApsProductionPlan>
         implements ApsProductionPlanService {
@@ -62,11 +64,17 @@ public class ApsProductionPlanServiceImpl extends ServiceImpl<ApsProductionPlanM
 
 
     @Override
-    public ResultColPageVo<Object> getProductionFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
+    public ResultColPageVo<Object> getResultFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
         return commonFiltrate(page, size, SchedulingResultType.APS_PRODUCTION_PLAN, queryViewParams,
                 (objectPage, objectQueryWrapper) ->
                         apsProductionPlanMapper.queryPageList(objectPage, objectQueryWrapper));
     }
 
-
+    @Override
+    public List<Object> searchLike(QueryWrapper<Object> queryWrapper) {
+        Integer version = getApsTableVersion(SchedulingResultType.APS_PRODUCTION_PLAN.getCode(), apsTableVersionService);
+        queryWrapper
+                .eq("version", version);
+        return apsProductionPlanMapper.searchLike(queryWrapper);
+    }
 }

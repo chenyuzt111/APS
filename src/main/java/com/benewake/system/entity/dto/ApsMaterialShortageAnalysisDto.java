@@ -25,49 +25,49 @@ public class ApsMaterialShortageAnalysisDto implements Serializable {
      * 
      */
     @TableField(value = "f_task_id")
-    private String fTaskId;
+    private String ftaskId;
 
     /**
      * 
      */
     @TableField(value = "f_parent_material_code")
-    private String fParentMaterialCode;
+    private String fparentMaterialCode;
 
     /**
      * 
      */
     @TableField(value = "f_parent_material_name")
-    private String fParentMaterialName;
+    private String fparentMaterialName;
 
     /**
      * 
      */
     @TableField(value = "f_process")
-    private String fProcess;
+    private String fprocess;
 
     /**
      * 
      */
     @TableField(value = "f_sub_material_code")
-    private String fSubMaterialCode;
+    private String fsubMaterialCode;
 
     /**
      *
      */
     @TableField(value = "f_sub_material_name")
-    private String fSubMaterialName;
+    private String fsubMaterialName;
 
     /**
      * 
      */
     @TableField(value = "f_sub_material_quantity")
-    private String fSubMaterialQuantity;
+    private String fsubMaterialQuantity;
 
     /**
      * 
      */
     @TableField(value = "f_sub_material_delivery_time")
-    private String fSubMaterialDeliveryTime;
+    private String fsubMaterialDeliveryTime;
 
 
     @TableField(exist = false)

@@ -9,7 +9,7 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 
+ *
  * @TableName aps_order
  */
 @TableName(value ="aps_order")
@@ -33,11 +33,6 @@ public class ApsOrder implements Serializable {
     @TableField(value = "bill_type")
     private String billType;
 
-    /**
-     * 单据类型ID
-     */
-    @TableField(value = "bill_type_id")
-    private String billTypeId;
 
     /**
      * 物料编码

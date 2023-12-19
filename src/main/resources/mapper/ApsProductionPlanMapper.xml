@@ -22,6 +22,25 @@
         <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
 
+    <resultMap id="ApsProductionPlanDtoMap" type="com.benewake.system.entity.dto.ApsProductionPlanDto">
+        <id property="id" column="id"/>
+        <result property="ftaskId" column="f_task_id"/>
+        <result property="ftaskSourceId" column="f_task_source_id"/>
+        <result property="fmaterialCode" column="f_material_code"/>
+        <result property="fmaterialName" column="f_material_name"/>
+        <result property="ftotalQuantity" column="f_total_quantity"/>
+        <result property="fcompletedQuantity" column="f_completed_quantity"/>
+        <result property="factualStartTime" column="f_actual_start_time"/>
+        <result property="factualCompletionTime" column="f_actual_completion_time"/>
+        <result property="frequiredDeliveryTime" column="f_required_delivery_time"/>
+        <result property="fonTimeCompletion" column="f_on_time_completion"/>
+        <result property="fdelayDays" column="f_delay_days"/>
+        <result property="fpriority" column="f_priority"/>
+        <result property="funfinishedReason" column="f_unfinished_reason"/>
+        <result property="frelatedOrders" column="f_related_orders"/>
+    </resultMap>
+
+
     <sql id="Base_Column_List">
         id,f_task_id,f_task_source_id,
         f_material_code,f_material_name,f_total_quantity,
@@ -30,7 +49,8 @@
         f_priority,f_unfinished_reason,f_related_orders,
         version
     </sql>
-    <select id="selectPageList" resultType="com.benewake.system.entity.dto.ApsProductionPlanDto">
+    <select id="selectPageList"
+            resultMap="ApsProductionPlanDtoMap">
         SELECT plan.id,
                f_task_id,
                f_task_source_id,
@@ -50,24 +70,41 @@
                  LEFT JOIN aps_material_name_mapping AS map ON plan.f_material_code = map.f_material_id
         where version = #{apsTableVersion}
     </select>
-    <select id="queryPageList" resultType="com.benewake.system.entity.dto.ApsProductionPlanDto">
-        SELECT plan.id,
-               f_task_id,
-               f_task_source_id,
-               f_material_code,
-               map.f_material_name,
-               f_total_quantity,
-               f_completed_quantity,
-               f_actual_start_time,
-               f_actual_completion_time,
-               f_required_delivery_time,
-               f_on_time_completion,
-               f_delay_days,
-               f_priority,
-               f_unfinished_reason,
-               f_related_orders
+    <select id="queryPageList"
+            resultMap="ApsProductionPlanDtoMap">
+        SELECT plan.id
+        <choose>
+            <when test="ew.sqlSelect != null and ew.sqlSelect != ''">
+                ${ew.sqlSelect}
+            </when>
+            <otherwise>
+                ,
+                f_task_id,
+                f_task_source_id,
+                f_material_code,
+                map.f_material_name,
+                f_total_quantity,
+                f_completed_quantity,
+                f_actual_start_time,
+                f_actual_completion_time,
+                f_required_delivery_time,
+                f_on_time_completion,
+                f_delay_days,
+                f_priority,
+                f_unfinished_reason,
+                f_related_orders
+            </otherwise>
+        </choose>
+        FROM aps_production_plan AS plan
+        LEFT JOIN aps_material_name_mapping AS map ON plan.f_material_code = map.f_material_id
+        ${ew.customSqlSegment}
+    </select>
+
+    <select id="searchLike"
+            resultMap="ApsProductionPlanDtoMap">
+        SELECT DISTINCT ${ew.sqlSelect}
         FROM aps_production_plan AS plan
                  LEFT JOIN aps_material_name_mapping AS map ON plan.f_material_code = map.f_material_id
-        ${ew.customSqlSegment}
+            ${ew.customSqlSegment}
     </select>
 </mapper>

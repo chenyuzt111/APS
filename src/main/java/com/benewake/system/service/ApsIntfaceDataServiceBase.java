@@ -17,7 +17,9 @@ public interface ApsIntfaceDataServiceBase<T> {
 
     Map map = new HashMap();
 
-    Boolean updateDataVersions() throws Exception;
+    default Boolean updateDataVersions() throws Exception {
+        return true;
+    }
 
     default Integer getMaxVersionIncr() {
         try {
@@ -53,7 +55,11 @@ public interface ApsIntfaceDataServiceBase<T> {
         return;
     }
 
-    default Page selectPageLists(Page<Object> objectPage, List<VersionToChVersion> versionToChVersionArrayList, QueryWrapper<Object> wrapper){
+    default Page selectPageLists(Page<Object> objectPage, List<VersionToChVersion> versionToChVersionArrayList, QueryWrapper<Object> wrapper) {
+        throw new BeneWakeException("该表不能通过该方式查询");
+    }
+
+    default List searchLike(List<VersionToChVersion> versionToChVersionArrayList, QueryWrapper queryWrapper) {
         throw new BeneWakeException("该表不能通过该方式查询");
     }
 }

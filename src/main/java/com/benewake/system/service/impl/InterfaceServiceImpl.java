@@ -1,27 +1,24 @@
 package com.benewake.system.service.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.benewake.system.entity.ApsColumnTable;
-import com.benewake.system.entity.ApsTableVersion;
-import com.benewake.system.entity.ColumnVo;
+import com.benewake.system.entity.*;
 import com.benewake.system.entity.Interface.VersionToChVersion;
-import com.benewake.system.entity.ViewColumnDto;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.enums.InterfaceDataType;
 import com.benewake.system.entity.enums.TableVersionState;
 import com.benewake.system.entity.vo.*;
+import com.benewake.system.entity.vo.baseParam.SearchLikeParam;
 import com.benewake.system.excel.listener.InterfaceDataListener;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.mapper.ApsColumnTableMapper;
 import com.benewake.system.mapper.ApsViewColTableMapper;
-import com.benewake.system.service.ApsIntfaceDataServiceBase;
-import com.benewake.system.service.ApsTableVersionService;
-import com.benewake.system.service.InterfaceService;
+import com.benewake.system.service.*;
 import com.benewake.system.utils.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -38,6 +35,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.benewake.system.service.scheduling.result.ApsSchedulingResuleBase.queryStrategyFactory;
+import static com.benewake.system.utils.BenewakeStringUtils.removeAs;
+import static com.benewake.system.utils.query.QueryUtil.*;
 
 @Slf4j
 @Service
@@ -55,6 +54,13 @@ public class InterfaceServiceImpl implements InterfaceService {
     @Autowired
     private ApsViewColTableMapper viewColTableMapper;
 
+    @Autowired
+    private ApsColumnTableService columnTableService;
+
+
+    @Autowired
+    private ApsViewTableService viewTableService;
+
 
     private List<VersionToChVersion> getVersionToChVersions(List<ApsTableVersion> apsTableVersions) {
         List<VersionToChVersion> versionToChVersionArrayList = new ArrayList<>();
@@ -70,8 +76,10 @@ public class InterfaceServiceImpl implements InterfaceService {
 
 
     @Override
-    public ResultColPageVo<Object> getPageFiltrate(Integer page, Integer size, Integer type, QueryViewParams queryViewParams) {
+    public ResultColPageVo<Object> getPageFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
+        long l = System.currentTimeMillis();
         try {
+            Integer type = Math.toIntExact(queryViewParams.getTableId());
             List<ApsTableVersion> apsTableVersions = getApsTableVersionsLimit5(type);
             List<Integer> tableVersionList = apsTableVersions.stream()
                     .map(ApsTableVersion::getTableVersion)
@@ -96,40 +104,40 @@ public class InterfaceServiceImpl implements InterfaceService {
                 return buildResultColPageVo(page, size);
             }
             List<ColumnVo> columnVos = Collections.emptyList();
+            List<SortVo> sortVos = Collections.emptyList();
             Long viewId = queryViewParams == null ? null : queryViewParams.getViewId();
             List<ViewColParam> cols = queryViewParams == null ? null : queryViewParams.getCols();
             QueryWrapper<Object> wrapper = null;
             if (CollectionUtils.isEmpty(cols)) {
                 // 如果是视图拼装视图自带的筛选条件
-                if (viewId != null) {
+                if (viewId != null && viewId != -1) {
                     List<ViewColumnDto> viewColTables = viewColTableMapper.getViewColByViewId(viewId, null);
                     wrapper = buildQueryWrapper(viewColTables);
                     // 构造返回给前端的列
                     columnVos = buildColumnVos(viewColTables);
+                    sortVos = buildSortVos(viewColTables);
                 }
                 // 构造分页查询条件
             } else {
                 // 如果列不是null 那么他有可能是视图 或者全部页 不管是视图还是全部页 都去拼sql
                 List<Integer> colIds = cols.stream().map(ViewColParam::getColId).collect(Collectors.toList());
                 List<ApsColumnTable> columnTables = columnTableMapper.selectBatchIds(colIds);
-                Map<Integer, ViewColParam> colIdMap = cols.stream()
-                        .collect(Collectors.toMap(ViewColParam::getColId, x -> x, (existing, replacement) -> existing));
+                Map<Integer, List<ViewColParam>> colIdMap = cols.stream()
+                        .filter(x -> x.getColId() != null)
+                        .collect(Collectors.groupingBy(ViewColParam::getColId));
                 Map<Integer, ApsColumnTable> colIdToEnName = columnTables.stream()
                         .collect(Collectors.toMap(ApsColumnTable::getId, x -> x, (existing, replacement) -> existing));
                 wrapper = buildQueryWrapper(colIdMap, colIdToEnName);
             }
 
+            long l2 = System.currentTimeMillis();
             Page resultPage = apsIntfaceDataServiceBase.selectPageLists(new Page<>().setCurrent(page).setSize(size),
                     versionToChVersionArrayList, wrapper);
-
-            ResultColPageVo<Object> resultColPageVo = new ResultColPageVo<>();
-            resultColPageVo.setList(resultPage.getRecords());
-            resultColPageVo.setColumnTables(columnVos);
-            resultColPageVo.setPage(Math.toIntExact(resultPage.getCurrent()));
-            resultColPageVo.setSize(Math.toIntExact(resultPage.getSize()));
-            resultColPageVo.setTotal(resultPage.getTotal());
-            resultColPageVo.setPages(resultPage.getPages());
-
+            long l3 = System.currentTimeMillis();
+            log.info("查询耗时：" + (l3 - l2) + "ms");
+            ResultColPageVo<Object> resultColPageVo = buildResultColPageVo(columnVos, sortVos, resultPage);
+            long l1 = System.currentTimeMillis();
+            log.info("总耗时：" + (l1 - l) + "ms");
             return resultColPageVo;
         } catch (Exception e) {
             e.printStackTrace();
@@ -137,11 +145,78 @@ public class InterfaceServiceImpl implements InterfaceService {
         }
     }
 
+    private ResultColPageVo<Object> buildResultColPageVo(List<ColumnVo> columnVos, List<SortVo> sortVos, Page resultPage) {
+        ResultColPageVo<Object> resultColPageVo = new ResultColPageVo<>();
+        resultColPageVo.setList(resultPage.getRecords());
+        resultColPageVo.setColumnTables(columnVos);
+        resultColPageVo.setSort(sortVos);
+        resultColPageVo.setPage(Math.toIntExact(resultPage.getCurrent()));
+        resultColPageVo.setSize(Math.toIntExact(resultPage.getSize()));
+        resultColPageVo.setTotal(resultPage.getTotal());
+        resultColPageVo.setPages(resultPage.getPages());
+        return resultColPageVo;
+    }
+
+
+    @Override
+    public List<Object> searchLike(SearchLikeParam searchLikeParam) {
+        Integer type = searchLikeParam.getTableId();
+        List<ApsTableVersion> apsTableVersions = getApsTableVersionsLimit5(type);
+        List<Integer> tableVersionList = apsTableVersions.stream()
+                .map(ApsTableVersion::getTableVersion)
+                .collect(Collectors.toList());
+        List<VersionToChVersion> versionToChVersionArrayList = getVersionToChVersions(apsTableVersions);
+        InterfaceDataType interfaceDataType = InterfaceDataType.valueOfCode(type);
+        if (interfaceDataType == null) {
+            throw new BeneWakeException("type不正确");
+        }
+        ApsIntfaceDataServiceBase intfaceDataServiceBase = kingdeeServiceMap.get(interfaceDataType.getSeviceName());
+        Integer latestVersion = getLatestVersion(intfaceDataServiceBase);
+
+        if (!tableVersionList.contains(latestVersion)) {
+            versionToChVersionArrayList.add(new VersionToChVersion(latestVersion, "即时版本"));
+            tableVersionList.add(latestVersion);
+        }
+        ApsColumnTable columnTable = columnTableService.getById(searchLikeParam.getColId());
+        if (columnTable == null) {
+            throw new BeneWakeException("colId不存在");
+        }
+        QueryWrapper<Object> queryWrapper = buildQueryWrapper(searchLikeParam, columnTable);
+        List<Object> searchLikeObj = intfaceDataServiceBase.searchLike(versionToChVersionArrayList, queryWrapper);
+        if (CollectionUtils.isEmpty(searchLikeObj)) {
+            return Collections.emptyList();
+        }
+        String voColName = columnTable.getVoColName();
+        return searchLikeObj.stream().map(x -> {
+            Object searchLike;
+            try {
+                Field declaredField = x.getClass().getDeclaredField(voColName);
+                declaredField.setAccessible(true);
+                searchLike = declaredField.get(x);
+                declaredField.setAccessible(false);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                log.error("反射发生异常{}", e.getMessage());
+                throw new BeneWakeException("服务器资源问题");
+            }
+            return searchLike;
+        }).sorted().collect(Collectors.toList());
+    }
+
+//    private QueryWrapper<Object> buildQueryWrapper(SearchLikeParam searchLikeParam, ApsColumnTable columnTable) {
+//        QueryWrapper<Object> queryWrapper = new QueryWrapper<>();
+//        String enColName = columnTable.getEnColName();
+//        queryWrapper
+//                .like(removeAs(enColName), searchLikeParam.getValue())
+//                .select(enColName);
+//        return queryWrapper;
+//    }
+
 
     private Integer getLatestVersion(ApsIntfaceDataServiceBase apsIntfaceDataServiceBase) {
         QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.orderByDesc("version");
-        queryWrapper.last("limit 1");
+        queryWrapper
+                .select("MAX(version) as version")
+                .last("limit 1");
         IService iService = (IService) apsIntfaceDataServiceBase;
         Object one = iService.getOne(queryWrapper);
         if (one != null) {
@@ -169,50 +244,58 @@ public class InterfaceServiceImpl implements InterfaceService {
         return resultColPageVo;
     }
 
-    private List<ColumnVo> buildColumnVos(List<ViewColumnDto> viewColTables) {
-        return viewColTables.stream().map(x -> {
-            ColumnVo columnVo = new ColumnVo();
-            columnVo.setId(Math.toIntExact(x.getColId()));
-            columnVo.setChColName(x.getChColName());
-            columnVo.setVoColName(x.getVoColName());
-            columnVo.setValueOperator(x.getValueOperator());
-            columnVo.setColValue(x.getColValue());
-            columnVo.setColSeq(x.getColSeq());
-            return columnVo;
-        }).collect(Collectors.toList());
-    }
-
-    private QueryWrapper<Object> buildQueryWrapper(Map<Integer, ViewColParam> colIdMap, Map<Integer, ApsColumnTable> colIdToEnName) {
-        QueryWrapper<Object> queryWrapper = new QueryWrapper<>();
-        for (Map.Entry<Integer, ViewColParam> colParamEntry : colIdMap.entrySet()) {
-            ViewColParam colParam = colParamEntry.getValue();
-            Integer colId = colParam.getColId();
-            ApsColumnTable apsColumnTable = colIdToEnName.get(colId);
-            String enColName = apsColumnTable.getEnColName();
-            String valueOperator = colParam.getValueOperator();
-            String colValue = colParam.getColValue();
-            if (StringUtils.isNotEmpty(valueOperator)) {
-                queryStrategyFactory.getStrategy(valueOperator)
-                        .apply(queryWrapper, enColName, colValue);
-            }
-        }
-        return queryWrapper;
-    }
-
-    private QueryWrapper<Object> buildQueryWrapper(List<ViewColumnDto> viewColTables) {
-        QueryWrapper<Object> queryWrapper = new QueryWrapper<>();
-        for (ViewColumnDto viewColTable : viewColTables) {
-            String valueOperator = viewColTable.getValueOperator();
-            String enColName = viewColTable.getEnColName();
-            String colValue = viewColTable.getColValue();
-
-            if (StringUtils.isNotEmpty(valueOperator)) {
-                queryStrategyFactory.getStrategy(valueOperator)
-                        .apply(queryWrapper, enColName, colValue);
-            }
-        }
-        return queryWrapper;
-    }
+//    private List<ColumnVo> buildColumnVos(List<ViewColumnDto> viewColTables) {
+//        return viewColTables.stream().map(x -> {
+//            ColumnVo columnVo = new ColumnVo();
+//            columnVo.setId(Math.toIntExact(x.getId()));
+//            columnVo.setColId(Math.toIntExact(x.getColId()));
+//            columnVo.setChColName(x.getChColName());
+//            columnVo.setVoColName(x.getVoColName());
+//            String valueOperator = x.getValueOperator();
+//            if (valueOperator != null && (valueOperator.equals("ascending") || valueOperator.equals("descending"))) {
+//                columnVo.setValueOperator(null);
+//                columnVo.setColValue(null);
+//            } else {
+//                columnVo.setValueOperator(x.getValueOperator());
+//                columnVo.setColValue(x.getColValue());
+//            }
+//            columnVo.setColSeq(x.getColSeq());
+//            return columnVo;
+//        }).collect(Collectors.toList());
+//    }
+//
+//    private QueryWrapper<Object> buildQueryWrapper(Map<Integer, List<ViewColParam>> colIdMap, Map<Integer, ApsColumnTable> colIdToEnName) {
+//        QueryWrapper<Object> queryWrapper = new QueryWrapper<>();
+//        colIdMap.forEach((colId, viewColParams) ->
+//                viewColParams.forEach(viewColParam -> {
+//                    ApsColumnTable apsColumnTable = colIdToEnName.get(colId);
+//                    String enColName = apsColumnTable.getEnColName();
+//                    String valueOperator = viewColParam.getValueOperator();
+//                    String colValue = viewColParam.getColValue();
+//
+//                    if (StringUtils.isNotEmpty(valueOperator)) {
+//                        queryStrategyFactory.getStrategy(valueOperator)
+//                                .apply(queryWrapper, removeAs(enColName), colValue);
+//                    }
+//                }));
+//        return queryWrapper;
+//    }
+//
+//    private QueryWrapper<Object> buildQueryWrapper(List<ViewColumnDto> viewColTables) {
+//        QueryWrapper<Object> queryWrapper = new QueryWrapper<>();
+//        for (ViewColumnDto viewColTable : viewColTables) {
+//            String valueOperator = viewColTable.getValueOperator();
+//            String enColName = viewColTable.getEnColName();
+//            String colValue = viewColTable.getColValue();
+//
+//            if (StringUtils.isNotEmpty(valueOperator) && StringUtils.isNotEmpty(enColName)) {
+//                queryStrategyFactory.getStrategy(valueOperator)
+//                        .apply(queryWrapper, removeAs(enColName), colValue);
+//            }
+//
+//        }
+//        return queryWrapper;
+//    }
 
     @Override
     public PageResultVo<Object> getAllPage(Integer page, Integer size, Integer type) {
@@ -327,34 +410,52 @@ public class InterfaceServiceImpl implements InterfaceService {
     }
 
     @Override
-    public void downloadProcessCapacity(HttpServletResponse response, Integer type, DownloadParam downloadParam) {
+    public void downloadInterfaceDate(HttpServletResponse response, DownloadViewParams downloadParam) {
         try {
-            ResponseUtil.setFileResp(response, "接口数据type1");
-            List<Object> list = null;
+            ResponseUtil.setFileResp(response, "接口数据type");
+            QueryViewParams queryViewParams = buildQueryViewParams(downloadParam);
+
+            List<Object> list;
             if (downloadParam.getType() == ExcelOperationEnum.ALL_PAGES.getCode()) {
-                InterfaceDataType interfaceDataType = InterfaceDataType.valueOfCode(type);
-                if (interfaceDataType == null) {
-                    throw new BeneWakeException("type找不到");
-                }
-                ApsIntfaceDataServiceBase apsIntfaceDataServiceBase = kingdeeServiceMap.get(interfaceDataType.getSeviceName());
-                IService iService = (IService) apsIntfaceDataServiceBase;
-                Long count = iService.getBaseMapper().selectCount(null);
-                PageResultVo<Object> objectPageResultVo = getAllPage(1, Math.toIntExact(count), type);
-                list = objectPageResultVo.getList();
+                Long count = getCount(downloadParam);
+                ResultColPageVo<Object> pageFiltrate = getPageFiltrate(1, Math.toIntExact(count), queryViewParams);
+                list = pageFiltrate.getList();
             } else {
-                PageResultVo<Object> objectPageResultVo = getAllPage(downloadParam.getPage(), downloadParam.getSize(), type);
-                list = objectPageResultVo.getList();
+                ResultColPageVo<Object> pageFiltrate = getPageFiltrate(downloadParam.getPage(), downloadParam.getSize(), queryViewParams);
+                list = pageFiltrate.getList();
             }
+
+            List<String> colNames = null;
+            if (downloadParam.getViewId() != null && downloadParam.getViewId() != -1) {
+                colNames = viewTableService.selectColNameByViewId(downloadParam.getViewId());
+            }
+
             if (CollectionUtils.isNotEmpty(list)) {
-                EasyExcel.write(response.getOutputStream(), list.get(0)
-                        .getClass()).sheet("sheet1").doWrite(list);
+                EasyExcel.write(response.getOutputStream(), list.get(0).getClass())
+                        .sheet("sheet1")
+                        .includeColumnFieldNames(colNames)
+                        .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                        .doWrite(list);
             } else {
                 throw new BeneWakeException("当前数据为空");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.error("接口数据表导出失败" + e.getMessage() + downloadParam.getType());
+            throw new BeneWakeException("当前数据表导出失败");
         }
     }
+
+    private Long getCount(DownloadViewParams downloadParam) {
+        InterfaceDataType interfaceDataType = InterfaceDataType.valueOfCode(downloadParam.getTableId());
+        if (interfaceDataType == null) {
+            throw new BeneWakeException("type找不到");
+        }
+        ApsIntfaceDataServiceBase apsIntfaceDataServiceBase = kingdeeServiceMap.get(interfaceDataType.getSeviceName());
+        IService iService = (IService) apsIntfaceDataServiceBase;
+        Long count = iService.getBaseMapper().selectCount(null);
+        return count;
+    }
+
 
     @Override
     public void downloadInterfaceTemplate(Integer type, HttpServletResponse response) {
@@ -387,16 +488,16 @@ public class InterfaceServiceImpl implements InterfaceService {
 
 
     private List<ApsTableVersion> getApsTableVersionsLimit5(Integer type) {
-        //取出前5版本的version
         LambdaQueryWrapper<ApsTableVersion> apsTableVersionLambdaQueryWrapper = new LambdaQueryWrapper<>();
         apsTableVersionLambdaQueryWrapper.eq(ApsTableVersion::getTableId, type)
                 .eq(ApsTableVersion::getState, TableVersionState.SUCCESS.getCode())
+                .select(ApsTableVersion::getTableVersion)
                 .orderByDesc(ApsTableVersion::getVersionNumber)
                 .last("limit 5");
 
-        List<ApsTableVersion> apsTableVersions = apsTableVersionService.getBaseMapper().selectList(apsTableVersionLambdaQueryWrapper);
+        List<ApsTableVersion> apsTableVersions = apsTableVersionService.list(apsTableVersionLambdaQueryWrapper);
         apsTableVersions = apsTableVersions.stream().distinct().collect(Collectors.toList());
-        if (apsTableVersions != null) {
+        if (CollectionUtils.isEmpty(apsTableVersions)) {
             Collections.reverse(apsTableVersions);
         }
         return apsTableVersions;

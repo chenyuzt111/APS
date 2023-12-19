@@ -4,18 +4,19 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.benewake.system.mapper.ApsSemiFinishedGoodsMaterialShortageAnalysisMapper">
 
-    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsSemiFinishedGoodsMaterialShortageAnalysis">
-        <id property="id" column="id" jdbcType="INTEGER"/>
-        <result property="fTaskId" column="f_task_id" jdbcType="VARCHAR"/>
-        <result property="fParentCode" column="f_parent_code" jdbcType="VARCHAR"/>
-        <result property="fParentName" column="f_parent_name" jdbcType="VARCHAR"/>
-        <result property="fProcess" column="f_process" jdbcType="VARCHAR"/>
-        <result property="fSemiCode" column="f_semi_code" jdbcType="VARCHAR"/>
-        <result property="fSemiQty" column="f_semi_qty" jdbcType="VARCHAR"/>
-        <result property="fSubCode" column="f_sub_code" jdbcType="VARCHAR"/>
-        <result property="fSubQty" column="f_sub_qty" jdbcType="VARCHAR"/>
-        <result property="fSubDeliveryTime" column="f_sub_delivery_time" jdbcType="VARCHAR"/>
-        <result property="version" column="version" jdbcType="INTEGER"/>
+    <resultMap id="ApsSemiFinishedGoodsMaterialShortageAnalysisDtoMap" type="com.benewake.system.entity.dto.ApsSemiFinishedGoodsMaterialShortageAnalysisDto">
+        <id property="id" column="id"/>
+        <result property="ftaskId" column="f_task_id"/>
+        <result property="fparentCode" column="f_parent_code"/>
+        <result property="fparentName" column="f_parent_name"/>
+        <result property="fprocess" column="f_process"/>
+        <result property="fsemiCode" column="f_semi_code"/>
+        <result property="fsemiName" column="f_semi_name"/>
+        <result property="fsemiQty" column="f_semi_qty"/>
+        <result property="fsubCode" column="f_sub_code"/>
+        <result property="fsubName" column="f_sub_name"/>
+        <result property="fsubQty" column="f_sub_qty"/>
+        <result property="fsubDeliveryTime" column="f_sub_delivery_time"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -24,8 +25,9 @@
         f_semi_qty,f_sub_code,f_sub_qty,
         f_sub_delivery_time,version
     </sql>
+
     <select id="selectPageList"
-            resultType="com.benewake.system.entity.dto.ApsSemiFinishedGoodsMaterialShortageAnalysisDto">
+           resultMap="ApsSemiFinishedGoodsMaterialShortageAnalysisDtoMap">
         SELECT an.id,
                f_task_id,
                f_parent_code,
@@ -45,7 +47,7 @@
         where version = #{apsTableVersion}
     </select>
     <select id="queryPageList"
-            resultType="com.benewake.system.entity.dto.ApsSemiFinishedGoodsMaterialShortageAnalysisDto">
+           resultMap="ApsSemiFinishedGoodsMaterialShortageAnalysisDtoMap">
         SELECT an.id,
                f_task_id,
                f_parent_code,
@@ -58,6 +60,15 @@
                map2.f_material_name as f_sub_name,
                f_sub_qty,
                f_sub_delivery_time
+        FROM aps_semi_finished_goods_material_shortage_analysis AS an
+                 LEFT JOIN aps_material_name_mapping AS map ON an.f_parent_code = map.f_material_id
+                 LEFT JOIN aps_material_name_mapping AS map1 ON an.f_semi_code = map1.f_material_id
+                 LEFT JOIN aps_material_name_mapping AS map2 ON an.f_sub_code = map2.f_material_id
+            ${ew.customSqlSegment}
+    </select>
+    <select id="searchLike"
+            resultMap="ApsSemiFinishedGoodsMaterialShortageAnalysisDtoMap">
+        SELECT DISTINCT ${ew.sqlSelect}
         FROM aps_semi_finished_goods_material_shortage_analysis AS an
                  LEFT JOIN aps_material_name_mapping AS map ON an.f_parent_code = map.f_material_id
                  LEFT JOIN aps_material_name_mapping AS map1 ON an.f_semi_code = map1.f_material_id

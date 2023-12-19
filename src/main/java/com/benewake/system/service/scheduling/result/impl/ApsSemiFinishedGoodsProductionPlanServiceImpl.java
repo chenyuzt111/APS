@@ -1,5 +1,6 @@
 package com.benewake.system.service.scheduling.result.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.*;
@@ -13,14 +14,18 @@ import com.benewake.system.mapper.ApsSemiFinishedGoodsProductionPlanMapper;
 import com.benewake.system.mapper.ApsViewColTableMapper;
 import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.scheduling.result.ApsSemiFinishedGoodsProductionPlanService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author ASUS
  * @description 针对表【aps_semi_finished_goods_production_plan】的数据库操作Service实现
  * @createDate 2023-11-02 11:38:43
  */
+@Slf4j
 @Service
 public class ApsSemiFinishedGoodsProductionPlanServiceImpl extends ServiceImpl<ApsSemiFinishedGoodsProductionPlanMapper, ApsSemiFinishedGoodsProductionPlan>
         implements ApsSemiFinishedGoodsProductionPlanService {
@@ -72,12 +77,20 @@ public class ApsSemiFinishedGoodsProductionPlanServiceImpl extends ServiceImpl<A
     }
 
     @Override
-    public ResultColPageVo<Object> semiFinishedGoodsFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
+    public ResultColPageVo<Object> getResultFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
         return commonFiltrate(page, size, SchedulingResultType.APS_SEMI_FINISHED_GOODS_PRODUCTION_PLAN, queryViewParams,
                 (objectPage, objectQueryWrapper) ->
                         semiFGoodProductionPlanMapper.queryPageList(objectPage, objectQueryWrapper));
     }
 
+
+    @Override
+    public List<Object> searchLike(QueryWrapper<Object> queryWrapper) {
+        Integer version = getApsTableVersion(SchedulingResultType.APS_SEMI_FINISHED_GOODS_PRODUCTION_PLAN.getCode(), apsTableVersionService);
+        queryWrapper
+                .eq("version", version);
+        return semiFGoodProductionPlanMapper.searchLike(queryWrapper);
+    }
 }
 
 

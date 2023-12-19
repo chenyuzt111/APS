@@ -39,6 +39,10 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
     @Autowired
     private ApsImmediatelyInventoryMapper apsImmediatelyInventoryMapper;
 
+    @Override
+    public List searchLike(List versionToChVersionArrayList, QueryWrapper queryWrapper) {
+        return apsImmediatelyInventoryMapper.searchLike(versionToChVersionArrayList, queryWrapper);
+    }
 
     @Override
     public Page selectPageList(Page objectPage, List tableVersionList) {

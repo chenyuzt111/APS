@@ -1,5 +1,7 @@
 package com.benewake.system.entity.dto;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -7,73 +9,60 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
- * 
  * @TableName aps_production_plan
  */
-@TableName(value ="aps_production_plan")
+@TableName(value = "aps_production_plan")
 @Data
 public class ApsProductionPlanDto implements Serializable {
-    
+
+    @ExcelIgnore
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    
-    @TableField(value = "f_task_id")
-    private String fTaskId;
+    @ExcelProperty("任务号")
+    private String ftaskId;
 
-    
-    @TableField(value = "f_task_source_id")
-    private String fTaskSourceId;
+    @ExcelProperty("任务来源")
+    private String ftaskSourceId;
 
-    
-    @TableField(value = "f_material_code")
-    private String fMaterialCode;
+    @ExcelProperty("物料编号")
+    private String fmaterialCode;
 
-    
-    @TableField(value = "f_material_name")
-    private String fMaterialName;
+    @ExcelProperty("物料名称")
+    private String fmaterialName;
 
-    
-    @TableField(value = "f_total_quantity")
-    private String fTotalQuantity;
+    @ExcelProperty("总数量")
+    private String ftotalQuantity;
 
-    
-    @TableField(value = "f_completed_quantity")
-    private String fCompletedQuantity;
+    @ExcelProperty("完成数量")
+    private String fcompletedQuantity;
 
-    
-    @TableField(value = "f_actual_start_time")
-    private String fActualStartTime;
+    @ExcelProperty("实际开始时间")
+    private Date factualStartTime;
 
-    
-    @TableField(value = "f_actual_completion_time")
-    private String fActualCompletionTime;
+    @ExcelProperty("实际完成时间")
+    private Date factualCompletionTime;
 
-    
-    @TableField(value = "f_required_delivery_time")
-    private String fRequiredDeliveryTime;
+    @ExcelProperty("需入库时间")
+    private String frequiredDeliveryTime;
 
-    
-    @TableField(value = "f_on_time_completion")
-    private String fOnTimeCompletion;
+    @ExcelProperty("是否按时完成")
+    private String fonTimeCompletion;
 
-    
-    @TableField(value = "f_delay_days")
-    private String fDelayDays;
+    @ExcelProperty("延期天数")
+    private String fdelayDays;
 
-    
-    @TableField(value = "f_priority")
-    private String fPriority;
+    @ExcelProperty("优先级")
+    private String fpriority;
 
-    
-    @TableField(value = "f_unfinished_reason")
-    private String fUnfinishedReason;
+    @ExcelProperty("未完成原因")
+    private String funfinishedReason;
 
-    
-    @TableField(value = "f_related_orders")
-    private String fRelatedOrders;
+    @ExcelProperty("所包含订单")
+    private String frelatedOrders;
 
 
     @TableField(exist = false)

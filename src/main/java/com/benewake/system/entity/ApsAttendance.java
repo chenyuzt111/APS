@@ -4,15 +4,17 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
- * 
  * @TableName aps_attendance
  */
-@TableName(value ="aps_attendance")
+@TableName(value = "aps_attendance")
 @Data
 public class ApsAttendance implements Serializable {
     /**
@@ -30,6 +32,7 @@ public class ApsAttendance implements Serializable {
     /**
      * 日期
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @TableField(value = "date")
     private Date date;
 

@@ -19,7 +19,7 @@
         day_of_week,is_workday,leave_time_range,
         effective_attendance_time_range
     </sql>
-    <select id="getAttendancePage" resultType="com.benewake.system.entity.vo.ApsAttendanceVo">
+    <select id="getAttendancePage" resultType="com.benewake.system.entity.dto.ApsAttendanceDto">
         SELECT att.id,
                employee_name,
                date,

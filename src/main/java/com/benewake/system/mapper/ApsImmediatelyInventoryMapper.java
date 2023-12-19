@@ -34,6 +34,9 @@ public interface ApsImmediatelyInventoryMapper extends BaseMapper<ApsImmediately
     Page<Object> selectPageLists(Page<Object> objectPage,
                                  @Param("versions") List<VersionToChVersion> versions,
                                  @Param(Constants.WRAPPER) QueryWrapper wrapper);
+
+    List searchLike(@Param("versions") List versionToChVersionArrayList,
+                    @Param(Constants.WRAPPER) QueryWrapper queryWrapper);
 }
 
 

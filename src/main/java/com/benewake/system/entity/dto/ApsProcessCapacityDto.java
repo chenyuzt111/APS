@@ -56,6 +56,11 @@ public class ApsProcessCapacityDto implements Serializable {
      */
     @TableField(value = "packaging_method")
     private String packagingMethod;
+    /**
+     * 包装方式
+     */
+    @TableField(value = "concurrency_count")
+    private Integer concurrencyCount;
 
     /**
      * 标准工时
