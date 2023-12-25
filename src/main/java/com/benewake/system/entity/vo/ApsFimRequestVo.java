@@ -1,5 +1,6 @@
 package com.benewake.system.entity.vo;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -22,6 +23,7 @@ public class ApsFimRequestVo implements Serializable {
     /**
      *
      */
+    @ExcelIgnore
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
@@ -29,72 +31,62 @@ public class ApsFimRequestVo implements Serializable {
      *
      */
     @ExcelProperty("单据编号")
-    @TableField(value = "f_document_number")
-    @JsonProperty("documentNumber")
-    private String fDocumentNumber;
+    private String documentNumber;
 
     /**
      *
      */
-    @JsonProperty("creator")
-    @TableField(value = "f_creator")
-    private String fCreator;
+    @ExcelProperty(value = "创建人")
+    private String creator;
 
     /**
      *
      */
-    @JsonProperty("materialCode")
-    @TableField(value = "f_material_code")
-    private String fMaterialCode;
+    @ExcelProperty(value = "物料编码")
+    private String materialCode;
 
     /**
      *
      */
-    @JsonProperty("materialName")
-    @TableField(value = "f_material_name")
-    private String fMaterialName;
+    @ExcelProperty(value = "物料名称")
+    private String materialName;
 
     /**
      *
      */
-    @JsonProperty("customerName")
-    @TableField(value = "f_customer_name")
-    private String fCustomerName;
+    @ExcelProperty(value = "客户名称")
+    private String customerName;
 
     /**
      *
      */
-    @JsonProperty("salesperson")
-    @TableField(value = "f_salesperson")
-    private String fSalesperson;
+    @ExcelProperty(value = "销售员")
+    private String salesperson;
 
     /**
      *
      */
-    @JsonProperty("quantity")
-    @TableField(value = "f_quantity")
-    private String fQuantity;
+    @ExcelProperty(value = "数量")
+    private String quantity;
 
     /**
      *
      */
+    @ExcelProperty(value = "期望发货日期", format = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @JsonProperty("expectedDeliveryDate")
-    @TableField(value = "f_expected_delivery_date")
-    private Date fExpectedDeliveryDate;
+    private Date expectedDeliveryDate;
 
     /**
      *
      */
-    @JsonProperty("documentType")
-    @TableField(value = "f_document_type")
-    private String fDocumentType;
+    @ExcelProperty(value = "单据类型")
+    private String documentType;
 
     /**
      *
      */
-    @TableField(value = "version")
-    private Integer version;
+    @ExcelProperty("版本号")
+    private String chVersion;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

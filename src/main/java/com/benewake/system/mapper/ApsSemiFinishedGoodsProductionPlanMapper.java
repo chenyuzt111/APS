@@ -5,8 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsSemiFinishedGoodsProductionPlan;
-import com.benewake.system.entity.dto.ApsProductionPlanDto;
-import com.benewake.system.entity.dto.ApsSemiFinishedGoodsProductionPlanDto;
+import com.benewake.system.entity.Interface.VersionToChVersion;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,12 +20,13 @@ import java.util.List;
 @Mapper
 public interface ApsSemiFinishedGoodsProductionPlanMapper extends BaseMapper<ApsSemiFinishedGoodsProductionPlan> {
 
-    Page<ApsSemiFinishedGoodsProductionPlanDto> selectPageList(Page<ApsSemiFinishedGoodsProductionPlan> goodsProductionPlanPage, @Param("apsTableVersion") Integer apsTableVersion);
 
     Page<Object> queryPageList(Page<Object> apsProductionPlanPage,
-                                             @Param(Constants.WRAPPER) QueryWrapper<Object> queryWrapper);
+                               @Param(Constants.WRAPPER) QueryWrapper<Object> queryWrapper,
+                               @Param("versions") List<VersionToChVersion> versionToChVersionArrayList);
 
-    List<Object> searchLike(@Param(Constants.WRAPPER)QueryWrapper<Object> objectQueryWrapper);
+    List<Object> searchLike(@Param(Constants.WRAPPER) QueryWrapper<Object> objectQueryWrapper,
+                            @Param("versions") List<VersionToChVersion> versionToChVersionArrayList);
 }
 
 

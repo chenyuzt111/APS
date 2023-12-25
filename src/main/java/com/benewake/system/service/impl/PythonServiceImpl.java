@@ -48,14 +48,15 @@ public class PythonServiceImpl implements PythonService {
     @Override
     public void startScheduling(SchedulingParam schedulingParam) {
         try {
+//            schedulingParam.setNumber_cycles(1);
+//            schedulingParam.setScheduling_workload(240);
+//            schedulingParam.setBach_size(10);
+//            schedulingParam.setSplit_po_orders(false);
             Integer schedulingMaxVersion = apsTableVersionService.getMaxVersion();
             ArrayList<ApsTableVersion> apsTableVersions = new ArrayList<>();
             for (ApsIntfaceDataServiceBase service : apsIntfaceDataServiceBase) {
                 service.insertVersionIncr();
                 Integer maxVersion = service.getMaxVersionIncr();
-//                if (maxVersion == 1) {
-//                    throw new BeneWakeException("数据库数据不存在");
-//                }
                 int codeByServiceName = getCodeByServiceName(service);
                 ApsTableVersion apsTableVersion = ApsTableVersion.builder().tableVersion(maxVersion - 1)
                         .tableId(codeByServiceName)

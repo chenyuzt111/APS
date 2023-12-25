@@ -8,6 +8,7 @@ import com.benewake.system.service.ApsMaterialService;
 import com.benewake.system.mapper.ApsMaterialMapper;
 import com.benewake.system.service.scheduling.kingdee.ApsMaterialBaseService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,10 +57,14 @@ public class ApsMaterialServiceImpl extends ServiceImpl<ApsMaterialMapper, ApsMa
 
     @Override
     public Page selectPageLists(Page page, List versionToChVersionArrayList, QueryWrapper wrapper) {
-        long l = System.currentTimeMillis();
+        String customSqlSegment = wrapper.getCustomSqlSegment();
+        if (StringUtils.isEmpty(customSqlSegment) || !customSqlSegment.contains("ORDER BY")) {
+            wrapper.orderByDesc("ch_version_name");
+            wrapper.orderByDesc("form_name");
+            wrapper.orderByAsc("material_id");
+            wrapper.orderByAsc("sub_req_bill_no");
+        }
         Page page1 = apsMaterialMapper.selectPageLists(page, versionToChVersionArrayList, wrapper);
-        long l1 = System.currentTimeMillis();
-        log.info("sql查询耗时：" + (l1 - l));
         return page1;
     }
 

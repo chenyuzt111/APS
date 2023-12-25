@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.*;
+import com.benewake.system.entity.Interface.VersionToChVersion;
 import com.benewake.system.entity.dto.ApsSemiFinishedGoodsProductionPlanDto;
 import com.benewake.system.entity.enums.SchedulingResultType;
 import com.benewake.system.entity.vo.PageResultVo;
@@ -62,34 +63,25 @@ public class ApsSemiFinishedGoodsProductionPlanServiceImpl extends ServiceImpl<A
 
     @Override
     public PageResultVo<ApsSemiFinishedGoodsProductionPlanDto> getAllPage(Integer page, Integer size) {
-        Integer apsTableVersion = getApsTableVersion(SchedulingResultType.APS_SEMI_FINISHED_GOODS_PRODUCTION_PLAN.getCode(), apsTableVersionService);
+//        Integer apsTableVersion = getApsTableVersion(SchedulingResultType.APS_SEMI_FINISHED_GOODS_PRODUCTION_PLAN.getCode(), apsTableVersionService);
         Page<ApsSemiFinishedGoodsProductionPlan> goodsProductionPlanPage = new Page<>();
         goodsProductionPlanPage.setSize(size);
         goodsProductionPlanPage.setCurrent(page);
-        Page<ApsSemiFinishedGoodsProductionPlanDto> productionPlanPage = semiFGoodProductionPlanMapper.selectPageList(goodsProductionPlanPage, apsTableVersion);
         PageResultVo<ApsSemiFinishedGoodsProductionPlanDto> restVo = new PageResultVo<>();
-        restVo.setList(productionPlanPage.getRecords());
-        restVo.setPages(productionPlanPage.getPages());
-        restVo.setTotal(productionPlanPage.getTotal());
-        restVo.setPage(page);
-        restVo.setSize(size);
         return restVo;
     }
 
     @Override
     public ResultColPageVo<Object> getResultFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
         return commonFiltrate(page, size, SchedulingResultType.APS_SEMI_FINISHED_GOODS_PRODUCTION_PLAN, queryViewParams,
-                (objectPage, objectQueryWrapper) ->
-                        semiFGoodProductionPlanMapper.queryPageList(objectPage, objectQueryWrapper));
+                (objectPage, objectQueryWrapper, versionToChVersionArrayList) ->
+                        semiFGoodProductionPlanMapper.queryPageList(objectPage, objectQueryWrapper, versionToChVersionArrayList));
     }
 
 
     @Override
-    public List<Object> searchLike(QueryWrapper<Object> queryWrapper) {
-        Integer version = getApsTableVersion(SchedulingResultType.APS_SEMI_FINISHED_GOODS_PRODUCTION_PLAN.getCode(), apsTableVersionService);
-        queryWrapper
-                .eq("version", version);
-        return semiFGoodProductionPlanMapper.searchLike(queryWrapper);
+    public List<Object> searchLike(QueryWrapper<Object> queryWrapper, List<VersionToChVersion> versionToChVersionArrayList) {
+        return semiFGoodProductionPlanMapper.searchLike(queryWrapper, versionToChVersionArrayList);
     }
 }
 

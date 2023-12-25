@@ -41,7 +41,7 @@ public class ApsProductionPlanDto implements Serializable {
     private String fcompletedQuantity;
 
     @ExcelProperty("实际开始时间")
-    private Date factualStartTime;
+    private String factualStartTime;
 
     @ExcelProperty("实际完成时间")
     private Date factualCompletionTime;
@@ -63,6 +63,9 @@ public class ApsProductionPlanDto implements Serializable {
 
     @ExcelProperty("所包含订单")
     private String frelatedOrders;
+
+    @ExcelProperty("版本号")
+    private String chVersion;
 
 
     @TableField(exist = false)

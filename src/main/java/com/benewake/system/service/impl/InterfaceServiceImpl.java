@@ -34,8 +34,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.benewake.system.service.scheduling.result.ApsSchedulingResuleBase.queryStrategyFactory;
-import static com.benewake.system.utils.BenewakeStringUtils.removeAs;
 import static com.benewake.system.utils.query.QueryUtil.*;
 
 @Slf4j
@@ -64,6 +62,7 @@ public class InterfaceServiceImpl implements InterfaceService {
 
     private List<VersionToChVersion> getVersionToChVersions(List<ApsTableVersion> apsTableVersions) {
         List<VersionToChVersion> versionToChVersionArrayList = new ArrayList<>();
+        Collections.reverse(apsTableVersions);
         int i = 1;
         for (ApsTableVersion apsTableVersion : apsTableVersions) {
             VersionToChVersion versionToChVersion = new VersionToChVersion();
@@ -93,41 +92,40 @@ public class InterfaceServiceImpl implements InterfaceService {
             Integer latestVersion = getLatestVersion(apsIntfaceDataServiceBase);
 
             if (!tableVersionList.contains(latestVersion)) {
-                versionToChVersionArrayList.add(new VersionToChVersion(latestVersion, "即时版本"));
-                tableVersionList.add(latestVersion);
+                versionToChVersionArrayList.add(new VersionToChVersion(latestVersion, "须时版本"));
             }
-
-            QueryWrapper queryWrapper = new QueryWrapper<>();
-            queryWrapper.in("version", tableVersionList);
 
             if (CollectionUtils.isEmpty(versionToChVersionArrayList)) {
                 return buildResultColPageVo(page, size);
             }
+            VersionToChVersion versionToChVersion = versionToChVersionArrayList.get(versionToChVersionArrayList.size() - 1);
             List<ColumnVo> columnVos = Collections.emptyList();
             List<SortVo> sortVos = Collections.emptyList();
             Long viewId = queryViewParams == null ? null : queryViewParams.getViewId();
             List<ViewColParam> cols = queryViewParams == null ? null : queryViewParams.getCols();
-            QueryWrapper<Object> wrapper = null;
-            if (CollectionUtils.isEmpty(cols)) {
+            QueryWrapper<Object> wrapper = new QueryWrapper<>();
+            if (cols == null) {
                 // 如果是视图拼装视图自带的筛选条件
                 if (viewId != null && viewId != -1) {
                     List<ViewColumnDto> viewColTables = viewColTableMapper.getViewColByViewId(viewId, null);
+                    columnVos = buildColumnVos(viewColTables);
+                    viewColTables = updateMaxVersion(versionToChVersion, viewColTables);
                     wrapper = buildQueryWrapper(viewColTables);
                     // 构造返回给前端的列
-                    columnVos = buildColumnVos(viewColTables);
                     sortVos = buildSortVos(viewColTables);
                 }
                 // 构造分页查询条件
             } else {
                 // 如果列不是null 那么他有可能是视图 或者全部页 不管是视图还是全部页 都去拼sql
-                List<Integer> colIds = cols.stream().map(ViewColParam::getColId).collect(Collectors.toList());
-                List<ApsColumnTable> columnTables = columnTableMapper.selectBatchIds(colIds);
-                Map<Integer, List<ViewColParam>> colIdMap = cols.stream()
-                        .filter(x -> x.getColId() != null)
-                        .collect(Collectors.groupingBy(ViewColParam::getColId));
-                Map<Integer, ApsColumnTable> colIdToEnName = columnTables.stream()
-                        .collect(Collectors.toMap(ApsColumnTable::getId, x -> x, (existing, replacement) -> existing));
-                wrapper = buildQueryWrapper(colIdMap, colIdToEnName);
+                List<Integer> colIds = cols.stream().map(ViewColParam::getColId).filter(Objects::nonNull).collect(Collectors.toList());
+                List<ApsColumnTable> columnTables;
+                if (CollectionUtils.isNotEmpty(colIds)) {
+                    columnTables = columnTableMapper.selectBatchIds(colIds);
+                    Map<Integer, List<ViewColParam>> colIdMap = getIntegerListMap(versionToChVersion, cols, columnTables);
+                    Map<Integer, ApsColumnTable> colIdToEnName = columnTables.stream()
+                            .collect(Collectors.toMap(ApsColumnTable::getId, x -> x, (existing, replacement) -> existing));
+                    wrapper = buildQueryWrapper(colIdMap, colIdToEnName);
+                }
             }
 
             long l2 = System.currentTimeMillis();
@@ -174,8 +172,7 @@ public class InterfaceServiceImpl implements InterfaceService {
         Integer latestVersion = getLatestVersion(intfaceDataServiceBase);
 
         if (!tableVersionList.contains(latestVersion)) {
-            versionToChVersionArrayList.add(new VersionToChVersion(latestVersion, "即时版本"));
-            tableVersionList.add(latestVersion);
+            versionToChVersionArrayList.add(new VersionToChVersion(latestVersion, "须时版本"));
         }
         ApsColumnTable columnTable = columnTableService.getById(searchLikeParam.getColId());
         if (columnTable == null) {
@@ -187,19 +184,7 @@ public class InterfaceServiceImpl implements InterfaceService {
             return Collections.emptyList();
         }
         String voColName = columnTable.getVoColName();
-        return searchLikeObj.stream().map(x -> {
-            Object searchLike;
-            try {
-                Field declaredField = x.getClass().getDeclaredField(voColName);
-                declaredField.setAccessible(true);
-                searchLike = declaredField.get(x);
-                declaredField.setAccessible(false);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                log.error("反射发生异常{}", e.getMessage());
-                throw new BeneWakeException("服务器资源问题");
-            }
-            return searchLike;
-        }).sorted().collect(Collectors.toList());
+        return getSearchRes(voColName, searchLikeObj);
     }
 
 //    private QueryWrapper<Object> buildQueryWrapper(SearchLikeParam searchLikeParam, ApsColumnTable columnTable) {

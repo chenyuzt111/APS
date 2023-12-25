@@ -50,7 +50,7 @@ public class ApsProductFamilyMachineTableParam implements Serializable {
      */
     @JsonProperty("fProcessId")
     @TableField(value = "f_process_id")
-    private String fProcessId;
+    private Integer fProcessId;
 
 
     /**

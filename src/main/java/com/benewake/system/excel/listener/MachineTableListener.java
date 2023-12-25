@@ -50,7 +50,7 @@ public class MachineTableListener extends AnalysisEventListener<ExcelMachineTabl
         if (StringUtils.isNotEmpty(processName)) {
             Integer processId = processNameToIdMap.get(processName);
             if (processId != null) {
-                familyMachineTable.setFProcessId(String.valueOf(processId));
+                familyMachineTable.setFProcessId(processId);
             } else {
                 errorString.append(processName).append("、");
                 return;

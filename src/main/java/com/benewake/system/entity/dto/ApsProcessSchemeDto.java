@@ -1,5 +1,7 @@
 package com.benewake.system.entity.dto;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
@@ -17,87 +19,89 @@ public class ApsProcessSchemeDto implements Serializable {
     /**
      * ApsProcessCapacityId
      */
+    @ExcelIgnore
     private Integer id;
 
     /**
      * 当前工艺方案
      */
-    @TableField(value = "current_process_scheme")
+    @ExcelProperty("当前工艺方案")
     private String currentProcessScheme;
 
 
     /**
      * 所属工序
      */
-    @TableField(value = "belonging_process")
+    @ExcelProperty("所属工序")
     private String belongingProcess;
 
     /**
      * 工序id
      */
-    @TableField(value = "process_id")
+    @ExcelIgnore
     private Integer processId;
     /**
      * 工序name
      */
-    @TableField(value = "process_name")
+    @ExcelProperty("工序名称")
     private String processName;
 
     /**
      * 序号
      */
-    @TableField(value = "process_number")
+    @ExcelProperty("序号")
     private Integer processNumber;
 
     /**
      * 产品族
      */
-    @TableField(value = "product_family")
+    @ExcelProperty("产品族")
     private String productFamily;
 
     /**
      * 包装方式
      */
-    @TableField(value = "packaging_method")
+    @ExcelProperty("包装方式")
     private String packagingMethod;
 
     /**
      * 切换时间（s）
      */
-    @TableField(value = "switch_time")
+    @ExcelProperty("切换时间（s）")
     private BigDecimal switchTime;
 
     /*
      * 标准工时
      */
-    @TableField(value = "standard_time")
+    @ExcelProperty("标准工时")
     private BigDecimal standardTime;
 
     /**
      * 人数MAX
      */
-    @TableField(value = "max_personnel")
+    @ExcelProperty("人数MAX")
     private Integer maxPersonnel;
 
     /**
      * 人数MIN
      */
-    @TableField(value = "min_personnel")
+    @ExcelProperty("人数MIN")
     private Integer minPersonnel;
 
     /**
      * 员工姓名
      */
-
+    @ExcelProperty("员工姓名")
     private String employeeName;
 
     /**
      * 人数
      */
-
+    @ExcelProperty("人数")
     private Integer number;
 
-    private Boolean state;
+    @ExcelProperty("状态")
+    private String state;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

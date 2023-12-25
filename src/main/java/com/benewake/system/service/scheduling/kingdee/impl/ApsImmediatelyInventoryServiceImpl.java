@@ -15,6 +15,7 @@ import com.benewake.system.transfer.KingdeeToApsImmediatelyInventory;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +54,13 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
 
     @Override
     public Page selectPageLists(Page page, List versionToChVersionArrayList, QueryWrapper wrapper) {
+        String customSqlSegment = wrapper.getCustomSqlSegment();
+        if (StringUtils.isEmpty(customSqlSegment) || !customSqlSegment.contains("ORDER BY")) {
+            //chVersion降序 即时库存 -> 版本5 -> 版本4 -> 版本3 -> 版本2 -> 版本1
+            wrapper.orderByDesc("ch_version_name");
+            wrapper.orderByAsc("f_material_id");
+            wrapper.orderByAsc("f_lot");
+        }
         return apsImmediatelyInventoryMapper.selectPageLists(page, versionToChVersionArrayList, wrapper);
     }
 
@@ -74,7 +82,6 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
     public void insertVersionIncr() {
         apsImmediatelyInventoryMapper.insertSelectVersionIncr();
     }
-
 
 
     private ArrayList<ApsImmediatelyInventory> getApsImmediatelyInventoriesByKingdee(Integer maxVersion) throws Exception {

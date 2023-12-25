@@ -1,6 +1,7 @@
 package com.benewake.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsAttendance;
@@ -43,7 +44,7 @@ public class ApsAttendanceServiceImpl extends ServiceImpl<ApsAttendanceMapper, A
     @Autowired
     private ApsHolidayTableServiceImpl apsHolidayTableService;
 
-    @PostConstruct
+//    @PostConstruct
     public void init() {
         apsHolidayTableService.updateHoliday();
     }
@@ -210,6 +211,16 @@ public class ApsAttendanceServiceImpl extends ServiceImpl<ApsAttendanceMapper, A
         resultVo.setTotal(attendanceVoPage.getTotal());
         resultVo.setList(res);
         return resultVo;
+    }
+
+    @Override
+    public Page selectPageLists(Page<Object> page, QueryWrapper<Object> wrapper) {
+        return apsAttendanceMapper.selectPageLists(page ,wrapper);
+    }
+
+    @Override
+    public List<Object> searchLike(QueryWrapper<Object> queryWrapper) {
+        return apsAttendanceMapper.searchLike(queryWrapper);
     }
 }
 

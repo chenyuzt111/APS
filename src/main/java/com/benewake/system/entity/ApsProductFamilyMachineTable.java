@@ -49,7 +49,7 @@ public class ApsProductFamilyMachineTable implements Serializable {
      */
     @JsonProperty("fProcessId")
     @TableField(value = "f_process_id")
-    private String fProcessId;
+    private Integer fProcessId;
 
 
     /**
@@ -78,12 +78,6 @@ public class ApsProductFamilyMachineTable implements Serializable {
     @TableField(value = "unavailable_dates")
     private String unavailableDates;
 
-
-    /**
-     * 
-     */
-    @TableField(value = "version")
-    private Integer version;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

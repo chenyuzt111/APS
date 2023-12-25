@@ -2,6 +2,7 @@ package com.benewake.system.service.impl;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsRawMaterialBasicData;
@@ -115,26 +116,36 @@ public class ApsRawMaterialBasicDataServiceImpl extends ServiceImpl<ApsRawMateri
 
     private PageResultVo<ApsRawMaterialBasicDataVo> buildPageListRestVo(Page<ApsRawMaterialBasicDataDto> voPage) {
         PageResultVo<ApsRawMaterialBasicDataVo> voPageResultVo = new PageResultVo<>();
-        List<ApsRawMaterialBasicDataDto> records = voPage.getRecords();
-        List<ApsRawMaterialBasicDataVo> apsRawMaterialBasicDataVos = records.stream().map(x -> {
-            ApsRawMaterialBasicDataVo materialBasicDataVo = new ApsRawMaterialBasicDataVo();
-            materialBasicDataVo.setId(x.getId());
-            materialBasicDataVo.setMaterialCode(x.getFMaterialCode());
-            materialBasicDataVo.setMaterialName(x.getFMaterialName());
-            materialBasicDataVo.setMaterialProperty(x.getFMaterialProperty());
-            materialBasicDataVo.setMaterialGroup(x.getFMaterialGroup());
-            materialBasicDataVo.setProcurementLeadTime(x.getFProcurementLeadTime());
-            materialBasicDataVo.setMoq(x.getFMoq());
-            materialBasicDataVo.setMpq(x.getFMpq());
-            materialBasicDataVo.setSafetyStock(x.getFSafetyStock());
-            return materialBasicDataVo;
-        }).collect(Collectors.toList());
-        voPageResultVo.setList(apsRawMaterialBasicDataVos);
-        voPageResultVo.setPage(Math.toIntExact(voPage.getCurrent()));
-        voPageResultVo.setSize(Math.toIntExact(voPage.getSize()));
-        voPageResultVo.setPages(voPage.getPages());
-        voPageResultVo.setTotal(voPage.getTotal());
+//        List<ApsRawMaterialBasicDataDto> records = voPage.getRecords();
+//        List<ApsRawMaterialBasicDataVo> apsRawMaterialBasicDataVos = records.stream().map(x -> {
+//            ApsRawMaterialBasicDataVo materialBasicDataVo = new ApsRawMaterialBasicDataVo();
+//            materialBasicDataVo.setId(x.getId());
+//            materialBasicDataVo.setMaterialCode(x.getFMaterialCode());
+//            materialBasicDataVo.setMaterialName(x.getFMaterialName());
+//            materialBasicDataVo.setMaterialProperty(x.getFMaterialProperty());
+//            materialBasicDataVo.setMaterialGroup(x.getFMaterialGroup());
+//            materialBasicDataVo.setProcurementLeadTime(x.getFProcurementLeadTime());
+//            materialBasicDataVo.setMoq(x.getFMoq());
+//            materialBasicDataVo.setMpq(x.getFMpq());
+//            materialBasicDataVo.setSafetyStock(x.getFSafetyStock());
+//            return materialBasicDataVo;
+//        }).collect(Collectors.toList());
+//        voPageResultVo.setList(apsRawMaterialBasicDataVos);
+//        voPageResultVo.setPage(Math.toIntExact(voPage.getCurrent()));
+//        voPageResultVo.setSize(Math.toIntExact(voPage.getSize()));
+//        voPageResultVo.setPages(voPage.getPages());
+//        voPageResultVo.setTotal(voPage.getTotal());
         return voPageResultVo;
+    }
+
+    @Override
+    public Page selectPageLists(Page<Object> page, QueryWrapper<Object> wrapper) {
+        return rawMaterialBasicDataMapper.selectPageLists(page ,wrapper);
+    }
+
+    @Override
+    public List<Object> searchLike(QueryWrapper<Object> queryWrapper) {
+        return rawMaterialBasicDataMapper.searchLike(queryWrapper);
     }
 }
 

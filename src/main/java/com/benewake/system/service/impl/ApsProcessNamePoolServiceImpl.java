@@ -24,7 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -127,14 +127,19 @@ public class ApsProcessNamePoolServiceImpl extends ServiceImpl<ApsProcessNamePoo
 
     @Override
     public Page selectPageLists(Page<Object> page, QueryWrapper<Object> wrapper) {
-        Page<ApsProcessNamePoolVo> processNames = processNamePoolMapper.selectPages(page, wrapper);
         long size = page.getSize();
         long current = page.getCurrent();
-        AtomicLong number = new AtomicLong((current - 1) * size + 1);
+        AtomicReference<Long> number = new AtomicReference<>((current - 1) * size + 1);
+        Page<ApsProcessNamePoolVo> processNames = processNamePoolMapper.selectPages(page, wrapper);
         processNames.getRecords().forEach(x -> {
-            x.setNumber(number.getAndIncrement());
+            x.setNumber(number.getAndSet(number.get() + 1));
         });
         return processNames;
+    }
+
+    @Override
+    public List<Object> searchLike(QueryWrapper<Object> queryWrapper) {
+        return processNamePoolMapper.searchLike(queryWrapper);
     }
 }
 

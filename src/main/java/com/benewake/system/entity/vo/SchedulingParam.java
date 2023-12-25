@@ -15,5 +15,5 @@ public class SchedulingParam {
     Boolean consider_the_material;
     Boolean consider_the_process;
     Boolean split_po_orders;
-    Boolean consider_history;
+//    Boolean consider_history;
 }

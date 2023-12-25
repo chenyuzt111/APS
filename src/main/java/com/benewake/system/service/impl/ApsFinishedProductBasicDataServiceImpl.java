@@ -2,6 +2,7 @@ package com.benewake.system.service.impl;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsFinishedProductBasicData;
@@ -50,8 +51,7 @@ public class ApsFinishedProductBasicDataServiceImpl extends ServiceImpl<ApsFinis
         productBasicDataDtoPage.setSize(size);
         productBasicDataDtoPage.setCurrent(page);
         Page<ApsFinishedProductBasicDataDto> basicDataDtoPage = finishedProductBasicDataMapper.selectListPage(productBasicDataDtoPage);
-        PageResultVo<ApsFinishedProductBasicDataVo> dataVoPageResultVo = buildPageListRestVo(basicDataDtoPage);
-        return dataVoPageResultVo;
+        return buildPageListRestVo(basicDataDtoPage);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class ApsFinishedProductBasicDataServiceImpl extends ServiceImpl<ApsFinis
     public Boolean saveDataByExcel(Integer type, MultipartFile file) {
         try {
             EasyExcel.read(file.getInputStream(), ExcelFinishedProductTemplate.class,
-                    new FinishedProductListener(excelFinishedProductToPo ,type ,this))
+                            new FinishedProductListener(excelFinishedProductToPo, type, this))
                     .sheet().headRowNumber(1).doRead();
         } catch (Exception e) {
             if (!(e instanceof BeneWakeException)) {
@@ -124,34 +124,44 @@ public class ApsFinishedProductBasicDataServiceImpl extends ServiceImpl<ApsFinis
 
     private PageResultVo<ApsFinishedProductBasicDataVo> buildPageListRestVo(Page<ApsFinishedProductBasicDataDto> basicDataDtoPage) {
         List<ApsFinishedProductBasicDataDto> records = basicDataDtoPage.getRecords();
-        List<ApsFinishedProductBasicDataVo> dataVos = records.stream().map(x -> {
-            ApsFinishedProductBasicDataVo finishedProductBasicDataVo = new ApsFinishedProductBasicDataVo();
-            finishedProductBasicDataVo.setId(x.getId());
-            finishedProductBasicDataVo.setMaterialCode(x.getFMaterialCode());
-            finishedProductBasicDataVo.setMaterialName(x.getFMaterialName());
-            finishedProductBasicDataVo.setMaterialProperty(x.getFMaterialProperty());
-            finishedProductBasicDataVo.setMaterialGroup(x.getFMaterialGroup());
-            finishedProductBasicDataVo.setProductType(x.getFProductType());
-            finishedProductBasicDataVo.setProductFamily(x.getFProductFamily());
-            finishedProductBasicDataVo.setPackagingMethod(x.getFPackagingMethod());
-            finishedProductBasicDataVo.setMaxAssemblyPersonnel(x.getFMaxAssemblyPersonnel());
-            finishedProductBasicDataVo.setMinAssemblyPersonnel(x.getFMinAssemblyPersonnel());
-            finishedProductBasicDataVo.setMaxTestingPersonnel(x.getFMaxTestingPersonnel());
-            finishedProductBasicDataVo.setMinTestingPersonnel(x.getFMinTestingPersonnel());
-            finishedProductBasicDataVo.setMaxPackagingPersonnel(x.getFMaxPackagingPersonnel());
-            finishedProductBasicDataVo.setMinPackagingPersonnel(x.getFMinPackagingPersonnel());
-            finishedProductBasicDataVo.setMoq(x.getFMoq());
-            finishedProductBasicDataVo.setMpq(x.getFMpq());
-            finishedProductBasicDataVo.setSafetyStock(x.getFSafetyStock());
-            return finishedProductBasicDataVo;
-        }).collect(Collectors.toList());
-        PageResultVo<ApsFinishedProductBasicDataVo> resultVo = new PageResultVo<>();
-        resultVo.setList(dataVos);
-        resultVo.setPage(Math.toIntExact(basicDataDtoPage.getCurrent()));
-        resultVo.setSize(Math.toIntExact(basicDataDtoPage.getSize()));
-        resultVo.setTotal(basicDataDtoPage.getTotal());
-        resultVo.setPages(basicDataDtoPage.getPages());
-        return resultVo;
+//        List<ApsFinishedProductBasicDataVo> dataVos = records.stream().map(x -> {
+//            ApsFinishedProductBasicDataVo finishedProductBasicDataVo = new ApsFinishedProductBasicDataVo();
+//            finishedProductBasicDataVo.setId(x.getId());
+//            finishedProductBasicDataVo.setMaterialCode(x.getFMaterialCode());
+//            finishedProductBasicDataVo.setMaterialName(x.getFMaterialName());
+//            finishedProductBasicDataVo.setMaterialProperty(x.getFMaterialProperty());
+//            finishedProductBasicDataVo.setMaterialGroup(x.getFMaterialGroup());
+//            finishedProductBasicDataVo.setProductType(x.getFProductType());
+//            finishedProductBasicDataVo.setProductFamily(x.getFProductFamily());
+//            finishedProductBasicDataVo.setPackagingMethod(x.getFPackagingMethod());
+//            finishedProductBasicDataVo.setMaxAssemblyPersonnel(x.getFMaxAssemblyPersonnel());
+//            finishedProductBasicDataVo.setMinAssemblyPersonnel(x.getFMinAssemblyPersonnel());
+//            finishedProductBasicDataVo.setMaxTestingPersonnel(x.getFMaxTestingPersonnel());
+//            finishedProductBasicDataVo.setMinTestingPersonnel(x.getFMinTestingPersonnel());
+//            finishedProductBasicDataVo.setMaxPackagingPersonnel(x.getFMaxPackagingPersonnel());
+//            finishedProductBasicDataVo.setMinPackagingPersonnel(x.getFMinPackagingPersonnel());
+//            finishedProductBasicDataVo.setMoq(x.getFMoq());
+//            finishedProductBasicDataVo.setMpq(x.getFMpq());
+//            finishedProductBasicDataVo.setSafetyStock(x.getFSafetyStock());
+//            return finishedProductBasicDataVo;
+//        }).collect(Collectors.toList());
+//        PageResultVo<ApsFinishedProductBasicDataVo> resultVo = new PageResultVo<>();
+//        resultVo.setList(dataVos);
+//        resultVo.setPage(Math.toIntExact(basicDataDtoPage.getCurrent()));
+//        resultVo.setSize(Math.toIntExact(basicDataDtoPage.getSize()));
+//        resultVo.setTotal(basicDataDtoPage.getTotal());
+//        resultVo.setPages(basicDataDtoPage.getPages());
+        return null;
+    }
+
+    @Override
+    public Page selectPageLists(Page<Object> page, QueryWrapper<Object> wrapper) {
+        return finishedProductBasicDataMapper.selectPageLists(page, wrapper);
+    }
+
+    @Override
+    public List<Object> searchLike(QueryWrapper<Object> queryWrapper) {
+        return finishedProductBasicDataMapper.searchLike(queryWrapper);
     }
 }
 

@@ -1,30 +1,22 @@
 package com.benewake.system.service.scheduling.result.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.*;
-import com.benewake.system.entity.dto.ApsProductionPlanDto;
+import com.benewake.system.entity.Interface.VersionToChVersion;
 import com.benewake.system.entity.enums.SchedulingResultType;
-import com.benewake.system.entity.vo.PageResultVo;
 import com.benewake.system.entity.vo.QueryViewParams;
 import com.benewake.system.entity.vo.ResultColPageVo;
-import com.benewake.system.entity.vo.ViewColParam;
 import com.benewake.system.mapper.ApsColumnTableMapper;
 import com.benewake.system.mapper.ApsProductionPlanMapper;
 import com.benewake.system.mapper.ApsViewColTableMapper;
 import com.benewake.system.service.ApsTableVersionService;
 import com.benewake.system.service.scheduling.result.ApsProductionPlanService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 
 /**
  * @author ASUS
@@ -66,15 +58,12 @@ public class ApsProductionPlanServiceImpl extends ServiceImpl<ApsProductionPlanM
     @Override
     public ResultColPageVo<Object> getResultFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
         return commonFiltrate(page, size, SchedulingResultType.APS_PRODUCTION_PLAN, queryViewParams,
-                (objectPage, objectQueryWrapper) ->
-                        apsProductionPlanMapper.queryPageList(objectPage, objectQueryWrapper));
+                (objectPage, objectQueryWrapper ,versionToChVersionArrayList) ->
+                        apsProductionPlanMapper.queryPageList(objectPage, objectQueryWrapper ,versionToChVersionArrayList));
     }
 
     @Override
-    public List<Object> searchLike(QueryWrapper<Object> queryWrapper) {
-        Integer version = getApsTableVersion(SchedulingResultType.APS_PRODUCTION_PLAN.getCode(), apsTableVersionService);
-        queryWrapper
-                .eq("version", version);
-        return apsProductionPlanMapper.searchLike(queryWrapper);
+    public List<Object> searchLike(QueryWrapper<Object> queryWrapper, List<VersionToChVersion> versionToChVersionArrayList) {
+        return apsProductionPlanMapper.searchLike(queryWrapper,versionToChVersionArrayList);
     }
 }

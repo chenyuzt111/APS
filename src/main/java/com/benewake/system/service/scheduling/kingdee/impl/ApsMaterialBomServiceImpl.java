@@ -26,6 +26,7 @@ import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -234,6 +235,12 @@ public class ApsMaterialBomServiceImpl extends ServiceImpl<ApsMaterialBomMapper,
 
     @Override
     public Page selectPageLists(Page page, List versionToChVersionArrayList, QueryWrapper wrapper) {
+        String customSqlSegment = wrapper.getCustomSqlSegment();
+        if (StringUtils.isEmpty(customSqlSegment) || !customSqlSegment.contains("ORDER BY")) {
+            wrapper.orderByDesc("ch_version_name");
+            wrapper.orderByAsc("f_material_id");
+            wrapper.orderByAsc("process");
+        }
         return apsMaterialBomMapper.selectPageLists(page, versionToChVersionArrayList, wrapper);
     }
 

@@ -7,7 +7,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.benewake.system.entity.ApsColumnTable;
+import com.benewake.system.entity.ApsTableVersion;
 import com.benewake.system.entity.ApsViewTable;
+import com.benewake.system.entity.Interface.VersionToChVersion;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.enums.SchedulingResultType;
 import com.benewake.system.entity.vo.DownloadViewParams;
@@ -33,6 +35,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.benewake.system.utils.BenewakeStringUtils.removeAs;
+import static com.benewake.system.utils.query.QueryUtil.getSearchRes;
 
 @Slf4j
 @Component
@@ -57,26 +60,18 @@ public class SchedulingResultServiceImpl implements SchedulingResultService {
             throw new BeneWakeException("当前colId不正确");
         }
         ApsSchedulingResuleBase apsSchedulingResuleBase = schedulingResuleBaseMap.get(schedulingResultType.getServiceName());
+        List<ApsTableVersion> apsTableVersions = apsSchedulingResuleBase.getApsTableVersionsLimit5(searchLikeParam.getTableId());
+        List<VersionToChVersion> versionToChVersionArrayList = apsSchedulingResuleBase.getVersionToChVersions(apsTableVersions);
         String voColName = columnTable.getVoColName();
         QueryWrapper<Object> queryWrapper = buildQueryWrapper(searchLikeParam, columnTable);
-        List<Object> searchLikeObj = apsSchedulingResuleBase.searchLike(queryWrapper);
+        List<Object> searchLikeObj = apsSchedulingResuleBase.searchLike(queryWrapper, versionToChVersionArrayList);
         if (CollectionUtils.isEmpty(searchLikeObj)) {
             return Collections.emptyList();
         }
-        return searchLikeObj.stream().map(x -> {
-            Object searchLike;
-            try {
-                Field declaredField = x.getClass().getDeclaredField(voColName);
-                declaredField.setAccessible(true);
-                searchLike = declaredField.get(x);
-                declaredField.setAccessible(false);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                log.error("反射发生异常{}", e.getMessage());
-                throw new BeneWakeException("服务器资源问题");
-            }
-            return searchLike;
-        }).sorted().collect(Collectors.toList());
+        return getSearchRes(voColName, searchLikeObj);
     }
+
+
 
     @Override
     public void download(HttpServletResponse response, DownloadViewParams downloadParam) {

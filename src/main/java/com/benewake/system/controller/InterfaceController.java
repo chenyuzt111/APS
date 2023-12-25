@@ -1,6 +1,8 @@
 package com.benewake.system.controller;
 
 import com.alibaba.excel.EasyExcel;
+import com.benewake.system.annotation.SearchHistory;
+import com.benewake.system.annotation.SearchLike;
 import com.benewake.system.entity.Result;
 import com.benewake.system.entity.dto.ApsDailyDataUploadDto;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
@@ -47,6 +49,7 @@ public class InterfaceController {
         return Result.ok(apsResult);
     }
 
+//    @SearchHistory
     @ApiOperation("查询筛选")
     @PostMapping("/getPageFiltrate/{page}/{size}")
     public Result getPageFiltrate(@PathVariable("page") Integer page, @PathVariable("size") Integer size,
@@ -78,7 +81,7 @@ public class InterfaceController {
         Boolean res = interfaceService.delete(ids, type);
         return res ? Result.ok() : Result.fail();
     }
-
+//    @SearchLike
     @ApiOperation("自动补全")
     @PostMapping("/searchLike")
     public Result searchLike(@RequestBody SearchLikeParam searchLikeParam) {
@@ -137,6 +140,7 @@ public class InterfaceController {
 //        return Result.ok(pageResultVo);
 //    }
 
+//    @SearchHistory
     @ApiOperation("获取日别数据")
     @PostMapping("/getDailyDataFilter/{page}/{size}")
     public Result getDailyDataFilter(@PathVariable Integer page, @PathVariable Integer size,
@@ -144,8 +148,8 @@ public class InterfaceController {
         ResultColPageVo<ApsDailyDataUploadDto> pageResultVo = dailyDataUploadService.getDailyDataFilter(page, size, queryViewParams);
         return Result.ok(pageResultVo);
     }
-
-    @ApiOperation("自动补全")
+//    @SearchLike
+    @ApiOperation("日别数据自动补全")
     @PostMapping("/dailyDatasearchLike")
     public Result dailyDatasearchLike(@RequestBody SearchLikeParam searchLikeParam) {
         List<Object> res = dailyDataUploadService.searchLike(searchLikeParam);

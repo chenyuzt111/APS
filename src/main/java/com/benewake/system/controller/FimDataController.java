@@ -1,12 +1,12 @@
 package com.benewake.system.controller;
 
 import com.alibaba.excel.EasyExcel;
+import com.benewake.system.annotation.SearchHistory;
+import com.benewake.system.annotation.SearchLike;
 import com.benewake.system.entity.Result;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
-import com.benewake.system.entity.vo.ApsFimRequestParam;
-import com.benewake.system.entity.vo.ApsFimRequestVo;
-import com.benewake.system.entity.vo.DownloadParam;
-import com.benewake.system.entity.vo.PageResultVo;
+import com.benewake.system.entity.vo.*;
+import com.benewake.system.entity.vo.baseParam.SearchLikeParam;
 import com.benewake.system.excel.entity.ExcelFimRequestTemplate;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.service.ApsFimRequestService;
@@ -33,12 +33,29 @@ public class FimDataController {
     @Autowired
     private ApsFimRequestService fimRequestService;
 
-    @ApiOperation("查询fim需求")
-    @GetMapping("/getFimRequestPage/{page}/{size}")
-    public Result getFimRequestPage(@PathVariable Integer page, @PathVariable Integer size) {
-        PageResultVo<ApsFimRequestVo> pageResultVo = fimRequestService.getFimRequestPage(page, size);
-        return Result.ok(pageResultVo);
-    }
+//    @ApiOperation("查询fim需求")
+//    @GetMapping("/getFimRequestPage/{page}/{size}")
+//    public Result getFimRequestPage(@PathVariable Integer page, @PathVariable Integer size) {
+//        PageResultVo<ApsFimRequestVo> pageResultVo = fimRequestService.getFimRequestPage(page, size);
+//        return Result.ok(pageResultVo);
+//    }
+
+//    @SearchHistory
+//    @ApiOperation("查询fim需求")
+//    @PostMapping("/getFimRequestPageFilter/{page}/{size}")
+//    public Result getFimRequestPageFilter(@PathVariable Integer page, @PathVariable Integer size,
+//                                          @RequestBody(required = false) QueryViewParams queryViewParams) {
+//        ResultColPageVo<ApsFimRequestVo> pageResultVo = fimRequestService.getFimRequestPageFilter(page, size, queryViewParams);
+//        return Result.ok(pageResultVo);
+//    }
+
+//    @SearchLike
+//    @ApiOperation("fim需求自动补全")
+//    @PostMapping("/fimRequestSearchLike")
+//    public Result fimRequestSearchLike(@RequestBody SearchLikeParam searchLikeParam) {
+//        List<Object> res = fimRequestService.searchLike(searchLikeParam);
+//        return Result.ok(res);
+//    }
 
     @ApiOperation("添加或修改fim需求")
     @PostMapping("/addOrUpdateFimRequest")
@@ -49,6 +66,7 @@ public class FimDataController {
         Boolean res = fimRequestService.addOrUpdateFimRequest(fimRequestParam);
         return res ? Result.ok() : Result.fail();
     }
+
     @ApiOperation("删除fim需求")
     @PostMapping("/removeFimRequest")
     public Result removeFimRequest(@RequestBody List<Integer> ids) {
@@ -59,22 +77,22 @@ public class FimDataController {
         return res ? Result.ok() : Result.fail();
     }
 
-    @ApiOperation("fim需求")
-    @PostMapping("/downloadFimRequest")
-    public void downloadFimRequest(@RequestBody DownloadParam downloadParam,  HttpServletResponse response) {
-        if (downloadParam == null || downloadParam.getType() == null
-                || (downloadParam.getType() == ExcelOperationEnum.CURRENT_PAGE.getCode()
-                && (downloadParam.getPage() == null || downloadParam.getSize() == null))) {
-            throw new BeneWakeException("数据不正确");
-        }
-        fimRequestService.downloadFimRequest(response, downloadParam);
-    }
+//    @ApiOperation("导出排程结果数据")
+//    @PostMapping("/download")
+//    public void download(@RequestBody DownloadViewParams downloadParam, HttpServletResponse response) {
+//        if (downloadParam == null || downloadParam.getTableId() == null
+//                || (downloadParam.getType() == ExcelOperationEnum.CURRENT_PAGE.getCode()
+//                && (downloadParam.getPage() == null || downloadParam.getSize() == null))) {
+//            throw new BeneWakeException("数据不正确");
+//        }
+//        fimRequestService.downloadFimRequest(response, downloadParam);
+//    }
 
     @ApiOperation("下载fim需求导入模板")
     @PostMapping("/fimRequestTemplate")
     public void fimRequestTemplate(HttpServletResponse response) {
         try {
-            ResponseUtil.setFileResp(response ,"fim需求导入模板");
+            ResponseUtil.setFileResp(response, "fim需求导入模板");
             EasyExcel.write(response.getOutputStream(), ExcelFimRequestTemplate.class).sheet("sheet1")
                     .doWrite((java.util.Collection<?>) null);
         } catch (IOException e) {

@@ -8,6 +8,7 @@ import com.benewake.system.service.ApsPurchaseRequestsOrdersService;
 import com.benewake.system.mapper.ApsPurchaseRequestsOrdersMapper;
 import com.benewake.system.service.scheduling.kingdee.ApsPurchaseRequestsOrdersBaseService;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,6 +56,13 @@ public class ApsPurchaseRequestsOrdersServiceImpl extends ServiceImpl<ApsPurchas
 
     @Override
     public Page selectPageLists(Page page, List versionToChVersionArrayList, QueryWrapper wrapper) {
+        String customSqlSegment = wrapper.getCustomSqlSegment();
+        if (StringUtils.isEmpty(customSqlSegment) || !customSqlSegment.contains("ORDER BY")) {
+            wrapper.orderByDesc("ch_version_name");
+            wrapper.orderByAsc("form_name");
+            wrapper.orderByAsc("material_id");
+            wrapper.orderByDesc("bill_no");
+        }
         return purchaseRequestsOrdersMapper.selectPageLists(page, versionToChVersionArrayList, wrapper);
     }
 

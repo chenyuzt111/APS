@@ -83,17 +83,8 @@ public class ApsProductFamilyMachineTableDto implements Serializable {
     @TableField(value = "unavailable_dates")
     private String unavailableDates;
 
-    /**
-     * 不可用时间
-     */
-    @TableField(value = "unavailable_time")
-    private String unavailableTime;
 
-    /**
-     * 
-     */
-    @TableField(value = "version")
-    private Integer version;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

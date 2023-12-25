@@ -36,7 +36,10 @@ public interface ApsProcessSchemeMapper extends BaseMapper<ApsProcessScheme> {
 
     List<ApsProcessSchemeVo> selectProcessScheme();
 
-    Page<ApsProcessSchemeDto> selectPages(Page<Object> page, @Param(Constants.WRAPPER) QueryWrapper<Object> wrapper);
+    Page<ApsProcessSchemeDto> selectPages(Page<Object> page,
+                                          @Param(Constants.WRAPPER) QueryWrapper<Object> wrapper);
+
+    List<Object> searchLike(@Param(Constants.WRAPPER) QueryWrapper<Object> queryWrapper);
 }
 
 

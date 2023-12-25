@@ -25,10 +25,6 @@ public class ApsProductFamilyMachineTableVo implements Serializable {
     @ExcelIgnore
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
-
-    @ExcelProperty("序号")
-    private Integer number;
-
     /**
      * 机器id
      */
@@ -99,12 +95,7 @@ public class ApsProductFamilyMachineTableVo implements Serializable {
     @TableField(value = "unavailable_dates")
     private List<String> unavailableDates;
 
-    /**
-     * 
-     */
-    @ExcelIgnore
-    @TableField(value = "version")
-    private Integer version;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

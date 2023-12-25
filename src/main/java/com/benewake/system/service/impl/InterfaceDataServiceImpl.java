@@ -57,7 +57,7 @@ public class InterfaceDataServiceImpl implements InterfaceDataService {
         });
         checkFutrueException(codeToFutureMap);
         //数据库更新后 调用mysql函数 将mes表合到一起
-//        finalUnfinishedDataMapper.callUpdateApsFinalUnfinishedData();
+
         return Boolean.TRUE;
     }
 

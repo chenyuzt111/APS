@@ -9,6 +9,8 @@ import com.benewake.system.entity.vo.ApsProcessNamePoolVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * @author ASUS
  * @description 针对表【aps_process_name_pool】的数据库操作Mapper
@@ -18,7 +20,10 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface ApsProcessNamePoolMapper extends BaseMapper<ApsProcessNamePool> {
 
-    Page<ApsProcessNamePoolVo> selectPages(Page<Object> page, @Param(Constants.WRAPPER) QueryWrapper<Object> wrapper);
+    Page<ApsProcessNamePoolVo> selectPages(Page<Object> page,
+                                           @Param(Constants.WRAPPER) QueryWrapper<Object> wrapper);
+
+    List<Object> searchLike(@Param(Constants.WRAPPER) QueryWrapper<Object> queryWrapper);
 }
 
 

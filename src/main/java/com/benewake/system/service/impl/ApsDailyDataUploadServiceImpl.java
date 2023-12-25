@@ -140,6 +140,10 @@ public class ApsDailyDataUploadServiceImpl extends ServiceImpl<ApsDailyDataUploa
 
         Page<ApsDailyDataUploadDto> resultPage = dailyDataUploadMapper.selectPageLists(new Page<>().setCurrent(page).setSize(size), wrapper);
 
+        return buildDailyDataUploadDtoResultColPageVo(columnVos, sortVos, resultPage);
+    }
+
+    private ResultColPageVo<ApsDailyDataUploadDto> buildDailyDataUploadDtoResultColPageVo(List<ColumnVo> columnVos, List<SortVo> sortVos, Page<ApsDailyDataUploadDto> resultPage) {
         ResultColPageVo<ApsDailyDataUploadDto> resultColPageVo = new ResultColPageVo<>();
         resultColPageVo.setList(resultPage.getRecords());
         resultColPageVo.setColumnTables(columnVos);
@@ -148,7 +152,6 @@ public class ApsDailyDataUploadServiceImpl extends ServiceImpl<ApsDailyDataUploa
         resultColPageVo.setSize(Math.toIntExact(resultPage.getSize()));
         resultColPageVo.setTotal(resultPage.getTotal());
         resultColPageVo.setPages(resultPage.getPages());
-
         return resultColPageVo;
     }
 

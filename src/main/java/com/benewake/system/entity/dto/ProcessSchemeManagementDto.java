@@ -1,5 +1,7 @@
 package com.benewake.system.entity.dto;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
@@ -8,51 +10,57 @@ import java.math.BigDecimal;
 @Data
 public class ProcessSchemeManagementDto {
 
+    @ExcelIgnore
     private Integer id;
 
     /**
      * 产品族
      */
-    @TableField(value = "product_family")
+    @ExcelProperty("产品族")
     private String productFamily;
 
+    @ExcelIgnore
     private Integer curId;
 
+    @ExcelProperty("当前工艺方案")
     private String currentProcessScheme;
 
+    @ExcelIgnore
     private Integer optimalId;
 
+    @ExcelProperty("最优工艺方案")
     private String optimalProcessPlan;
 
     /**
      * 经济批量
      */
-    @TableField(value = "order_number")
+    @ExcelProperty("经济批量")
     private Integer orderNumber;
 
     /**
      * 产线平衡率
      */
-    @TableField(value = "production_line_balance_rate")
-    private String productionLineBalanceRate;
+   @ExcelProperty("产线平衡率")
+    private BigDecimal productionLineBalanceRate;
 
     /**
      * 完成时间
      */
-    @TableField(value = "completion_time")
+    @ExcelProperty("完成时间")
     private BigDecimal completionTime;
 
     /**
      * 可以释放人数
      */
-    @TableField(value = "releasable_staff_count")
+    @ExcelProperty("可以释放人数")
     private Integer releasableStaffCount;
 
     /**
      * 总释放时间
      */
-    @TableField(value = "total_release_time")
-    private String totalReleaseTime;
+    @ExcelProperty("总释放时间")
+    private Double totalReleaseTime;
 
+    @ExcelProperty("人数")
     private Integer number;
 }

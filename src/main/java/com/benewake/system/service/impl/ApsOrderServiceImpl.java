@@ -8,6 +8,7 @@ import com.benewake.system.service.ApsOrderService;
 import com.benewake.system.mapper.ApsOrderMapper;
 import com.benewake.system.service.scheduling.kingdee.ApsOrderBaseService;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +57,14 @@ public class ApsOrderServiceImpl extends ServiceImpl<ApsOrderMapper, ApsOrder>
 
     @Override
     public Page selectPageLists(Page page, List versionToChVersionArrayList, QueryWrapper wrapper) {
+        String customSqlSegment = wrapper.getCustomSqlSegment();
+        if (StringUtils.isEmpty(customSqlSegment) || !customSqlSegment.contains("ORDER BY")) {
+            wrapper.orderByDesc("ch_version_name");
+            wrapper.orderByDesc("form_name");
+            wrapper.orderByAsc("material_id");
+            wrapper.orderByAsc("bill_type");
+            wrapper.orderByDesc("bill_no");
+        }
         return apsOrderMapper.selectPageLists(page, versionToChVersionArrayList, wrapper);
     }
 

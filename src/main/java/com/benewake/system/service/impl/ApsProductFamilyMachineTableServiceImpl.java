@@ -1,8 +1,10 @@
 package com.benewake.system.service.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.generator.IFill;
 import com.benewake.system.entity.ApsProductFamilyMachineTable;
 import com.benewake.system.entity.dto.ApsProductFamilyMachineTableDto;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
@@ -18,7 +20,9 @@ import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.mapper.ApsProductFamilyMachineTableMapper;
 import com.benewake.system.service.ApsProcessNamePoolService;
 import com.benewake.system.service.ApsProductFamilyMachineTableService;
+import com.benewake.system.utils.BenewakeStringUtils;
 import com.benewake.system.utils.ResponseUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +38,17 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import static com.benewake.system.utils.BenewakeStringUtils.replaceAvailable;
+
 /**
  * @author ASUS
  * @description 针对表【aps_product_family_machine_table】的数据库操作Service实现
  * @createDate 2023-10-31 10:48:29
  */
+@Slf4j
 @Service
-public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProductFamilyMachineTableMapper, ApsProductFamilyMachineTable> implements ApsProductFamilyMachineTableService {
+public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProductFamilyMachineTableMapper, ApsProductFamilyMachineTable>
+        implements ApsProductFamilyMachineTableService {
 
 
     @Autowired
@@ -52,11 +60,11 @@ public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProd
     @Autowired
     private ApsProcessNamePoolService processNamePoolService;
 
-    private LocalDateTime currentTime = null;
+    @Autowired
+    private ApsProductFamilyMachineTableMapper productFamilyMachineTableMapper;
 
     @Override
     public ApsProductFamilyMachineTablePageVo getApsMachineTable(String name, Integer page, Integer size) {
-        currentTime = LocalDateTime.now();
         Page<ApsProductFamilyMachineTableDto> tablePage = getApsProductFamilyMachineTableDtoPage(page, size);
         List<ApsProductFamilyMachineTableVo> apsProductFamilyMachineTableVos = getApsProductFamilyMachineTableVos(page, size, tablePage);
         ApsProductFamilyMachineTablePageVo apsProductFamilyMachineTablePageVo = new ApsProductFamilyMachineTablePageVo();
@@ -67,9 +75,8 @@ public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProd
 
     private List<ApsProductFamilyMachineTableVo> getApsProductFamilyMachineTableVos(Integer page, Integer size, Page<ApsProductFamilyMachineTableDto> tablePage) {
         List<ApsProductFamilyMachineTableDto> tableDtos = tablePage.getRecords();
-        AtomicReference<Integer> number = new AtomicReference<>((page - 1) * size + 1);
         List<ApsProductFamilyMachineTableVo> apsProductFamilyMachineTableVos = tableDtos.stream().map(x -> {
-            ApsProductFamilyMachineTableVo ApsProductFamilyMachineTableVo = productFamilyMachineTableDtoToVo(x, number.getAndSet(number.get() + 1));
+            ApsProductFamilyMachineTableVo ApsProductFamilyMachineTableVo = productFamilyMachineTableDtoToVo(x);
             return ApsProductFamilyMachineTableVo;
         }).collect(Collectors.toList());
         return apsProductFamilyMachineTableVos;
@@ -83,10 +90,10 @@ public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProd
         return tablePage;
     }
 
-    private ApsProductFamilyMachineTableVo productFamilyMachineTableDtoToVo(ApsProductFamilyMachineTableDto dto, Integer number) {
+    private ApsProductFamilyMachineTableVo productFamilyMachineTableDtoToVo(ApsProductFamilyMachineTableDto dto) {
         ApsProductFamilyMachineTableVo apsProductFamilyMachineTableVo = new ApsProductFamilyMachineTableVo();
         apsProductFamilyMachineTableVo.setId(dto.getId());
-        apsProductFamilyMachineTableVo.setNumber(number);
+//        apsProductFamilyMachineTableVo.setNumber(number);
         apsProductFamilyMachineTableVo.setFMachineId(dto.getFMachineId());
         apsProductFamilyMachineTableVo.setFMachineName(dto.getFMachineName());
         apsProductFamilyMachineTableVo.setFProductFamily(dto.getFProductFamily());
@@ -110,7 +117,6 @@ public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProd
             apsProductFamilyMachineTableVo.setAvailable(isInAnyRange ? "否" : "是");
         }
 
-        apsProductFamilyMachineTableVo.setVersion(dto.getVersion());
         return apsProductFamilyMachineTableVo;
     }
 
@@ -141,7 +147,7 @@ public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProd
         if (CollectionUtils.isNotEmpty(unavailableDates)) {
             String unavailDate = String.join(",", unavailableDates);
             familyMachineTable.setUnavailableDates(unavailDate);
-            log.warn("不可用事件！！！！" + unavailDate);
+            log.info("不可用事件！！！！" + unavailDate);
         } else {
             familyMachineTable.setUnavailableDates("");
         }
@@ -186,6 +192,33 @@ public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProd
             return false;
         }
         return true;
+    }
+
+    @Override
+    public Page selectPageLists(Page<Object> page, QueryWrapper<Object> wrapper) {
+        if (wrapper != null) {
+            String customSqlSegment = wrapper.getCustomSqlSegment();
+            replaceAvailable(customSqlSegment);
+
+        }
+        Page<ApsProductFamilyMachineTableDto> familyMachineTableDtoPage = productFamilyMachineTableMapper.selectPageLists(page, wrapper);
+        List<ApsProductFamilyMachineTableDto> records = familyMachineTableDtoPage.getRecords();
+        List<ApsProductFamilyMachineTableVo> productFamilyMachineTableVos = records.stream().map(this::productFamilyMachineTableDtoToVo).collect(Collectors.toList());
+        return buildApsProductFamilyMachineTableVoPage(familyMachineTableDtoPage, productFamilyMachineTableVos);
+    }
+
+    private Page<ApsProductFamilyMachineTableVo> buildApsProductFamilyMachineTableVoPage(Page<ApsProductFamilyMachineTableDto> familyMachineTableDtoPage, List<ApsProductFamilyMachineTableVo> productFamilyMachineTableVos) {
+        Page<ApsProductFamilyMachineTableVo> apsProductFamilyMachineTableVoPage = new Page<>();
+        apsProductFamilyMachineTableVoPage.setRecords(productFamilyMachineTableVos);
+        apsProductFamilyMachineTableVoPage.setTotal(familyMachineTableDtoPage.getTotal());
+        apsProductFamilyMachineTableVoPage.setSize(familyMachineTableDtoPage.getSize());
+        apsProductFamilyMachineTableVoPage.setCurrent(familyMachineTableDtoPage.getCurrent());
+        return apsProductFamilyMachineTableVoPage;
+    }
+
+    @Override
+    public List<Object> searchLike(QueryWrapper<Object> queryWrapper) {
+        return productFamilyMachineTableMapper.searchLike(queryWrapper);
     }
 }
 

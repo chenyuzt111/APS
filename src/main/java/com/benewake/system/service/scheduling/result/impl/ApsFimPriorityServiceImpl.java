@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsFimPriority;
+import com.benewake.system.entity.Interface.VersionToChVersion;
 import com.benewake.system.entity.dto.ApsFimPriorityDto;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
 import com.benewake.system.entity.enums.SchedulingResultType;
@@ -25,8 +26,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-
-import static com.benewake.system.entity.enums.SchedulingResultType.APS_FIM_PRIORITY;
 
 /**
  * @author ASUS
@@ -66,18 +65,11 @@ public class ApsFimPriorityServiceImpl extends ServiceImpl<ApsFimPriorityMapper,
 
     @Override
     public PageResultVo<ApsFimPriorityDto> getAllPage(Integer page, Integer size) {
-        Integer apsTableVersion = this.getApsTableVersion(APS_FIM_PRIORITY.getCode(), apsTableVersionService);
 
         Page<ApsFimPriorityDto> apsFimPriorityPage = new Page<>();
         apsFimPriorityPage.setCurrent(page);
         apsFimPriorityPage.setSize(size);
-        Page<ApsFimPriorityDto> priorityPage = apsFimPriorityMapper.selectPageList(apsFimPriorityPage, apsTableVersion);
         PageResultVo<ApsFimPriorityDto> apsFimPriorityPageResultVo = new PageResultVo<>();
-        apsFimPriorityPageResultVo.setList(priorityPage.getRecords());
-        apsFimPriorityPageResultVo.setPages(priorityPage.getPages());
-        apsFimPriorityPageResultVo.setSize(size);
-        apsFimPriorityPageResultVo.setPage(page);
-        apsFimPriorityPageResultVo.setTotal(priorityPage.getTotal());
         return apsFimPriorityPageResultVo;
     }
 
@@ -101,16 +93,14 @@ public class ApsFimPriorityServiceImpl extends ServiceImpl<ApsFimPriorityMapper,
         }
     }
 
-    @Override
     public ResultColPageVo<Object> getResultFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
-        return commonFiltrate(page, size, SchedulingResultType.APS_FIM_PRIORITY, queryViewParams, (page1, queryWrapper) ->
-                apsFimPriorityMapper.getFimPriorityFiltrate(page1, queryWrapper));
+        return commonFiltrate(page, size, SchedulingResultType.APS_FIM_PRIORITY, queryViewParams,
+                (page1, queryWrapper, versionToChVersionArrayList) ->
+                        apsFimPriorityMapper.getFimPriorityFiltrate(page1, queryWrapper, versionToChVersionArrayList));
     }
 
     @Override
-    public List<Object> searchLike(QueryWrapper<Object> queryWrapper) {
-        Integer version = getApsTableVersion(APS_FIM_PRIORITY.getCode(), apsTableVersionService);
-        queryWrapper.eq("version", version);
-        return apsFimPriorityMapper.searchLike(queryWrapper);
+    public List<Object> searchLike(QueryWrapper<Object> queryWrapper, List<VersionToChVersion> versionToChVersionArrayList) {
+        return apsFimPriorityMapper.searchLike(queryWrapper ,versionToChVersionArrayList);
     }
 }

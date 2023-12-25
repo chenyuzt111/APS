@@ -79,6 +79,10 @@ public class ApsFimPriorityDto implements Serializable {
     @ExcelProperty("所包含销售订单")
     private String containedSalesOrders;
 
+
+    @ExcelProperty("版本号")
+    private String chVersion;
+
     @ExcelIgnore
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

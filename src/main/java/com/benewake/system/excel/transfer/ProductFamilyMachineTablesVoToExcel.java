@@ -18,7 +18,7 @@ public class ProductFamilyMachineTablesVoToExcel {
         ArrayList<ExcelProductFamilyMachineTable> excelProductFamilyMachineTables = new ArrayList<>(object.size());
         for (ApsProductFamilyMachineTableVo apsProductFamilyMachineTableVo : object) {
             ExcelProductFamilyMachineTable excelProductFamilyMachineTable = new ExcelProductFamilyMachineTable();
-            excelProductFamilyMachineTable.setNumber(apsProductFamilyMachineTableVo.getNumber());
+//            excelProductFamilyMachineTable.setNumber(apsProductFamilyMachineTableVo.getNumber());
 //            excelProductFamilyMachineTable.setFMachineId(apsProductFamilyMachineTableVo.getFMachineId());
             excelProductFamilyMachineTable.setFMachineName(apsProductFamilyMachineTableVo.getFMachineName());
             excelProductFamilyMachineTable.setFProductFamily(apsProductFamilyMachineTableVo.getFProductFamily());

@@ -11,7 +11,14 @@ import java.util.List;
 public enum MasterDataType {
     PROCESS_NAME_POOL(60, "工序命名池", "apsProcessNamePoolServiceImpl"),
     PROCESS_CAPACITY(61, "工序与产能", "apsProcessCapacityServiceImpl"),
-    PROCESS_SCHEME(62, "基础工艺方案", "apsProcessSchemeServiceImpl");
+    PROCESS_SCHEME(62, "基础工艺方案", "apsProcessSchemeServiceImpl"),
+    PRODUCT_FAMILY_PROCESS_SCHEME_MANAGEMENT(63, "最终工艺方案", "apsProductFamilyProcessSchemeManagementServiceImpl"),
+    SEMI_FINISHED_BASIC_DATA(64, "半成品基础数据", "apsSemiFinishedBasicDataServiceImpl"),
+    FINISHED_PRODUCT_BASIC_DATA(65, "成品基础数据", "apsFinishedProductBasicDataServiceImpl"),
+    RAW_MATERIAL_BASIC_DATA(66, "原材料基础数据", "apsRawMaterialBasicDataServiceImpl"),
+    ATTENDANCE(67, "出勤管理", "apsAttendanceServiceImpl"),
+    PRODUCT_FAMILY_MACHINE(68, "机器管理", "apsProductFamilyMachineTableServiceImpl");
+
 
     private final int code;
 

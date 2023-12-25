@@ -1,5 +1,7 @@
 package com.benewake.system.entity.dto;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -23,28 +25,32 @@ public class ApsOutRequestDto implements Serializable {
     /**
      * 物料编码
      */
+    @ExcelIgnore
     @TableId(type = IdType.AUTO)
     private Integer id;
     /**
      * 物料编码
      */
+    @ExcelProperty("物料编码")
     private String materialCode;
 
     /**
      * 物料编码
      */
+    @ExcelProperty("物料名称")
     private String materialName;
 
     /**
      * 归还日期
      */
-
+    @ExcelProperty("归还日期")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8") // 指定日期格式
     private Date returnDate;
 
     /**
      * 版本号
      */
+    @ExcelProperty("版本号")
     private String chVersion;
 
 

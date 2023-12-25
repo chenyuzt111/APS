@@ -13,7 +13,6 @@ public class ApsProcessCapacityEntityToVo {
         apsProcessCapacityVo.setProcessId(object.getProcessId());
         apsProcessCapacityVo.setConcurrencyCount(object.getConcurrencyCount());
         apsProcessCapacityVo.setProcessName(object.getProcessName());
-        apsProcessCapacityVo.setProcessNumber(object.getProcessNumber());
         apsProcessCapacityVo.setProductFamily(object.getProductFamily());
         apsProcessCapacityVo.setSwitchTime(object.getSwitchTime());
         apsProcessCapacityVo.setPackagingMethod(object.getPackagingMethod());

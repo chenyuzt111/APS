@@ -14,6 +14,7 @@ import com.benewake.system.transfer.KingdeeToApsReceiveNotice;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -76,6 +77,12 @@ public class ApsReceiveNoticeServiceImpl extends ServiceImpl<ApsReceiveNoticeMap
 
     @Override
     public Page selectPageLists(Page page, List versionToChVersionArrayList, QueryWrapper wrapper) {
+        String customSqlSegment = wrapper.getCustomSqlSegment();
+        if (StringUtils.isEmpty(customSqlSegment) || !customSqlSegment.contains("ORDER BY")) {
+            wrapper.orderByDesc("ch_version_name");
+            wrapper.orderByAsc("f_material_id");
+            wrapper.orderByDesc("f_bill_no");
+        }
         return apsReceiveNoticeMapper.selectPageLists(page, versionToChVersionArrayList, wrapper);
     }
 

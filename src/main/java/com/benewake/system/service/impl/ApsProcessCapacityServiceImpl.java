@@ -286,8 +286,14 @@ public class ApsProcessCapacityServiceImpl extends ServiceImpl<ApsProcessCapacit
     @Override
     public Page selectPageLists(Page<Object> page, QueryWrapper<Object> wrapper) {
         Page<ApsProcessCapacityDto> dtoPage = apsProcessCapacityMapper.selectPageList(page ,wrapper);
+        //处理序号
         List<ApsProcessCapacityVo> apsProcessCapacityVos = getApsProcessCapacityVos(dtoPage);
         return buildApsProcessCapacityVoPage(dtoPage, apsProcessCapacityVos);
+    }
+
+    @Override
+    public List<Object> searchLike(QueryWrapper<Object> queryWrapper) {
+        return apsProcessCapacityMapper.searchLike(queryWrapper);
     }
 
     private Page<ApsProcessCapacityVo> buildApsProcessCapacityVoPage(Page<ApsProcessCapacityDto> dtoPage, List<ApsProcessCapacityVo> apsProcessCapacityVos) {

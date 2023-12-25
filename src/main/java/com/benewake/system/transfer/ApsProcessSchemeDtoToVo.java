@@ -27,10 +27,7 @@ public class ApsProcessSchemeDtoToVo {
         apsProcessSchemeVo.setMinPersonnel(object.getMinPersonnel());
         apsProcessSchemeVo.setEmployeeName(object.getEmployeeName());
         apsProcessSchemeVo.setNumber(object.getNumber());
-        if (object.getState() == null) {
-            return apsProcessSchemeVo;
-        }
-        apsProcessSchemeVo.setState(object.getState() ? "有效" : "无效");
+        apsProcessSchemeVo.setState(object.getState());
 
         return apsProcessSchemeVo;
     }

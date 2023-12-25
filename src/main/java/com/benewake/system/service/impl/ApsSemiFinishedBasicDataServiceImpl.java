@@ -2,6 +2,7 @@ package com.benewake.system.service.impl;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsSemiFinishedBasicData;
@@ -89,8 +90,8 @@ public class ApsSemiFinishedBasicDataServiceImpl extends ServiceImpl<ApsSemiFini
     @Override
     public Boolean saveDataByExcel(Integer type, MultipartFile file) {
         try {
-            EasyExcel.read(file.getInputStream() , ExcelSemiFinishedTemplate.class ,
-                    new ExcelSemiFinishedListener(excelSemiFinishedToPo ,type ,this))
+            EasyExcel.read(file.getInputStream(), ExcelSemiFinishedTemplate.class,
+                            new ExcelSemiFinishedListener(excelSemiFinishedToPo, type, this))
                     .sheet().headRowNumber(1)
                     .doRead();
         } catch (Exception e) {
@@ -121,26 +122,36 @@ public class ApsSemiFinishedBasicDataServiceImpl extends ServiceImpl<ApsSemiFini
 
     private PageResultVo<ApsSemiFinishedBasicDataVo> buildPageResultVo(Page<ApsSemiFinishedBasicDataDto> dataDtoPage) {
         PageResultVo<ApsSemiFinishedBasicDataVo> resultVo = new PageResultVo<>();
-        List<ApsSemiFinishedBasicDataVo> semiFinishedBasicDataVos = dataDtoPage.getRecords().stream().map(x -> {
-            ApsSemiFinishedBasicDataVo apsSemiFinishedBasicDataVo = new ApsSemiFinishedBasicDataVo();
-            apsSemiFinishedBasicDataVo.setId(x.getId());
-            apsSemiFinishedBasicDataVo.setMaterialCode(x.getFMaterialCode());
-            apsSemiFinishedBasicDataVo.setMaterialName(x.getFMaterialName());
-            apsSemiFinishedBasicDataVo.setMaterialProperty(x.getFMaterialProperty());
-            apsSemiFinishedBasicDataVo.setMaterialGroup(x.getFMaterialGroup());
-            apsSemiFinishedBasicDataVo.setProductType(x.getFProductType());
-            apsSemiFinishedBasicDataVo.setProcurementLeadTime(x.getFProcurementLeadTime());
-            apsSemiFinishedBasicDataVo.setMoq(x.getFMoq());
-            apsSemiFinishedBasicDataVo.setMpq(x.getFMpq());
-            apsSemiFinishedBasicDataVo.setSafetyStock(x.getFSafetyStock());
-            return apsSemiFinishedBasicDataVo;
-        }).collect(Collectors.toList());
-        resultVo.setList(semiFinishedBasicDataVos);
-        resultVo.setPage(Math.toIntExact(dataDtoPage.getCurrent()));
-        resultVo.setSize(Math.toIntExact(dataDtoPage.getSize()));
-        resultVo.setTotal(dataDtoPage.getTotal());
-        resultVo.setPages(dataDtoPage.getPages());
+//        List<ApsSemiFinishedBasicDataVo> semiFinishedBasicDataVos = dataDtoPage.getRecords().stream().map(x -> {
+//            ApsSemiFinishedBasicDataVo apsSemiFinishedBasicDataVo = new ApsSemiFinishedBasicDataVo();
+//            apsSemiFinishedBasicDataVo.setId(x.getId());
+//            apsSemiFinishedBasicDataVo.setMaterialCode(x.getFMaterialCode());
+//            apsSemiFinishedBasicDataVo.setMaterialName(x.getFMaterialName());
+//            apsSemiFinishedBasicDataVo.setMaterialProperty(x.getFMaterialProperty());
+//            apsSemiFinishedBasicDataVo.setMaterialGroup(x.getFMaterialGroup());
+//            apsSemiFinishedBasicDataVo.setProductType(x.getFProductType());
+//            apsSemiFinishedBasicDataVo.setProcurementLeadTime(x.getFProcurementLeadTime());
+//            apsSemiFinishedBasicDataVo.setMoq(x.getFMoq());
+//            apsSemiFinishedBasicDataVo.setMpq(x.getFMpq());
+//            apsSemiFinishedBasicDataVo.setSafetyStock(x.getFSafetyStock());
+//            return apsSemiFinishedBasicDataVo;
+//        }).collect(Collectors.toList());
+//        resultVo.setList(semiFinishedBasicDataVos);
+//        resultVo.setPage(Math.toIntExact(dataDtoPage.getCurrent()));
+//        resultVo.setSize(Math.toIntExact(dataDtoPage.getSize()));
+//        resultVo.setTotal(dataDtoPage.getTotal());
+//        resultVo.setPages(dataDtoPage.getPages());
         return resultVo;
+    }
+
+    @Override
+    public Page selectPageLists(Page<Object> page, QueryWrapper<Object> wrapper) {
+        return semiFinishedBasicDataMapper.selectPageLists(page, wrapper);
+    }
+
+    @Override
+    public List<Object> searchLike(QueryWrapper<Object> queryWrapper) {
+        return semiFinishedBasicDataMapper.searchLike(queryWrapper);
     }
 }
 

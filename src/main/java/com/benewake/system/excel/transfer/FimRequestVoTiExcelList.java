@@ -20,20 +20,20 @@ public class FimRequestVoTiExcelList {
         ArrayList<ExcelFimRequest> excelFimRequests = new ArrayList<>();
         for (ApsFimRequestVo apsFimRequestVo : object) {
             ExcelFimRequest excelFimRequest = new ExcelFimRequest();
-            excelFimRequest.setFDocumentNumber(apsFimRequestVo.getFDocumentNumber());
-            excelFimRequest.setFCreator(apsFimRequestVo.getFCreator());
-            excelFimRequest.setFMaterialCode(apsFimRequestVo.getFMaterialCode());
-            excelFimRequest.setFMaterialName(apsFimRequestVo.getFMaterialName());
-            excelFimRequest.setFCustomerName(apsFimRequestVo.getFCustomerName());
-            excelFimRequest.setFSalesperson(apsFimRequestVo.getFSalesperson());
-            excelFimRequest.setFQuantity(apsFimRequestVo.getFQuantity());
-            Date fExpectedDeliveryDate = apsFimRequestVo.getFExpectedDeliveryDate();
+            excelFimRequest.setFDocumentNumber(apsFimRequestVo.getDocumentNumber());
+            excelFimRequest.setFCreator(apsFimRequestVo.getCreator());
+            excelFimRequest.setFMaterialCode(apsFimRequestVo.getMaterialCode());
+            excelFimRequest.setFMaterialName(apsFimRequestVo.getMaterialName());
+            excelFimRequest.setFCustomerName(apsFimRequestVo.getCustomerName());
+            excelFimRequest.setFSalesperson(apsFimRequestVo.getSalesperson());
+            excelFimRequest.setFQuantity(apsFimRequestVo.getQuantity());
+            Date fExpectedDeliveryDate = apsFimRequestVo.getExpectedDeliveryDate();
             if (fExpectedDeliveryDate != null) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 String formattedDate = sdf.format(fExpectedDeliveryDate);
                 excelFimRequest.setFExpectedDeliveryDate(formattedDate);
             }
-            excelFimRequest.setFDocumentType(apsFimRequestVo.getFDocumentType());
+            excelFimRequest.setFDocumentType(apsFimRequestVo.getDocumentType());
             excelFimRequests.add(excelFimRequest);
         }
         return excelFimRequests;

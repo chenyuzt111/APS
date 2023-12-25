@@ -93,7 +93,7 @@ public class ProcessCapacityListener extends AnalysisEventListener<ExcelProcessC
             return null;
         }
         apsProcessCapacity.setProcessId(processId);
-        apsProcessCapacity.setProcessNumber(data.getProcessNumber());
+//        apsProcessCapacity.setProcessNumber(data.getProcessNumber());
         apsProcessCapacity.setConcurrencyCount(data.getConcurrencyCount());
         apsProcessCapacity.setProductFamily(data.getProductFamily());
         apsProcessCapacity.setPackagingMethod(data.getPackagingMethod());

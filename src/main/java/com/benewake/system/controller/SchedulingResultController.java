@@ -1,8 +1,11 @@
 package com.benewake.system.controller;
 
 
+import com.benewake.system.annotation.SearchHistory;
+import com.benewake.system.annotation.SearchLike;
 import com.benewake.system.entity.Result;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
+import com.benewake.system.entity.enums.SchedulingResultType;
 import com.benewake.system.entity.vo.*;
 import com.benewake.system.entity.vo.baseParam.SearchLikeParam;
 import com.benewake.system.exception.BeneWakeException;
@@ -45,9 +48,11 @@ public class SchedulingResultController {
     @Autowired
     private SchedulingResultService schedulingResultService;
 
+//    @SearchHistory
     @ApiOperation("成品生产结果报表筛选")
     @PostMapping("/getProductionFiltrate/{page}/{size}")
     public Result getProductionFiltrate(@PathVariable Integer page, @PathVariable Integer size, @RequestBody(required = false) QueryViewParams queryViewParams) {
+        queryViewParams.setTableId(SchedulingResultType.APS_PRODUCTION_PLAN.getCode());
         ResultColPageVo<Object> apsProductionPlans = apsProductionPlanService.getResultFiltrate(page, size, queryViewParams);
         return Result.ok(apsProductionPlans);
     }
@@ -60,34 +65,39 @@ public class SchedulingResultController {
     }
 
 
+//    @SearchHistory
     @ApiOperation("半成品生产计划分页筛选")
     @PostMapping("/semiFinishedGoodsFiltrate/{page}/{size}")
     public Result semiFinishedGoodsFiltrate(@PathVariable Integer page, @PathVariable Integer size, @RequestBody(required = false) QueryViewParams queryViewParams) {
+        queryViewParams.setTableId(SchedulingResultType.APS_SEMI_FINISHED_GOODS_PRODUCTION_PLAN.getCode());
         ResultColPageVo<Object> apsProductionPlans = semiFinishedGoodsProductionPlanService.getResultFiltrate(page, size, queryViewParams);
         return Result.ok(apsProductionPlans);
     }
 
 
-
+//    @SearchHistory
     @ApiOperation("成品缺料分析分页筛选")
     @PostMapping("/materialShortageAnalysisFiltrate/{page}/{size}")
     public Result materialShortageAnalysisFiltrate(@PathVariable Integer page, @PathVariable Integer size, @RequestBody(required = false) QueryViewParams queryViewParams) {
+        queryViewParams.setTableId(SchedulingResultType.APS_MATERIAL_SHORTAGE_ANALYSIS.getCode());
         ResultColPageVo<Object> apsProductionPlans = apsMaterialShortageAnalysisService.getResultFiltrate(page, size, queryViewParams);
         return Result.ok(apsProductionPlans);
     }
 
-
+//    @SearchHistory
     @ApiOperation("半成品缺料分析分页筛选")
     @PostMapping("/semiMaterialShortageFiltrate/{page}/{size}")
     public Result semiMaterialShortageFiltrate(@PathVariable Integer page, @PathVariable Integer size, @RequestBody(required = false) QueryViewParams queryViewParams) {
+        queryViewParams.setTableId(SchedulingResultType.APS_SEMI_FINISHED_GOODS_MATERIAL_SHORTAGE_ANALYSIS.getCode());
         ResultColPageVo<Object> res = apsSemiFinishedGoodsMaterialShortageAnalysisService
                 .getResultFiltrate(page, size, queryViewParams);
         return Result.ok(res);
     }
-
+//    @SearchHistory
     @ApiOperation("FIM需求优先级筛选")
     @PostMapping("/getFimPriorityFiltrate/{page}/{size}")
     public Result getFimPriorityFiltrate(@PathVariable Integer page, @PathVariable Integer size, @RequestBody(required = false) QueryViewParams queryViewParams) {
+        queryViewParams.setTableId(SchedulingResultType.APS_FIM_PRIORITY.getCode());
         ResultColPageVo<Object> res = apsFimPriorityService.getResultFiltrate(page, size ,queryViewParams);
         return Result.ok(res);
     }
@@ -102,7 +112,7 @@ public class SchedulingResultController {
         }
         schedulingResultService.download(response, downloadParam);
     }
-
+//    @SearchLike
     @ApiOperation("搜索筛选补全")
     @PostMapping("searchLike")
     public Result searchLike(@RequestBody SearchLikeParam searchLikeParam) {

@@ -1,5 +1,7 @@
 package com.benewake.system.utils;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.utils.core.StrFormatter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.AntPathMatcher;
@@ -7,6 +9,8 @@ import org.springframework.util.AntPathMatcher;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 字符串工具类
@@ -22,13 +26,51 @@ public class BenewakeStringUtils extends org.apache.commons.lang3.StringUtils {
      */
     private static final char SEPARATOR = '_';
 
+
+    public static String getGenval(String inputString) {
+        String patternString = "available (=|>=|<=|LIKE|>|<|NOT LIKE|<>) #\\{ew\\.paramNameValuePairs\\.MPGENVAL(\\d+)}";
+        Pattern pattern = Pattern.compile(patternString);
+        Matcher matcher = pattern.matcher(inputString);
+
+        // 处理匹配的字符串
+        if (matcher.find()) {
+            // 获取匹配的数字
+            String genvalNumber = matcher.group(1);
+            // 处理MPGENVAL部分
+            return "MPGENVAL" + genvalNumber;
+        } else {
+            return null;
+        }
+    }
+
+    public static String replaceAvailable(String inputString) {
+        String patternString = "available (=|>=|<=|LIKE|>|<|NOT LIKE|<>) #\\{ew\\.paramNameValuePairs\\.MPGENVAL(\\d+)}";
+        Pattern pattern = Pattern.compile(patternString);
+        Matcher matcher = pattern.matcher(inputString);
+        StringBuffer result = new StringBuffer();
+        int count = 0;
+        while (matcher.find()) {
+            count++;
+            String replacementString = "1=1";
+            // 替换匹配的字符串
+            matcher.appendReplacement(result, Matcher.quoteReplacement(replacementString));
+        }
+        if (count > 1) {
+            throw new BeneWakeException("是否可用筛选条件只能设置一个");
+        }
+        // 将剩余的部分追加到结果中
+        matcher.appendTail(result);
+        return result.toString();
+    }
+
+
     public static String removeAs(String input) {
         // 使用正则表达式将 "AS" 及其后面的部分替换为空字符串
         return input.replaceAll("(?i)\\s+as\\s+.*$", "");
     }
 
-    public static Date parse(String date ,String dateFormat) throws ParseException {
-        if (StringUtils.isEmpty(date) || StringUtils.isEmpty(dateFormat) ) {
+    public static Date parse(String date, String dateFormat) throws ParseException {
+        if (StringUtils.isEmpty(date) || StringUtils.isEmpty(dateFormat)) {
             return null;
         }
         SimpleDateFormat format = new SimpleDateFormat(dateFormat);

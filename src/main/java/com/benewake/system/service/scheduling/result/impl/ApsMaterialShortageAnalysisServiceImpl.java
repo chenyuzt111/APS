@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsMaterialShortageAnalysis;
+import com.benewake.system.entity.Interface.VersionToChVersion;
 import com.benewake.system.entity.dto.ApsMaterialShortageAnalysisDto;
 import com.benewake.system.entity.enums.SchedulingResultType;
 import com.benewake.system.entity.vo.PageResultVo;
@@ -57,32 +58,25 @@ public class ApsMaterialShortageAnalysisServiceImpl extends ServiceImpl<ApsMater
 
     @Override
     public PageResultVo<ApsMaterialShortageAnalysisDto> getAllPage(Integer page, Integer size) {
-        Integer apsTableVersion = getApsTableVersion(SchedulingResultType.APS_MATERIAL_SHORTAGE_ANALYSIS.getCode(), apsTableVersionService);
         Page<ApsMaterialShortageAnalysisDto> pageTemp = new Page<>();
         pageTemp.setSize(size);
         pageTemp.setCurrent(page);
-        Page<ApsMaterialShortageAnalysisDto> productionPlanPage = materialShortageAnalysisMapper.selectPageList(pageTemp, apsTableVersion);
         PageResultVo<ApsMaterialShortageAnalysisDto> restVo = new PageResultVo<>();
-        restVo.setList(productionPlanPage.getRecords());
-        restVo.setPages(productionPlanPage.getPages());
-        restVo.setTotal(productionPlanPage.getTotal());
-        restVo.setPage(page);
-        restVo.setSize(size);
+
         return restVo;
     }
 
 
     @Override
     public ResultColPageVo<Object> getResultFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
-        return commonFiltrate(page ,size , SchedulingResultType.APS_MATERIAL_SHORTAGE_ANALYSIS, queryViewParams,
-                (pageTemp, queryWrapper) -> materialShortageAnalysisMapper.queryPageList(pageTemp, queryWrapper));
+        return commonFiltrate(page, size, SchedulingResultType.APS_MATERIAL_SHORTAGE_ANALYSIS, queryViewParams,
+                (pageTemp, queryWrapper, versionToChVersionArrayList) ->
+                        materialShortageAnalysisMapper.queryPageList(pageTemp, queryWrapper, versionToChVersionArrayList));
     }
 
     @Override
-    public List<Object> searchLike(QueryWrapper<Object> queryWrapper) {
-        Integer version = getApsTableVersion(SchedulingResultType.APS_MATERIAL_SHORTAGE_ANALYSIS.getCode(), apsTableVersionService);
-        queryWrapper.eq("version" ,version);
-        return materialShortageAnalysisMapper.searchLike(queryWrapper);
+    public List<Object> searchLike(QueryWrapper<Object> queryWrapper, List<VersionToChVersion> versionToChVersionArrayList) {
+        return materialShortageAnalysisMapper.searchLike(queryWrapper,versionToChVersionArrayList);
     }
 }
 

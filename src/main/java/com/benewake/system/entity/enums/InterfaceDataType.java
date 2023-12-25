@@ -38,7 +38,11 @@ public enum InterfaceDataType {
 //    PACKAGING_TEST(30, "包装校验1", "apsPackagingTestServiceImpl", ApsPackagingTest.class),
 //    TFMINI_S_PACKAGING_TEST(31, "TFmini-S-包装校验", "apsTfminiSPackagingTestServiceImpl", ApsTfminiSPackagingTest.class),
 //    TFMINI_S_FIXED(32, "TFmini-S-主板固定", "apsTfminiSFixedServiceImpl",ApsTfminiSFixed.class),
-    MES_TOTAL(33, "MES总表", "apsMesTotalServiceImpl", ApsMesTotal.class);
+    MES_TOTAL(33, "MES总表", "apsMesTotalServiceImpl", ApsMesTotal.class),
+//    34 日别
+    //FIM
+    FIM_REQUEST(35, "FIM需求", "apsFimRequestServiceImpl", ApsFimRequest.class);
+
 
 
     private final int code;

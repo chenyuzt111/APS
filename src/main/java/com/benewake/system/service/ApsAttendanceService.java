@@ -11,7 +11,7 @@ import com.benewake.system.entity.vo.PageResultVo;
 * @description 针对表【aps_attendance】的数据库操作Service
 * @createDate 2023-12-05 15:56:08
 */
-public interface ApsAttendanceService extends IService<ApsAttendance> {
+public interface ApsAttendanceService extends IService<ApsAttendance> ,ApsMasterDataBaseService{
 
     PageResultVo<ApsAttendanceVo> getAttendanceManList(Integer page, Integer size);
 

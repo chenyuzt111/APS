@@ -44,25 +44,25 @@ public class ApsRawMaterialBasicDataParam implements Serializable {
      * 
      */
     @TableField(value = "f_procurement_lead_time")
-    private String procurementLeadTime;
+    private Integer procurementLeadTime;
 
     /**
      * 
      */
     @TableField(value = "f_moq")
-    private String moq;
+    private Integer moq;
 
     /**
      * 
      */
     @TableField(value = "f_mpq")
-    private String mpq;
+    private Integer mpq;
 
     /**
      * 
      */
     @TableField(value = "f_safety_stock")
-    private String safetyStock;
+    private Integer safetyStock;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

@@ -43,28 +43,28 @@ public class ExcelRawMaterialBasicDataTemplate implements Serializable {
      */
     @ExcelProperty("采购周期")
     @TableField(value = "f_procurement_lead_time")
-    private String procurementLeadTime;
+    private Integer procurementLeadTime;
 
     /**
      * 
      */
     @ExcelProperty("MOQ")
     @TableField(value = "f_moq")
-    private String moq;
+    private Integer moq;
 
     /**
      * 
      */
     @ExcelProperty("MPQ")
     @TableField(value = "f_mpq")
-    private String mpq;
+    private Integer mpq;
 
     /**
      * 
      */
     @ExcelProperty("安全库存")
     @TableField(value = "f_safety_stock")
-    private String safetyStock;
+    private Integer safetyStock;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

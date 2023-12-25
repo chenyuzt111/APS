@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.benewake.system.entity.ApsMaterialShortageAnalysis;
-import com.benewake.system.entity.dto.ApsMaterialShortageAnalysisDto;
+import com.benewake.system.entity.Interface.VersionToChVersion;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -20,11 +20,13 @@ import java.util.List;
 @Mapper
 public interface ApsMaterialShortageAnalysisMapper extends BaseMapper<ApsMaterialShortageAnalysis> {
 
-    Page<ApsMaterialShortageAnalysisDto> selectPageList(Page<ApsMaterialShortageAnalysisDto> pageTemp, @Param("apsTableVersion") Integer apsTableVersion);
 
-    Page<Object> queryPageList(Page<Object> pageTemp, @Param(Constants.WRAPPER) QueryWrapper<Object> queryWrapper);
+    Page<Object> queryPageList(Page<Object> pageTemp,
+                               @Param(Constants.WRAPPER) QueryWrapper<Object> queryWrapper,
+                               @Param("versions") List<VersionToChVersion> versionToChVersionArrayList);
 
-    List<Object> searchLike(@Param(Constants.WRAPPER)QueryWrapper<Object> queryWrapper);
+    List<Object> searchLike(@Param(Constants.WRAPPER) QueryWrapper<Object> queryWrapper,
+                            @Param("versions") List<VersionToChVersion> versionToChVersionArrayList);
 }
 
 

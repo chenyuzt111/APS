@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 * @description 针对表【aps_product_family_machine_table】的数据库操作Service
 * @createDate 2023-10-31 10:48:29
 */
-public interface ApsProductFamilyMachineTableService extends IService<ApsProductFamilyMachineTable> {
+public interface ApsProductFamilyMachineTableService extends IService<ApsProductFamilyMachineTable> ,ApsMasterDataBaseService{
 
     ApsProductFamilyMachineTablePageVo getApsMachineTable(String name, Integer page, Integer size);
 

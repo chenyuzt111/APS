@@ -37,12 +37,12 @@ public class AttendanceController {
     @Autowired
     private ApsHolidayTableService holidayTableService;
 
-    @ApiOperation("获取出勤管理")
-    @GetMapping("/list/{page}/{size}")
-    public Result getAttendanceManList(@PathVariable("page") Integer page, @PathVariable("size") Integer size) {
-        PageResultVo<ApsAttendanceVo> pageResultVo = apsAttendanceService.getAttendanceManList(page, size);
-        return Result.ok(pageResultVo);
-    }
+//    @ApiOperation("获取出勤管理")
+//    @GetMapping("/list/{page}/{size}")
+//    public Result getAttendanceManList(@PathVariable("page") Integer page, @PathVariable("size") Integer size) {
+//        PageResultVo<ApsAttendanceVo> pageResultVo = apsAttendanceService.getAttendanceManList(page, size);
+//        return Result.ok(pageResultVo);
+//    }
 
     @ApiOperation("添加或更新出勤管理")
     @PostMapping("/addOrUpdate")

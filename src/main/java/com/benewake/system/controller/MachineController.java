@@ -31,13 +31,13 @@ public class MachineController {
     @Autowired
     private ApsProductFamilyMachineTableService apsProductFamilyMachineTableService;
 
-    @ApiOperation("获取机器管理")
-    @GetMapping("/getApsMachineTable/{page}/{size}")
-    public Result<ApsProductFamilyMachineTablePageVo> getApsMachineTable(@RequestParam(required = false) String name, @PathVariable Integer page, @PathVariable Integer size) {
-        ApsProductFamilyMachineTablePageVo apsProductFamilyMachineTablePageVo =
-                apsProductFamilyMachineTableService.getApsMachineTable(name, page ,size);
-        return Result.ok(apsProductFamilyMachineTablePageVo);
-    }
+//    @ApiOperation("获取机器管理")
+//    @GetMapping("/getApsMachineTable/{page}/{size}")
+//    public Result<ApsProductFamilyMachineTablePageVo> getApsMachineTable(@RequestParam(required = false) String name, @PathVariable Integer page, @PathVariable Integer size) {
+//        ApsProductFamilyMachineTablePageVo apsProductFamilyMachineTablePageVo =
+//                apsProductFamilyMachineTableService.getApsMachineTable(name, page ,size);
+//        return Result.ok(apsProductFamilyMachineTablePageVo);
+//    }
 
     @ApiOperation("删除机器管理")
     @PostMapping("/deleteApsMachineTable")

@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 * @description 针对表【aps_raw_material_basic_data】的数据库操作Service
 * @createDate 2023-12-04 09:27:44
 */
-public interface ApsRawMaterialBasicDataService extends IService<ApsRawMaterialBasicData> {
+public interface ApsRawMaterialBasicDataService extends IService<ApsRawMaterialBasicData> ,ApsMasterDataBaseService{
 
     PageResultVo<ApsRawMaterialBasicDataVo> getRawMaterial(String name, Integer page, Integer size);
 

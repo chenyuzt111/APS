@@ -1,9 +1,6 @@
 package com.benewake.system.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -24,50 +21,46 @@ public class ApsRawMaterialBasicData implements Serializable {
     /**
      * 
      */
-    @TableField(value = "f_material_code")
+    @TableField(value = "f_material_code",updateStrategy = FieldStrategy.IGNORED)
     private String fMaterialCode;
 
     /**
      * 
      */
-    @TableField(value = "f_material_property")
+    @TableField(value = "f_material_property",updateStrategy = FieldStrategy.IGNORED)
     private String fMaterialProperty;
 
     /**
      * 
      */
-    @TableField(value = "f_material_group")
+    @TableField(value = "f_material_group",updateStrategy = FieldStrategy.IGNORED)
     private String fMaterialGroup;
 
     /**
      * 
      */
-    @TableField(value = "f_procurement_lead_time")
-    private String fProcurementLeadTime;
+    @TableField(value = "f_procurement_lead_time",updateStrategy = FieldStrategy.IGNORED)
+    private Integer fProcurementLeadTime;
 
     /**
      * 
      */
-    @TableField(value = "f_moq")
-    private String fMoq;
+    @TableField(value = "f_moq",updateStrategy = FieldStrategy.IGNORED)
+    private Integer fMoq;
 
     /**
      * 
      */
-    @TableField(value = "f_mpq")
-    private String fMpq;
+    @TableField(value = "f_mpq",updateStrategy = FieldStrategy.IGNORED)
+    private Integer fMpq;
 
     /**
      * 
      */
-    @TableField(value = "f_safety_stock")
-    private String fSafetyStock;
+    @TableField(value = "f_safety_stock" ,updateStrategy = FieldStrategy.IGNORED)
+    private Integer fSafetyStock;
 
-    /**
-     * 
-     */
-    @TableField(value = "version")
-    private Integer version;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

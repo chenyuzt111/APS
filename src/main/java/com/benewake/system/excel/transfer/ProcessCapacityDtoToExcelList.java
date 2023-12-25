@@ -19,7 +19,6 @@ public class ProcessCapacityDtoToExcelList {
             ExcelProcessCapacity excelProcessCapacity = new ExcelProcessCapacity();
             excelProcessCapacity.setBelongingProcess(x.getBelongingProcess());
             excelProcessCapacity.setProcessName(x.getProcessName());
-            excelProcessCapacity.setProcessNumber(x.getProcessNumber());
             excelProcessCapacity.setProductFamily(x.getProductFamily());
             excelProcessCapacity.setPackagingMethod(x.getPackagingMethod());
             excelProcessCapacity.setSwitchTime(x.getSwitchTime());

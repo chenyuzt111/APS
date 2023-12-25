@@ -1,5 +1,7 @@
 package com.benewake.system.entity.dto;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -18,105 +20,122 @@ public class ApsFinishedProductBasicDataDto implements Serializable {
     /**
      * 
      */
+    @ExcelIgnore
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
      * 
      */
+    @ExcelProperty("物料编码")
     @TableField(value = "f_material_code")
-    private String fMaterialCode;
+    private String materialCode;
 
 
     /**
      *
      */
+    @ExcelProperty("物料名称")
     @TableField(value = "f_material_name")
-    private String fMaterialName;
+    private String materialName;
 
     /**
      * 
      */
+    @ExcelProperty("物料属性")
     @TableField(value = "f_material_property")
-    private String fMaterialProperty;
+    private String materialProperty;
 
     /**
      * 
      */
+    @ExcelProperty("物料分组")
     @TableField(value = "f_material_group")
-    private String fMaterialGroup;
+    private String materialGroup;
 
     /**
      * 
      */
+    @ExcelProperty("产品类型")
     @TableField(value = "f_product_type")
-    private String fProductType;
+    private String productType;
 
     /**
      * 
      */
+    @ExcelProperty("产品族")
     @TableField(value = "f_product_family")
-    private String fProductFamily;
+    private String productFamily;
 
     /**
      * 
      */
+    @ExcelProperty("包装方式")
     @TableField(value = "f_packaging_method")
-    private String fPackagingMethod;
+    private String packagingMethod;
 
     /**
      * 
      */
+    @ExcelProperty("组装人数MAX")
     @TableField(value = "f_max_assembly_personnel")
-    private String fMaxAssemblyPersonnel;
+    private String maxAssemblyPersonnel;
 
     /**
      * 
      */
+    @ExcelProperty("组装人数MIN")
     @TableField(value = "f_min_assembly_personnel")
-    private String fMinAssemblyPersonnel;
+    private String minAssemblyPersonnel;
 
     /**
      * 
      */
+    @ExcelProperty("测试人数MAX")
     @TableField(value = "f_max_testing_personnel")
-    private String fMaxTestingPersonnel;
+    private String maxTestingPersonnel;
 
     /**
      * 
      */
+    @ExcelProperty("测试人数MIN")
     @TableField(value = "f_min_testing_personnel")
-    private String fMinTestingPersonnel;
+    private String minTestingPersonnel;
 
     /**
      * 
      */
+    @ExcelProperty("包装人数MAX")
     @TableField(value = "f_max_packaging_personnel")
-    private String fMaxPackagingPersonnel;
+    private String maxPackagingPersonnel;
 
     /**
      * 
      */
+    @ExcelProperty("包装人数MIN")
     @TableField(value = "f_min_packaging_personnel")
-    private String fMinPackagingPersonnel;
+    private String minPackagingPersonnel;
 
     /**
-     * 
+     *
      */
+    @ExcelProperty("MOQ")
     @TableField(value = "f_moq")
-    private String fMoq;
+    private String moq;
 
     /**
      * 
      */
+    @ExcelProperty("MPQ")
     @TableField(value = "f_mpq")
-    private String fMpq;
+    private String mpq;
 
     /**
      * 
      */
+    @ExcelProperty("安全库存")
     @TableField(value = "f_safety_stock")
-    private String fSafetyStock;
+    private String safetyStock;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

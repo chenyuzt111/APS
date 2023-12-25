@@ -13,6 +13,7 @@ import com.benewake.system.transfer.KingdeeToApsOutRequest;
 import com.kingdee.bos.webapi.entity.QueryParam;
 import com.kingdee.bos.webapi.sdk.K3CloudApi;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -93,6 +94,11 @@ public class ApsOutRequestServiceImpl extends ServiceImpl<ApsOutRequestMapper, A
 
     @Override
     public Page selectPageLists(Page page, List versionToChVersionArrayList, QueryWrapper wrapper) {
+        String customSqlSegment = wrapper.getCustomSqlSegment();
+        if (StringUtils.isEmpty(customSqlSegment) || !customSqlSegment.contains("ORDER BY")) {
+            wrapper.orderByDesc("ch_version_name");
+            wrapper.orderByAsc("f_material_id");
+        }
         return apsOutRequestMapper.selectPageLists(page, versionToChVersionArrayList, wrapper);
     }
 

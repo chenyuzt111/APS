@@ -226,9 +226,7 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
             }
             apsProductManagements.insert(apsProductFamilyProcessSchemeManagement);
         }
-
     }
-
 
     @Override
     public ApsProcessSchemeVoPage getProcessScheme(Integer page, Integer size) {
@@ -237,7 +235,8 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
         schemePage.setSize(size);
         Page<ApsProcessSchemeDto> apsProcessSchemeVoList = apsProcessSchemeMapper.selectProcessSchemePage(schemePage);
         List<ApsProcessSchemeDto> records = apsProcessSchemeVoList.getRecords();
-        List<ApsProcessSchemeVo> apsProcessSchemeVos = records.stream().map(x -> apsProcessSchemeDtoToVo.convert(x))
+        List<ApsProcessSchemeVo> apsProcessSchemeVos = records.stream()
+                .map(x -> apsProcessSchemeDtoToVo.convert(x))
                 .collect(Collectors.toList());
         ApsProcessSchemeVoPage apsProcessSchemeVoPage = new ApsProcessSchemeVoPage();
         apsProcessSchemeVoPage.setApsProcessSchemeVos(apsProcessSchemeVos);
@@ -417,7 +416,7 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
                 List<ApsProcessSchemeVo> apsProcessSchemeVos = apsProcessSchemeMapper.selectProcessScheme();
                 excelProcessSchemes = processSchemeVoToExcelList.convert(apsProcessSchemeVos);
             }
-            EasyExcel.write(response.getOutputStream() ,ExcelProcessScheme.class).sheet("sheet1").doWrite(excelProcessSchemes);
+            EasyExcel.write(response.getOutputStream(), ExcelProcessScheme.class).sheet("sheet1").doWrite(excelProcessSchemes);
         } catch (Exception e) {
             log.error("导出基础工艺方案列表失败" + e.getMessage());
             throw new BeneWakeException(e.getMessage());
@@ -426,12 +425,18 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
 
     @Override
     public Page selectPageLists(Page<Object> page, QueryWrapper<Object> wrapper) {
-        Page<ApsProcessSchemeDto> apsProcessSchemeVoList = apsProcessSchemeMapper.selectPages(page ,wrapper);
+        Page<ApsProcessSchemeDto> apsProcessSchemeVoList = apsProcessSchemeMapper.selectPages(page, wrapper);
         List<ApsProcessSchemeDto> records = apsProcessSchemeVoList.getRecords();
-        List<ApsProcessSchemeVo> apsProcessSchemeVos = records.stream().map(x -> apsProcessSchemeDtoToVo.convert(x))
+        List<ApsProcessSchemeVo> apsProcessSchemeVos = records.stream()
+                .map(x -> apsProcessSchemeDtoToVo.convert(x))
                 .collect(Collectors.toList());
 
         return buildApsProcessSchemeVoPage(apsProcessSchemeVoList, apsProcessSchemeVos);
+    }
+
+    @Override
+    public List<Object> searchLike(QueryWrapper<Object> queryWrapper) {
+        return apsProcessSchemeMapper.searchLike(queryWrapper);
     }
 
     private Page<ApsProcessSchemeVo> buildApsProcessSchemeVoPage(Page<ApsProcessSchemeDto> apsProcessSchemeVoList, List<ApsProcessSchemeVo> apsProcessSchemeVos) {

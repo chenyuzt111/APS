@@ -139,7 +139,8 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
     public Boolean setOrderNumber(ProcessSchemeManagementParam processSchemeManagementParam) {
         //经济批量
         Integer orderNumber = processSchemeManagementParam.getOrderNumber();
-        ApsProductFamilyProcessSchemeManagement apsProductFamilyProcessSchemeManagement = this.baseMapper.selectById(processSchemeManagementParam.getManId());
+        ApsProductFamilyProcessSchemeManagement apsProductFamilyProcessSchemeManagement = this.baseMapper.
+                selectById(processSchemeManagementParam.getId());
         if (apsProductFamilyProcessSchemeManagement == null) {
             throw new BeneWakeException("该行数据不存在");
         }
@@ -164,7 +165,7 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
     @Override
     public void downloadProcessCapacity(HttpServletResponse response, DownloadParam downloadParam) {
         try {
-            ResponseUtil.setFileResp(response ,"基础工艺方案");
+            ResponseUtil.setFileResp(response, "基础工艺方案");
             List<ExcelSchemeManagement> excelSchemeManagements = null;
             if (downloadParam.getType() == ExcelOperationEnum.ALL_PAGES.getCode()) {
                 List<ApsProductFamilyProcessSchemeManagement> schemeManagements = getBaseMapper().selectList(null);
@@ -221,15 +222,52 @@ public class ApsProductFamilyProcessSchemeManagementServiceImpl extends ServiceI
 
     @Override
     public Page selectPageLists(Page<Object> page, QueryWrapper<Object> wrapper) {
-        Page<ProcessSchemeManagementDto> res = processSchemeManagementMapper.selectPages(page,wrapper);
-
-        ProcessSchemeManagementVo processSchemeManagementVo = schemeManagementDtoToVo(res.getRecords());
-        return res;
+        Page<ProcessSchemeManagementDto> res = processSchemeManagementMapper.selectPages(page, wrapper);
+        List<ProcessSchemeManagementVo> processSchemeManagementVo = schemeManagementDtoToVo(res.getRecords());
+        return buildProcessSchemeManagementVoPage(res, processSchemeManagementVo);
     }
 
-    private ProcessSchemeManagementVo schemeManagementDtoToVo(List<ProcessSchemeManagementDto> records) {
-        ProcessSchemeManagementVo processSchemeManagementVo = new ProcessSchemeManagementVo();
-        return processSchemeManagementVo;
+    @Override
+    public List<Object> searchLike(QueryWrapper<Object> queryWrapper) {
+        return processSchemeManagementMapper.searchLike(queryWrapper);
+    }
+
+    private Page<ProcessSchemeManagementVo> buildProcessSchemeManagementVoPage(Page<ProcessSchemeManagementDto> res, List<ProcessSchemeManagementVo> processSchemeManagementVo) {
+        Page<ProcessSchemeManagementVo> processSchemeManagementVoPage = new Page<>();
+        processSchemeManagementVoPage.setRecords(processSchemeManagementVo);
+        processSchemeManagementVoPage.setTotal(res.getTotal());
+        processSchemeManagementVoPage.setSize(res.getSize());
+        processSchemeManagementVoPage.setCurrent(res.getCurrent());
+        return processSchemeManagementVoPage;
+    }
+
+    private List<ProcessSchemeManagementVo> schemeManagementDtoToVo(List<ProcessSchemeManagementDto> records) {
+        List<ProcessSchemeManagementVo> processSchemeManagementVos = records.stream().map(record -> {
+            ProcessSchemeManagementVo schemeManagementVo = new ProcessSchemeManagementVo();
+            if (record.getProductionLineBalanceRate() != null) {
+                schemeManagementVo.setProductionLineBalanceRate(record.getProductionLineBalanceRate().multiply(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP) + "%");
+            }
+            schemeManagementVo.setId(record.getId());
+            schemeManagementVo.setProductFamily(record.getProductFamily());
+            schemeManagementVo.setCurId(record.getCurId());
+            schemeManagementVo.setCurrentProcessScheme(record.getCurrentProcessScheme());
+            schemeManagementVo.setOptimalId(record.getOptimalId());
+            schemeManagementVo.setOptimalProcessPlan(record.getOptimalProcessPlan());
+            schemeManagementVo.setOrderNumber(record.getOrderNumber());
+            if (record.getCompletionTime() != null) {
+                BigDecimal completionTimeInHours = record.getCompletionTime().divide(new BigDecimal(3600), 2, RoundingMode.HALF_UP);
+                schemeManagementVo.setCompletionTime(completionTimeInHours);
+            }
+            if (record.getTotalReleaseTime() != null) {
+                double totalReleaseTimeHours = record.getTotalReleaseTime() / 3600;
+                String formattedHours = String.format("%.2f", totalReleaseTimeHours);
+                schemeManagementVo.setTotalReleaseTime(formattedHours);
+            }
+            schemeManagementVo.setReleasableStaffCount(record.getReleasableStaffCount());
+            schemeManagementVo.setNumber(record.getNumber());
+            return schemeManagementVo;
+        }).collect(Collectors.toList());
+        return processSchemeManagementVos;
     }
 }
 

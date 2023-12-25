@@ -11,11 +11,11 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 
 /**
-* @author ASUS
-* @description 针对表【aps_semi_finished_basic_data】的数据库操作Service
-* @createDate 2023-12-04 13:35:18
-*/
-public interface ApsSemiFinishedBasicDataService extends IService<ApsSemiFinishedBasicData> {
+ * @author ASUS
+ * @description 针对表【aps_semi_finished_basic_data】的数据库操作Service
+ * @createDate 2023-12-04 13:35:18
+ */
+public interface ApsSemiFinishedBasicDataService extends IService<ApsSemiFinishedBasicData>, ApsMasterDataBaseService {
 
     PageResultVo<ApsSemiFinishedBasicDataVo> getSemiFinished(String name, Integer page, Integer size);
 

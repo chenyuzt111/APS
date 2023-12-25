@@ -22,6 +22,8 @@ import java.util.List;
 public interface ApsProductFamilyProcessSchemeManagementMapper extends BaseMapper<ApsProductFamilyProcessSchemeManagement> {
 
     Page<ProcessSchemeManagementDto> selectPages(Page<Object> page, @Param(Constants.WRAPPER) QueryWrapper<Object> wrapper);
+
+    List<Object> searchLike(@Param(Constants.WRAPPER) QueryWrapper<Object> queryWrapper);
 }
 
 
