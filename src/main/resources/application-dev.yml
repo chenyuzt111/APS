@@ -41,3 +41,7 @@ myPython:
     integrityChecker: data_check.py
     integrityCheckerFile:
       fileDirectory: E:\桌面\APS_For_Benwake_process_kaolv\data\\output_data\
+feishu:
+  app_id: cli_a5f3c323317e500b
+  app_secret: uy9QeakIhsaBRKGOuZBglzAgW0rPdgah
+  scheduling_template_id: ctp_AAyiedI2VnH6
