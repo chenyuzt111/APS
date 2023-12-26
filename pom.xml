@@ -26,6 +26,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.13</version> <!-- 使用最新版本 -->
+        </dependency>
+
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
             <version>3.2.1</version>
@@ -161,9 +167,11 @@
         </dependency>
 
         <dependency>
-            <groupId>com.kingdee</groupId>
-            <artifactId>k3cloud-webapi-sdk</artifactId>
+            <groupId>com.k3cloud</groupId>
+            <artifactId>kecloud-webapi</artifactId>
             <version>8.0.5</version>
+            <systemPath>${basedir}/libs/k3cloud-webapi-sdk8.0.5.jar</systemPath>
+            <scope>system</scope>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>

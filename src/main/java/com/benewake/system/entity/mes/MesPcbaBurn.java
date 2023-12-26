@@ -28,5 +28,4 @@ public class MesPcbaBurn {
 
     //("订单总数")
     private String totalNumber;
-
 }

@@ -234,7 +234,7 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         fieldMapping.put("本次粘贴完成数", "burnInCompletionQuantity");
         fieldMapping.put("粘贴合格数", "burnQualifiedCount");
         fieldMapping.put("粘贴不合格数", "unBurnQualifiedCount");
-        fieldMapping.put("物料编码 ", "materialCode");
+        fieldMapping.put("物料编码", "materialCode");
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("订单总数", "totalNumber");
         List<ApsMesTotal> snlabeling = updateDataVersions("c51847c9", fieldMapping, 84935594, 84935542);
@@ -495,7 +495,7 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         fieldMapping.put("本次焊接完成数", "burnInCompletionQuantity");
         fieldMapping.put("焊接合格数", "burnQualifiedCount");
         fieldMapping.put("焊接不合格数", "unBurnQualifiedCount");
-        fieldMapping.put("物料编码 ", "materialCode");
+        fieldMapping.put("物料编码", "materialCode");
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("工装编号", "burnFixtureNumber");
         fieldMapping.put("订单总数", "totalNumber");
@@ -513,7 +513,7 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         fieldMapping.put("本次生产完成数", "burnInCompletionQuantity");
         fieldMapping.put("生产合格数", "burnQualifiedCount");
         fieldMapping.put("生产不合格数", "unBurnQualifiedCount");
-        fieldMapping.put("物料编码 ", "materialCode");
+        fieldMapping.put("物料编码", "materialCode");
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("订单总数", "totalNumber");
         List<ApsMesTotal> shellWiring = updateDataVersions("c2c89bcd", fieldMapping, 84951454, 84951453);
@@ -530,7 +530,7 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         fieldMapping.put("本次生产完成数", "burnInCompletionQuantity");
         fieldMapping.put("生产合格数", "burnQualifiedCount");
         fieldMapping.put("生产不合格数", "unBurnQualifiedCount");
-        fieldMapping.put("物料编码 ", "materialCode");
+        fieldMapping.put("物料编码", "materialCode");
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("订单总数", "totalNumber");
         List<ApsMesTotal> shellGluing = updateDataVersions("805f21e8", fieldMapping, 84948447, 84948446);
@@ -547,7 +547,7 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         fieldMapping.put("本次生产完成数", "burnInCompletionQuantity");
         fieldMapping.put("生产合格数", "burnQualifiedCount");
         fieldMapping.put("生产不合格数", "unBurnQualifiedCount");
-        fieldMapping.put("物料编码 ", "materialCode");
+        fieldMapping.put("物料编码", "materialCode");
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("订单总数", "totalNumber");
         List<ApsMesTotal> terminalConnection = updateDataVersions("7a017004", fieldMapping, 84948216, 84948215);
