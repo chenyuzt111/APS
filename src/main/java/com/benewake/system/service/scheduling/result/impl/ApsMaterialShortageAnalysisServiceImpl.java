@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsMaterialShortageAnalysis;
 import com.benewake.system.entity.Interface.VersionToChVersion;
 import com.benewake.system.entity.dto.ApsMaterialShortageAnalysisDto;
-import com.benewake.system.entity.enums.SchedulingResultType;
 import com.benewake.system.entity.vo.PageResultVo;
 import com.benewake.system.entity.vo.QueryViewParams;
 import com.benewake.system.entity.vo.ResultColPageVo;
@@ -69,7 +68,7 @@ public class ApsMaterialShortageAnalysisServiceImpl extends ServiceImpl<ApsMater
 
     @Override
     public ResultColPageVo<Object> getResultFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
-        return commonFiltrate(page, size, SchedulingResultType.APS_MATERIAL_SHORTAGE_ANALYSIS, queryViewParams,
+        return commonFiltrate(page, size, queryViewParams,
                 (pageTemp, queryWrapper, versionToChVersionArrayList) ->
                         materialShortageAnalysisMapper.queryPageList(pageTemp, queryWrapper, versionToChVersionArrayList));
     }

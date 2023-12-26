@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.benewake.system.entity.vo.ApsAttendanceParam;
 import com.benewake.system.entity.vo.ApsAttendanceVo;
 import com.benewake.system.entity.vo.PageResultVo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
 * @author ASUS
@@ -16,4 +17,6 @@ public interface ApsAttendanceService extends IService<ApsAttendance> ,ApsMaster
     PageResultVo<ApsAttendanceVo> getAttendanceManList(Integer page, Integer size);
 
     boolean addOrUpdateAttendance(ApsAttendanceParam attendanceParam);
+
+    Boolean saveDataByExcel(Integer type, MultipartFile file);
 }

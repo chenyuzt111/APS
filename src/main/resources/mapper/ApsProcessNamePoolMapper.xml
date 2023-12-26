@@ -12,8 +12,20 @@
     <sql id="Base_Column_List">
         id,process_name
     </sql>
+
     <select id="selectPages" resultType="com.benewake.system.entity.vo.ApsProcessNamePoolVo">
-        select *
+        SELECT
+        *
+        FROM
+        aps_process_name_pool
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
+
+    <select id="searchLike" resultType="com.benewake.system.entity.vo.ApsProcessNamePoolVo">
+        select
+        ${ew.sqlSelect}
         from aps_process_name_pool
         <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
             ${ew.customSqlSegment}

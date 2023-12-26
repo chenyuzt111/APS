@@ -1,5 +1,6 @@
 package com.benewake.system.service.impl;
 
+import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -11,6 +12,11 @@ import com.benewake.system.entity.dto.ApsAttendanceDto;
 import com.benewake.system.entity.vo.ApsAttendanceParam;
 import com.benewake.system.entity.vo.ApsAttendanceVo;
 import com.benewake.system.entity.vo.PageResultVo;
+import com.benewake.system.excel.entity.AttendanceTemplate;
+import com.benewake.system.excel.entity.ExcelProcessCapacityTemplate;
+import com.benewake.system.excel.listener.AttendanceListener;
+import com.benewake.system.excel.listener.ProcessCapacityListener;
+import com.benewake.system.excel.transfer.AttendanceExcelToPo;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.mapper.ApsTimeSheetMapper;
 import com.benewake.system.service.ApsAttendanceService;
@@ -20,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
@@ -44,7 +51,10 @@ public class ApsAttendanceServiceImpl extends ServiceImpl<ApsAttendanceMapper, A
     @Autowired
     private ApsHolidayTableServiceImpl apsHolidayTableService;
 
-//    @PostConstruct
+    @Autowired
+    private AttendanceExcelToPo attendanceExcelToPo;
+
+    @PostConstruct
     public void init() {
         apsHolidayTableService.updateHoliday();
     }
@@ -91,6 +101,21 @@ public class ApsAttendanceServiceImpl extends ServiceImpl<ApsAttendanceMapper, A
         }
         ApsAttendance apsAttendance = buildAttendancePo(attendanceParam, time);
         return apsAttendance.getId() == null ? save(apsAttendance) : updateById(apsAttendance);
+    }
+
+
+    @Override
+    public Boolean saveDataByExcel(Integer type,  MultipartFile file) {
+        try {
+            ApsTimeSheet timeSheet = timeSheetMapper.selectOne(new LambdaQueryWrapper<ApsTimeSheet>().last("limit 1"));
+            EasyExcel.read(file.getInputStream(), AttendanceTemplate.class,
+                            new AttendanceListener(attendanceExcelToPo ,timeSheet ,this ,type))
+                    .sheet().headRowNumber(1).doRead();
+        } catch (Exception e) {
+            log.error("出勤管理导入出错" + e);
+            throw new BeneWakeException(e.getMessage());
+        }
+        return true;
     }
 
     private List<String> getEffectiveAttendanceTime(ApsTimeSheet timeSheet, String leaveTimeRange) {

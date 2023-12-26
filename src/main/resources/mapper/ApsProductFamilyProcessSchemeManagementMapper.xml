@@ -27,9 +27,9 @@
         SELECT
         psm.id,
         aps.id AS curId,
-        cur_process_scheme_name,
+        cur_process_scheme_name as currentProcessScheme,
         aps1.id AS optimalId,
-        optimal_process_scheme_name,
+        optimal_process_scheme_name as optimalProcessPlan,
         order_number,
         production_line_balance_rate,
         completion_time,
@@ -37,6 +37,17 @@
         total_release_time,
         psm.number,
         product_family
+        FROM
+        aps_product_family_process_scheme_management psm
+        LEFT JOIN aps_process_scheme aps ON psm.cur_process_scheme_name = aps.current_process_scheme
+        LEFT JOIN aps_process_scheme aps1 ON psm.optimal_process_scheme_name = aps1.current_process_scheme
+        <if test="ew!= null and ew.sqlSegment!= null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
+    <select id="searchLike" resultType="com.benewake.system.entity.dto.ProcessSchemeManagementDto">
+        SELECT
+        distinct ${ew.sqlSelect}
         FROM
         aps_product_family_process_scheme_management psm
         LEFT JOIN aps_process_scheme aps ON psm.cur_process_scheme_name = aps.current_process_scheme

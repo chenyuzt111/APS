@@ -21,12 +21,13 @@
         <result property="productionId" column="f_production_id"/>
         <result property="taskSourceId" column="f_task_source_id"/>
         <result property="mterialCode" column="f_material_code"/>
-        <result property="materialName" column="materialName"/>
+        <result property="materialName" column="f_material_name"/>
         <result property="replenishmentQuantity" column="f_replenishment_quantity"/>
         <result property="expectedStartTime" column="f_expected_start_time"/>
         <result property="requiredDeliveryTime" column="f_required_delivery_time"/>
         <result property="priority" column="f_priority"/>
         <result property="containedSalesOrders" column="f_contained_sales_orders"/>
+        <result property="chVersion" column="ch_version_name"/>
     </resultMap>
     <sql id="Base_Column_List">
         id,f_production_id,f_task_source_id,
@@ -52,24 +53,48 @@
     </select>
     <select id="getFimPriorityFiltrate" resultMap="ApsFimPriorityDtoResultMap">
         SELECT pri.id,
-               f_production_id,
-               f_task_source_id,
-               f_material_code,
-               map.f_material_name as f_material_name,
-               f_replenishment_quantity,
-               f_expected_start_time,
-               f_required_delivery_time,
-               f_priority,
-               f_contained_sales_orders,
-               version
-        FROM aps_fim_priority AS pri
-                 LEFT JOIN aps_material_name_mapping AS map ON pri.f_material_code = map.f_material_id
-            ${ew.customSqlSegment}
+        f_production_id,
+        f_task_source_id,
+        f_material_code,
+        map.f_material_name as f_material_name,
+        f_replenishment_quantity,
+        f_expected_start_time,
+        f_required_delivery_time,
+        f_priority,
+        f_contained_sales_orders,
+        ch_version_name
+        from (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        END AS ch_version_name
+        FROM aps_fim_priority
+        WHERE (version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>)
+        ) AS pri
+        LEFT JOIN aps_material_name_mapping AS map ON pri.f_material_code = map.f_material_id
+        ${ew.customSqlSegment}
     </select>
     <select id="searchLike" resultMap="ApsFimPriorityDtoResultMap">
         SELECT DISTINCT ${ew.sqlSelect}
-        FROM aps_fim_priority AS pri
-                 LEFT JOIN aps_material_name_mapping AS map ON pri.f_material_code = map.f_material_id
-            ${ew.customSqlSegment}
+        from (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        END AS ch_version_name
+        FROM aps_fim_priority
+        WHERE (version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>)
+        ) AS pri
+        LEFT JOIN aps_material_name_mapping AS map ON pri.f_material_code = map.f_material_id
+        ${ew.customSqlSegment}
     </select>
 </mapper>

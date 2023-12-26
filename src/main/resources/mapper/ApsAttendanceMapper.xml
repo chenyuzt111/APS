@@ -34,4 +34,31 @@
         FROM aps_attendance AS att
                  LEFT JOIN aps_time_sheet AS sh ON 1 = 1
     </select>
+    <select id="selectPageLists" resultType="com.benewake.system.entity.vo.ApsAttendanceVo">
+        SELECT att.id,
+        employee_name,
+        date,
+        day_of_week,
+        CASE WHEN is_workday THEN '是' ELSE '否' END AS is_workday,
+        attendance_time_range,
+        lunch_break_time_range,
+        dinner_time_range,
+        morning_meeting_time_range,
+        leave_time_range,
+        effective_attendance_time_range
+        FROM aps_attendance AS att
+        LEFT JOIN aps_time_sheet AS sh ON 1 = 1
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
+    <select id="searchLike" resultType="com.benewake.system.entity.vo.ApsAttendanceVo">
+        SELECT
+        ${ew.sqlSelect}
+        FROM aps_attendance AS att
+        LEFT JOIN aps_time_sheet AS sh ON 1 = 1
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
 </mapper>

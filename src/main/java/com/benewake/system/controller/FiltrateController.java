@@ -70,7 +70,8 @@ public class FiltrateController {
     public Result getCols(@PathVariable("tableId") Integer tableId) {
         List<ApsColumnTable> apsColumnTables = columnTableService
                 .list(new LambdaQueryWrapper<ApsColumnTable>()
-                        .eq(ApsColumnTable::getTableId, tableId));
+                        .eq(ApsColumnTable::getTableId, tableId)
+                        .orderByAsc(ApsColumnTable::getSeq));
         return Result.ok(apsColumnTables);
     }
 

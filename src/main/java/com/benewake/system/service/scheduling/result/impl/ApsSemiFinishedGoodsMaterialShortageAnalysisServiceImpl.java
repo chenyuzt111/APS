@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.ApsSemiFinishedGoodsMaterialShortageAnalysis;
 import com.benewake.system.entity.Interface.VersionToChVersion;
 import com.benewake.system.entity.dto.ApsSemiFinishedGoodsMaterialShortageAnalysisDto;
-import com.benewake.system.entity.enums.SchedulingResultType;
 import com.benewake.system.entity.vo.PageResultVo;
 import com.benewake.system.entity.vo.QueryViewParams;
 import com.benewake.system.entity.vo.ResultColPageVo;
@@ -68,7 +67,7 @@ public class ApsSemiFinishedGoodsMaterialShortageAnalysisServiceImpl extends Ser
 
     @Override
     public ResultColPageVo<Object> getResultFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
-        return commonFiltrate(page, size, SchedulingResultType.APS_SEMI_FINISHED_GOODS_MATERIAL_SHORTAGE_ANALYSIS, queryViewParams,
+        return commonFiltrate(page, size, queryViewParams,
                 (pageTemp, queryWrapper ,versionToChVersionArrayList) ->
                         semiFinishedGoodsMaterialShortageAnalysisMapper.queryPageList(pageTemp, queryWrapper ,versionToChVersionArrayList));
     }

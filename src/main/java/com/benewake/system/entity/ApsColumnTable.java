@@ -44,6 +44,11 @@ public class ApsColumnTable implements Serializable {
      */
     @TableField(value = "vo_col_name")
     private String voColName;
+    /**
+     *
+     */
+    @TableField(value = "seq")
+    private String seq;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

@@ -9,7 +9,6 @@ import com.benewake.system.entity.ApsFimPriority;
 import com.benewake.system.entity.Interface.VersionToChVersion;
 import com.benewake.system.entity.dto.ApsFimPriorityDto;
 import com.benewake.system.entity.enums.ExcelOperationEnum;
-import com.benewake.system.entity.enums.SchedulingResultType;
 import com.benewake.system.entity.vo.DownloadParam;
 import com.benewake.system.entity.vo.PageResultVo;
 import com.benewake.system.entity.vo.QueryViewParams;
@@ -94,7 +93,7 @@ public class ApsFimPriorityServiceImpl extends ServiceImpl<ApsFimPriorityMapper,
     }
 
     public ResultColPageVo<Object> getResultFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
-        return commonFiltrate(page, size, SchedulingResultType.APS_FIM_PRIORITY, queryViewParams,
+        return commonFiltrate(page, size, queryViewParams,
                 (page1, queryWrapper, versionToChVersionArrayList) ->
                         apsFimPriorityMapper.getFimPriorityFiltrate(page1, queryWrapper, versionToChVersionArrayList));
     }

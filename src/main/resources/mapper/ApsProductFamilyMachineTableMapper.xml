@@ -14,23 +14,44 @@
         <result property="fWorkshop" column="f_workshop" jdbcType="VARCHAR"/>
         <result property="available" column="available" jdbcType="VARCHAR"/>
         <result property="unavailableDates" column="unavailable_dates" jdbcType="VARCHAR"/>
-        <result property="unavailableTime" column="unavailable_time" jdbcType="VARCHAR"/>
-        <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,f_machine_id,f_machine_name,
-        f_product_family,f_process,f_machine_configuration,
-        f_workshop,available,unavailable_dates,
-        unavailable_time,version
+        f_product_family,f_process_id,f_machine_configuration,
+        f_workshop,available,unavailable_dates
     </sql>
     <select id="getPage" resultType="com.benewake.system.entity.dto.ApsProductFamilyMachineTableDto">
+        SELECT *
+        FROM aps_product_family_machine_table AS mac
+                 LEFT JOIN aps_process_name_pool AS pool ON mac.f_process_id = pool.id
+        ORDER BY mac.f_product_family
+    </select>
+    <select id="selectPageLists" resultType="com.benewake.system.entity.dto.ApsProductFamilyMachineTableDto">
         SELECT
-            *
-        FROM
-            aps_product_family_machine_table AS mac
-                LEFT JOIN aps_process_name_pool AS pool ON mac.f_process_id = pool.id
-        ORDER BY
-            mac.f_product_family
+        mac.id,
+        f_machine_id,
+        f_machine_name,
+        f_product_family,
+        f_process_id,
+        pool.process_name as process_name,
+        f_machine_configuration,
+        f_workshop,
+        available,
+        unavailable_dates
+        FROM aps_product_family_machine_table AS mac
+        LEFT JOIN aps_process_name_pool AS pool ON mac.f_process_id = pool.id
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
+    <select id="searchLike" resultType="com.benewake.system.entity.dto.ApsProductFamilyMachineTableDto">
+        SELECT
+        distinct ${ew.sqlSelect}
+        FROM aps_product_family_machine_table AS mac
+        LEFT JOIN aps_process_name_pool AS pool ON mac.f_process_id = pool.id
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
     </select>
 </mapper>

@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.*;
 import com.benewake.system.entity.Interface.VersionToChVersion;
 import com.benewake.system.entity.dto.ApsSemiFinishedGoodsProductionPlanDto;
-import com.benewake.system.entity.enums.SchedulingResultType;
 import com.benewake.system.entity.vo.PageResultVo;
 import com.benewake.system.entity.vo.QueryViewParams;
 import com.benewake.system.entity.vo.ResultColPageVo;
@@ -73,7 +72,7 @@ public class ApsSemiFinishedGoodsProductionPlanServiceImpl extends ServiceImpl<A
 
     @Override
     public ResultColPageVo<Object> getResultFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
-        return commonFiltrate(page, size, SchedulingResultType.APS_SEMI_FINISHED_GOODS_PRODUCTION_PLAN, queryViewParams,
+        return commonFiltrate(page, size, queryViewParams,
                 (objectPage, objectQueryWrapper, versionToChVersionArrayList) ->
                         semiFGoodProductionPlanMapper.queryPageList(objectPage, objectQueryWrapper, versionToChVersionArrayList));
     }

@@ -18,13 +18,28 @@
         <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
 
+    <resultMap id="ApsFimRequestVoResultMap" type="com.benewake.system.entity.vo.ApsFimRequestVo">
+        <id property="id" column="id"/>
+        <result property="documentNumber" column="f_document_number"/>
+        <result property="creator" column="f_creator"/>
+        <result property="materialCode" column="f_material_code"/>
+        <result property="materialName" column="f_material_name"/>
+        <result property="customerName" column="f_customer_name"/>
+        <result property="salesperson" column="f_salesperson"/>
+        <result property="quantity" column="f_quantity"/>
+        <result property="expectedDeliveryDate" column="f_expected_delivery_date"/>
+        <result property="documentType" column="f_document_type"/>
+        <result property="chVersion" column="ch_version_name"/>
+    </resultMap>
+
+
     <sql id="Base_Column_List">
         id,f_document_number,f_creator,
         f_material_code,f_material_name,f_customer_name,
         f_salesperson,f_quantity,f_expected_delivery_date,
         f_document_type,version
     </sql>
-    <select id="getFimRequestPage" resultType="com.benewake.system.entity.vo.ApsFimRequestVo">
+    <select id="getFimRequestPage" resultMap="ApsFimRequestVoResultMap">
         SELECT req.id,
                f_document_number,
                f_creator,
@@ -38,5 +53,58 @@
         FROM `aps_fim_request` AS req
                  LEFT JOIN aps_material_name_mapping AS map ON req.f_material_code = map.f_material_id
         where version = (select max(version) from aps_fim_request)
+    </select>
+    <select id="selectPageLists" resultMap="ApsFimRequestVoResultMap">
+        SELECT req.id,
+        f_document_number,
+        f_creator,
+        f_material_code,
+        map.f_material_name,
+        f_customer_name,
+        f_salesperson,
+        f_quantity,
+        f_expected_delivery_date,
+        f_document_type,
+        ch_version_name
+        FROM
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        END AS ch_version_name
+        FROM aps_fim_request
+        WHERE version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>
+        ) AS req
+        LEFT JOIN aps_material_name_mapping AS map ON req.f_material_code = map.f_material_id
+        <if test="ew!= null and ew.sqlSegment!= null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
+    <select id="searchLike" resultMap="ApsFimRequestVoResultMap">
+        SELECT
+        DISTINCT ${ew.sqlSelect}
+        FROM
+        (
+        SELECT *,
+        CASE
+        <foreach collection="versions" item="item" separator=" ">
+            WHEN version = #{item.version} THEN #{item.chVersionName}
+        </foreach>
+        END AS ch_version_name
+        FROM aps_fim_request
+        WHERE version IN
+        <foreach collection="versions" item="item" open="(" separator="," close=")">
+            #{item.version}
+        </foreach>
+        ) AS req
+        LEFT JOIN aps_material_name_mapping AS map ON req.f_material_code = map.f_material_id
+        <if test="ew!= null and ew.sqlSegment!= null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
     </select>
 </mapper>

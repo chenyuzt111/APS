@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.benewake.system.entity.*;
 import com.benewake.system.entity.Interface.VersionToChVersion;
-import com.benewake.system.entity.enums.SchedulingResultType;
 import com.benewake.system.entity.vo.QueryViewParams;
 import com.benewake.system.entity.vo.ResultColPageVo;
 import com.benewake.system.mapper.ApsColumnTableMapper;
@@ -57,7 +56,7 @@ public class ApsProductionPlanServiceImpl extends ServiceImpl<ApsProductionPlanM
 
     @Override
     public ResultColPageVo<Object> getResultFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
-        return commonFiltrate(page, size, SchedulingResultType.APS_PRODUCTION_PLAN, queryViewParams,
+        return commonFiltrate(page, size, queryViewParams,
                 (objectPage, objectQueryWrapper ,versionToChVersionArrayList) ->
                         apsProductionPlanMapper.queryPageList(objectPage, objectQueryWrapper ,versionToChVersionArrayList));
     }

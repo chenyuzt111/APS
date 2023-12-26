@@ -99,4 +99,13 @@
             ${ew.customSqlSegment}
         </if>
     </select>
+    <select id="searchLike" resultType="com.benewake.system.entity.dto.ApsProcessCapacityDto">
+        SELECT
+        ${ew.sqlSelect}
+        FROM `aps_process_capacity` AS pro
+        LEFT JOIN aps_process_name_pool AS ce ON pro.process_id = ce.id
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
 </mapper>

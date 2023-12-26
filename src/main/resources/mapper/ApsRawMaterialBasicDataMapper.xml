@@ -5,36 +5,74 @@
 <mapper namespace="com.benewake.system.mapper.ApsRawMaterialBasicDataMapper">
 
     <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsRawMaterialBasicData">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="fMaterialCode" column="f_material_code" jdbcType="VARCHAR"/>
-            <result property="fMaterialProperty" column="f_material_property" jdbcType="VARCHAR"/>
-            <result property="fMaterialGroup" column="f_material_group" jdbcType="VARCHAR"/>
-            <result property="fProcurementLeadTime" column="f_procurement_lead_time" jdbcType="VARCHAR"/>
-            <result property="fMoq" column="f_moq" jdbcType="VARCHAR"/>
-            <result property="fMpq" column="f_mpq" jdbcType="VARCHAR"/>
-            <result property="fSafetyStock" column="f_safety_stock" jdbcType="VARCHAR"/>
-            <result property="version" column="version" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="fMaterialCode" column="f_material_code" jdbcType="VARCHAR"/>
+        <result property="fMaterialProperty" column="f_material_property" jdbcType="VARCHAR"/>
+        <result property="fMaterialGroup" column="f_material_group" jdbcType="VARCHAR"/>
+        <result property="fProcurementLeadTime" column="f_procurement_lead_time" jdbcType="VARCHAR"/>
+        <result property="fMoq" column="f_moq" jdbcType="VARCHAR"/>
+        <result property="fMpq" column="f_mpq" jdbcType="VARCHAR"/>
+        <result property="fSafetyStock" column="f_safety_stock" jdbcType="VARCHAR"/>
     </resultMap>
+
+    <resultMap id="apsRawMaterialBasicDataDtoMap" type="com.benewake.system.entity.dto.ApsRawMaterialBasicDataDto">
+        <id column="id" property="id"/>
+        <result column="f_material_code" property="materialCode"/>
+        <result column="f_material_name" property="materialName"/>
+        <result column="f_material_property" property="materialProperty"/>
+        <result column="f_material_group" property="materialGroup"/>
+        <result column="f_procurement_lead_time" property="procurementLeadTime"/>
+        <result column="f_moq" property="moq"/>
+        <result column="f_mpq" property="mpq"/>
+        <result column="f_safety_stock" property="safetyStock"/>
+    </resultMap>
+
 
     <sql id="Base_Column_List">
         id,f_material_code,f_material_property,
         f_material_group,f_procurement_lead_time,f_moq,
-        f_mpq,f_safety_stock,version
+        f_mpq,f_safety_stock
     </sql>
-    <select id="selectListPage" resultType="com.benewake.system.entity.dto.ApsRawMaterialBasicDataDto">
+    <select id="selectListPage" resultMap="apsRawMaterialBasicDataDtoMap">
+        SELECT da.id,
+               f_material_code,
+               map.f_material_name,
+               f_material_property,
+               f_material_group,
+               f_procurement_lead_time,
+               f_moq,
+               f_mpq,
+               f_safety_stock
+        FROM aps_raw_material_basic_data AS da
+                 LEFT JOIN aps_material_name_mapping AS map ON da.f_material_code = map.f_material_id
+    </select>
+    <select id="selectPageLists" resultMap="apsRawMaterialBasicDataDtoMap">
         SELECT
-            da.id,
-            f_material_code,
-            map.f_material_name,
-            f_material_property,
-            f_material_group,
-            f_procurement_lead_time,
-            f_moq,
-            f_mpq,
-            f_safety_stock,
-            version
+        da.id,
+        f_material_code,
+        map.f_material_name,
+        f_material_property,
+        f_material_group,
+        f_procurement_lead_time,
+        f_moq,
+        f_mpq,
+        f_safety_stock
         FROM
-            aps_raw_material_basic_data AS da
-                LEFT JOIN aps_material_name_mapping AS map ON da.f_material_code = map.f_material_id
+        aps_raw_material_basic_data AS da
+        LEFT JOIN aps_material_name_mapping AS map ON da.f_material_code = map.f_material_id
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
+
+    <select id="searchLike" resultMap="apsRawMaterialBasicDataDtoMap">
+        SELECT
+        distinct ${ew.sqlSelect}
+        FROM
+        aps_raw_material_basic_data AS da
+        LEFT JOIN aps_material_name_mapping AS map ON da.f_material_code = map.f_material_id
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment.trim().length() > 0">
+            ${ew.customSqlSegment}
+        </if>
     </select>
 </mapper>

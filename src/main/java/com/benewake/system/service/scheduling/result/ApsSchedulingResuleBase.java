@@ -97,7 +97,7 @@ public interface ApsSchedulingResuleBase {
         throw new BeneWakeException("该表不需要使用该方法");
     }
 
-    default ResultColPageVo<Object> commonFiltrate(Integer page, Integer size, SchedulingResultType schedulingResultType, QueryViewParams queryViewParams,
+    default ResultColPageVo<Object> commonFiltrate(Integer page, Integer size, QueryViewParams queryViewParams,
                                                    TriFunction<Page<Object>, QueryWrapper<Object>, List<VersionToChVersion>, Page<Object>> function) {
         Long viewId = queryViewParams != null ? queryViewParams.getViewId() : null;
         List<ViewColParam> cols = queryViewParams != null ? queryViewParams.getCols() : null;
@@ -124,6 +124,8 @@ public interface ApsSchedulingResuleBase {
                 columnVos = buildColumnVos(viewColTables);
                 viewColTables = updateMaxVersion(versionToChVersion, viewColTables);
                 queryWrapper = buildQueryWrapper(viewColTables);
+
+                defaultSort(queryWrapper);
                 sortVos = buildSortVos(viewColTables);
             }
             // 构造分页查询条件
@@ -141,12 +143,20 @@ public interface ApsSchedulingResuleBase {
                         .collect(Collectors.toMap(ApsColumnTable::getId, x -> x, (existing, replacement) -> existing));
                 queryWrapper = buildQueryWrapper(colIdMap, colIdToEnName);
             }
-
+            defaultSort(queryWrapper);
             // 构造分页查询条件
             Page<Object> apsProductionPlanPage = buildPage(page, size);
+
             Page<Object> planPage = function.apply(apsProductionPlanPage, queryWrapper, versionToChVersionArrayList);
             // 如果是点击查询 就不需要回填搜素框
             return buildResultColPageVo(Collections.emptyList(), Collections.emptyList(), planPage);
+        }
+    }
+
+    default void defaultSort(QueryWrapper queryWrapper) {
+        String customSqlSegment = queryWrapper.getCustomSqlSegment();
+        if (!customSqlSegment.contains("ORDER")) {
+            queryWrapper.orderByDesc("ch_version_name");
         }
     }
 
