@@ -25,6 +25,7 @@ import com.benewake.system.service.scheduling.result.ApsSchedulingResuleBase;
 import com.benewake.system.utils.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -87,6 +88,12 @@ public class ApsFimRequestServiceImpl extends ServiceImpl<ApsFimRequestMapper, A
 
     @Override
     public Page selectPageLists(Page page, List versionToChVersionArrayList, QueryWrapper wrapper) {
+        String customSqlSegment = wrapper.getCustomSqlSegment();
+        if (StringUtils.isEmpty(customSqlSegment) || !customSqlSegment.contains("ORDER BY")) {
+            wrapper.orderByDesc("ch_version_name");
+            wrapper.orderByAsc("f_document_number");
+            wrapper.orderByAsc("f_document_type");
+        }
         return fimRequestMapper.selectPageLists(page ,versionToChVersionArrayList, wrapper);
     }
 

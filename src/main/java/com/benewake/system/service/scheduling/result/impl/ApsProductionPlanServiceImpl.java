@@ -53,6 +53,15 @@ public class ApsProductionPlanServiceImpl extends ServiceImpl<ApsProductionPlanM
         return columnTableMapper;
     }
 
+    @Override
+    public void defaultSort(QueryWrapper queryWrapper) {
+        String customSqlSegment = queryWrapper.getCustomSqlSegment();
+        if (!customSqlSegment.contains("ORDER")) {
+            queryWrapper.orderByDesc("ch_version_name");
+            queryWrapper.orderByAsc("f_actual_start_time");
+            queryWrapper.orderByAsc("f_material_code");
+        }
+    }
 
     @Override
     public ResultColPageVo<Object> getResultFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {

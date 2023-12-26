@@ -15,6 +15,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.benewake.system.mapper.ApsMesTotalMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +57,7 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
     private List<ApsMesTotal> apsMesTotals = null;
 
     private Integer maxVersionIncr;
-    
+
 
     @Override
     public Page selectPageList(Page page, List tableVersionList) {
@@ -70,6 +71,12 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
 
     @Override
     public Page selectPageLists(Page page, List versionToChVersionArrayList, QueryWrapper wrapper) {
+        String customSqlSegment = wrapper.getCustomSqlSegment();
+        if (StringUtils.isEmpty(customSqlSegment) || !customSqlSegment.contains("ORDER BY")) {
+            wrapper.orderByDesc("ch_version_name");
+            wrapper.orderByDesc("production_order_number");
+            wrapper.orderByAsc("process");
+        }
         return mesTotalMapper.selectPageLists(page, versionToChVersionArrayList, wrapper);
     }
 

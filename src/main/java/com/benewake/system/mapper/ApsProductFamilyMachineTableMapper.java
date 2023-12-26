@@ -25,6 +25,8 @@ public interface ApsProductFamilyMachineTableMapper extends BaseMapper<ApsProduc
     Page<ApsProductFamilyMachineTableDto> selectPageLists(Page<Object> page, @Param(Constants.WRAPPER) QueryWrapper<Object> wrapper);
 
     List<Object> searchLike(@Param(Constants.WRAPPER) QueryWrapper<Object> queryWrapper);
+
+    Integer selectCount(@Param(Constants.WRAPPER) QueryWrapper<Object> wrapper);
 }
 
 

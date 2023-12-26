@@ -72,6 +72,8 @@ public class ApsFimPriorityServiceImpl extends ServiceImpl<ApsFimPriorityMapper,
         return apsFimPriorityPageResultVo;
     }
 
+
+
     @Override
     public void downloadFimRequest(HttpServletResponse response, DownloadParam downloadParam) {
         try {
@@ -96,6 +98,15 @@ public class ApsFimPriorityServiceImpl extends ServiceImpl<ApsFimPriorityMapper,
         return commonFiltrate(page, size, queryViewParams,
                 (page1, queryWrapper, versionToChVersionArrayList) ->
                         apsFimPriorityMapper.getFimPriorityFiltrate(page1, queryWrapper, versionToChVersionArrayList));
+    }
+
+    @Override
+    public void defaultSort(QueryWrapper queryWrapper) {
+        String customSqlSegment = queryWrapper.getCustomSqlSegment();
+        if (!customSqlSegment.contains("ORDER")) {
+            queryWrapper.orderByDesc("ch_version_name");
+            queryWrapper.orderByAsc("f_production_id");
+        }
     }
 
     @Override

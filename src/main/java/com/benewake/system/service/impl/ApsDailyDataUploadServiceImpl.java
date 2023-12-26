@@ -67,7 +67,6 @@ public class ApsDailyDataUploadServiceImpl extends ServiceImpl<ApsDailyDataUploa
     private ApsViewTableService viewTableService;
 
 
-
     @Override
     public PageResultVo<ApsDailyDataUploadDto> getDailyDataListPage(Integer page, Integer size) {
         Page<ApsDailyDataUploadDto> uploadPage = new Page<>();
@@ -137,7 +136,13 @@ public class ApsDailyDataUploadServiceImpl extends ServiceImpl<ApsDailyDataUploa
                     .collect(Collectors.toMap(ApsColumnTable::getId, x -> x, (existing, replacement) -> existing));
             wrapper = buildQueryWrapper(colIdMap, colIdToEnName);
         }
-
+        wrapper = wrapper == null ? new QueryWrapper<>() : wrapper;
+        String customSqlSegment = wrapper.getCustomSqlSegment();
+        if (StringUtils.isEmpty(customSqlSegment) || !customSqlSegment.contains("ORDER BY")) {
+            wrapper.orderByDesc("ch_version_name");
+            wrapper.orderByDesc("f_order_number ");
+            wrapper.orderByAsc("process_name");
+        }
         Page<ApsDailyDataUploadDto> resultPage = dailyDataUploadMapper.selectPageLists(new Page<>().setCurrent(page).setSize(size), wrapper);
 
         return buildDailyDataUploadDtoResultColPageVo(columnVos, sortVos, resultPage);

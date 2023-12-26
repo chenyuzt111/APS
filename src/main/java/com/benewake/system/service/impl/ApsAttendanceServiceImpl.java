@@ -33,6 +33,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.benewake.system.utils.DateUtils.validateTimeRanges;
+
 /**
  * @author ASUS
  * @description 针对表【aps_attendance】的数据库操作Service实现
@@ -76,17 +78,13 @@ public class ApsAttendanceServiceImpl extends ServiceImpl<ApsAttendanceMapper, A
     @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean addOrUpdateAttendance(ApsAttendanceParam attendanceParam) {
+        validAttendanceParam(attendanceParam);
         ApsTimeSheet timeSheet = timeSheetMapper.selectOne(new LambdaQueryWrapper<ApsTimeSheet>().last("limit 1"));
         List<String> time;
         if (attendanceParam.getId() != null && !gettimeSheetUpdate(timeSheet, attendanceParam)) {
-            //出勤时间修改了 重新计算所有的有效出勤时间
-            ApsTimeSheet apsTimeSheet = buildTimeSheet(attendanceParam);
-            timeSheetMapper.delete(null);
-            timeSheetMapper.insert(apsTimeSheet);
-            List<ApsAttendance> apsAttendances = list();
-            apsAttendances = apsAttendances.stream().peek(x -> x.setEffectiveAttendanceTimeRange(String.join(",",
-                    getEffectiveAttendanceTime(apsTimeSheet, x.getLeaveTimeRange())))).collect(Collectors.toList());
-            updateBatchById(apsAttendances);
+            ApsTimeSheet apsTimeSheet = updateTimeSheet(attendanceParam);
+//            重新计算所有的有效出勤时间
+            updateAyyendanceTime(apsTimeSheet);
             time = getEffectiveAttendanceTime(apsTimeSheet, attendanceParam.getLeaveTimeRange());
         } else {
             //出勤时间没有修改 直接更新有效出勤时间
@@ -103,13 +101,51 @@ public class ApsAttendanceServiceImpl extends ServiceImpl<ApsAttendanceMapper, A
         return apsAttendance.getId() == null ? save(apsAttendance) : updateById(apsAttendance);
     }
 
+    private void updateAyyendanceTime(ApsTimeSheet apsTimeSheet) {
+        List<ApsAttendance> apsAttendances = list();
+        apsAttendances = apsAttendances.stream().peek(x -> x.setEffectiveAttendanceTimeRange(String.join(",",
+                getEffectiveAttendanceTime(apsTimeSheet, x.getLeaveTimeRange())))).collect(Collectors.toList());
+        updateBatchById(apsAttendances);
+    }
+
+    private ApsTimeSheet updateTimeSheet(ApsAttendanceParam attendanceParam) {
+        //出勤时间修改了
+        ApsTimeSheet apsTimeSheet = buildTimeSheet(attendanceParam);
+        timeSheetMapper.delete(null);
+        timeSheetMapper.insert(apsTimeSheet);
+        return apsTimeSheet;
+    }
+
+    private void validAttendanceParam(ApsAttendanceParam attendanceParam) {
+        if (StringUtils.isNotEmpty(attendanceParam.getAttendanceTimeRange()) &&
+                !validateTimeRanges(attendanceParam.getAttendanceTimeRange())) {
+            throw new BeneWakeException("出勤时间范围不正确");
+        }
+        if (StringUtils.isNotEmpty(attendanceParam.getLeaveTimeRange()) &&
+                !validateTimeRanges(attendanceParam.getLeaveTimeRange())) {
+            throw new BeneWakeException("请假时间范围不正确");
+        }
+        if (StringUtils.isNotEmpty(attendanceParam.getDinnerTimeRange()) &&
+                !validateTimeRanges(attendanceParam.getDinnerTimeRange())) {
+            throw new BeneWakeException("晚饭时间范围不正确");
+        }
+        if (StringUtils.isNotEmpty(attendanceParam.getLunchBreakTimeRange()) &&
+                !validateTimeRanges(attendanceParam.getLunchBreakTimeRange())) {
+            throw new BeneWakeException("午休时间范围不正确");
+        }
+        if (StringUtils.isNotEmpty(attendanceParam.getMorningMeetingTimeRange()) &&
+                !validateTimeRanges(attendanceParam.getMorningMeetingTimeRange())) {
+            throw new BeneWakeException("早会时间范围不正确");
+        }
+    }
+
 
     @Override
-    public Boolean saveDataByExcel(Integer type,  MultipartFile file) {
+    public Boolean saveDataByExcel(Integer type, MultipartFile file) {
         try {
             ApsTimeSheet timeSheet = timeSheetMapper.selectOne(new LambdaQueryWrapper<ApsTimeSheet>().last("limit 1"));
             EasyExcel.read(file.getInputStream(), AttendanceTemplate.class,
-                            new AttendanceListener(attendanceExcelToPo ,timeSheet ,this ,type))
+                            new AttendanceListener(attendanceExcelToPo, timeSheet, this, type))
                     .sheet().headRowNumber(1).doRead();
         } catch (Exception e) {
             log.error("出勤管理导入出错" + e);
@@ -240,7 +276,7 @@ public class ApsAttendanceServiceImpl extends ServiceImpl<ApsAttendanceMapper, A
 
     @Override
     public Page selectPageLists(Page<Object> page, QueryWrapper<Object> wrapper) {
-        return apsAttendanceMapper.selectPageLists(page ,wrapper);
+        return apsAttendanceMapper.selectPageLists(page, wrapper);
     }
 
     @Override

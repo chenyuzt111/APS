@@ -71,6 +71,16 @@ public class ApsSemiFinishedGoodsProductionPlanServiceImpl extends ServiceImpl<A
     }
 
     @Override
+    public void defaultSort(QueryWrapper queryWrapper) {
+        String customSqlSegment = queryWrapper.getCustomSqlSegment();
+        if (!customSqlSegment.contains("ORDER")) {
+            queryWrapper.orderByDesc("ch_version_name");
+            queryWrapper.orderByAsc("f_start_time");
+            queryWrapper.orderByAsc("f_material_code");
+        }
+    }
+
+    @Override
     public ResultColPageVo<Object> getResultFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
         return commonFiltrate(page, size, queryViewParams,
                 (objectPage, objectQueryWrapper, versionToChVersionArrayList) ->

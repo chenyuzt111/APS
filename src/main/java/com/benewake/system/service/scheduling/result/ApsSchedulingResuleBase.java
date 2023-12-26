@@ -38,20 +38,6 @@ public interface ApsSchedulingResuleBase {
         throw new BeneWakeException("当前表不能使用该查询");
     }
 
-//    default Integer getApsTableVersion(Integer code, ApsTableVersionService apsTableVersionService) {
-//        LambdaQueryWrapper<ApsTableVersion> apsTableVersionLambdaQueryWrapper = new LambdaQueryWrapper<>();
-//        apsTableVersionLambdaQueryWrapper.eq(ApsTableVersion::getTableId, code)
-//                .eq(ApsTableVersion::getState, TableVersionState.SUCCESS.getCode())
-//                .orderByDesc(ApsTableVersion::getVersionNumber)
-//                .last("limit 1");
-//
-//        ApsTableVersion one = apsTableVersionService.getOne(apsTableVersionLambdaQueryWrapper);
-//        if (one == null || one.getTableVersion() == null) {
-//            throw new BeneWakeException("还未有排程数据");
-//        }
-//        return one.getTableVersion();
-//    }
-
     default Integer getMaxVersionAndSave() {
         Integer curVersion = null;
         try {
@@ -124,7 +110,6 @@ public interface ApsSchedulingResuleBase {
                 columnVos = buildColumnVos(viewColTables);
                 viewColTables = updateMaxVersion(versionToChVersion, viewColTables);
                 queryWrapper = buildQueryWrapper(viewColTables);
-
                 defaultSort(queryWrapper);
                 sortVos = buildSortVos(viewColTables);
             }

@@ -192,7 +192,9 @@ public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProd
                 sqlSegmentField.setAccessible(false);
                 expression.set(wrapper, o);
                 expression.setAccessible(false);
-//                productFamilyMachineTableMapper.selectCount(wrapper)
+                //最大
+                Integer count = productFamilyMachineTableMapper.selectCount(wrapper);
+                page = new Page<>(1, count);
             }
             Page<ApsProductFamilyMachineTableDto> familyMachineTableDtoPage = productFamilyMachineTableMapper.selectPageLists(page, wrapper);
             List<ApsProductFamilyMachineTableDto> records = familyMachineTableDtoPage.getRecords();

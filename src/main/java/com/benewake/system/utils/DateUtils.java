@@ -14,8 +14,41 @@ import java.util.Date;
 import java.util.List;
 
 public class DateUtils {
-//    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    //    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 //    private static final DateTimeFormatter chineseDayFormat = DateTimeFormatter.ofPattern("E");
+    public static boolean validateTimeRanges(String timeRanges) {
+        String[] ranges = timeRanges.split(",");
+        for (String range : ranges) {
+            if (!isValidTimeRange(range.trim())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean isValidTimeRange(String timeRange) {
+        String[] times = timeRange.split("-");
+        if (times.length != 2) {
+            return false;
+        }
+
+        String startTime = times[0].trim();
+        String endTime = times[1].trim();
+
+        return isValidTime(startTime) && isValidTime(endTime) && compareTimes(startTime, endTime);
+    }
+
+    private static boolean isValidTime(String time) {
+        // 这里可以添加更多的时间格式验证逻辑
+        // 简化示例，假设时间格式为 HH:mm
+        return time.matches("\\d{2}:\\d{2}");
+    }
+
+    private static boolean compareTimes(String startTime, String endTime) {
+        // 比较开始时间和结束时间，确保结束时间不小于开始时间
+        return startTime.compareTo(endTime) < 0;
+    }
+
 
     public static String getDayOfWeek(Date date) {
         if (date == null) {

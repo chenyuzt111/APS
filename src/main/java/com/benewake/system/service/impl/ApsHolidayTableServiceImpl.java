@@ -45,7 +45,7 @@ public class ApsHolidayTableServiceImpl extends ServiceImpl<ApsHolidayTableMappe
             updateHolidayByYear(nextYear);
             init();
         } catch (Exception e) {
-            log.error("节假日第三方调用接口超时");
+            log.error("节假日第三方调用接口超时" + e.getMessage());
         }
 
     }

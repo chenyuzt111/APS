@@ -56,7 +56,7 @@ public class MasterDataServiceImpl implements MasterDataService {
     @Override
     public ResultColPageVo<Object> getFiltrateDate(Integer page, Integer size, QueryViewParams queryViewParams) {
         long l = System.currentTimeMillis();
-        try {
+//        try {
             Integer type = queryViewParams.getTableId();
             ApsMasterDataBaseService masterDataBaseService = getApsMasterDataBaseService(type);
 
@@ -95,10 +95,10 @@ public class MasterDataServiceImpl implements MasterDataService {
             long l1 = System.currentTimeMillis();
             log.info("总耗时：" + (l1 - l) + "ms");
             return resultColPageVo;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BeneWakeException("系统内部错误联系管理员" + this.getClass());
-        }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new BeneWakeException("系统内部错误联系管理员" + this.getClass());
+//        }
     }
 
     private ApsMasterDataBaseService getApsMasterDataBaseService(Integer type) {
@@ -177,7 +177,7 @@ public class MasterDataServiceImpl implements MasterDataService {
     }
 
     private Long getCount(DownloadViewParams downloadParam) {
-        InterfaceDataType interfaceDataType = InterfaceDataType.valueOfCode(downloadParam.getTableId());
+        MasterDataType interfaceDataType = MasterDataType.valueOfCode(downloadParam.getTableId());
         if (interfaceDataType == null) {
             throw new BeneWakeException("type找不到");
         }

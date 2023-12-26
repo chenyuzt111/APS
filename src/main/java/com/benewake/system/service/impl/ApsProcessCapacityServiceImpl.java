@@ -285,7 +285,12 @@ public class ApsProcessCapacityServiceImpl extends ServiceImpl<ApsProcessCapacit
 
     @Override
     public Page selectPageLists(Page<Object> page, QueryWrapper<Object> wrapper) {
-        Page<ApsProcessCapacityDto> dtoPage = apsProcessCapacityMapper.selectPageList(page ,wrapper);
+        wrapper = wrapper == null ? new QueryWrapper<>() : wrapper;
+        String customSqlSegment = wrapper.getCustomSqlSegment();
+        if (StringUtils.isEmpty(customSqlSegment) || !customSqlSegment.contains("ORDER BY")) {
+            wrapper.orderByDesc("product_family");
+        }
+        Page<ApsProcessCapacityDto> dtoPage = apsProcessCapacityMapper.selectPageList(page, wrapper);
         //处理序号
         List<ApsProcessCapacityVo> apsProcessCapacityVos = getApsProcessCapacityVos(dtoPage);
         return buildApsProcessCapacityVoPage(dtoPage, apsProcessCapacityVos);

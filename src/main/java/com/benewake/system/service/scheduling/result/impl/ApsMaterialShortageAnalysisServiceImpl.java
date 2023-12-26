@@ -67,6 +67,17 @@ public class ApsMaterialShortageAnalysisServiceImpl extends ServiceImpl<ApsMater
 
 
     @Override
+    public void defaultSort(QueryWrapper queryWrapper) {
+        String customSqlSegment = queryWrapper.getCustomSqlSegment();
+        if (!customSqlSegment.contains("ORDER")) {
+            queryWrapper.orderByDesc("ch_version_name");
+            queryWrapper.orderByAsc("f_task_id");
+            queryWrapper.orderByAsc("f_process");
+            queryWrapper.orderByAsc("f_parent_material_code");
+        }
+    }
+
+    @Override
     public ResultColPageVo<Object> getResultFiltrate(Integer page, Integer size, QueryViewParams queryViewParams) {
         return commonFiltrate(page, size, queryViewParams,
                 (pageTemp, queryWrapper, versionToChVersionArrayList) ->
