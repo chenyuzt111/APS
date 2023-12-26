@@ -67,10 +67,10 @@ public class ExcelMachineTableTemplate implements Serializable {
     /**
      * 不可用日期
      */
-    @ColumnWidth(40)
-    @ExcelProperty("不可用日期")
-    @TableField(value = "unavailable_dates")
-    private String unavailableDates;
+//    @ColumnWidth(40)
+//    @ExcelProperty("不可用日期")
+//    @TableField(value = "unavailable_dates")
+//    private String unavailableDates;
 
     @ExcelIgnore
     @TableField(exist = false)

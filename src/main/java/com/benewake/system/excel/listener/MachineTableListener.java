@@ -58,14 +58,14 @@ public class MachineTableListener extends AnalysisEventListener<ExcelMachineTabl
         }
         familyMachineTable.setFMachineConfiguration(data.getFMachineConfiguration());
         familyMachineTable.setFWorkshop(data.getFWorkshop());
-        String unavailableDates = data.getUnavailableDates();
-        if (StringUtils.isNotEmpty(unavailableDates)) {
-            if (isValidFormat(unavailableDates)) {
-                familyMachineTable.setUnavailableDates(unavailableDates);
-            } else {
-                throw new BeneWakeException("不可以用时间段 时间格式不正确 应以 to 分割不同时间 逗号分割不同时间段");
-            }
-        }
+//        String unavailableDates = data.getUnavailableDates();
+//        if (StringUtils.isNotEmpty(unavailableDates)) {
+//            if (isValidFormat(unavailableDates)) {
+//                familyMachineTable.setUnavailableDates(unavailableDates);
+//            } else {
+//                throw new BeneWakeException("不可以用时间段 时间格式不正确 应以 to 分割不同时间 逗号分割不同时间段");
+//            }
+//        }
         productFamilyMachineTables.add(familyMachineTable);
     }
 

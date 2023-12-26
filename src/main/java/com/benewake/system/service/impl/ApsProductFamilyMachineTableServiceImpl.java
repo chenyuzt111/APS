@@ -1,7 +1,9 @@
 package com.benewake.system.service.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.generator.IFill;
@@ -30,6 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -101,11 +104,16 @@ public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProd
         apsProductFamilyMachineTableVo.setProcessName(dto.getProcessName());
         apsProductFamilyMachineTableVo.setFMachineConfiguration(dto.getFMachineConfiguration());
         apsProductFamilyMachineTableVo.setFWorkshop(dto.getFWorkshop());
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         if (StringUtils.isEmpty(dto.getUnavailableDates())) {
             apsProductFamilyMachineTableVo.setUnavailableDates(Collections.emptyList());
             apsProductFamilyMachineTableVo.setAvailable("是");
         } else {
+            String unavailableDates = dto.getUnavailableDates();
+            unavailableDates = unavailableDates.replaceAll(",", "\n");
+            apsProductFamilyMachineTableVo.setExcelUnavailableDate(unavailableDates);
+
             List<String> list = Arrays.asList(dto.getUnavailableDates().split("\\s*,\\s*"));
             apsProductFamilyMachineTableVo.setUnavailableDates(list);
 
@@ -154,32 +162,6 @@ public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProd
         return familyMachineTable;
     }
 
-    @Override
-    public void downloadProcessCapacity(HttpServletResponse response, DownloadParam downloadParam) {
-        try {
-            ResponseUtil.setFileResp(response, "机器管理");
-            ApsProductFamilyMachineTablePageVo apsMachineTable = null;
-            if (downloadParam.getType() == ExcelOperationEnum.ALL_PAGES.getCode()) {
-                Long count = familyMachineTableMapper.selectCount(null);
-                apsMachineTable = getApsMachineTable(null, 1, Math.toIntExact(count));
-            } else {
-                apsMachineTable = getApsMachineTable(null, downloadParam.getPage(), downloadParam.getSize());
-            }
-            if (apsMachineTable == null || CollectionUtils.isEmpty(apsMachineTable.getApsProductFamilyMachineTables())) {
-                throw new BeneWakeException("当前还没有机器信息");
-            }
-            List<ApsProductFamilyMachineTableVo> machineTables = apsMachineTable.getApsProductFamilyMachineTables();
-            List<ExcelProductFamilyMachineTable> excelProductFamilyMachineTables = productFamilyMachineTablesVoToExcel.convert(machineTables);
-            EasyExcel.write(response.getOutputStream(), ExcelProductFamilyMachineTable.class)
-                    .sheet("sheet1").doWrite(excelProductFamilyMachineTables);
-        } catch (Exception e) {
-            if (!(e instanceof BeneWakeException)) {
-                log.error("机器导出出错----" + LocalDateTime.now() + "----" + e.getMessage());
-                throw new BeneWakeException("机器导出出错");
-            }
-            throw new BeneWakeException(e.getMessage());
-        }
-    }
 
     @Override
     public Boolean saveDataByExcel(Integer type, MultipartFile file) {
@@ -196,15 +178,32 @@ public class ApsProductFamilyMachineTableServiceImpl extends ServiceImpl<ApsProd
 
     @Override
     public Page selectPageLists(Page<Object> page, QueryWrapper<Object> wrapper) {
-        if (wrapper != null) {
-            String customSqlSegment = wrapper.getCustomSqlSegment();
-            replaceAvailable(customSqlSegment);
-
+        try {
+            //这一段操作是将sql中关于是否可用字段的信息替换掉(数据库中保存的是否可用 是不正确的 因为他是计算出来的)
+            if (wrapper != null) {
+                Field expression = AbstractWrapper.class.getDeclaredField("expression");
+                expression.setAccessible(true);
+                MergeSegments o = (MergeSegments) expression.get(wrapper);
+                String sqlSegment = o.getSqlSegment();
+                String replaceAvailable = replaceAvailable(sqlSegment);
+                Field sqlSegmentField = o.getClass().getDeclaredField("sqlSegment");
+                sqlSegmentField.setAccessible(true);
+                sqlSegmentField.set(o, replaceAvailable);
+                sqlSegmentField.setAccessible(false);
+                expression.set(wrapper, o);
+                expression.setAccessible(false);
+//                productFamilyMachineTableMapper.selectCount(wrapper)
+            }
+            Page<ApsProductFamilyMachineTableDto> familyMachineTableDtoPage = productFamilyMachineTableMapper.selectPageLists(page, wrapper);
+            List<ApsProductFamilyMachineTableDto> records = familyMachineTableDtoPage.getRecords();
+            List<ApsProductFamilyMachineTableVo> productFamilyMachineTableVos = records.stream()
+                    .map(this::productFamilyMachineTableDtoToVo)
+                    .collect(Collectors.toList());
+            return buildApsProductFamilyMachineTableVoPage(familyMachineTableDtoPage, productFamilyMachineTableVos);
+        } catch (Exception e) {
+            log.error("机器管理查询出错" + e.getMessage());
         }
-        Page<ApsProductFamilyMachineTableDto> familyMachineTableDtoPage = productFamilyMachineTableMapper.selectPageLists(page, wrapper);
-        List<ApsProductFamilyMachineTableDto> records = familyMachineTableDtoPage.getRecords();
-        List<ApsProductFamilyMachineTableVo> productFamilyMachineTableVos = records.stream().map(this::productFamilyMachineTableDtoToVo).collect(Collectors.toList());
-        return buildApsProductFamilyMachineTableVoPage(familyMachineTableDtoPage, productFamilyMachineTableVos);
+        return null;
     }
 
     private Page<ApsProductFamilyMachineTableVo> buildApsProductFamilyMachineTableVoPage(Page<ApsProductFamilyMachineTableDto> familyMachineTableDtoPage, List<ApsProductFamilyMachineTableVo> productFamilyMachineTableVos) {

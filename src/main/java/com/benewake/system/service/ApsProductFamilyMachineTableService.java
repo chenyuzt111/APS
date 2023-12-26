@@ -20,7 +20,6 @@ public interface ApsProductFamilyMachineTableService extends IService<ApsProduct
 
     boolean addOrUpdateApsMachineTable(ApsProductFamilyMachineTableParam apsProductFamilyMachineTable);
 
-    void downloadProcessCapacity(HttpServletResponse response, DownloadParam downloadParam);
 
     Boolean saveDataByExcel(Integer type, MultipartFile file);
 }

@@ -59,17 +59,6 @@ public class MachineController {
         return Result.ok(res);
     }
 
-    @ApiOperation("导出机器管理列表")
-    @PostMapping("/downloadApsMachineTable")
-    public void downloadSchemeManagement(@RequestBody DownloadParam downloadParam, HttpServletResponse response) {
-        if (downloadParam == null || downloadParam.getType() == null
-                || (downloadParam.getType() == ExcelOperationEnum.CURRENT_PAGE.getCode()
-                && (downloadParam.getPage() == null || downloadParam.getSize() == null))) {
-            throw new BeneWakeException("数据不正确");
-        }
-        apsProductFamilyMachineTableService.downloadProcessCapacity(response, downloadParam);
-    }
-
 
     @ApiOperation("下载机器管理列表导入模板")
     @PostMapping("/downloadMachineTableTemplate")

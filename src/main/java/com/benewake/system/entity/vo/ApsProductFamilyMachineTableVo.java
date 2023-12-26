@@ -2,6 +2,11 @@ package com.benewake.system.entity.vo;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import com.alibaba.excel.annotation.write.style.ContentStyle;
+import com.alibaba.excel.enums.BooleanEnum;
+import com.alibaba.excel.enums.poi.HorizontalAlignmentEnum;
+import com.alibaba.excel.enums.poi.VerticalAlignmentEnum;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -13,14 +18,13 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 
  * @TableName aps_product_family_machine_table
  */
-@TableName(value ="aps_product_family_machine_table")
+@TableName(value = "aps_product_family_machine_table")
 @Data
 public class ApsProductFamilyMachineTableVo implements Serializable {
     /**
-     * 
+     *
      */
     @ExcelIgnore
     @TableId(value = "id", type = IdType.AUTO)
@@ -50,10 +54,10 @@ public class ApsProductFamilyMachineTableVo implements Serializable {
     private String fProductFamily;
 
 
-     /**
+    /**
      * 适用工序
      */
-     @ExcelProperty("适用工序")
+    @ExcelProperty("适用工序")
     @JsonProperty("fProcessId")
     @TableField(value = "f_process_id")
     private String fProcessId;
@@ -91,10 +95,16 @@ public class ApsProductFamilyMachineTableVo implements Serializable {
     /**
      * 不可用日期
      */
-    @ExcelProperty("不可用日期")
+    @ExcelIgnore
     @TableField(value = "unavailable_dates")
     private List<String> unavailableDates;
 
+    /**
+     * 不可用日期
+     */
+    @ContentStyle(wrapped = BooleanEnum.TRUE)
+    @ExcelProperty("不可用日期")
+    private String excelUnavailableDate;
 
 
     @TableField(exist = false)
