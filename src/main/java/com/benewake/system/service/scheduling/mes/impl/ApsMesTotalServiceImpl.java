@@ -234,7 +234,7 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
         fieldMapping.put("本次粘贴完成数", "burnInCompletionQuantity");
         fieldMapping.put("粘贴合格数", "burnQualifiedCount");
         fieldMapping.put("粘贴不合格数", "unBurnQualifiedCount");
-        fieldMapping.put("物料编码", "materialCode");
+        fieldMapping.put("物料编码 ", "materialCode");
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("订单总数", "totalNumber");
         List<ApsMesTotal> snlabeling = updateDataVersions("c51847c9", fieldMapping, 84935594, 84935542);
@@ -319,9 +319,9 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
     public void SInstallationBoard() throws Exception {
         Map<String, String> fieldMapping = new HashMap<>();
         fieldMapping.put("生产订单编号", "productionOrderNumber");
-        fieldMapping.put("本次包装终检完成数", "burnInCompletionQuantity");
-        fieldMapping.put("包装终检合格数", "burnQualifiedCount");
-        fieldMapping.put("包装终检不合格数", "unBurnQualifiedCount");
+        fieldMapping.put("本次安装完成数", "burnInCompletionQuantity");
+        fieldMapping.put("安装合格数", "burnQualifiedCount");
+        fieldMapping.put("安装不合格数", "unBurnQualifiedCount");
         fieldMapping.put("物料编码", "materialCode");
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("订单总数", "totalNumber");
@@ -441,9 +441,9 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
     public void PlusInstallationBoard() throws Exception {
         Map<String, String> fieldMapping = new HashMap<>();
         fieldMapping.put("生产订单编号", "productionOrderNumber");
-        fieldMapping.put("本次包装终检完成数", "burnInCompletionQuantity");
-        fieldMapping.put("包装终检合格数", "burnQualifiedCount");
-        fieldMapping.put("包装终检不合格数", "unBurnQualifiedCount");
+        fieldMapping.put("本次安装完成数", "burnInCompletionQuantity");
+        fieldMapping.put("安装合格数", "burnQualifiedCount");
+        fieldMapping.put("安装不合格数", "unBurnQualifiedCount");
         fieldMapping.put("物料编码", "materialCode");
         fieldMapping.put("物料名称", "materialName");
         fieldMapping.put("订单总数", "totalNumber");
@@ -662,6 +662,7 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
                         )
                 )
                 .collect(Collectors.toList());
+
         return saveBatch(apsMesTotals);
     }
 
