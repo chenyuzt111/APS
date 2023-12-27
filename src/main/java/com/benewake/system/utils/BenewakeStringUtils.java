@@ -1,6 +1,5 @@
 package com.benewake.system.utils;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.benewake.system.exception.BeneWakeException;
 import com.benewake.system.utils.core.StrFormatter;
 import org.apache.commons.lang3.StringUtils;
@@ -65,8 +64,21 @@ public class BenewakeStringUtils extends org.apache.commons.lang3.StringUtils {
 
 
     public static String removeAs(String input) {
-        // 使用正则表达式将 "AS" 及其后面的部分替换为空字符串
-        return input.replaceAll("(?i)\\s+as\\s+.*$", "");
+        if (input.toUpperCase().startsWith("CASE")) {
+            return processCaseStatement(input);
+        } else {
+            // 使用正则表达式将 "AS" 及其后面的部分替换为空字符串
+            return input.replaceAll("(?i)\\s+as\\s+.*$", "");
+        }
+    }
+
+    private static String processCaseStatement(String input) {
+        Pattern pattern = Pattern.compile("CASE\\s+WHEN\\s+.*?\\s+END\\s+AS\\s+([\\w_]+)", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(input);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return "1";
     }
 
     public static Date parse(String date, String dateFormat) throws ParseException {
