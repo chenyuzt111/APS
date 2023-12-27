@@ -139,7 +139,6 @@ public class ApsDailyDataUploadServiceImpl extends ServiceImpl<ApsDailyDataUploa
         wrapper = wrapper == null ? new QueryWrapper<>() : wrapper;
         String customSqlSegment = wrapper.getCustomSqlSegment();
         if (StringUtils.isEmpty(customSqlSegment) || !customSqlSegment.contains("ORDER BY")) {
-            wrapper.orderByDesc("ch_version_name");
             wrapper.orderByDesc("f_order_number ");
             wrapper.orderByAsc("process_name");
         }

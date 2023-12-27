@@ -24,6 +24,7 @@ import com.benewake.system.service.ApsProductFamilyProcessSchemeManagementServic
 import com.benewake.system.transfer.ApsProcessSchemeDtoToVo;
 import com.benewake.system.utils.BenewakeStringUtils;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,8 +76,6 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
         if (size != apsProcessSchemeParams.getNumber()) {
             throw new BeneWakeException("输入人数 与分配人数 不一致~~~~~~~");
         }
-        //todo 判断是否cunzai当前新增的方案
-//        apsProcessSchemeParam.stream()
         List<Integer> processCapacityIds = apsProcessSchemeParam.stream()
                 .map(ApsProcessSchemeParam::getId)
                 .collect(Collectors.toList());
@@ -425,6 +424,14 @@ public class ApsProcessSchemeServiceImpl extends ServiceImpl<ApsProcessSchemeMap
 
     @Override
     public Page selectPageLists(Page<Object> page, QueryWrapper<Object> wrapper) {
+        wrapper = wrapper == null ? new QueryWrapper<>() : wrapper;
+        String customSqlSegment = wrapper.getCustomSqlSegment();
+        if (StringUtils.isEmpty(customSqlSegment)
+                || (!customSqlSegment.contains("current_process_scheme DESC")
+                && !customSqlSegment.contains("current_process_scheme ASC")))
+            wrapper.orderByAsc("current_process_scheme");
+        if (!customSqlSegment.contains("process_number DESC") && !customSqlSegment.contains("process_number ASC"))
+            wrapper.orderByAsc("process_number");
         Page<ApsProcessSchemeDto> apsProcessSchemeVoList = apsProcessSchemeMapper.selectPages(page, wrapper);
         List<ApsProcessSchemeDto> records = apsProcessSchemeVoList.getRecords();
         List<ApsProcessSchemeVo> apsProcessSchemeVos = records.stream()

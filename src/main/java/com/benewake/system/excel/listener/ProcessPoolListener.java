@@ -26,8 +26,7 @@ public class ProcessPoolListener extends AnalysisEventListener<ExcelProcessNameP
         this.type = type;
     }
 
-    //员工集合
-    private List<ExcelProcessNamePoolTemplate> excelProcessNamePools = new ArrayList<>();
+    private final List<ExcelProcessNamePoolTemplate> excelProcessNamePools = new ArrayList<>();
 
 
     @Override

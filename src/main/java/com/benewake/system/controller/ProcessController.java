@@ -263,7 +263,7 @@ public class ProcessController {
     public void processCapacityTemplate(HttpServletResponse response) {
         try {
             ResponseUtil.setFileResp(response, "工序与产能导入模板");
-            EasyExcel.write(response.getOutputStream(), ExcelProcessCapacityTemplate.class).sheet("sheet1")
+            EasyExcel.write(response.getOutputStream(), ApsProcessCapacityVo.class).sheet("sheet1")
                     .doWrite((java.util.Collection<?>) null);
         } catch (IOException e) {
             e.printStackTrace();

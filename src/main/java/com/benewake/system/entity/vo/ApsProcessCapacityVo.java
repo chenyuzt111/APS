@@ -22,11 +22,24 @@ public class ApsProcessCapacityVo implements Serializable {
     @ExcelIgnore
     private Integer id;
 
+
+    /**
+     * 序号
+     */
+    @ExcelProperty("序号")
+    private Integer processNumber;
+
     /**
      * 所属工序
      */
     @ExcelProperty("所属工序")
     private String belongingProcess;
+
+    /**
+     * 产品族
+     */
+    @ExcelProperty("产品族")
+    private String productFamily;
 
     /**
      * 工序id
@@ -39,11 +52,7 @@ public class ApsProcessCapacityVo implements Serializable {
     @ExcelProperty("工序名称")
     private String processName;
 
-    /**
-     * 序号
-     */
-    @ExcelProperty("序号")
-    private Integer processNumber;
+
     /**
      * 序号
      */
@@ -51,10 +60,11 @@ public class ApsProcessCapacityVo implements Serializable {
     private Integer concurrencyCount;
 
     /**
-     * 产品族
+     * 切换时间
      */
-    @ExcelProperty("产品族")
-    private String productFamily;
+    @ExcelProperty("切换时间")
+    private Integer switchTime;
+
 
     /**
      * 包装方式
@@ -62,11 +72,6 @@ public class ApsProcessCapacityVo implements Serializable {
     @ExcelProperty("包装方式")
     private String packagingMethod;
 
-    /**
-     * 切换时间
-     */
-    @ExcelProperty("切换时间")
-    private Integer switchTime;
     /**
      * 标准工时
      */

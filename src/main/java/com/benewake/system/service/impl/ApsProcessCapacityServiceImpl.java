@@ -114,6 +114,9 @@ public class ApsProcessCapacityServiceImpl extends ServiceImpl<ApsProcessCapacit
     }
 
     private void setSchemeStateFalse(List<String> productFamily) {
+        if (CollectionUtils.isEmpty(productFamily)) {
+            return;
+        }
         LambdaUpdateWrapper<ApsProcessScheme> schemeUpdateWrapper = new LambdaUpdateWrapper<>();
         for (String family : productFamily) {
             schemeUpdateWrapper.or(i -> i.likeRight(ApsProcessScheme::getCurrentProcessScheme, family));
@@ -184,12 +187,13 @@ public class ApsProcessCapacityServiceImpl extends ServiceImpl<ApsProcessCapacit
         String finalProductFamily = productFamily;
         final long[] count = {
                 apsProcessCapacityVos.stream()
+                        .filter(x -> StringUtils.isNotEmpty(x.getProductFamily()))
                         .filter(x -> x.getProductFamily().equals(finalProductFamily))
                         .count()};
         Integer finalOneCount = oneCount;
         //转换第一行序号
         apsProcessCapacityVos = apsProcessCapacityVos.stream().peek(x -> {
-            if (x.getProductFamily().equals(finalProductFamily)) {
+            if (StringUtils.isNotEmpty(x.getProductFamily()) && x.getProductFamily().equals(finalProductFamily)) {
                 x.setProcessNumber((int) (finalOneCount - count[0] + 1));
                 count[0]--;
             }
@@ -227,6 +231,7 @@ public class ApsProcessCapacityServiceImpl extends ServiceImpl<ApsProcessCapacit
         setSchemeStateFalse(productFamilyList);
         //删除当前的所有最终方案
         deleteOptimal(productFamilyList);
+        //删除本身
         return removeBatchByIds(ids);
     }
 
@@ -273,7 +278,12 @@ public class ApsProcessCapacityServiceImpl extends ServiceImpl<ApsProcessCapacit
     public Boolean saveDataByExcel(Integer type, MultipartFile file) {
         try {
             EasyExcel.read(file.getInputStream(), ExcelProcessCapacityTemplate.class,
-                            new ProcessCapacityListener(this, apsProcessNamePoolService, type, apsFinishedProductBasicDataService))
+                            new ProcessCapacityListener(this,
+                                    apsProcessNamePoolService,
+                                    type,
+                                    apsFinishedProductBasicDataService,
+                                    apsProcessSchemeMapper,
+                                    managementService))
                     .sheet().headRowNumber(1).doRead();
         } catch (Exception e) {
             log.error("工序与产能导入失败" + e);
@@ -289,6 +299,7 @@ public class ApsProcessCapacityServiceImpl extends ServiceImpl<ApsProcessCapacit
         String customSqlSegment = wrapper.getCustomSqlSegment();
         if (StringUtils.isEmpty(customSqlSegment) || !customSqlSegment.contains("ORDER BY")) {
             wrapper.orderByDesc("product_family");
+            wrapper.orderByAsc("process_number");
         }
         Page<ApsProcessCapacityDto> dtoPage = apsProcessCapacityMapper.selectPageList(page, wrapper);
         //处理序号

@@ -19,6 +19,13 @@ public class ExcelProcessCapacityTemplate implements Serializable {
 
 
     /**
+     * 序号
+     */
+    @ColumnWidth(8)
+    @ExcelProperty("序号")
+    private Integer processNumber;
+
+    /**
      * 所属工序
      */
     @ColumnWidth(12)
@@ -33,19 +40,12 @@ public class ExcelProcessCapacityTemplate implements Serializable {
     private String productFamily;
 
     /**
-     * 序号
-     */
-    @ColumnWidth(8)
-    @ExcelProperty("序号")
-    private Integer processNumber;
-
-
-    /**
      * 工序id
      */
     @ColumnWidth(19)
     @ExcelProperty("工序名称")
     private String processName;
+
 
     /**
      * 工序id
@@ -53,6 +53,8 @@ public class ExcelProcessCapacityTemplate implements Serializable {
     @ColumnWidth(19)
     @ExcelProperty("并行数量")
     private Integer concurrencyCount;
+
+
 
     /**
      * 标准工时
