@@ -104,6 +104,8 @@ public class InterfaceServiceImpl implements InterfaceService {
             Long viewId = queryViewParams == null ? null : queryViewParams.getViewId();
             List<ViewColParam> cols = queryViewParams == null ? null : queryViewParams.getCols();
             QueryWrapper<Object> wrapper = new QueryWrapper<>();
+
+
             if (cols == null) {
                 // 如果是视图拼装视图自带的筛选条件
                 if (viewId != null && viewId != -1) {

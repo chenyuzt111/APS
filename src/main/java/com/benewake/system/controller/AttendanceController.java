@@ -20,7 +20,9 @@ import com.benewake.system.service.ApsAttendanceService;
 import com.benewake.system.service.ApsHolidayTableService;
 import com.benewake.system.utils.ResponseUtil;
 import com.github.xiaoymin.knife4j.core.util.StrUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+
+@Slf4j
+@Api(tags = "出勤管理")
 @RestController
 @RequestMapping("/attendance")
 public class AttendanceController {

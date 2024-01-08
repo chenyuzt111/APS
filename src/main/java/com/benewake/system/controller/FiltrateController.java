@@ -10,7 +10,9 @@ import com.benewake.system.service.ApsConditionTableService;
 import com.benewake.system.service.ApsViewColTableService;
 import com.benewake.system.service.ApsViewTableService;
 import com.github.xiaoymin.knife4j.annotations.ApiSort;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.python.modules._py_compile;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+@Slf4j
+@Api(tags = "视图管理")
 @RestController
 @RequestMapping("/filtrate")
 public class FiltrateController {

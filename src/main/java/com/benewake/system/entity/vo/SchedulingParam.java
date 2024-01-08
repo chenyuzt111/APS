@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class SchedulingParam {
+    Integer delay_request;
     Integer number_cycles;
     Integer scheduled_days_num;
     Integer scheduling_workload;
@@ -15,5 +16,6 @@ public class SchedulingParam {
     Boolean consider_the_material;
     Boolean consider_the_process;
     Boolean split_po_orders;
+
 //    Boolean consider_history;
 }

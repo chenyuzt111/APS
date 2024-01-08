@@ -120,7 +120,7 @@ public class SysUserController {
         return Result.ok().message("修改成功！");
     }
 
-    @ApiOperation("修改用户密码接口")
+    @ApiOperation("管理员修改用户密码接口")
     @PostMapping("updatePwdbByAdmin")
     public Result updatePasswordByAdmin(@RequestBody UpdatePwdVoByAdmin updatePwdVoByAdmin){
         Map<String,Object> res = sysUserService.updatePasswordByAdmin(updatePwdVoByAdmin);
@@ -133,6 +133,7 @@ public class SysUserController {
     }
 
 
+    @ApiOperation("用户修改用户密码接口")
     @PostMapping("updatePwdByUser")
     public Result updatePassword(@RequestBody UpdatePwdVo updatePwdVo){
         Map<String,Object> res = sysUserService.updatePasswordByUser(updatePwdVo);

@@ -21,8 +21,8 @@ public class SseController {
         return sseService.connect();
     }
 
-    @PostMapping("/send/{user}")
-    public void data(@PathVariable("user") String username) throws Exception {
-//        sseService.sendMessage(username ,"111");
-    }
+//    @PostMapping("/send/{user}")
+//    public void data(@PathVariable("user") String username) throws Exception {
+////        sseService.sendMessage(username ,"111");
+//    }
 }

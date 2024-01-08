@@ -1,9 +1,13 @@
 package com.benewake.system.controller;
 
+import com.benewake.system.entity.ApsCommonFunctions;
 import com.benewake.system.entity.Result;
 import com.benewake.system.entity.system.SysUser;
+import com.benewake.system.entity.vo.ApsCommonFunctionsVo;
 import com.benewake.system.entity.vo.LoginVo;
+import com.benewake.system.service.ApsCommonFunctionsService;
 import com.benewake.system.service.SysUserService;
+import com.benewake.system.utils.HostHolder;
 import com.benewake.system.utils.JwtHelper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,6 +35,12 @@ public class IndexController {
 
     @Autowired
     private SysUserService sysUserService;
+
+    @Autowired
+    private ApsCommonFunctionsService apsCommonFunctionsService;
+
+    @Autowired
+    private HostHolder hostHolder;
 
     @GetMapping("/")
     public Result tIndex() {
@@ -66,61 +76,85 @@ public class IndexController {
         return Result.ok(map);
     }
 
+    @ApiOperation("获取用户常用功能")
+    @GetMapping("commonFunctions")
+    public Result commonFunctions() {
+        int userId = Integer.parseInt(hostHolder.getUser().getId());
+        List<ApsCommonFunctionsVo> list = new ArrayList<>();
+        list=apsCommonFunctionsService.getCommonFunctionsByUserId(userId);
+        return Result.ok(list);
+    }
+
+
+    /**
+     * 更新用户常用功能
+     * @param apsCommonFunctionVos
+     * @return
+     */
+    @ApiOperation("更新用户常用功能")
+    @PostMapping("updateCommonFunctions")
+    public Result removeCommonFunctions(@RequestBody List<ApsCommonFunctionsVo> apsCommonFunctionVos) {
+        int userId = Integer.parseInt(hostHolder.getUser().getId());
+
+        apsCommonFunctionsService.updateCommonFunctions(apsCommonFunctionVos,userId);
+        return Result.ok();
+    }
+
 
 
 
     /* spring security 学习测试部分 */
 
-    /**
-     * 只有参数中 name==认证的name的请求才会通过
-     *
-     * @param name
-     * @return
-     */
-    @PreAuthorize("authentication.name==#name")
-    @GetMapping("/tname")
-    public String tHello(String name) {
-        return "hello:" + name;
-    }
-
-    /**
-     * filterTarget 必须是数组 集合类型
-     * filterObject 是 filterTarget 中的对象
-     *
-     * @param users
-     */
-    @PreFilter(value = "filterObject.id%2!=0", filterTarget = "users")
-    @PostMapping("/tusers")
-    public void tAddUsers(@RequestBody List<SysUser> users) {
-        users.forEach(System.out::println);
-    }
-
-    /**
-     * 只返回结果中id为1的数据
-     *
-     * @param id
-     * @return
-     */
-    @PostAuthorize("returnObject.id=1")
-    @GetMapping("/tuserId")
-    public SysUser tgetUserById(String id) {
-        return new SysUser();
-    }
-
-    /**
-     * 只返回结果符合条件的数据  返回结果需要是 数组 集合类型
-     *
-     * @return
-     */
-    @PostFilter("filterObject.id%2==0")
-    @GetMapping("/tlists")
-    public List<SysUser> tgetAll() {
-        List<SysUser> users = new ArrayList<>();
-        for (int i = 1; i <= 10; ++i) {
-            SysUser user = new SysUser();
-            user.setId(String.valueOf(i));
-            users.add(user);
-        }
-        return users;
-    }
+//    /**
+//     * 只有参数中 name==认证的name的请求才会通过
+//     *
+//     * @param name
+//     * @return
+//     */
+//    @PreAuthorize("authentication.name==#name")
+//    @GetMapping("/tname")
+//    public String tHello(String name) {
+//        return "hello:" + name;
+//    }
+//
+//    /**
+//     * filterTarget 必须是数组 集合类型
+//     * filterObject 是 filterTarget 中的对象
+//     *
+//     * @param users
+//     */
+//    @PreFilter(value = "filterObject.id%2!=0", filterTarget = "users")
+//    @PostMapping("/tusers")
+//    public void tAddUsers(@RequestBody List<SysUser> users) {
+//        users.forEach(System.out::println);
+//    }
+//
+//    /**
+//     * 只返回结果中id为1的数据
+//     *
+//     * @param id
+//     * @return
+//     */
+//    @PostAuthorize("returnObject.id=1")
+//    @GetMapping("/tuserId")
+//    public SysUser tgetUserById(String id) {
+//        return new SysUser();
+//    }
+//
+//    /**
+//     * 只返回结果符合条件的数据  返回结果需要是 数组 集合类型
+//     *
+//     * @return
+//     */
+//    @PostFilter("filterObject.id%2==0")
+//    @GetMapping("/tlists")
+//    public List<SysUser> tgetAll() {
+//        List<SysUser> users = new ArrayList<>();
+//        for (int i = 1; i <= 10; ++i) {
+//            SysUser user = new SysUser();
+//            user.setId(String.valueOf(i));
+//            users.add(user);
+//        }
+//        return users;
+//    }
 }

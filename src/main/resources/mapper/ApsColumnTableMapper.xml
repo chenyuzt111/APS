@@ -8,6 +8,8 @@
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="chColName" column="ch_col_name" jdbcType="VARCHAR"/>
             <result property="enColName" column="en_col_name" jdbcType="VARCHAR"/>
+
+
     </resultMap>
 
     <sql id="Base_Column_List">

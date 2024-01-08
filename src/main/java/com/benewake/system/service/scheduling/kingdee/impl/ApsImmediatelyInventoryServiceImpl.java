@@ -144,7 +144,7 @@ public class ApsImmediatelyInventoryServiceImpl extends ServiceImpl<ApsImmediate
         QueryParam queryParam = new QueryParam();
         queryParam.setFormId("STK_Inventory");
         queryParam.setFieldKeys("FMaterialId,FMaterialName,FStockName,FBaseQty,FAVBQty,FLot,FExpiryDate");
-        List<String> excludedStockNames = Arrays.asList("不良品仓", "销售仓-SZ", "销售仓-北醒", "原材料仓BW", "X产品仓", "返品售后仓", "原材料仓-永新", "半成品仓-永新", "产成品仓-永新");
+        List<String> excludedStockNames = Arrays.asList("不良品仓", "销售仓-SZ", "销售仓-北醒", "原材料仓BW", "X产品仓", "返品售后仓", "原材料仓-永新", "半成品仓-永新", "产成品仓-永新","研发-半成品仓","研发-海淀原材料仓","研发-原材料仓");
         // 条件筛选
         List<String> queryFilters = new ArrayList<>();
         //创建一个空的字符串列表，用于存储查询过滤条件

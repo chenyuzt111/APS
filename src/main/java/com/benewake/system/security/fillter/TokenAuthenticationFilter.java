@@ -43,33 +43,44 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     //对doFilterInternal方法的覆盖
     @SneakyThrows
     @Override
+//    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+//        logger.info("uri:" + request.getRequestURI());
+//        String token = request.getHeader("token");
+//        logger.info("token:" + token);
+////        request.getHeaders()
+//        //这里检查请求的URI是否与"/system/index/login"相匹配，如果匹配，就直接放行请求，不进行后续的身份验证处理。
+//        if ("/benewake/system/index/login".equals(request.getRequestURI())) {
+//            chain.doFilter(request, response);
+//            return;
+//        }
+//        //这里检查请求的URI是否与"/prod-api/admin/system/index/login"相匹配，如果匹配，也直接放行请求，不进行后续的身份验证处理。
+//        if ("/prod-api/admin/system/index/login".equals(request.getRequestURI())) {
+//            chain.doFilter(request, response);
+//            return;
+//        }
+//
+//        //调用getAuthentication方法来获取身份验证令牌
+//        UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
+//        if (null != authentication) {
+//            //不为空的时候说明成功获取到了身份验证令牌
+//            //将令牌设置到安全上下文中
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            chain.doFilter(request, response);
+//        } else {
+//            //没有令牌返回没有权限
+//            ResponseUtil.out(response, Result.build(null, ResultCodeEnum.PERMISSION));
+//        }
+//    }
+
+
+//    调用swagger时放开所有请求
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         logger.info("uri:" + request.getRequestURI());
         String token = request.getHeader("token");
         logger.info("token:" + token);
-//        request.getHeaders()
-        //这里检查请求的URI是否与"/system/index/login"相匹配，如果匹配，就直接放行请求，不进行后续的身份验证处理。
-        if ("/benewake/system/index/login".equals(request.getRequestURI())) {
-            chain.doFilter(request, response);
-            return;
-        }
-        //这里检查请求的URI是否与"/prod-api/admin/system/index/login"相匹配，如果匹配，也直接放行请求，不进行后续的身份验证处理。
-        if ("/prod-api/admin/system/index/login".equals(request.getRequestURI())) {
-            chain.doFilter(request, response);
-            return;
-        }
 
-        //调用getAuthentication方法来获取身份验证令牌
-        UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
-        if (null != authentication) {
-            //不为空的时候说明成功获取到了身份验证令牌
-            //将令牌设置到安全上下文中
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            chain.doFilter(request, response);
-        } else {
-            //没有令牌返回没有权限
-            ResponseUtil.out(response, Result.build(null, ResultCodeEnum.PERMISSION));
-        }
+        // 直接放行所有请求
+        chain.doFilter(request, response);
     }
 
     //定义的私有方法主要作用是获取身份验证令牌

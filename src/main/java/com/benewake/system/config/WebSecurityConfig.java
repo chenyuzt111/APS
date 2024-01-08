@@ -64,6 +64,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 // 指定某些接口不需要通过验证即可访问。登陆接口肯定是不需要认证的
                 .antMatchers("/admin/system/index/login").permitAll()
+                .antMatchers("/swagger-ui").permitAll()
+                .antMatchers("/doc.html").permitAll()
+                .antMatchers("/favicon.ico").permitAll()
                 // 任何的接口都需要认证，也就是需要登陆才能访问
                 .anyRequest().authenticated()
                 .and()
@@ -117,6 +120,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/favicon.ico","/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**", "/doc.html");
+        web.ignoring().antMatchers("/favicon.ico","/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**","/benewake/swagger-ui","/benewake/doc.html");
     }
 }

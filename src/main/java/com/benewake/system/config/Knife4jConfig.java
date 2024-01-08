@@ -12,9 +12,11 @@ import springfox.documentation.service.Contact;
 import springfox.documentation.service.Parameter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger.web.SwaggerResource;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,10 +28,13 @@ import java.util.List;
 @EnableSwagger2WebMvc
 public class Knife4jConfig {
 
+
+
     @Bean
     public Docket adminApiConfig(){
         List<Parameter> pars = new ArrayList<>();
         ParameterBuilder tokenPar = new ParameterBuilder();
+
         tokenPar.name("token")
                 .description("用户token")
                 .defaultValue("")
@@ -61,4 +66,6 @@ public class Knife4jConfig {
                 .contact(new Contact("benewake", "http://benewake.com", "1401150443@qq.com"))
                 .build();
     }
+
+
 }

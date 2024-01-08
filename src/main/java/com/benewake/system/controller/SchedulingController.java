@@ -74,6 +74,7 @@ public class SchedulingController {
             ids = InterfaceDataType.getAllIds();
         }
         interfaceDataService.updateData(ids);
+        apsDailyDataUploadService.InsertDataIntoApsFimRequest(3);
         long l1 = System.currentTimeMillis();
         log.info("数据库更新接口消耗时长" + (l1 - l) + LocalDateTime.now());
         return Result.ok();
@@ -101,7 +102,7 @@ public class SchedulingController {
     @PostMapping("/oneKeyScheduling")
     public Result oneKeyScheduling(@RequestBody SchedulingParam schedulingParam) {
         //todo
-        apsDailyDataUploadService.InsertDataIntoApsFimRequest(schedulingParam.getYg_delta());
+
         interfaceDataService.updateData(InterfaceDataType.getAllIds());
         pythonService.integrityChecker();
         pythonService.startScheduling(schedulingParam);
