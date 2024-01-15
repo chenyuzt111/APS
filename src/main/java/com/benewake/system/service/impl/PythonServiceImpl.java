@@ -114,6 +114,7 @@ public class PythonServiceImpl implements PythonService {
         SchedulingParam schedulingParam = new SchedulingParam();
         schedulingParam.setConsider_the_process(true);
         String jsonString = "{\n" +
+                "    \"delay_request\": 3,\n" +
                 "    \"number_cycles\": 1,\n" +
                 "    \"scheduled_days_num\": 240,\n" +
                 "    \"scheduling_workload\": 240,\n" +

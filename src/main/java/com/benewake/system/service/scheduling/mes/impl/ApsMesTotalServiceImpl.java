@@ -3,6 +3,7 @@ package com.benewake.system.service.scheduling.mes.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.benewake.system.entity.ApsImmediatelyInventory;
 import com.benewake.system.entity.ApsMesTotal;
 import com.benewake.system.entity.ApsProcessNamePool;
 import com.benewake.system.entity.mes.MesTotal;
@@ -15,6 +16,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.benewake.system.mapper.ApsMesTotalMapper;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -663,6 +665,11 @@ public class ApsMesTotalServiceImpl extends ServiceImpl<ApsMesTotalMapper, ApsMe
                 )
                 .collect(Collectors.toList());
 
+        if (CollectionUtils.isEmpty(apsMesTotals)) {
+            ApsMesTotal apsMesTotal = new ApsMesTotal();
+            apsMesTotal.setVersion(maxVersionIncr);
+            return save(apsMesTotal);
+        }
         return saveBatch(apsMesTotals);
     }
 

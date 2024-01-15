@@ -28,10 +28,10 @@ public class ProductionKingdeeToApsOrder {
         apsOrder.setBomId(kingdeeProductionOrder.getFBomId());
         apsOrder.setDzmaterialId(kingdeeProductionOrder.getFMaterialId());
         String fPlanFinishDate = kingdeeProductionOrder.getFPlanFinishDate();
-        if (StringUtils.isEmpty(fPlanFinishDate)) {
-            Date parse = BenewakeStringUtils.parse(fPlanFinishDate, "yyyy-MM-dd'T'HH:mm:ss");
-            apsOrder.setPlannedCompletionTime(parse);
-        }
+
+        Date parse = BenewakeStringUtils.parse(fPlanFinishDate, "yyyy-MM-dd'T'HH:mm:ss");
+        apsOrder.setPlannedCompletionTime(parse);
+
         apsOrder.setFormName("生产订单列表");
         return apsOrder;
     }

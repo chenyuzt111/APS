@@ -7,6 +7,7 @@ public enum FStatusEnum {
     PLAN("1", "计划"),
     PLAN_CONFIRM("2", "计划确认"),
     RELEASE("3", "下达"),
+    STARTED("4", "开工"),
     COMPLETED("5", "完工"),
     CLOSED("6", "结案"),
     SETTLED("7", "结算");

@@ -36,6 +36,9 @@ public class KingdeeOutsourcedOrder {
     //("BOM版本")
     private String FBomId;
 
+    //("计划完成时间")
+    private String FPlanFinishDate;
+
     //("定制物料编码")
     private String F_ora_FDZMaterialID2;
 

@@ -79,18 +79,22 @@ public class InterfaceServiceImpl implements InterfaceService {
         long l = System.currentTimeMillis();
         try {
             Integer type = Math.toIntExact(queryViewParams.getTableId());
+//          获取排程结果表中数据表的版本号最新的五个版本
             List<ApsTableVersion> apsTableVersions = getApsTableVersionsLimit5(type);
             List<Integer> tableVersionList = apsTableVersions.stream()
                     .map(ApsTableVersion::getTableVersion)
                     .collect(Collectors.toList());
+//            将版本id转化为版本号
             List<VersionToChVersion> versionToChVersionArrayList = getVersionToChVersions(apsTableVersions);
             InterfaceDataType interfaceDataType = InterfaceDataType.valueOfCode(type);
             if (interfaceDataType == null) {
                 throw new BeneWakeException("type不正确");
             }
             ApsIntfaceDataServiceBase apsIntfaceDataServiceBase = kingdeeServiceMap.get(interfaceDataType.getSeviceName());
+//          获取数据表中的最新版本号
             Integer latestVersion = getLatestVersion(apsIntfaceDataServiceBase);
 
+//            如果erp表中最后的版本，不在排程成功的五个版本里面则记为即时版本
             if (!tableVersionList.contains(latestVersion)) {
                 versionToChVersionArrayList.add(new VersionToChVersion(latestVersion, "须时版本"));
             }
@@ -473,7 +477,7 @@ public class InterfaceServiceImpl implements InterfaceService {
         return true;
     }
 
-
+    //获取排程成功的最近的五个版本
     private List<ApsTableVersion> getApsTableVersionsLimit5(Integer type) {
         LambdaQueryWrapper<ApsTableVersion> apsTableVersionLambdaQueryWrapper = new LambdaQueryWrapper<>();
         apsTableVersionLambdaQueryWrapper.eq(ApsTableVersion::getTableId, type)

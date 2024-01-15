@@ -119,7 +119,7 @@ public class SchedulingResultServiceImpl implements SchedulingResultService {
 
     private QueryViewParams buildQueryViewParams(DownloadViewParams downloadParam) {
         QueryViewParams queryViewParams = new QueryViewParams();
-        queryViewParams.setTableId(Math.toIntExact(downloadParam.getViewId()));
+        queryViewParams.setTableId(Math.toIntExact(downloadParam.getTableId()));
         queryViewParams.setViewId(downloadParam.getViewId());
         queryViewParams.setCols(downloadParam.getCols());
         return queryViewParams;

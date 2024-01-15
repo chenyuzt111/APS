@@ -63,12 +63,9 @@ public class ApsProductionOrderServiceImpl extends ApsOrderBaseService
     private void getApsProductionOrderList(Map<String, String> mtn, Map<String, String> ftn, Map<String, String> btn, List<ApsOrder> apsProductionOrders, KingdeeProductionOrder kingdeeProductionOrder) throws ParseException {
         // 获取 FStatus 的 id
         String statusId = kingdeeProductionOrder.getFStatus();
-        // 使用映射 HashMap 获取状态文字
-        FStatusEnum fStatusEnum = FStatusEnum.getByCode(statusId);
-        //存在枚举值不存在的情况
-        String statusText = fStatusEnum != null ? fStatusEnum.getDescription() : statusId;
-        if (statusText != null) {
-            kingdeeProductionOrder.setFStatus(statusText);
+
+        if (statusId != null) {
+            kingdeeProductionOrder.setFStatus(statusId);
         }
         // 获取 FPickMtrlStatus 的 id
         String pickStatusId = kingdeeProductionOrder.getFPickMtrlStatus();
@@ -82,6 +79,7 @@ public class ApsProductionOrderServiceImpl extends ApsOrderBaseService
         kingdeeProductionOrder.setFBillType(ftn.get(originalFBillType));
         kingdeeProductionOrder.setFBomId(btn.get(kingdeeProductionOrder.getFBomId()));
         kingdeeProductionOrder.setFStatus(projectStatusMap.get(kingdeeProductionOrder.getFStatus()));
+        kingdeeProductionOrder.setFPlanFinishDate(kingdeeProductionOrder.getFPlanFinishDate());
         ApsOrder apsOrder = productionKingdeeToApsOrder.convert(kingdeeProductionOrder);
         apsProductionOrders.add(apsOrder);
     }
@@ -98,7 +96,7 @@ public class ApsProductionOrderServiceImpl extends ApsOrderBaseService
         queryFilters.add("FCancelStatus = 'A'");       // 作废状态=未作废
         queryFilters.add("FStatus != '6'");              // 业务状态≠结案
         queryFilters.add("FStatus != '7'");
-        queryFilters.add("FWorkshopID =102714");
+        queryFilters.add("(FWorkshopID = 102714 OR FWorkshopID = 162583 OR FWorkshopID Like 337565)");
 
         queryParam.setFilterString(String.join(" and ", queryFilters));
 

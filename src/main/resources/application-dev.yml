@@ -44,7 +44,7 @@ myPython:
 feishu:
   app_id: cli_a5f3c323317e500b
   app_secret: uy9QeakIhsaBRKGOuZBglzAgW0rPdgah
-  scheduling_template_id: ctp_AAyiedI2VnH6
+  scheduling_template_id: ctp_AAif3qqeoTeM
 
 knife4j:
   enable: true
