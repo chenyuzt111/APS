@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benewake.system.mapper.ApsCommonFunctionsMapper">
+
+    <resultMap id="BaseResultMap" type="com.benewake.system.entity.ApsCommonFunctions">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="label" column="label" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="path" column="path" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        label,
+        name,path
+    </sql>
+
+    <!-- 删除user_id等于userId的所有记录 -->
+    <delete id="deleteCommonFunctionsByUserId" parameterType="int">
+        DELETE FROM aps_common_functions
+        WHERE user_id = #{userId}
+    </delete>
+
+    <!-- 插入apsCommonFunctions中的所有记录 -->
+    <insert id="insertCommonFunctions" parameterType="java.util.List">
+        INSERT INTO aps_common_functions (label, name, path, user_id)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.label}, #{item.name}, #{item.path}, #{item.userId})
+        </foreach>
+    </insert>
+
+
+    <select id="getCommonFunctionsByUserId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from aps_common_functions
+        where user_id = #{userId}
+    </select>
+</mapper>
